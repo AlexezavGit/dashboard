@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-cyber-bg: #050A15;
+  --color-cyber-cyan: #00F5FF;
+  --color-cyber-amber: #F59E0B;
+  --color-cyber-success: #00FF66;
+  --color-cyber-purple: #A855F7;
+  --color-cyber-border: rgba(0, 245, 255, 0.1);
+  --color-cyber-surface: rgba(255, 255, 255, 0.03);
+}
+
+@layer base {
+  body {
+    @apply bg-cyber-bg text-slate-300 font-sans selection:bg-cyber-amber/30 selection:text-cyber-amber;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
+  }
+}
+
+@layer components {
+  .cyber-card {
+    @apply bg-cyber-surface border border-cyber-border rounded-xl backdrop-blur-md transition-all duration-300;
+  }
+  
+  .cyber-card:hover {
+    @apply border-cyber-cyan/30 shadow-[0_0_20px_rgba(0,245,255,0.05)];
+  }
+  
+  .cyber-number {
+    @apply font-mono text-cyber-cyan;
+  }
+  
+  .cyber-label {
+    @apply text-[10px] uppercase tracking-widest font-bold text-slate-500;
+  }
+
+  .cyber-glow-cyan {
+    @apply shadow-[0_0_15px_rgba(0,245,255,0.2)];
+  }
+  
+  .cyber-glow-amber {
+    @apply shadow-[0_0_15px_rgba(245,158,11,0.2)];
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 245, 255, 0.2);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 245, 255, 0.4);
+}
