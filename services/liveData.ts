@@ -111,20 +111,25 @@ async function fetchHdxPopulation(): Promise<LiveMetrics['hdxPopulation'] | null
   }
 }
 
-/** ActivityInfo — requires ACTIVITYINFO_API_KEY env var */
+/**
+ * ActivityInfo — proxied via Cloudflare Worker (/api/activityinfo/*)
+ * Token is stored as a Worker Secret, never in the JS bundle.
+ * DB/Form IDs can be baked in via VITE_ env vars (non-sensitive).
+ */
 async function fetchActivityInfo(): Promise<LiveMetrics['activityInfo']> {
-  const token = import.meta.env.VITE_ACTIVITYINFO_API_KEY;
-  if (!token) return null;
   try {
-    // These IDs must be configured per organisation — placeholder endpoints
+    // Check if the proxy is configured (health endpoint)
+    const health = await fetchWithTimeout('/api/health').catch(() => null);
+    if (!health?.ok) return null;
+    const healthJson = await health.json().catch(() => ({}));
+    if (healthJson?.activityinfo !== 'configured') return null;
+
     const dbId = import.meta.env.VITE_ACTIVITYINFO_DB_ID;
     const formId = import.meta.env.VITE_ACTIVITYINFO_FORM_ID;
     if (!dbId || !formId) return null;
 
-    const url = `https://api.activityinfo.org/api/v2/databases/${dbId}/forms/${formId}/records`;
-    const res = await fetchWithTimeout(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const url = `/api/activityinfo/api/v2/databases/${dbId}/forms/${formId}/records`;
+    const res = await fetchWithTimeout(url);
     if (!res.ok) return null;
     const json = await res.json();
     const records: any[] = json?.results ?? [];
@@ -137,16 +142,46 @@ async function fetchActivityInfo(): Promise<LiveMetrics['activityInfo']> {
   }
 }
 
-/** KoBo Toolbox — requires KOBO_API_TOKEN + KOBO_ASSET_ID env vars */
+/**
+ * KoBo Toolbox — proxied via Cloudflare Worker (/api/kobo/*)
+ * Token (66bb52de...) is stored as a Worker Secret, never in the JS bundle.
+ *
+ * If VITE_KOBO_ASSET_ID is set → fetch that specific form's submissions.
+ * If not set → auto-discover the first MHPSS survey from the account.
+ */
 async function fetchKobo(): Promise<LiveMetrics['kobo']> {
-  const token = import.meta.env.VITE_KOBO_API_TOKEN;
-  const assetId = import.meta.env.VITE_KOBO_ASSET_ID;
-  if (!token || !assetId) return null;
   try {
-    const url = `https://kf.kobotoolbox.org/api/v2/assets/${assetId}/data/?format=json&limit=1`;
-    const res = await fetchWithTimeout(url, {
-      headers: { Authorization: `Token ${token}` },
-    });
+    // Check proxy health first
+    const health = await fetchWithTimeout('/api/health').catch(() => null);
+    if (!health?.ok) return null;
+    const healthJson = await health.json().catch(() => ({}));
+    if (healthJson?.kobo !== 'configured') return null;
+
+    // Resolve asset ID: use explicit env var or auto-discover
+    let assetId = import.meta.env.VITE_KOBO_ASSET_ID as string | undefined;
+
+    if (!assetId) {
+      // Auto-discover first survey form in the account
+      const assetsRes = await fetchWithTimeout(
+        '/api/kobo/api/v2/assets/?asset_type=survey&format=json&limit=10'
+      );
+      if (!assetsRes.ok) return null;
+      const assetsJson = await assetsRes.json();
+      const surveys: any[] = assetsJson?.results ?? [];
+      if (!surveys.length) return null;
+      // Prefer a form with "mhpss" or "mental" in its name (case-insensitive)
+      const mhpssForm = surveys.find(
+        (s: any) =>
+          /mhpss|mental|psych|feel|assess/i.test(s.name ?? '') ||
+          /mhpss|mental|psych|feel|assess/i.test(s.settings?.description ?? '')
+      ) ?? surveys[0];
+      assetId = mhpssForm.uid;
+    }
+
+    if (!assetId) return null;
+
+    const url = `/api/kobo/api/v2/assets/${assetId}/data/?format=json&limit=1`;
+    const res = await fetchWithTimeout(url);
     if (!res.ok) return null;
     const json = await res.json();
     return {
@@ -163,8 +198,15 @@ export async function fetchAllLiveData(): Promise<{
   metrics: LiveMetrics;
   sources: DataSourceInfo[];
 }> {
-  const hasActivityInfoToken = !!import.meta.env.VITE_ACTIVITYINFO_API_KEY;
-  const hasKoboToken = !!(import.meta.env.VITE_KOBO_API_TOKEN && import.meta.env.VITE_KOBO_ASSET_ID);
+  // Check Worker proxy health to know which secrets are configured
+  let proxyHealth: { kobo?: string; activityinfo?: string } = {};
+  try {
+    const h = await fetchWithTimeout('/api/health');
+    if (h.ok) proxyHealth = await h.json();
+  } catch { /* running locally without worker */ }
+
+  const hasKoboToken = proxyHealth.kobo === 'configured';
+  const hasActivityInfoToken = proxyHealth.activityinfo === 'configured';
 
   const [hdxFunding, hdxPopulation, activityInfo, kobo] = await Promise.all([
     fetchHdxFunding(),
@@ -201,8 +243,8 @@ export async function fetchAllLiveData(): Promise<{
       lastFetched: activityInfo ? now : undefined,
       requiresAuth: true,
       authNote: {
-        uk: 'Потрібен: VITE_ACTIVITYINFO_API_KEY, VITE_ACTIVITYINFO_DB_ID, VITE_ACTIVITYINFO_FORM_ID у .env',
-        en: 'Required: VITE_ACTIVITYINFO_API_KEY, VITE_ACTIVITYINFO_DB_ID, VITE_ACTIVITYINFO_FORM_ID in .env',
+        uk: 'Токен зберігається як Worker Secret. Після реєстрації: npx wrangler secret put ACTIVITYINFO_API_KEY',
+        en: 'Token stored as Worker Secret. After registration: npx wrangler secret put ACTIVITYINFO_API_KEY',
       },
       apiBase: 'https://api.activityinfo.org/api/v2/',
       dataType: { uk: 'Сесії МЗПСП, охоплення, провайдери, індикатори', en: 'MHPSS sessions, reach, providers, outcome indicators' },
@@ -215,8 +257,8 @@ export async function fetchAllLiveData(): Promise<{
       lastFetched: kobo ? now : undefined,
       requiresAuth: true,
       authNote: {
-        uk: 'Потрібен: VITE_KOBO_API_TOKEN + VITE_KOBO_ASSET_ID у .env (специфічні для вашої орг)',
-        en: 'Required: VITE_KOBO_API_TOKEN + VITE_KOBO_ASSET_ID in .env (org-specific)',
+        uk: 'Токен вже налаштовано як Worker Secret. Якщо форми не знайдено — додай VITE_KOBO_ASSET_ID у .env',
+        en: 'Token already set as Worker Secret. If no form found — add VITE_KOBO_ASSET_ID in .env',
       },
       apiBase: 'https://kf.kobotoolbox.org/api/v2/',
       dataType: { uk: 'Польові оцінки, референсні форми, PSS-скори', en: 'Field assessments, referral forms, PSS scores' },

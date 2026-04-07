@@ -1,0 +1,23 @@
+name = "dashboard-mhpss"
+main = "worker/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Static assets from Vite build output
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+
+# Custom domain route (set in Cloudflare Dashboard → Workers → dashboard-mhpss → Custom Domains → dashboard.feelagain.me)
+# Or add the route here once you know the zone ID:
+# [[routes]]
+# pattern = "dashboard.feelagain.me/*"
+# zone_name = "feelagain.me"
+
+[vars]
+# KOBO_API_TOKEN must be set as a Worker Secret (never in this file):
+#   npx wrangler secret put KOBO_API_TOKEN
+# Then paste: 66bb52de75381723cdaec050cf9ffa5ae05fbb5d
+#
+# ACTIVITYINFO_API_KEY — set after you receive confirmation:
+#   npx wrangler secret put ACTIVITYINFO_API_KEY
