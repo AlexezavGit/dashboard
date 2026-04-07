@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
@@ -19,7 +19,10 @@ import { CustomScatterPlot } from './components/charts/CustomScatterPlot';
 import { CustomHeatmap } from './components/charts/CustomHeatmap';
 import { UkraineMap } from './components/charts/UkraineMap';
 import { FormattedNumber } from './components/FormattedNumber';
-import { 
+import { DataSourcesPanel } from './components/DataSourcesPanel';
+import { DataSourceBadge } from './components/ui/DataSourceBadge';
+import { fetchAllLiveData, DataSourceInfo, LiveMetrics } from './services/liveData';
+import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
   AreaChart, Area, Cell, ComposedChart, Line, LabelList
 } from 'recharts';
@@ -100,6 +103,24 @@ const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState<SectionFilter>('all');
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [liveMetrics, setLiveMetrics] = useState<LiveMetrics>({});
+  const [dataSources, setDataSources] = useState<DataSourceInfo[]>([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+
+  const loadLiveData = useCallback(async () => {
+    setIsLoadingData(true);
+    try {
+      const { metrics, sources } = await fetchAllLiveData();
+      setLiveMetrics(metrics);
+      setDataSources(sources);
+    } finally {
+      setIsLoadingData(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadLiveData();
+  }, [loadLiveData]);
 
   const filteredSections = activeSection === 'all' 
     ? SECTIONS_CONFIG 
@@ -177,11 +198,41 @@ const App: React.FC = () => {
         </header>
 
         {/* Top Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           {TOP_METRICS(lang).map((metric, idx) => (
             <TopMetric key={idx} data={metric} lang={lang} />
           ))}
         </div>
+        {/* Live HDX Population note */}
+        {liveMetrics.hdxPopulation && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 flex items-center gap-3 px-4 py-2.5 rounded-lg bg-cyber-success/5 border border-cyber-success/20 text-[11px] font-mono"
+          >
+            <DataSourceBadge status="live" lang={lang} lastFetched={dataSources.find(s => s.id === 'hdx_hapi')?.lastFetched} compact />
+            <span className="text-slate-400">
+              {lang === 'uk' ? 'HDX HAPI (OCHA) live:' : 'HDX HAPI (OCHA) live:'}
+            </span>
+            <span className="text-cyber-success font-bold">
+              {lang === 'uk'
+                ? `Населення України (OCHA): ${(liveMetrics.hdxPopulation.totalPopulation / 1e6).toFixed(1)}M`
+                : `Ukraine population (OCHA): ${(liveMetrics.hdxPopulation.totalPopulation / 1e6).toFixed(1)}M`}
+            </span>
+          </motion.div>
+        )}
+
+        {/* Data Sources Status Panel */}
+        {dataSources.length > 0 && (
+          <div className="mb-8">
+            <DataSourcesPanel
+              sources={dataSources}
+              lang={lang}
+              isLoading={isLoadingData}
+              onRefresh={loadLiveData}
+            />
+          </div>
+        )}
 
         {/* Filter Bar */}
         <div className="sticky top-4 z-40 bg-cyber-bg/80 backdrop-blur-xl border border-cyber-border rounded-xl p-3 flex items-center gap-4 flex-wrap mb-10">
@@ -198,15 +249,22 @@ const App: React.FC = () => {
             </select>
             <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-cyber-amber pointer-events-none" />
           </div>
-          <div className="ml-auto hidden lg:flex items-center gap-6 px-4 border-l border-cyber-border">
-             <div className="flex flex-col items-end">
-                <span className="cyber-label text-[8px]">Network_Load</span>
-                <span className="cyber-number text-xs">42.8%</span>
-             </div>
-             <div className="flex flex-col items-end">
-                <span className="cyber-label text-[8px]">Data_Integrity</span>
-                <span className="text-cyber-success text-xs font-mono">VERIFIED</span>
-             </div>
+          <div className="ml-auto hidden lg:flex items-center gap-4 px-4 border-l border-cyber-border">
+            {isLoadingData ? (
+              <DataSourceBadge status="loading" lang={lang} compact />
+            ) : (
+              <>
+                {dataSources.filter(s => s.status === 'live').length > 0 && (
+                  <DataSourceBadge status="live" lang={lang} compact />
+                )}
+                <div className="flex flex-col items-end">
+                  <span className="cyber-label text-[8px]">Live_Sources</span>
+                  <span className="cyber-number text-xs">
+                    {dataSources.filter(s => s.status === 'live').length}/{dataSources.length}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -349,6 +407,50 @@ const App: React.FC = () => {
                     </Card>
                     <Card title={lang === 'uk' ? 'Міжнародне фінансування МЗПСП' : 'International MHPSS Funding'} subtitle={lang === 'uk' ? 'Млн USD/EUR (2024-2025)' : 'M USD/EUR (2024-2025)'}>
                        <CustomBarChart data={DONOR_DATA(lang)} layout="horizontal" height={250} />
+                       {/* HDX HAPI live data block */}
+                       {liveMetrics.hdxFunding ? (
+                         <div className="mt-3 p-3 rounded-lg bg-cyber-success/5 border border-cyber-success/20">
+                           <div className="flex items-center gap-2 mb-2">
+                             <DataSourceBadge status="live" lang={lang} lastFetched={dataSources.find(s => s.id === 'hdx_hapi')?.lastFetched} />
+                             <span className="text-[10px] text-slate-400 font-mono">HDX HAPI / OCHA</span>
+                           </div>
+                           <div className="grid grid-cols-3 gap-2 text-center">
+                             <div>
+                               <div className="text-cyber-success font-bold text-sm font-mono">
+                                 ${(liveMetrics.hdxFunding.totalFundingUsd / 1e6).toFixed(1)}M
+                               </div>
+                               <div className="text-[9px] text-slate-500 uppercase">
+                                 {lang === 'uk' ? 'Отримано' : 'Received'}
+                               </div>
+                             </div>
+                             <div>
+                               <div className="text-amber-400 font-bold text-sm font-mono">
+                                 ${(liveMetrics.hdxFunding.totalRequirementsUsd / 1e6).toFixed(1)}M
+                               </div>
+                               <div className="text-[9px] text-slate-500 uppercase">
+                                 {lang === 'uk' ? 'Потрібно' : 'Required'}
+                               </div>
+                             </div>
+                             <div>
+                               <div className={`font-bold text-sm font-mono ${liveMetrics.hdxFunding.fundingPct < 50 ? 'text-rose-400' : 'text-cyber-success'}`}>
+                                 {liveMetrics.hdxFunding.fundingPct}%
+                               </div>
+                               <div className="text-[9px] text-slate-500 uppercase">
+                                 {lang === 'uk' ? 'Покриття' : 'Coverage'}
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       ) : (
+                         <div className="mt-3 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30 flex items-center gap-2">
+                           <DataSourceBadge status={isLoadingData ? 'loading' : (dataSources.find(s => s.id === 'hdx_hapi')?.status ?? 'unavailable')} lang={lang} compact />
+                           <span className="text-[10px] text-slate-500 font-mono">
+                             {isLoadingData
+                               ? (lang === 'uk' ? 'Завантаження HDX HAPI...' : 'Loading HDX HAPI...')
+                               : (lang === 'uk' ? 'HDX HAPI недоступне — показуються статичні дані' : 'HDX HAPI unavailable — showing static data')}
+                           </span>
+                         </div>
+                       )}
                     </Card>
                     <Card title={lang === 'uk' ? 'Фінансування vs Охоплення' : 'Funding vs Reach'} subtitle={lang === 'uk' ? 'Оцінка ефективності за організаціями' : 'Efficiency estimation by organization'}>
                        <CustomScatterPlot 

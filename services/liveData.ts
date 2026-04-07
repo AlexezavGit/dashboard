@@ -1,0 +1,280 @@
+/**
+ * Live Data Service — MHPSS UA Dashboard
+ *
+ * Sources and their connectivity:
+ *
+ * ✅ HDX HAPI (humdata.org) — public, no auth, CORS enabled
+ * ✅ OCHA FTS — public financial tracking, no auth
+ * ⚠️  ActivityInfo — requires org-specific API token (ACTIVITYINFO_API_KEY)
+ * ⚠️  KoBo Toolbox — requires org API token + form asset ID (KOBO_API_TOKEN, KOBO_ASSET_ID)
+ * 🚫 WHO MH Atlas — no machine-readable public API (PDF/XLSX reports only)
+ * 🚫 UNICEF HAC — no machine-readable public API (annual PDF reports)
+ * 🚫 HeRAMS — no public API (WHO internal reporting system)
+ * 🚫 Lancet / PMC — academic publications, no API
+ */
+
+export type DataSourceStatus = 'live' | 'static' | 'not_configured' | 'unavailable' | 'loading';
+
+export interface DataSourceInfo {
+  id: string;
+  name: { uk: string; en: string };
+  status: DataSourceStatus;
+  lastFetched?: Date;
+  error?: string;
+  requiresAuth: boolean;
+  authNote?: { uk: string; en: string };
+  apiBase: string;
+  dataType: { uk: string; en: string };
+  updateFrequency: { uk: string; en: string };
+  noApiReason?: { uk: string; en: string };
+}
+
+export interface LiveMetrics {
+  hdxFunding?: {
+    totalRequirementsUsd: number;
+    totalFundingUsd: number;
+    fundingPct: number;
+    appealCount: number;
+  };
+  hdxPopulation?: {
+    totalPopulation: number;
+    source: string;
+  };
+  activityInfo?: {
+    sessionsCount: number;
+    beneficiariesReached: number;
+  } | null;
+  kobo?: {
+    assessmentsCount: number;
+    lastSubmission: string;
+  } | null;
+}
+
+const FETCH_TIMEOUT_MS = 8000;
+
+async function fetchWithTimeout(url: string, options?: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, { ...options, signal: controller.signal });
+    return res;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+/** HDX HAPI — Ukraine humanitarian funding summary */
+async function fetchHdxFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
+  try {
+    const url = 'https://hapi.humdata.org/api/v1/coordination-context/funding?location_code=UKR&output_format=json&limit=100';
+    const res = await fetchWithTimeout(url);
+    if (!res.ok) return null;
+    const json = await res.json();
+    const results: any[] = json?.data?.results ?? [];
+    if (!results.length) return null;
+
+    let totalReq = 0;
+    let totalFund = 0;
+    for (const r of results) {
+      totalReq += r.requirements_usd ?? 0;
+      totalFund += r.funding_usd ?? 0;
+    }
+    return {
+      totalRequirementsUsd: totalReq,
+      totalFundingUsd: totalFund,
+      fundingPct: totalReq > 0 ? Math.round((totalFund / totalReq) * 100) : 0,
+      appealCount: results.length,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** HDX HAPI — Ukraine population data */
+async function fetchHdxPopulation(): Promise<LiveMetrics['hdxPopulation'] | null> {
+  try {
+    const url = 'https://hapi.humdata.org/api/v1/population-social/population?location_code=UKR&admin_level=0&output_format=json&limit=10';
+    const res = await fetchWithTimeout(url);
+    if (!res.ok) return null;
+    const json = await res.json();
+    const results: any[] = json?.data?.results ?? [];
+    if (!results.length) return null;
+    // Sum all age/gender groups or take latest total
+    const latest = results[0];
+    const total = results.reduce((acc: number, r: any) => acc + (r.population ?? 0), 0);
+    return {
+      totalPopulation: total || latest?.population || 0,
+      source: 'HDX HAPI / OCHA',
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** ActivityInfo — requires ACTIVITYINFO_API_KEY env var */
+async function fetchActivityInfo(): Promise<LiveMetrics['activityInfo']> {
+  const token = import.meta.env.VITE_ACTIVITYINFO_API_KEY;
+  if (!token) return null;
+  try {
+    // These IDs must be configured per organisation — placeholder endpoints
+    const dbId = import.meta.env.VITE_ACTIVITYINFO_DB_ID;
+    const formId = import.meta.env.VITE_ACTIVITYINFO_FORM_ID;
+    if (!dbId || !formId) return null;
+
+    const url = `https://api.activityinfo.org/api/v2/databases/${dbId}/forms/${formId}/records`;
+    const res = await fetchWithTimeout(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    const records: any[] = json?.results ?? [];
+    return {
+      sessionsCount: records.length,
+      beneficiariesReached: records.reduce((a: number, r: any) => a + (r.beneficiaries ?? 0), 0),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** KoBo Toolbox — requires KOBO_API_TOKEN + KOBO_ASSET_ID env vars */
+async function fetchKobo(): Promise<LiveMetrics['kobo']> {
+  const token = import.meta.env.VITE_KOBO_API_TOKEN;
+  const assetId = import.meta.env.VITE_KOBO_ASSET_ID;
+  if (!token || !assetId) return null;
+  try {
+    const url = `https://kf.kobotoolbox.org/api/v2/assets/${assetId}/data/?format=json&limit=1`;
+    const res = await fetchWithTimeout(url, {
+      headers: { Authorization: `Token ${token}` },
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return {
+      assessmentsCount: json?.count ?? 0,
+      lastSubmission: json?.results?.[0]?.end ?? '',
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Run all fetches in parallel and return combined results + source statuses */
+export async function fetchAllLiveData(): Promise<{
+  metrics: LiveMetrics;
+  sources: DataSourceInfo[];
+}> {
+  const hasActivityInfoToken = !!import.meta.env.VITE_ACTIVITYINFO_API_KEY;
+  const hasKoboToken = !!(import.meta.env.VITE_KOBO_API_TOKEN && import.meta.env.VITE_KOBO_ASSET_ID);
+
+  const [hdxFunding, hdxPopulation, activityInfo, kobo] = await Promise.all([
+    fetchHdxFunding(),
+    fetchHdxPopulation(),
+    fetchActivityInfo(),
+    fetchKobo(),
+  ]);
+
+  const metrics: LiveMetrics = {
+    hdxFunding: hdxFunding ?? undefined,
+    hdxPopulation: hdxPopulation ?? undefined,
+    activityInfo,
+    kobo,
+  };
+
+  const now = new Date();
+
+  const sources: DataSourceInfo[] = [
+    {
+      id: 'hdx_hapi',
+      name: { uk: 'HDX HAPI (OCHA)', en: 'HDX HAPI (OCHA)' },
+      status: hdxFunding || hdxPopulation ? 'live' : 'unavailable',
+      lastFetched: hdxFunding || hdxPopulation ? now : undefined,
+      requiresAuth: false,
+      apiBase: 'https://hapi.humdata.org/api/v1/',
+      dataType: { uk: 'Фінансування, населення, 4W матриця', en: 'Funding, population, 4W matrix' },
+      updateFrequency: { uk: 'Щоденно (80% automated)', en: 'Daily (80% automated)' },
+      error: hdxFunding || hdxPopulation ? undefined : 'Network/CORS error or API unavailable',
+    },
+    {
+      id: 'activityinfo',
+      name: { uk: 'ActivityInfo', en: 'ActivityInfo' },
+      status: hasActivityInfoToken ? (activityInfo ? 'live' : 'unavailable') : 'not_configured',
+      lastFetched: activityInfo ? now : undefined,
+      requiresAuth: true,
+      authNote: {
+        uk: 'Потрібен: VITE_ACTIVITYINFO_API_KEY, VITE_ACTIVITYINFO_DB_ID, VITE_ACTIVITYINFO_FORM_ID у .env',
+        en: 'Required: VITE_ACTIVITYINFO_API_KEY, VITE_ACTIVITYINFO_DB_ID, VITE_ACTIVITYINFO_FORM_ID in .env',
+      },
+      apiBase: 'https://api.activityinfo.org/api/v2/',
+      dataType: { uk: 'Сесії МЗПСП, охоплення, провайдери, індикатори', en: 'MHPSS sessions, reach, providers, outcome indicators' },
+      updateFrequency: { uk: 'Реальний час (після відправки форми)', en: 'Real-time (on form submission)' },
+    },
+    {
+      id: 'kobo',
+      name: { uk: 'KoBo Toolbox', en: 'KoBo Toolbox' },
+      status: hasKoboToken ? (kobo ? 'live' : 'unavailable') : 'not_configured',
+      lastFetched: kobo ? now : undefined,
+      requiresAuth: true,
+      authNote: {
+        uk: 'Потрібен: VITE_KOBO_API_TOKEN + VITE_KOBO_ASSET_ID у .env (специфічні для вашої орг)',
+        en: 'Required: VITE_KOBO_API_TOKEN + VITE_KOBO_ASSET_ID in .env (org-specific)',
+      },
+      apiBase: 'https://kf.kobotoolbox.org/api/v2/',
+      dataType: { uk: 'Польові оцінки, референсні форми, PSS-скори', en: 'Field assessments, referral forms, PSS scores' },
+      updateFrequency: { uk: 'Кожні 5 хв (синхронний експорт)', en: 'Every 5 min (synchronous export)' },
+    },
+    {
+      id: 'who_mh_atlas',
+      name: { uk: 'WHO MH Atlas', en: 'WHO MH Atlas' },
+      status: 'static',
+      requiresAuth: false,
+      apiBase: 'https://www.who.int/publications/',
+      dataType: { uk: 'Кадри, бюджет, заклади', en: 'Workforce, budget, facilities' },
+      updateFrequency: { uk: 'Кожні 5 років (2020, 2025...)', en: 'Every 5 years (2020, 2025...)' },
+      noApiReason: {
+        uk: 'Лише PDF/XLSX звіти. Машинозчитуваного API немає.',
+        en: 'PDF/XLSX reports only. No machine-readable API.',
+      },
+    },
+    {
+      id: 'unicef_hac',
+      name: { uk: 'UNICEF HAC Ukraine', en: 'UNICEF HAC Ukraine' },
+      status: 'static',
+      requiresAuth: false,
+      apiBase: 'https://www.unicef.org/',
+      dataType: { uk: 'Охоплення дітей, навчений персонал', en: 'Children reach, trained personnel' },
+      updateFrequency: { uk: 'Щорічно (звіт)', en: 'Annual (report)' },
+      noApiReason: {
+        uk: 'Річні PDF-звіти. Немає публічного структурованого API.',
+        en: 'Annual PDF reports. No public structured API.',
+      },
+    },
+    {
+      id: 'herams',
+      name: { uk: 'HeRAMS (ВООЗ)', en: 'HeRAMS (WHO)' },
+      status: 'static',
+      requiresAuth: false,
+      apiBase: 'https://www.who.int/tools/herams',
+      dataType: { uk: 'Заклади охорони здоровʼя', en: 'Health facilities' },
+      updateFrequency: { uk: 'Щомісяця (внутрішня система)', en: 'Monthly (internal system)' },
+      noApiReason: {
+        uk: 'Внутрішня система ВООЗ. Доступ лише через офіційні звіти.',
+        en: 'WHO internal system. Access only via official reports.',
+      },
+    },
+    {
+      id: 'lancet',
+      name: { uk: 'Lancet / PMC (наукові дані)', en: 'Lancet / PMC (research data)' },
+      status: 'static',
+      requiresAuth: false,
+      apiBase: 'https://www.thelancet.com/',
+      dataType: { uk: 'Поширеність розладів, ПТСР, депресія', en: 'Disorder prevalence, PTSD, depression' },
+      updateFrequency: { uk: 'Нерегулярно (публікації)', en: 'Irregular (publications)' },
+      noApiReason: {
+        uk: 'Наукові публікації. Дані вручну витягнуті з досліджень.',
+        en: 'Academic publications. Data manually extracted from studies.',
+      },
+    },
+  ];
+
+  return { metrics, sources };
+}
