@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, ChevronUp, ExternalLink, AlertTriangle, CheckCircle2, XCircle, Lock, RefreshCw } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink, AlertTriangle, CheckCircle2, XCircle, Lock, RefreshCw, ShieldOff } from 'lucide-react';
 import { DataSourceInfo, DataSourceStatus } from '../services/liveData';
 import { DataSourceBadge } from './ui/DataSourceBadge';
 import { Language } from '../types';
@@ -18,6 +18,7 @@ const STATUS_ICON: Record<DataSourceStatus, React.FC<{ className?: string }>> = 
   not_configured: ({ className }) => <Lock className={className} />,
   unavailable: ({ className }) => <XCircle className={className} />,
   loading: ({ className }) => <RefreshCw className={`${className} animate-spin`} />,
+  restricted: ({ className }) => <ShieldOff className={className} />,
 };
 
 const STATUS_ROW_COLOR: Record<DataSourceStatus, string> = {
@@ -26,6 +27,7 @@ const STATUS_ROW_COLOR: Record<DataSourceStatus, string> = {
   not_configured: 'border-l-slate-600',
   unavailable: 'border-l-rose-500/60',
   loading: 'border-l-cyan-500/60',
+  restricted: 'border-l-orange-500/60',
 };
 
 export const DataSourcesPanel: React.FC<Props> = ({ sources, lang, isLoading, onRefresh }) => {
@@ -35,6 +37,7 @@ export const DataSourcesPanel: React.FC<Props> = ({ sources, lang, isLoading, on
   const staticCount = sources.filter(s => s.status === 'static').length;
   const notConfiguredCount = sources.filter(s => s.status === 'not_configured').length;
   const unavailableCount = sources.filter(s => s.status === 'unavailable').length;
+  const restrictedCount = sources.filter(s => s.status === 'restricted').length;
 
   return (
     <div className="cyber-card border border-cyber-border rounded-xl overflow-hidden">
@@ -66,6 +69,11 @@ export const DataSourcesPanel: React.FC<Props> = ({ sources, lang, isLoading, on
             {unavailableCount > 0 && (
               <span className="text-[10px] font-mono font-bold text-rose-400 bg-rose-500/10 border border-rose-500/30 px-2 py-0.5 rounded">
                 {unavailableCount} {lang === 'uk' ? 'НЕДОСТУПНО' : 'UNAVAILABLE'}
+              </span>
+            )}
+            {restrictedCount > 0 && (
+              <span className="text-[10px] font-mono font-bold text-orange-400 bg-orange-500/10 border border-orange-500/30 px-2 py-0.5 rounded">
+                {restrictedCount} {lang === 'uk' ? 'ПОТРІБНА ЛІЦЕНЗІЯ' : 'LICENSE REQUIRED'}
               </span>
             )}
           </div>
@@ -154,6 +162,24 @@ export const DataSourcesPanel: React.FC<Props> = ({ sources, lang, isLoading, on
                           <p className="text-[10px] text-rose-400/70 font-mono">{source.error}</p>
                         </div>
                       )}
+                      {source.status === 'restricted' && source.restrictionNote && (
+                        <div className="mt-2 space-y-1.5">
+                          <div className="bg-orange-500/5 rounded p-2 border border-orange-500/20">
+                            <p className="text-[10px] text-orange-400/80 flex gap-1">
+                              <ShieldOff className="w-2.5 h-2.5 mt-0.5 flex-shrink-0" />
+                              {source.restrictionNote[lang]}
+                            </p>
+                          </div>
+                          {source.potentialData && (
+                            <div className="bg-slate-800/40 rounded p-2 border border-slate-700/30">
+                              <p className="text-[9px] text-slate-500 uppercase tracking-wider mb-1">
+                                {lang === 'uk' ? 'Потенційні дані (за умови ліцензії)' : 'Potential data (if licensed)'}
+                              </p>
+                              <p className="text-[10px] text-slate-400 italic">{source.potentialData[lang]}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -161,7 +187,7 @@ export const DataSourcesPanel: React.FC<Props> = ({ sources, lang, isLoading, on
 
               {/* Legend */}
               <div className="mt-4 pt-3 border-t border-cyber-border grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {(['live', 'static', 'not_configured', 'unavailable'] as DataSourceStatus[]).map(s => (
+                {(['live', 'static', 'not_configured', 'unavailable', 'restricted'] as DataSourceStatus[]).map(s => (
                   <div key={s} className="flex items-center gap-1.5">
                     <DataSourceBadge status={s} lang={lang} compact />
                     <span className="text-[9px] text-slate-600">
@@ -169,6 +195,7 @@ export const DataSourcesPanel: React.FC<Props> = ({ sources, lang, isLoading, on
                       {s === 'static' && (lang === 'uk' ? 'Вручну з звітів' : 'Manual from reports')}
                       {s === 'not_configured' && (lang === 'uk' ? 'Потрібен токен орг.' : 'Needs org token')}
                       {s === 'unavailable' && (lang === 'uk' ? 'API недоступне' : 'API unreachable')}
+                      {s === 'restricted' && (lang === 'uk' ? 'Потрібна ліцензія / угода' : 'License / agreement required')}
                     </span>
                   </div>
                 ))}

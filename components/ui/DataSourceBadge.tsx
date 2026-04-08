@@ -1,5 +1,5 @@
 import React from 'react';
-import { Wifi, WifiOff, Lock, Database, Loader } from 'lucide-react';
+import { Wifi, WifiOff, Lock, Database, Loader, ShieldOff } from 'lucide-react';
 import { DataSourceStatus } from '../../services/liveData';
 import { Language } from '../../types';
 
@@ -40,6 +40,12 @@ const STATUS_CONFIG = {
     className: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
     dotClass: 'bg-cyan-400 animate-ping',
     Icon: Loader,
+  },
+  restricted: {
+    label: { uk: 'ЛІЦЕНЗІЯ', en: 'RESTRICTED' },
+    className: 'bg-orange-500/15 text-orange-400 border-orange-500/40',
+    dotClass: 'bg-orange-500',
+    Icon: ShieldOff,
   },
 };
 

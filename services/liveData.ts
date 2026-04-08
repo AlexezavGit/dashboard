@@ -7,13 +7,15 @@
  * ✅ OCHA FTS — public financial tracking, no auth
  * ⚠️  ActivityInfo — requires org-specific API token (ACTIVITYINFO_API_KEY)
  * ⚠️  KoBo Toolbox — requires org API token + form asset ID (KOBO_API_TOKEN, KOBO_ASSET_ID)
+ * 🔒 ЕСОЗ / eHealth Ukraine — closed government system; requires MoH licensing + certification
+ * 🔒 Helsi / Kyivstar Health — closed commercial platform; requires partnership agreement
  * 🚫 WHO MH Atlas — no machine-readable public API (PDF/XLSX reports only)
  * 🚫 UNICEF HAC — no machine-readable public API (annual PDF reports)
  * 🚫 HeRAMS — no public API (WHO internal reporting system)
  * 🚫 Lancet / PMC — academic publications, no API
  */
 
-export type DataSourceStatus = 'live' | 'static' | 'not_configured' | 'unavailable' | 'loading';
+export type DataSourceStatus = 'live' | 'static' | 'not_configured' | 'unavailable' | 'loading' | 'restricted';
 
 export interface DataSourceInfo {
   id: string;
@@ -27,6 +29,8 @@ export interface DataSourceInfo {
   dataType: { uk: string; en: string };
   updateFrequency: { uk: string; en: string };
   noApiReason?: { uk: string; en: string };
+  restrictionNote?: { uk: string; en: string };
+  potentialData?: { uk: string; en: string };
 }
 
 export interface LiveMetrics {
@@ -314,6 +318,46 @@ export async function fetchAllLiveData(): Promise<{
       noApiReason: {
         uk: 'Наукові публікації. Дані вручну витягнуті з досліджень.',
         en: 'Academic publications. Data manually extracted from studies.',
+      },
+    },
+    {
+      id: 'esoz_ehealth',
+      name: { uk: 'ЕСОЗ / eHealth Ukraine (МОЗ)', en: 'ESOZ / eHealth Ukraine (MoH)' },
+      status: 'restricted',
+      requiresAuth: true,
+      apiBase: 'https://api.ehealth.gov.ua/',
+      dataType: {
+        uk: 'Електронні медичні записи, психіатричні консультації (ICD-10), рецепти, направлення, реєстр НСЗУ',
+        en: 'Electronic medical records, psychiatric consultations (ICD-10), prescriptions, referrals, NHSU registry',
+      },
+      updateFrequency: { uk: 'Реальний час (транзакційна система)', en: 'Real-time (transactional system)' },
+      restrictionNote: {
+        uk: 'Доступ заблоковано регуляторно. Потрібно: (1) юридична угода з ДП «Електронне здоровʼя» (МОЗ), (2) технічна сертифікація ПЗ (аудит коду + тести), (3) ліцензія медичного закладу або статус постачальника МІС. Без цього — жодних даних на жодному рівні.',
+        en: 'Access blocked by regulation. Required: (1) legal agreement with SE "Electronic Health" (MoH), (2) software technical certification (code audit + testing), (3) medical facility license or HIS vendor status. Without this — no data at any level.',
+      },
+      potentialData: {
+        uk: 'Якби доступ був: ~6M+ пацієнтів, психіатричні ep-ізоди, ПТСР-діагнози, черги до психологів, географія звернень по регіонах.',
+        en: 'If access granted: ~6M+ patients, psychiatric episodes, PTSD diagnoses, psychologist waitlists, regional consultation geography.',
+      },
+    },
+    {
+      id: 'helsi_kyivstar',
+      name: { uk: 'Helsi / Kyivstar Health', en: 'Helsi / Kyivstar Health' },
+      status: 'restricted',
+      requiresAuth: true,
+      apiBase: 'https://helsi.me/',
+      dataType: {
+        uk: 'Телемедичні сесії, профілі провайдерів, запити на консультацію, записи до фахівців МЗПСП',
+        en: 'Telemedicine sessions, provider profiles, consultation requests, MHPSS specialist appointments',
+      },
+      updateFrequency: { uk: 'Реальний час (комерційна платформа)', en: 'Real-time (commercial platform)' },
+      restrictionNote: {
+        uk: 'Закрита комерційна платформа Kyivstar. Потрібно: партнерська угода з Kyivstar Digital, NDA, технічна інтеграція через приватний API. Публічного API або sandbox не існує.',
+        en: 'Closed commercial platform by Kyivstar. Required: partnership agreement with Kyivstar Digital, NDA, technical integration via private API. No public API or sandbox exists.',
+      },
+      potentialData: {
+        uk: 'Якби доступ був: кількість онлайн-консультацій з психологами/психіатрами, географія запитів, waitlist-статистика, рейтинги провайдерів.',
+        en: 'If access granted: online psych/psychiatrist consultation counts, request geography, waitlist stats, provider ratings.',
       },
     },
   ];
