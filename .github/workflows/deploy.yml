@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Workers
+name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Build & Deploy dashboard-mhpss
+    name: Build & Preview check
 
     steps:
       - name: Checkout
@@ -26,18 +26,23 @@ jobs:
       - name: Build Vite app
         run: npm run build
         env:
-          # Non-sensitive build-time vars (safe in CI)
           VITE_ACTIVITYINFO_DB_ID: ${{ vars.ACTIVITYINFO_DB_ID }}
           VITE_ACTIVITYINFO_FORM_ID: ${{ vars.ACTIVITYINFO_FORM_ID }}
           VITE_KOBO_ASSET_ID: ${{ vars.KOBO_ASSET_ID }}
 
-      - name: Deploy Worker
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ccf4cbf0a8234b639c049c7dd1c627ae
-
-      # Worker Secrets are set separately via wrangler CLI — they are NOT in this file.
-      # To set/update:
-      #   npx wrangler secret put KOBO_API_TOKEN          → paste: 66bb52de75381723cdaec050cf9ffa5ae05fbb5d
-      #   npx wrangler secret put ACTIVITYINFO_API_KEY    → paste token after registration
+# NOTE: Cloudflare Pages deploys AUTOMATICALLY from the connected GitHub repo.
+# No wrangler deploy step needed here — Pages watches the `main` branch
+# and builds/deploys on every push.
+#
+# This workflow just validates the build succeeds before Pages picks it up.
+#
+# SECRETS to add in Pages Dashboard (NOT in GitHub):
+#   Cloudflare → Pages → dashboard → Settings → Environment Variables:
+#   KOBO_API_TOKEN = 66bb52de75381723cdaec050cf9ffa5ae05fbb5d  (secret, production)
+#   ACTIVITYINFO_API_KEY = <token after registration>           (secret, production)
+#
+# OPTIONAL — for manual deploys via wrangler pages deploy:
+#   GitHub repo → Settings → Secrets → CLOUDFLARE_API_TOKEN
+#   Token permissions needed:
+#     - Cloudflare Pages: Edit
+#     - Account Settings: Read
