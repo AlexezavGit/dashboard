@@ -14,6 +14,7 @@
 export interface Env {
   ASSETS: Fetcher;
   KOBO_API_TOKEN?: string;
+  KOBO?: string; // fallback if secret was added with short name
   ACTIVITYINFO_API_KEY?: string;
 }
 
@@ -51,11 +52,13 @@ export default {
       return new Response(null, { status: 204, headers: CORS });
     }
 
+    const koboToken = env.KOBO_API_TOKEN ?? env.KOBO;
+
     // Health — lets frontend know which secrets are active
     if (pathname === '/api/health') {
       return json({
         status: 'ok',
-        kobo: env.KOBO_API_TOKEN ? 'configured' : 'missing',
+        kobo: koboToken ? 'configured' : 'missing',
         activityinfo: env.ACTIVITYINFO_API_KEY ? 'configured' : 'missing',
         timestamp: new Date().toISOString(),
       });
@@ -63,9 +66,9 @@ export default {
 
     // KoBo proxy
     if (pathname.startsWith('/api/kobo/')) {
-      if (!env.KOBO_API_TOKEN) return json({ error: 'KOBO_API_TOKEN not set' }, 503);
+      if (!koboToken) return json({ error: 'KOBO_API_TOKEN not set' }, 503);
       const path = pathname.replace('/api/kobo', '');
-      return proxy(`https://kf.kobotoolbox.org${path}${search}`, `Token ${env.KOBO_API_TOKEN}`);
+      return proxy(`https://kf.kobotoolbox.org${path}${search}`, `Token ${koboToken}`);
     }
 
     // ActivityInfo proxy
