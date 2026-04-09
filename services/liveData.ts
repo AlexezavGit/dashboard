@@ -70,7 +70,7 @@ async function fetchWithTimeout(url: string, options?: RequestInit): Promise<Res
 /** HDX HAPI — Ukraine humanitarian funding summary */
 async function fetchHdxFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
   try {
-    const url = 'https://hapi.humdata.org/api/v1/coordination-context/funding?location_code=UKR&output_format=json&limit=100';
+    const url = '/api/hdx/api/v1/coordination-context/funding?location_code=UKR&output_format=json&limit=100';
     const res = await fetchWithTimeout(url);
     if (!res.ok) return null;
     const json = await res.json();
@@ -97,7 +97,7 @@ async function fetchHdxFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
 /** HDX HAPI — Ukraine population data */
 async function fetchHdxPopulation(): Promise<LiveMetrics['hdxPopulation'] | null> {
   try {
-    const url = 'https://hapi.humdata.org/api/v1/population-social/population?location_code=UKR&admin_level=0&output_format=json&limit=10';
+    const url = '/api/hdx/api/v1/population-social/population?location_code=UKR&admin_level=0&output_format=json&limit=10';
     const res = await fetchWithTimeout(url);
     if (!res.ok) return null;
     const json = await res.json();

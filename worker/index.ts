@@ -30,10 +30,10 @@ function json(data: unknown, status = 200) {
   });
 }
 
-async function proxy(upstream: string, authHeader: string): Promise<Response> {
-  const res = await fetch(upstream, {
-    headers: { Authorization: authHeader, Accept: 'application/json' },
-  });
+async function proxy(upstream: string, authHeader?: string): Promise<Response> {
+  const headers: Record<string, string> = { Accept: 'application/json' };
+  if (authHeader) headers['Authorization'] = authHeader;
+  const res = await fetch(upstream, { headers });
   const body = await res.text();
   return new Response(body, {
     status: res.status,
@@ -69,6 +69,14 @@ export default {
       if (!koboToken) return json({ error: 'KOBO_API_TOKEN not set' }, 503);
       const path = pathname.replace('/api/kobo', '');
       return proxy(`https://kf.kobotoolbox.org${path}${search}`, `Token ${koboToken}`);
+    }
+
+    // HDX HAPI proxy (public, no auth — proxied to avoid browser CORS)
+    if (pathname.startsWith('/api/hdx/')) {
+      const path = pathname.replace('/api/hdx', '');
+      return proxy(
+        `https://hapi.humdata.org${path}${search}${search ? '&' : '?'}app_identifier=mhpss-ua-dashboard`
+      );
     }
 
     // ActivityInfo proxy
