@@ -203,22 +203,43 @@ const App: React.FC = () => {
             <TopMetric key={idx} data={metric} lang={lang} />
           ))}
         </div>
-        {/* Live HDX Population note */}
+        {/* Live OCHA data banner */}
         {liveMetrics.hdxPopulation && (
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 flex items-center gap-3 px-4 py-2.5 rounded-lg bg-cyber-success/5 border border-cyber-success/20 text-[11px] font-mono"
+            className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-1.5 px-4 py-2.5 rounded-lg bg-cyber-success/5 border border-cyber-success/20 text-[11px] font-mono"
           >
             <DataSourceBadge status="live" lang={lang} lastFetched={dataSources.find(s => s.id === 'hdx_hapi')?.lastFetched} compact />
-            <span className="text-slate-400">
-              {lang === 'uk' ? 'HDX HAPI (OCHA) live:' : 'HDX HAPI (OCHA) live:'}
-            </span>
+            <span className="text-slate-500">OCHA FTS / Держстат:</span>
             <span className="text-cyber-success font-bold">
               {lang === 'uk'
-                ? `Населення України (OCHA): ${(liveMetrics.hdxPopulation.totalPopulation / 1e6).toFixed(1)}M`
-                : `Ukraine population (OCHA): ${(liveMetrics.hdxPopulation.totalPopulation / 1e6).toFixed(1)}M`}
+                ? `Населення: ${(liveMetrics.hdxPopulation.totalPopulation / 1e6).toFixed(1)}M`
+                : `Population: ${(liveMetrics.hdxPopulation.totalPopulation / 1e6).toFixed(1)}M`}
             </span>
+            {liveMetrics.hdxFunding && liveMetrics.hdxFunding.totalFundingUsd > 0 && (
+              <>
+                <span className="text-slate-700">|</span>
+                <span className="text-slate-400">
+                  {lang === 'uk' ? 'HRP 2025 фінансування:' : 'HRP 2025 funding:'}
+                </span>
+                <span className="text-cyber-success font-bold">
+                  ${(liveMetrics.hdxFunding.totalFundingUsd / 1e9).toFixed(2)}B
+                </span>
+                {liveMetrics.hdxFunding.totalRequirementsUsd > 0 && (
+                  <span className="text-slate-400">
+                    {lang === 'uk' ? 'з' : 'of'}{' '}
+                    <span className="text-amber-400 font-bold">
+                      ${(liveMetrics.hdxFunding.totalRequirementsUsd / 1e9).toFixed(2)}B
+                    </span>
+                    {' '}
+                    <span className={liveMetrics.hdxFunding.fundingPct < 50 ? 'text-rose-400 font-bold' : 'text-cyber-success font-bold'}>
+                      ({liveMetrics.hdxFunding.fundingPct}%)
+                    </span>
+                  </span>
+                )}
+              </>
+            )}
           </motion.div>
         )}
 
@@ -412,7 +433,7 @@ const App: React.FC = () => {
                          <div className="mt-3 p-3 rounded-lg bg-cyber-success/5 border border-cyber-success/20">
                            <div className="flex items-center gap-2 mb-2">
                              <DataSourceBadge status="live" lang={lang} lastFetched={dataSources.find(s => s.id === 'hdx_hapi')?.lastFetched} />
-                             <span className="text-[10px] text-slate-400 font-mono">HDX HAPI / OCHA</span>
+                             <span className="text-[10px] text-slate-400 font-mono">OCHA FTS live</span>
                            </div>
                            <div className="grid grid-cols-3 gap-2 text-center">
                              <div>
