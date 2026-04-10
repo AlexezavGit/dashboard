@@ -70,40 +70,85 @@ async function fetchWithTimeout(url: string, options?: RequestInit): Promise<Res
 let _hdxError: string | undefined;
 
 /**
- * OCHA FTS — Ukraine humanitarian response plan funding
- * Correct endpoint: /v1/public/fts/flow?groupby=plan&countryISO3=UKR&year=YYYY
- * Response: data.report3.planContributions[] → revisedRequirements, totalFunding
- * We query 2025 first (most recent complete HRP), then 2024 as fallback.
+ * OCHA FTS — Ukraine humanitarian response plan funding.
+ * Tries two endpoints in order:
+ * 1. /v1/public/appeal?year=YYYY&countryIso3=UKR  → appeal objects with requirements + funding
+ * 2. /v1/public/fts/flow?groupby=plan&countryISO3=UKR&year=YYYY → report3.planContributions
  */
 async function fetchFtsFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
   try {
     for (const year of [2025, 2024]) {
-      const url = `/api/fts/v1/public/fts/flow?groupby=plan&countryISO3=UKR&year=${year}`;
-      const res = await fetchWithTimeout(url);
-      if (!res.ok) {
-        _hdxError = `OCHA FTS помилка ${res.status}`;
+      // Strategy 1: appeal endpoint (has revisedRequirements + funding.totalFunding)
+      const appealUrl = `/api/fts/v1/public/appeal?year=${year}&countryIso3=UKR`;
+      const appealRes = await fetchWithTimeout(appealUrl);
+      if (appealRes.ok) {
+        const appealJson = await appealRes.json();
+        const appeals: any[] = appealJson?.data ?? [];
+        if (appeals.length) {
+          let totalReq = 0;
+          let totalFund = 0;
+          for (const a of appeals) {
+            totalReq += a.revisedRequirements ?? a.requirements ?? 0;
+            totalFund += a.funding?.totalFunding ?? a.totalFunding ?? 0;
+          }
+          if (totalReq > 0 || totalFund > 0) {
+            _hdxError = undefined;
+            return {
+              totalRequirementsUsd: totalReq,
+              totalFundingUsd: totalFund,
+              fundingPct: totalReq > 0 ? Math.round((totalFund / totalReq) * 100) : 0,
+              appealCount: appeals.length,
+            };
+          }
+        }
+      }
+
+      // Strategy 2: flow endpoint grouped by plan
+      const flowUrl = `/api/fts/v1/public/fts/flow?groupby=plan&countryISO3=UKR&year=${year}`;
+      const flowRes = await fetchWithTimeout(flowUrl);
+      if (!flowRes.ok) {
+        _hdxError = `OCHA FTS помилка ${flowRes.status}`;
         continue;
       }
-      const json = await res.json();
-      const plans: any[] = json?.data?.report3?.planContributions ?? [];
-      if (!plans.length) continue;
+      const flowJson = await flowRes.json();
 
-      let totalReq = 0;
-      let totalFund = 0;
-      for (const p of plans) {
-        totalReq += p.revisedRequirements ?? 0;
-        totalFund += p.totalFunding ?? 0;
+      // Try report3.planContributions
+      const plans: any[] = flowJson?.data?.report3?.planContributions ?? [];
+      if (plans.length) {
+        let totalReq = 0;
+        let totalFund = 0;
+        for (const p of plans) {
+          totalReq += p.revisedRequirements ?? 0;
+          totalFund += p.totalFunding ?? 0;
+        }
+        if (totalReq > 0 || totalFund > 0) {
+          _hdxError = undefined;
+          return {
+            totalRequirementsUsd: totalReq,
+            totalFundingUsd: totalFund,
+            fundingPct: totalReq > 0 ? Math.round((totalFund / totalReq) * 100) : 0,
+            appealCount: plans.length,
+          };
+        }
       }
-      if (totalReq === 0 && totalFund === 0) continue;
-      _hdxError = undefined;
-      return {
-        totalRequirementsUsd: totalReq,
-        totalFundingUsd: totalFund,
-        fundingPct: totalReq > 0 ? Math.round((totalFund / totalReq) * 100) : 0,
-        appealCount: plans.length,
-      };
+
+      // Last resort: just total funding from report1 (no requirements)
+      const totalFunding = flowJson?.data?.report1?.fundingTotals?.total ?? 0;
+      if (totalFunding > 0) {
+        _hdxError = undefined;
+        return {
+          totalRequirementsUsd: 0,
+          totalFundingUsd: totalFunding,
+          fundingPct: 0,
+          appealCount: 1,
+        };
+      }
+
+      // Debug: capture response shape to help diagnose
+      const dataKeys = Object.keys(flowJson?.data ?? {}).join(', ');
+      const r3keys = Object.keys(flowJson?.data?.report3 ?? {}).join(', ');
+      _hdxError = `FTS: порожня відповідь ${year}. data keys: [${dataKeys}], report3 keys: [${r3keys}]`;
     }
-    if (!_hdxError) _hdxError = 'OCHA FTS: дані HRP по Україні відсутні';
     return null;
   } catch {
     _hdxError = 'Помилка мережі при зверненні до OCHA FTS';
