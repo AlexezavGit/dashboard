@@ -72,9 +72,12 @@ export default {
     }
 
     // HDX HAPI proxy (public, no auth — proxied to avoid browser CORS)
+    // app_identifier is required by HDX HAPI in format: email/appname
     if (pathname.startsWith('/api/hdx/')) {
       const path = pathname.replace('/api/hdx', '');
-      return proxy(`https://hapi.humdata.org${path}${search}`);
+      const sep = search ? '&' : '?';
+      const id = encodeURIComponent('app@feelagain.me/mhpss-ua-dashboard');
+      return proxy(`https://hapi.humdata.org${path}${search}${sep}app_identifier=${id}`);
     }
 
     // ActivityInfo proxy
