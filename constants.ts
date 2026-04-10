@@ -37,7 +37,7 @@ export const TEXTS = {
       budget: { uk: 'Бюджет та фінансування', en: 'Budget & Funding' },
       gap: { uk: 'Розрив у доступі', en: 'Treatment Gap' },
       shadow: { uk: 'Тіньовий сектор', en: 'Shadow Economy' },
-      economic: { uk: 'Регіональне розповсюдження розладів', en: 'Regional Distribution of Disorders' },
+      economic: { uk: 'Економічний тягар та ROI', en: 'Economic Burden & ROI' },
       children: { uk: 'Діти', en: 'Children' },
       inputs: { uk: 'Зроблено vs Потрібно', en: 'Done vs Needed' },
     }
@@ -125,7 +125,7 @@ export const SECTIONS_CONFIG: SectionData[] = [
   { id: 'budget', title: { uk: 'Бюджети та фінансування сектору', en: 'Sector Budgets & Funding' }, icon: 'Coins' },
   { id: 'gap', title: { uk: 'Розрив у доступі до допомоги', en: 'Treatment Access Gap' }, icon: 'AlertCircle' },
   { id: 'shadow', title: { uk: 'Тіньовий сектор та формалізація практики', en: 'Shadow Economy & Practice Formalization' }, icon: 'EyeOff' },
-  { id: 'economic', title: { uk: "Регіональне розповсюдження розладів", en: 'Regional Distribution of Disorders' }, icon: 'Map' },
+  { id: 'economic', title: { uk: "Економічний тягар та ROI для інвесторів", en: 'Economic Burden & Investor ROI' }, icon: 'TrendingUp' },
   { id: 'children', title: { uk: "Ментальне здоров'я дітей", en: "Children's Mental Health" }, icon: 'Smile' },
   { id: 'inputs', title: { uk: 'Що зроблено — і чого це вартує в масштабі країни', en: 'What Was Achieved — And What It Means at National Scale' }, icon: 'Scale' },
 ];
@@ -223,7 +223,7 @@ export const CHILDREN_DATA = (l: Language) => [
 ];
 
 export const MHGAP_FUNNEL_DATA = (l: Language) => [
-  { name: l === 'uk' ? 'Онлайн-сертифікати' : 'Online certificates', value: 96000, fill: COLORS.blueLight },
+  { name: l === 'uk' ? 'Онлайн-сертифікати' : 'Online certificates', value: 130000, fill: COLORS.blueLight },
   { name: l === 'uk' ? 'З них — первинні лікарі' : 'Of which — primary docs', value: 19000, fill: COLORS.blue },
   { name: l === 'uk' ? 'Заклади з пакетом НСЗУ' : 'NHSU MH package facilities', value: 1000, fill: COLORS.orange },
   { name: l === 'uk' ? 'Очне навчання + супервізія' : 'In-person + supervision', value: 700, fill: COLORS.green },
@@ -314,7 +314,7 @@ export const REACH_TABLE_DATA = (l: Language) => [
     [l === 'uk' ? 'Діти з доступом до МЗПСП' : 'Children with MHPSS access', '3,400,000+', 'UNICEF', '2022–2024'],
     [l === 'uk' ? 'Навчені «фахівці МЗПСП»' : 'Trained "MHPSS professionals"', '38,000+', 'UNICEF', '2023'],
     [l === 'uk' ? 'Очне навчення + 6 міс. супервізія' : 'In-person training + 6mo supervision', '700', l === 'uk' ? 'ВООЗ mhGAP' : 'WHO mhGAP', '2019–2022'],
-    [l === 'uk' ? 'Онлайн-сертифікати (self-paced)' : 'Online certificates (self-paced)', '96,000', l === 'uk' ? 'ВООЗ mhGAP' : 'WHO mhGAP', l === 'uk' ? 'до серп. 2024' : 'to Aug 2024'],
+    [l === 'uk' ? 'Онлайн-сертифікати (self-paced)' : 'Online certificates (self-paced)', '130,000+', l === 'uk' ? 'ВООЗ mhGAP' : 'WHO mhGAP', l === 'uk' ? 'до жовт. 2024' : 'to Oct 2024'],
     [l === 'uk' ? 'З них — первинні лікарі' : 'Of which — primary care doctors', '~19,000', l === 'uk' ? 'ВООЗ mhGAP' : 'WHO mhGAP', l === 'uk' ? 'до серп. 2024' : 'to Aug 2024'],
     [l === 'uk' ? 'Заклади з пакетом МЗ' : 'Facilities with MH package', '~1,000', 'НСЗУ/NHSU', l === 'uk' ? 'сер. 2024' : 'mid-2024'],
     [l === 'uk' ? 'Заклади HeRAMS' : 'HeRAMS facilities', '3,346', l === 'uk' ? 'Держава' : 'Government', '2024'],
@@ -323,12 +323,87 @@ export const REACH_TABLE_DATA = (l: Language) => [
 ];
 
 export const INPUTS_OUTCOMES_DATA = (l: Language) => [
-    { input: l === 'uk' ? 'mhGAP онлайн-сертифікати' : 'mhGAP online certificates', val: '96,000', status: l === 'uk' ? 'НЕ ВИМІРЮЄТЬСЯ' : 'NOT MEASURED', out: l === 'uk' ? 'Скільки лікарів реально надають МЗ-послуги?' : 'How many doctors actually deliver MH services?', statusColor: 'red', tooltip: l === 'uk' ? 'Кількість виданих сертифікатів не відображає реальну кількість лікарів, які надають послуги.' : 'The number of issued certificates does not reflect the actual number of doctors providing services.' },
+    { input: l === 'uk' ? 'mhGAP онлайн-сертифікати' : 'mhGAP online certificates', val: '130,000+', status: l === 'uk' ? 'НЕ ВИМІРЮЄТЬСЯ' : 'NOT MEASURED', out: l === 'uk' ? 'Скільки лікарів реально надають МЗ-послуги?' : 'How many doctors actually deliver MH services?', statusColor: 'red', tooltip: l === 'uk' ? 'Кількість виданих сертифікатів не відображає реальну кількість лікарів, які надають послуги.' : 'The number of issued certificates does not reflect the actual number of doctors providing services.' },
     { input: l === 'uk' ? 'mhGAP очне навчання' : 'mhGAP in-person training', val: '700', status: '42 (6%)', out: l === 'uk' ? 'Задокументовано практикуючих (PMC 2020)' : 'Documented practicing (PMC 2020)', statusColor: 'red', tooltip: l === 'uk' ? 'Лише невелика частка лікарів, які пройшли очне навчання, задокументовано надають послуги.' : 'Only a small fraction of doctors who completed in-person training are documented as providing services.' },
     { input: l === 'uk' ? 'UNICEF «навчені фахівці»' : 'UNICEF "trained professionals"', val: '38,000', status: l === 'uk' ? 'НЕ ВИМІРЮЄТЬСЯ' : 'NOT MEASURED', out: l === 'uk' ? 'Скільки надають клінічну допомогу?' : 'How many provide clinical care?', statusColor: 'red', tooltip: l === 'uk' ? 'Відсутні дані щодо того, скільки з навчених фахівців реально надають клінічну допомогу.' : 'There is no data on how many of the trained professionals actually provide clinical care.' },
     { input: l === 'uk' ? 'Супервізія після навчання' : 'Post-training supervision', val: l === 'uk' ? 'Низька' : 'Low', status: l === 'uk' ? 'КРИТИЧНА ПРОГАЛИНА' : 'CRITICAL GAP', out: l === 'uk' ? 'Якість та утримання навичок?' : 'Quality and skill retention?', statusColor: 'red', tooltip: l === 'uk' ? 'Брак систематичної супервізії знижує ефективність навчання та утримання навичок.' : 'Lack of systematic supervision reduces training effectiveness and skill retention.' },
     { input: l === 'uk' ? 'ВООЗ консультації' : 'WHO consultations', val: '80,000+', status: l === 'uk' ? 'НЕ ВИМІРЮЄТЬСЯ' : 'NOT MEASURED', out: l === 'uk' ? 'Відсоток завершення лікування?' : 'Treatment completion rate?', statusColor: 'red', tooltip: l === 'uk' ? 'Кількість консультацій не вказує на те, скільки пацієнтів успішно завершили лікування.' : 'The number of consultations does not indicate how many patients successfully completed treatment.' },
     { input: l === 'uk' ? 'Заклади з пакетом НСЗУ' : 'Facilities with NHSU package', val: '~1,000', status: '~5–7% (' + (l === 'uk' ? 'оцінка' : 'est.') + ')', out: l === 'uk' ? '% потреби покрито (з 15 млн)' : '% of need covered (of 15M)', statusColor: 'orange', tooltip: l === 'uk' ? 'Оцінка покриття потреби базується на загальній кількості закладів, що мають пакет НСЗУ.' : 'The estimated need coverage is based on the total number of facilities with the NHSU package.' },
+];
+
+// --- Banker Narrative Data ---
+
+// Capacity Ceiling: mathematical proof the gap can't close with efficiency alone
+export const CAPACITY_CEILING_DATA = (l: Language) => [
+  { name: l === 'uk' ? 'Клінічна потреба' : 'Clinical Need', value: 3500, fill: '#FF4444' },
+  { name: l === 'uk' ? 'Поточна ємність' : 'Current Capacity', value: 550, fill: COLORS.cyberAmber },
+  { name: l === 'uk' ? '+100% ефективності' : '+100% Efficiency', value: 1100, fill: COLORS.cyberPurple },
+  { name: l === 'uk' ? '+200% ефективності' : '+200% Efficiency', value: 1650, fill: COLORS.cyberCyan },
+];
+
+// ROI Investment Case: World Bank, UNICEF, DALY
+export const ROI_CARDS = (l: Language) => [
+  {
+    source: 'World Bank',
+    roi: '$1 \u2192 $4',
+    roiNum: 4,
+    period: l === 'uk' ? '5 років' : '5 years',
+    color: COLORS.cyberCyan,
+    desc: l === 'uk'
+      ? 'Кожен $1, інвестований у лікування депресії та тривожності, повертає $4 у вигляді покращеного здоров\u2019я та підвищеної продуктивності.'
+      : 'Every $1 invested in treating depression and anxiety returns $4 in improved health and productivity.',
+    methodology: 'World Bank / Lancet Commission 2016, OneHealth Tool',
+  },
+  {
+    source: 'UNICEF (global)',
+    roi: '$1 \u2192 $225',
+    roiNum: 225,
+    period: l === 'uk' ? 'Довгострок.' : 'Long-term',
+    color: COLORS.cyberSuccess,
+    desc: l === 'uk'
+      ? 'Профілактичні втручання у дитячому віці дають 225-кратний соціально-економічний повернення за рахунок освіти, продуктивності та скорочення витрат на охорону здоров\u2019я.'
+      : 'Preventive childhood interventions yield 225× socioeconomic return through education, productivity, and reduced health costs.',
+    methodology: 'UNICEF CBA 2023',
+  },
+  {
+    source: l === 'uk' ? 'DALY / WHO поріг' : 'DALY / WHO threshold',
+    roi: '8\u201340\u00d7',
+    roiNum: 40,
+    period: l === 'uk' ? 'На рік' : 'Per year',
+    color: COLORS.cyberAmber,
+    desc: l === 'uk'
+      ? 'Курс психотерапії $150\u2013350 запобігає 1 DALY. При пороговому значенні ВОЗ $12\u202f000\u2013$15\u202f000/DALY це 8\u201340\u00d7 ефективніше за порогом рентабельності.'
+      : 'A $150\u2013350 therapy course prevents 1 DALY. At WHO\u2019s $12,000\u2013$15,000/DALY threshold, this is 8\u201340\u00d7 more cost-effective.',
+    methodology: 'WHO GNI threshold analysis',
+  },
+];
+
+// Connected Assets: links to all related materials
+export const CONNECTED_ASSETS = (l: Language) => [
+  {
+    name: l === 'uk' ? 'FEEL AGAIN \u2014 Відкриті дані v1' : 'FEEL AGAIN \u2014 Open Data v1',
+    url: 'https://feelagain.pages.dev',
+    type: 'portal',
+    desc: l === 'uk' ? 'Канонічний набір даних та документація' : 'Canonical dataset & documentation',
+  },
+  {
+    name: l === 'uk' ? 'OpenData Monitor (NBU Briefing)' : 'OpenData Monitor (NBU Briefing)',
+    url: 'https://github.com/AlexezavGit/opendatamonitor',
+    type: 'repo',
+    desc: l === 'uk' ? 'Репозиторій моніторингу відкритих даних' : 'Open data monitoring repository',
+  },
+  {
+    name: l === 'uk' ? 'Дашборд v1 (архів)' : 'Dashboard v1 (archive)',
+    url: 'https://dashboard-1q7.pages.dev',
+    type: 'dashboard',
+    desc: l === 'uk' ? 'Попередня версія дашборду' : 'Previous dashboard version',
+  },
+  {
+    name: l === 'uk' ? 'War Room (Google Drive)' : 'War Room (Google Drive)',
+    url: 'https://drive.google.com/drive/folders/1VOFar_1bXsloOm6EA3uas1yeQ3ofDsTm',
+    type: 'drive',
+    desc: l === 'uk' ? 'Робоча папка з усіма матеріалами' : 'Working folder with all materials',
+  },
 ];
 
 export const SOURCES = {

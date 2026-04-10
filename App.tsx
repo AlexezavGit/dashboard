@@ -1,14 +1,15 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
+import {
   TEXTS, COLORS, KPI_DATA, SECTIONS_CONFIG, TOP_METRICS,
   PREVALENCE_DATA, RISK_GROUP_DATA, WORKFORCE_DATA, WAR_IMPACT_DATA, SECTOR_DIST_DATA,
   BUDGET_SPLIT_DATA, DONOR_DATA, GAP_DATA, BARRIERS_DATA, SHADOW_DATA, DALY_DATA, RECON_DATA,
   CHILDREN_DATA, MHGAP_FUNNEL_DATA, TRAINED_REALITY_DATA, CLUSTER_DATA,
   TIMELINE_ITEMS, ADMIN_BURDEN, COORD_ITEMS, REACH_TABLE_DATA, INPUTS_OUTCOMES_DATA, SOURCES,
   FUNDING_VS_REACH_DATA, REGIONAL_BARRIERS_HEATMAP, DISORDER_IMPACT_BUBBLE,
-  ECONOMIC_BURDEN_INDICATORS, REGIONAL_DISORDER_DATA
+  ECONOMIC_BURDEN_INDICATORS, REGIONAL_DISORDER_DATA,
+  CAPACITY_CEILING_DATA, ROI_CARDS, CONNECTED_ASSETS,
 } from './constants';
 import { Language, SectionFilter } from './types';
 import { Card } from './components/ui/Card';
@@ -507,6 +508,64 @@ const App: React.FC = () => {
               {/* GAP */}
               {section.id === 'gap' && (
                 <div className="space-y-6">
+                  {/* Capacity Ceiling — mathematical proof */}
+                  <div className="cyber-card border border-rose-500/30 rounded-xl overflow-hidden">
+                    <div className="bg-rose-500/5 px-5 py-3 border-b border-rose-500/20 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                        <span className="cyber-label text-[11px] text-rose-400">
+                          {lang === 'uk' ? 'СТЕЛЯ ЄМНОСТІ: МАТЕМАТИЧНИЙ ДОКАЗ' : 'CAPACITY CEILING: MATHEMATICAL PROOF'}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-5 grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
+                      <div>
+                        <p className="text-[12px] text-slate-300 leading-relaxed mb-4">
+                          {lang === 'uk'
+                            ? "Навіть якщо подвоїти або потроїти ефективність існуючої системи \u2014 математичний розрив між клінічною потребою та ємністю закриється лише частково. Структурна зміна необхідна."
+                            : "Even doubling or tripling existing system efficiency \u2014 the mathematical gap between clinical need and capacity closes only partially. Structural change is required."}
+                        </p>
+                        <div className="space-y-2">
+                          {CAPACITY_CEILING_DATA(lang).map((item, i) => (
+                            <div key={i} className="flex items-center gap-3">
+                              <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: item.fill }} />
+                              <div className="flex-1 bg-slate-800/60 rounded-full overflow-hidden h-5">
+                                <div
+                                  className="h-full rounded-full flex items-center pl-2 transition-all duration-700"
+                                  style={{ width: `${(item.value / 3500) * 100}%`, backgroundColor: item.fill + '40', borderRight: `2px solid ${item.fill}` }}
+                                >
+                                  <span className="text-[9px] font-mono font-bold" style={{ color: item.fill }}>{(item.value / 1000).toFixed(1)}M</span>
+                                </div>
+                              </div>
+                              <span className="text-[10px] text-slate-400 w-36 flex-shrink-0">{item.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-4">
+                          <div className="text-[10px] text-rose-400 uppercase tracking-wider mb-1 font-mono">
+                            {lang === 'uk' ? 'Дефіцит при +200% ефект.' : 'Gap at +200% efficiency'}
+                          </div>
+                          <div className="text-3xl font-bold text-rose-400 font-mono">1,850,000</div>
+                          <div className="text-[10px] text-slate-500 mt-1">
+                            {lang === 'uk' ? 'людей без допомоги навіть при максимальній ефективності' : 'people without care even at maximum efficiency'}
+                          </div>
+                        </div>
+                        <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-4">
+                          <div className="text-[10px] text-amber-400 uppercase tracking-wider mb-1 font-mono">
+                            {lang === 'uk' ? 'Висновок для інвестора' : 'Investor takeaway'}
+                          </div>
+                          <div className="text-[11px] text-amber-300 leading-relaxed">
+                            {lang === 'uk'
+                              ? "Проблема не у відсутності зусиль \u2014 а у структурній обмеженості системи. Цифрова інфраструктура не замінює фахівців, але множить їх ємність."
+                              : "The problem is not lack of effort \u2014 but structural capacity limits. Digital infrastructure doesn\u2019t replace specialists, it multiplies their capacity."}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card title={lang === 'uk' ? 'Потреба vs Охоплення (млн)' : 'Need vs Coverage (millions)'}>
                        <ResponsiveContainer width="100%" height={300} minWidth={1}>
@@ -585,9 +644,45 @@ const App: React.FC = () => {
                 </div>
               )}
 
-              {/* ECONOMIC / REGIONAL DISTRIBUTION */}
+              {/* ECONOMIC / ROI */}
               {section.id === 'economic' && (
                  <div className="space-y-6">
+                    {/* ROI Investment Case */}
+                    <div>
+                      <div className="flex items-center gap-3 mb-4">
+                        <TrendingUp className="w-4 h-4 text-cyber-cyan" />
+                        <span className="cyber-label text-[11px] text-cyber-cyan">
+                          {lang === 'uk' ? 'КЕЙС ДЛЯ ІНВЕСТОРА: ДОВЕДЕНИЙ ROI' : 'INVESTOR CASE: PROVEN ROI'}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        {ROI_CARDS(lang).map((card, i) => (
+                          <motion.div
+                            key={i}
+                            whileHover={{ scale: 1.02, translateY: -3 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                            className="cyber-card p-5 border-t-2 flex flex-col gap-3"
+                            style={{ borderTopColor: card.color }}
+                          >
+                            <div className="flex items-start justify-between">
+                              <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{card.source}</span>
+                              <span className="text-[10px] font-mono text-slate-600">{card.period}</span>
+                            </div>
+                            <div className="text-4xl font-bold font-mono" style={{ color: card.color }}>{card.roi}</div>
+                            <p className="text-[11px] text-slate-400 leading-relaxed flex-1">{card.desc}</p>
+                            <div className="text-[9px] text-slate-600 italic border-t border-cyber-border pt-2 font-mono">
+                              {lang === 'uk' ? 'Методологія:' : 'Methodology:'} {card.methodology}
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                      <InsightBox type="warning">
+                        {lang === 'uk'
+                          ? "При поточному розриві лікування 74% та клінічній потребі 3.5\u202fмлн осіб — незалікований тягар ПТСР та депресії еквівалентний ~$2\u202fмлрд щорічних втрат продуктивності (за моделлю World Bank $4/$ та середньому доходу). Цифрова інфраструктура з мультиплікатором ємності \u2014 найефективніша точка втручання."
+                          : "With the current 74% treatment gap and 3.5M clinical need \u2014 untreated PTSD and depression burden equates to ~$2B annual productivity losses (World Bank $4/$ model, average income). Digital infrastructure with a capacity multiplier is the most cost-effective intervention point."}
+                      </InsightBox>
+                    </div>
+
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                        <Card colSpan="full" title={lang === 'uk' ? 'Економічний тягар: індикатори' : 'Economic Burden: Indicators'}>
                           <div className="space-y-4">
@@ -863,6 +958,44 @@ const App: React.FC = () => {
                   ))}
                 </div>
               </div>
+           </div>
+
+           {/* Connected Assets */}
+           <div className="mb-10 border border-cyber-cyan/20 rounded-xl overflow-hidden">
+             <div className="bg-cyber-surface px-5 py-3 border-b border-cyber-cyan/20 flex items-center gap-3">
+               <FolderOpen className="w-4 h-4 text-cyber-cyan" />
+               <span className="cyber-label text-[10px] text-cyber-cyan">
+                 {lang === 'uk' ? 'ПОВ\u2019ЯЗАНІ МАТЕРІАЛИ' : 'CONNECTED ASSETS'}
+               </span>
+             </div>
+             <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+               {CONNECTED_ASSETS(lang).map((asset, i) => {
+                 const typeIcon = asset.type === 'repo'
+                   ? <Database className="w-3.5 h-3.5 text-cyber-cyan flex-shrink-0" />
+                   : asset.type === 'dashboard'
+                   ? <LayoutDashboard className="w-3.5 h-3.5 text-cyber-amber flex-shrink-0" />
+                   : asset.type === 'drive'
+                   ? <FolderOpen className="w-3.5 h-3.5 text-cyber-purple flex-shrink-0" />
+                   : <BookOpen className="w-3.5 h-3.5 text-cyber-success flex-shrink-0" />;
+                 return (
+                   <motion.a
+                     key={i}
+                     href={asset.url}
+                     target="_blank"
+                     rel="noreferrer"
+                     whileHover={{ x: 4 }}
+                     className="flex items-start gap-3 p-3 rounded-lg bg-slate-800/40 border border-slate-700/40 hover:border-cyber-cyan/30 hover:bg-slate-800/70 transition-all group"
+                   >
+                     {typeIcon}
+                     <div className="min-w-0">
+                       <div className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors truncate">{asset.name}</div>
+                       <div className="text-[9px] text-slate-600 mt-0.5">{asset.desc}</div>
+                     </div>
+                     <ExternalLink className="w-3 h-3 text-slate-700 group-hover:text-cyber-cyan flex-shrink-0 ml-auto mt-0.5 transition-colors" />
+                   </motion.a>
+                 );
+               })}
+             </div>
            </div>
 
            {/* Data Infrastructure Gap — why live data is structurally impossible */}
