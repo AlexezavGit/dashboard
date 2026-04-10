@@ -333,6 +333,71 @@ export const INPUTS_OUTCOMES_DATA = (l: Language) => [
 
 // --- Banker Narrative Data ---
 
+// Macro Gap — canonical session-level calculation (War Room canonical, NSZU verified)
+export const MACRO_GAP = {
+  beneficiaries: 3_900_000,         // WHO 2025, Lancet 2023
+  sessionsPerPerson: 16,             // WHO standard avg 12-20
+  totalSessionDemand: 62_400_000,    // 3.9M × 16
+  currentCapacity: 180_000,          // NSZU verified (primary care)
+  coveragePct: 0.28,                 // 180K / 62.4M
+  sessionGap: 62_220_000,            // 62.4M - 180K
+  blendedFinanceRateUAH: 1914.5,     // = 2000 - (285×0.3) UAH/session
+  blendedFinanceNeedUAH: 119_120_190_000, // 62.22M × 1914.5
+  marketMinEurBln: 2.5,              // 62.4M hr × €40/hr
+  marketMaxEurBln: 4.1,              // 62.4M hr × €65/hr
+  gdpLossUSD: '$1.2B+',             // War Room canonical
+  lockedFundsUSD: '$954M',           // HEAL/THRIVE (War Room)
+};
+
+// Backlog chart — years to clear at different specialist counts
+export const BACKLOG_DATA = (l: Language) => [
+  { name: l === 'uk' ? '4,000 (зареєстр.)' : '4,000 (registered)', sustainable: 10.4, theoretical: 7.8 },
+  { name: l === 'uk' ? '8,000 (подвоєно)' : '8,000 (doubled)', sustainable: 5.2, theoretical: 3.9 },
+  { name: l === 'uk' ? '19,000 (макс+тінь)' : '19,000 (max+shadow)', sustainable: 2.2, theoretical: 1.6 },
+];
+
+// Three-level data infrastructure crisis (War Room)
+export const INFRA_LEVELS = (l: Language) => [
+  {
+    label: l === 'uk' ? 'РІВЕНЬ 1: ДЕРЖАВА (ЕСОЗ)' : 'LEVEL 1: STATE (ESOZ)',
+    status: l === 'uk' ? 'НЕСПРАВНІСТЬ' : 'MALFUNCTION',
+    color: '#FF4444',
+    desc: l === 'uk'
+      ? 'API заблоковано. Неможливо верифікувати держфінансовані сесії або приймати зовнішні дані НГО.'
+      : 'API connection blocked. Cannot verify state-funded sessions or accept external NGO data.',
+  },
+  {
+    label: l === 'uk' ? 'РІВЕНЬ 2: ГУМАНІТАРНИЙ API' : 'LEVEL 2: HUMANITARIAN API',
+    status: l === 'uk' ? 'АКТИВНИЙ (5W)' : 'ACTIVE (5W)',
+    color: '#00FF66',
+    desc: l === 'uk'
+      ? 'Дані НГО/кластерів готові, але ізольовані. Неможливо верифікувати проти держреєстрів без Digital Bus.'
+      : 'NGO/Cluster data is ready, but isolated. Cannot be verified against state registries without Digital Bus.',
+  },
+  {
+    label: l === 'uk' ? 'РІВЕНЬ 3: КОШТИ ДОНОРІВ' : 'LEVEL 3: DONOR FUNDS',
+    status: '$954M LOCKED',
+    color: '#F59E0B',
+    desc: l === 'uk'
+      ? 'Кошти HEAL/THRIVE не можуть бути повністю виплачені без верифікованого двостороннього обміну даними.'
+      : 'HEAL/THRIVE funds cannot be fully disbursed without verified bilateral data exchange.',
+  },
+];
+
+// Feel Again positioning (War Room canonical)
+export const FEEL_AGAIN_POSITION = (l: Language) => ({
+  costToState: '\u20ac0',
+  costNote: l === 'uk' ? 'Держава купує послугу (SaaS). Zero CAPEX.' : 'State buys service (SaaS). Zero CAPEX.',
+  gdpLoss: '$1.2B+',
+  lockedFunds: '$954M',
+  is: l === 'uk'
+    ? 'Цифрові фінансові рейки та інфраструктура даних. Система вимірювання та платежів, що доповнює існуючі програми.'
+    : 'Digital financial rails and data infrastructure. A measurement and payment system that complements existing programs.',
+  isNot: l === 'uk'
+    ? 'Не постачальник послуг ментального здоров\u2019я. Не застосунок і не стартап. Ми не надаємо терапію \u2014 ми робимо її фінансованою, доступною та підзвітною.'
+    : 'NOT a mental health service provider. Not an app or startup. We do not provide therapy \u2014 we make it fundable, findable, and accountable.',
+});
+
 // Capacity Ceiling: mathematical proof the gap can't close with efficiency alone
 export const CAPACITY_CEILING_DATA = (l: Language) => [
   { name: l === 'uk' ? 'Клінічна потреба' : 'Clinical Need', value: 3500, fill: '#FF4444' },

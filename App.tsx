@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen } from 'lucide-react';
+import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   TEXTS, COLORS, KPI_DATA, SECTIONS_CONFIG, TOP_METRICS,
@@ -10,6 +10,7 @@ import {
   FUNDING_VS_REACH_DATA, REGIONAL_BARRIERS_HEATMAP, DISORDER_IMPACT_BUBBLE,
   ECONOMIC_BURDEN_INDICATORS, REGIONAL_DISORDER_DATA,
   CAPACITY_CEILING_DATA, ROI_CARDS, CONNECTED_ASSETS,
+  MACRO_GAP, BACKLOG_DATA, INFRA_LEVELS, FEEL_AGAIN_POSITION,
 } from './constants';
 import { Language, SectionFilter } from './types';
 import { Card } from './components/ui/Card';
@@ -608,6 +609,97 @@ const App: React.FC = () => {
                       </table>
                     </div>
                   </Card>
+
+                  {/* Macro Gap: 0.28% / 62.4M sessions / backlog */}
+                  <div className="cyber-card border border-rose-500/30 rounded-xl overflow-hidden">
+                    <div className="bg-rose-500/5 px-5 py-3 border-b border-rose-500/20 flex items-center gap-3">
+                      <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                      <span className="cyber-label text-[11px] text-rose-400">
+                        {lang === 'uk' ? 'МАКРО-ГЕП: СПРАВЖНІЙ МАСШТАБ (НСЗУ верифіковано)' : 'MACRO GAP: TRUE SCALE (NSZU verified)'}
+                      </span>
+                    </div>
+                    <div className="p-5 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      <div className="space-y-3">
+                        <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-4 text-center">
+                          <div className="text-[10px] text-rose-400 uppercase tracking-wider font-mono mb-2">
+                            {lang === 'uk' ? 'Покриття потреби' : 'Demand coverage'}
+                          </div>
+                          <div className="text-5xl font-bold text-rose-400 font-mono">0.28%</div>
+                          <div className="text-[10px] text-slate-500 mt-2">180,000 / 62,400,000 {lang === 'uk' ? 'сесій' : 'sessions'}</div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="bg-slate-800/40 border border-slate-700/40 rounded-lg p-3 text-center">
+                            <div className="text-[9px] text-slate-500 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Дефіцит' : 'Gap'}</div>
+                            <div className="text-xl font-bold text-cyber-cyan font-mono">62.2M</div>
+                            <div className="text-[8px] text-slate-600">{lang === 'uk' ? 'сесій/рік' : 'sessions/yr'}</div>
+                          </div>
+                          <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3 text-center">
+                            <div className="text-[9px] text-amber-400 uppercase tracking-wider font-mono mb-1">Blended Finance</div>
+                            <div className="text-[13px] font-bold text-amber-400 font-mono leading-tight">119 млрд грн</div>
+                            <div className="text-[8px] text-slate-600">~$2.8B</div>
+                          </div>
+                        </div>
+                        <div className="bg-cyber-success/5 border border-cyber-success/20 rounded-lg p-3">
+                          <div className="text-[9px] text-cyber-success uppercase tracking-wider font-mono mb-1">
+                            {lang === 'uk' ? 'Ринкова вартість' : 'Market value'}
+                          </div>
+                          <div className="text-xl font-bold text-cyber-success font-mono">€2.5–4.1B</div>
+                          <div className="text-[8px] text-slate-600">{lang === 'uk' ? '62.4M год × €40–65/год' : '62.4M hr × €40–65/hr'}</div>
+                        </div>
+                      </div>
+                      <div className="lg:col-span-2">
+                        <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-3">
+                          {lang === 'uk' ? 'БЕКЛОГ: СКІЛЬКИ РОКІВ ДО ПОКРИТТЯ ПОТРЕБИ' : 'BACKLOG: YEARS TO CLEAR DEMAND'}
+                        </div>
+                        <ResponsiveContainer width="100%" height={200} minWidth={1}>
+                          <BarChart data={BACKLOG_DATA(lang)} margin={{ top: 5, right: 10, bottom: 0, left: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                            <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#64748b' }} />
+                            <YAxis tick={{ fontSize: 9, fill: '#64748b' }} unit=" р." />
+                            <Tooltip contentStyle={{ backgroundColor: '#0a0f1e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 11 }} formatter={(v: any) => [`${v} р.`]} />
+                            <Legend wrapperStyle={{ fontSize: '9px', color: '#64748b', fontFamily: 'JetBrains Mono' }} />
+                            <Bar dataKey="sustainable" name={lang === 'uk' ? 'Стійкий (1,500 год/рік)' : 'Sustainable (1,500h/yr)'} fill={COLORS.cyberAmber} radius={[3,3,0,0]} />
+                            <Bar dataKey="theoretical" name={lang === 'uk' ? 'Теоретичний (2,000 год/рік)' : 'Theoretical (2,000h/yr)'} fill={COLORS.cyberCyan} radius={[3,3,0,0]} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                        <div className="mt-3 bg-rose-500/5 border border-rose-500/20 rounded-lg p-3">
+                          <p className="text-[10px] text-rose-400/80 leading-relaxed">
+                            {lang === 'uk'
+                              ? "Навіть при 19\u202f000 фахівців (макс + тінь) \u2014 беклог 1.6\u20132.2 роки. При 4\u202f000 офіційно зареєстрованих \u2014 7.8\u201310.4 роки. Тренінги не масштабуються без інфраструктури."
+                              : "Even at 19,000 specialists (max incl. shadow) \u2014 backlog is 1.6\u20132.2 years. At 4,000 officially registered \u2014 7.8\u201310.4 years. Training doesn\u2019t scale without infrastructure."}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Three-level infrastructure crisis */}
+                  <div className="cyber-card border border-amber-500/30 rounded-xl overflow-hidden">
+                    <div className="bg-amber-500/5 px-5 py-3 border-b border-amber-500/20 flex items-center gap-3">
+                      <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                      <span className="cyber-label text-[11px] text-amber-400">
+                        {lang === 'uk' ? 'ТРИ РІВНІ КРИЗИ ІНФРАСТРУКТУРИ ДАНИХ' : 'THREE LEVELS OF DATA INFRASTRUCTURE CRISIS'}
+                      </span>
+                    </div>
+                    <div className="p-5">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        {INFRA_LEVELS(lang).map((lvl, i) => (
+                          <div key={i} className="rounded-xl p-4 border" style={{ borderColor: lvl.color + '30', backgroundColor: lvl.color + '08' }}>
+                            <div className="text-[9px] uppercase tracking-wider font-mono mb-2" style={{ color: lvl.color + 'aa' }}>{lvl.label}</div>
+                            <div className="text-lg font-bold font-mono mb-3" style={{ color: lvl.color }}>{lvl.status}</div>
+                            <p className="text-[10px] text-slate-400 leading-relaxed">{lvl.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
+                        <p className="text-[11px] text-amber-400/80 leading-relaxed">
+                          {lang === 'uk'
+                            ? "Наслідок: $954M HEAL/THRIVE заблоковано. Держава оплачує сесії, які не може верифікувати. НГО звітують у несинхронізовані системи. Без Digital Bus \u2014 цей розрив неможливо закрити."
+                            : "Result: $954M HEAL/THRIVE locked. State pays for sessions it cannot verify. NGOs report into unsynchronised systems. Without Digital Bus \u2014 this gap cannot be closed."}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -904,6 +996,50 @@ const App: React.FC = () => {
 
         {/* Footer */}
         <footer className="mt-20 border-t border-cyber-border pt-12 pb-16">
+           {/* Feel Again Solution — IS / IS NOT */}
+           <div className="mb-12 cyber-card border border-cyber-cyan/30 rounded-2xl overflow-hidden">
+             <div className="bg-cyber-cyan/5 px-6 py-4 border-b border-cyber-cyan/20 flex items-center gap-4">
+               <CircleDot className="w-4 h-4 text-cyber-cyan" />
+               <span className="cyber-label text-[11px] text-cyber-cyan">
+                 {lang === 'uk' ? 'FEEL AGAIN — ЦИФРОВА ІНФРАСТРУКТУРА ДЛЯ MHPSS' : 'FEEL AGAIN — DIGITAL INFRASTRUCTURE FOR MHPSS'}
+               </span>
+               <span className="ml-auto text-[9px] font-mono text-slate-600 border border-slate-700 px-2 py-0.5 rounded">FA-2026-UA</span>
+             </div>
+             <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+               <div className="space-y-3">
+                 <div className="text-[10px] text-cyber-cyan uppercase tracking-wider font-mono border-b border-cyber-cyan/20 pb-2">
+                   {lang === 'uk' ? 'ЦЕ Є:' : 'THIS IS:'}
+                 </div>
+                 <p className="text-[12px] text-slate-300 leading-relaxed">{FEEL_AGAIN_POSITION(lang).is}</p>
+               </div>
+               <div className="space-y-3">
+                 <div className="text-[10px] text-rose-400 uppercase tracking-wider font-mono border-b border-rose-500/20 pb-2">
+                   {lang === 'uk' ? 'ЦЕ НЕ Є:' : 'THIS IS NOT:'}
+                 </div>
+                 <p className="text-[12px] text-slate-400 leading-relaxed italic">{FEEL_AGAIN_POSITION(lang).isNot}</p>
+               </div>
+               <div className="space-y-3">
+                 <div className="bg-cyber-success/5 border border-cyber-success/20 rounded-xl p-4 text-center">
+                   <div className="text-[9px] text-cyber-success uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Вартість для держави' : 'Cost to state'}</div>
+                   <div className="text-4xl font-bold text-cyber-success font-mono">{FEEL_AGAIN_POSITION(lang).costToState}</div>
+                   <div className="text-[9px] text-slate-500 mt-1">{FEEL_AGAIN_POSITION(lang).costNote}</div>
+                 </div>
+                 <div className="grid grid-cols-2 gap-2">
+                   <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-rose-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Втрати ВВП' : 'GDP loss'}</div>
+                     <div className="text-base font-bold text-rose-400 font-mono">{FEEL_AGAIN_POSITION(lang).gdpLoss}</div>
+                     <div className="text-[8px] text-slate-600">{lang === 'uk' ? 'щорічно' : 'annually'}</div>
+                   </div>
+                   <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-amber-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Заблоковано' : 'Locked'}</div>
+                     <div className="text-base font-bold text-amber-400 font-mono">{FEEL_AGAIN_POSITION(lang).lockedFunds}</div>
+                     <div className="text-[8px] text-slate-600">HEAL/THRIVE</div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+
            {/* Feel Again Website Section */}
            <motion.div 
              whileHover={{ scale: 1.01 }}
