@@ -865,6 +865,46 @@ const App: React.FC = () => {
               </div>
            </div>
 
+           {/* Data Infrastructure Gap — why live data is structurally impossible */}
+           <div className="mb-10 border border-slate-800 rounded-xl overflow-hidden">
+             <div className="bg-slate-900/60 px-5 py-3 border-b border-slate-800 flex items-center gap-3">
+               <span className="w-2 h-2 rounded-full bg-amber-500/70 flex-shrink-0" />
+               <span className="cyber-label text-[10px] text-amber-500/80">
+                 {lang === 'uk' ? 'ЧОМУ LIVE-ДАНІ НЕДОСЯЖНІ: СИСТЕМНА ПРИЧИНА' : 'WHY LIVE DATA IS STRUCTURALLY UNAVAILABLE'}
+               </span>
+             </div>
+             <div className="px-5 py-4 space-y-4">
+               <p className="text-[11px] text-slate-400 leading-relaxed">
+                 {lang === 'uk'
+                   ? "Цифрова фрагментація замінила паперову. Проблема крос-секторальної розпорошеності залишається невирішеною: дані про психічне здоров\u2019я існують мінімум у п\u2019яти несумісних системах, жодна з яких не має повністю відкритого публічного API."
+                   : 'Digital fragmentation replaced paper fragmentation. Cross-sector data silos remain unsolved: mental health data exists across at least five incompatible systems, none with a fully open public API.'}
+               </p>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                 {[
+                   { sys: 'ЕСОЗ / НСЗУ', what: lang === 'uk' ? 'Медичні епізоди, рецепти, пакети' : 'Medical episodes, prescriptions, packages', status: lang === 'uk' ? 'Закрито — МОЗ ліцензія' : 'Closed — MoH licence required' },
+                   { sys: 'ActivityInfo (OCHA)', what: lang === 'uk' ? 'Гуманітарне охоплення 5W' : 'Humanitarian 5W coverage', status: lang === 'uk' ? 'Авторизація кластера' : 'Cluster auth required' },
+                   { sys: 'KoBo Toolbox', what: lang === 'uk' ? 'Польові оцінки НГО' : 'NGO field assessments', status: lang === 'uk' ? 'Дані кожної орг. окремо' : 'Per-organisation data only' },
+                   { sys: 'OCHA FTS', what: lang === 'uk' ? 'Фінансові потоки (LIVE ✓)' : 'Funding flows (LIVE ✓)', status: lang === 'uk' ? 'Публічне API — підключено' : 'Public API — connected' },
+                   { sys: 'Helsi / ЕСОЗ-2', what: lang === 'uk' ? 'Телемедицина, записи' : 'Telemedicine, appointments', status: lang === 'uk' ? 'Закрита комерц. платформа' : 'Closed commercial platform' },
+                   { sys: 'НСЗУ-дашборди', what: lang === 'uk' ? 'Держпакети психол. допомоги' : 'State mental health packages', status: lang === 'uk' ? 'PDF-звіти, немає API' : 'PDF reports only, no API' },
+                 ].map((row, i) => (
+                   <div key={i} className={`rounded-lg p-3 border text-[10px] ${row.status.includes('✓') || row.status.includes('connected') ? 'bg-cyber-success/5 border-cyber-success/20' : 'bg-slate-800/40 border-slate-700/40'}`}>
+                     <div className="font-bold text-white mb-1 font-mono">{row.sys}</div>
+                     <div className="text-slate-400 mb-1">{row.what}</div>
+                     <div className={row.status.includes('✓') || row.status.includes('connected') ? 'text-cyber-success' : 'text-amber-500/70'}>{row.status}</div>
+                   </div>
+                 ))}
+               </div>
+               <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-4">
+                 <p className="text-[11px] text-amber-400/80 leading-relaxed">
+                   {lang === 'uk'
+                     ? "Наслідок: через необхідність паралельно звітувати у несинхронізовані системи адміністративний тягар на MHPSS-фахівців складає розрахункові 20\u201340% робочого часу. При чисельності ~35\u00a0000 активних фахівців це еквівалентно ~$60\u00a0млн втраченої клінічної ємності щорічно \u2014 кошти, що з\u2019їдені не відсутністю спеціалістів, а цифровою неефективністю. Інфраструктура FEEL AGAIN інтегрується саме для усунення цього залишкового цифрового бар\u2019єру."
+                     : `Consequence: parallel reporting into unsynchronised systems creates an estimated 20–40% administrative burden on MHPSS professionals. Across ~35,000 active specialists, this equates to ~$60M in lost clinical capacity annually — not from staff shortages, but from digital inefficiency. FEEL AGAIN infrastructure is designed specifically to eliminate this residual digital barrier.`}
+                 </p>
+               </div>
+             </div>
+           </div>
+
            <p className="text-[10px] text-slate-600 italic border-t border-cyber-border pt-6 font-mono">
               {TEXTS.footer.disclaimer[lang]}
            </p>
