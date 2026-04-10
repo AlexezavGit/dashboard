@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "dashboard",
+  "account_id": "ccf4cbf0a8234b639c049c7dd1c627ae",
   "main": "worker/index.ts",
   "compatibility_date": "2026-04-09",
   "compatibility_flags": ["nodejs_compat"],
