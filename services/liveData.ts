@@ -156,7 +156,10 @@ async function fetchActivityInfo(): Promise<LiveMetrics['activityInfo']> {
  * If VITE_KOBO_ASSET_ID is set → fetch that specific form's submissions.
  * If not set → auto-discover the first MHPSS survey from the account.
  */
+let _koboError: string | undefined;
+
 async function fetchKobo(): Promise<LiveMetrics['kobo']> {
+  _koboError = undefined;
   try {
     // Check proxy health first
     const health = await fetchWithTimeout('/api/health').catch(() => null);
@@ -170,12 +173,18 @@ async function fetchKobo(): Promise<LiveMetrics['kobo']> {
     if (!assetId) {
       // Auto-discover first survey form in the account
       const assetsRes = await fetchWithTimeout(
-        '/api/kobo/api/v2/assets/?asset_type=survey&format=json&limit=10'
+        '/api/kobo/api/v2/assets/?asset_type=survey&limit=10'
       );
-      if (!assetsRes.ok) return null;
-      const assetsJson = await assetsRes.json();
+      if (!assetsRes.ok) {
+        _koboError = `KoBo assets HTTP ${assetsRes.status}`;
+        return null;
+      }
+      const assetsJson = await assetsRes.json().catch(() => ({}));
       const surveys: any[] = assetsJson?.results ?? [];
-      if (!surveys.length) return null;
+      if (!surveys.length) {
+        _koboError = 'No survey forms found in this KoBo account';
+        return null;
+      }
       // Prefer a form with "mhpss" or "mental" in its name (case-insensitive)
       const mhpssForm = surveys.find(
         (s: any) =>
@@ -262,6 +271,7 @@ export async function fetchAllLiveData(): Promise<{
       name: { uk: 'KoBo Toolbox', en: 'KoBo Toolbox' },
       status: hasKoboToken ? (kobo ? 'live' : 'unavailable') : 'not_configured',
       lastFetched: kobo ? now : undefined,
+      error: _koboError,
       requiresAuth: true,
       authNote: {
         uk: 'Токен вже налаштовано як Worker Secret. Якщо форми не знайдено — додай VITE_KOBO_ASSET_ID у .env',
