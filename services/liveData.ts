@@ -3,8 +3,8 @@
  *
  * Sources and their connectivity:
  *
- * ✅ HDX HAPI (humdata.org) — public, no auth, CORS enabled
- * ✅ OCHA FTS — public financial tracking, no auth
+ * ✅ OCHA FTS (api.hpc.tools) — public humanitarian funding tracker, no auth
+ * ❌ HDX HAPI (hapi.humdata.org) — blocks Cloudflare Workers IPs with 403
  * ⚠️  ActivityInfo — requires org-specific API token (ACTIVITYINFO_API_KEY)
  * ⚠️  KoBo Toolbox — requires org API token + form asset ID (KOBO_API_TOKEN, KOBO_ASSET_ID)
  * 🔒 ЕСОЗ / eHealth Ukraine — closed government system; requires MoH licensing + certification
@@ -69,65 +69,55 @@ async function fetchWithTimeout(url: string, options?: RequestInit): Promise<Res
 
 let _hdxError: string | undefined;
 
-/** HDX HAPI — Ukraine humanitarian funding summary */
-async function fetchHdxFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
+/**
+ * OCHA FTS — Ukraine humanitarian response plan funding
+ * API: https://api.hpc.tools/v1/public/plan?countryiso3=UKR
+ * Public, no auth, no rate limiting for reasonable use.
+ */
+async function fetchFtsFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
   try {
-    const url = '/api/hdx/api/v1/coordination-context/funding?location_code=UKR&output_format=json&limit=100';
-    const res = await fetchWithTimeout(url);
-    if (!res.ok) {
-      _hdxError = res.status === 403
-        ? 'HDX HAPI тимчасово блокує запити (помилка 403). Зазвичай вирішується само через кілька хвилин.'
-        : res.status === 429
-          ? 'Перевищено ліміт запитів до HDX API (429). Спробуйте оновити через хвилину.'
-          : `HDX API повернув помилку ${res.status}`;
-      return null;
-    }
-    const json = await res.json();
-    // HDX HAPI returns either {data: [...]} or {data: {results: [...]}}
-    const raw = json?.data;
-    const results: any[] = Array.isArray(raw) ? raw : (raw?.results ?? []);
-    if (!results.length) {
-      _hdxError = `HDX ok but empty. Keys: ${Object.keys(json ?? {}).join(',')}`;
-      return null;
-    }
+    const year = new Date().getFullYear();
+    // Try current year first, fall back to previous if empty
+    for (const y of [year, year - 1]) {
+      const url = `/api/fts/v1/public/plan?countryiso3=UKR&year=${y}`;
+      const res = await fetchWithTimeout(url);
+      if (!res.ok) {
+        _hdxError = `OCHA FTS API помилка ${res.status}`;
+        continue;
+      }
+      const json = await res.json();
+      const plans: any[] = json?.data ?? [];
+      if (!plans.length) continue;
 
-    let totalReq = 0;
-    let totalFund = 0;
-    for (const r of results) {
-      totalReq += r.requirements_usd ?? 0;
-      totalFund += r.funding_usd ?? 0;
+      let totalReq = 0;
+      let totalFund = 0;
+      for (const p of plans) {
+        totalReq += p.revisedRequirements ?? p.requirements?.revisedRequirements ?? 0;
+        totalFund += p.funding?.totalFunding ?? 0;
+      }
+      if (totalReq === 0 && totalFund === 0) continue;
+      _hdxError = undefined;
+      return {
+        totalRequirementsUsd: totalReq,
+        totalFundingUsd: totalFund,
+        fundingPct: totalReq > 0 ? Math.round((totalFund / totalReq) * 100) : 0,
+        appealCount: plans.length,
+      };
     }
-    return {
-      totalRequirementsUsd: totalReq,
-      totalFundingUsd: totalFund,
-      fundingPct: totalReq > 0 ? Math.round((totalFund / totalReq) * 100) : 0,
-      appealCount: results.length,
-    };
+    if (!_hdxError) _hdxError = 'OCHA FTS: дані по Україні відсутні';
+    return null;
   } catch {
+    _hdxError = 'Помилка мережі при зверненні до OCHA FTS';
     return null;
   }
 }
 
-/** HDX HAPI — Ukraine population data */
-async function fetchHdxPopulation(): Promise<LiveMetrics['hdxPopulation'] | null> {
-  try {
-    const url = '/api/hdx/api/v1/population-social/population?location_code=UKR&admin_level=0&output_format=json&limit=10';
-    const res = await fetchWithTimeout(url);
-    if (!res.ok) return null;
-    const json = await res.json();
-    const raw = json?.data;
-    const results: any[] = Array.isArray(raw) ? raw : (raw?.results ?? []);
-    if (!results.length) return null;
-    // Sum all age/gender groups or take latest total
-    const latest = results[0];
-    const total = results.reduce((acc: number, r: any) => acc + (r.population ?? 0), 0);
-    return {
-      totalPopulation: total || latest?.population || 0,
-      source: 'HDX HAPI / OCHA',
-    };
-  } catch {
-    return null;
-  }
+/** Ukraine population — static reference from OCHA/UNHCR (updated manually) */
+function getUkrainePopulation(): LiveMetrics['hdxPopulation'] {
+  return {
+    totalPopulation: 43_500_000, // Pre-war baseline (State Statistics Service of Ukraine)
+    source: 'OCHA / Держстат України',
+  };
 }
 
 /**
@@ -236,12 +226,12 @@ export async function fetchAllLiveData(): Promise<{
   const hasKoboToken = proxyHealth.kobo === 'configured';
   const hasActivityInfoToken = proxyHealth.activityinfo === 'configured';
 
-  const [hdxFunding, hdxPopulation, activityInfo, kobo] = await Promise.all([
-    fetchHdxFunding(),
-    fetchHdxPopulation(),
+  const [hdxFunding, activityInfo, kobo] = await Promise.all([
+    fetchFtsFunding(),
     fetchActivityInfo(),
     fetchKobo(),
   ]);
+  const hdxPopulation = getUkrainePopulation();
 
   const metrics: LiveMetrics = {
     hdxFunding: hdxFunding ?? undefined,
@@ -255,14 +245,14 @@ export async function fetchAllLiveData(): Promise<{
   const sources: DataSourceInfo[] = [
     {
       id: 'hdx_hapi',
-      name: { uk: 'HDX HAPI (OCHA)', en: 'HDX HAPI (OCHA)' },
-      status: hdxFunding || hdxPopulation ? 'live' : 'unavailable',
-      lastFetched: hdxFunding || hdxPopulation ? now : undefined,
+      name: { uk: 'OCHA FTS (фінансування)', en: 'OCHA FTS (funding)' },
+      status: hdxFunding ? 'live' : 'unavailable',
+      lastFetched: hdxFunding ? now : undefined,
       requiresAuth: false,
-      apiBase: 'https://hapi.humdata.org/api/v1/',
-      dataType: { uk: 'Фінансування, населення, 4W матриця', en: 'Funding, population, 4W matrix' },
-      updateFrequency: { uk: 'Щоденно (80% automated)', en: 'Daily (80% automated)' },
-      error: hdxFunding || hdxPopulation ? undefined : (_hdxError ?? 'Network/CORS error or API unavailable'),
+      apiBase: 'https://api.hpc.tools/v1/public/',
+      dataType: { uk: 'Гуманітарне фінансування по Україні: плани відповіді, донори, фонди', en: 'Ukraine humanitarian funding: response plans, donors, pooled funds' },
+      updateFrequency: { uk: 'Щоденно (OCHA Financial Tracking Service)', en: 'Daily (OCHA Financial Tracking Service)' },
+      error: hdxFunding ? undefined : (_hdxError ?? 'Помилка зʼєднання з OCHA FTS'),
     },
     {
       id: 'activityinfo',
