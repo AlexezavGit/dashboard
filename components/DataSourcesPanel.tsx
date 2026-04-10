@@ -142,16 +142,16 @@ export const DataSourcesPanel: React.FC<Props> = ({ sources, lang, isLoading, on
 
                       {/* Why not available */}
                       {source.status === 'not_configured' && source.authNote && (
-                        <div className="mt-2 bg-slate-800/50 rounded p-2">
-                          <p className="text-[10px] text-slate-400 font-mono">
-                            <Lock className="w-2.5 h-2.5 inline mr-1" />
+                        <div className="mt-2 bg-slate-800/50 rounded p-2 border border-slate-700/40">
+                          <p className="text-[10px] text-slate-400 leading-relaxed">
+                            <Lock className="w-2.5 h-2.5 inline mr-1 text-slate-500" />
                             {source.authNote[lang]}
                           </p>
                         </div>
                       )}
                       {source.status === 'static' && source.noApiReason && (
                         <div className="mt-2 bg-amber-500/5 rounded p-2 border border-amber-500/20">
-                          <p className="text-[10px] text-amber-400/70">
+                          <p className="text-[10px] text-amber-400/70 leading-relaxed">
                             <AlertTriangle className="w-2.5 h-2.5 inline mr-1" />
                             {source.noApiReason[lang]}
                           </p>
@@ -159,7 +159,7 @@ export const DataSourcesPanel: React.FC<Props> = ({ sources, lang, isLoading, on
                       )}
                       {source.status === 'unavailable' && source.error && (
                         <div className="mt-2 bg-rose-500/5 rounded p-2 border border-rose-500/20">
-                          <p className="text-[10px] text-rose-400/70 font-mono">{source.error}</p>
+                          <p className="text-[10px] text-rose-400/70 leading-relaxed">{source.error}</p>
                         </div>
                       )}
                       {source.status === 'restricted' && source.restrictionNote && (

@@ -75,7 +75,11 @@ async function fetchHdxFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
     const url = '/api/hdx/api/v1/coordination-context/funding?location_code=UKR&output_format=json&limit=100';
     const res = await fetchWithTimeout(url);
     if (!res.ok) {
-      _hdxError = `HDX HTTP ${res.status}`;
+      _hdxError = res.status === 403
+        ? 'HDX HAPI тимчасово блокує запити (помилка 403). Зазвичай вирішується само через кілька хвилин.'
+        : res.status === 429
+          ? 'Перевищено ліміт запитів до HDX API (429). Спробуйте оновити через хвилину.'
+          : `HDX API повернув помилку ${res.status}`;
       return null;
     }
     const json = await res.json();
@@ -267,8 +271,8 @@ export async function fetchAllLiveData(): Promise<{
       lastFetched: activityInfo ? now : undefined,
       requiresAuth: true,
       authNote: {
-        uk: 'Токен зберігається як Worker Secret. Після реєстрації: npx wrangler secret put ACTIVITYINFO_API_KEY',
-        en: 'Token stored as Worker Secret. After registration: npx wrangler secret put ACTIVITYINFO_API_KEY',
+        uk: 'Система звітності для гуманітарних організацій ООН і НУО. Дані кластера доступні тільки зареєстрованим партнерам — це не відкрита статистична база. Для підключення потрібен обліковий запис на activityinfo.org і API-ключ вашої організації.',
+        en: 'Humanitarian cluster reporting system for UN agencies and NGOs. Cluster data is only for registered partners — not a public stats database. Requires an activityinfo.org account and your organisation\'s API key.',
       },
       apiBase: 'https://api.activityinfo.org/api/v2/',
       dataType: { uk: 'Сесії МЗПСП, охоплення, провайдери, індикатори', en: 'MHPSS sessions, reach, providers, outcome indicators' },
