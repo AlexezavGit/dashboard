@@ -67,17 +67,25 @@ async function fetchWithTimeout(url: string, options?: RequestInit): Promise<Res
   }
 }
 
+let _hdxError: string | undefined;
+
 /** HDX HAPI — Ukraine humanitarian funding summary */
 async function fetchHdxFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
   try {
     const url = '/api/hdx/api/v1/coordination-context/funding?location_code=UKR&output_format=json&limit=100';
     const res = await fetchWithTimeout(url);
-    if (!res.ok) return null;
+    if (!res.ok) {
+      _hdxError = `HDX HTTP ${res.status}`;
+      return null;
+    }
     const json = await res.json();
     // HDX HAPI returns either {data: [...]} or {data: {results: [...]}}
     const raw = json?.data;
     const results: any[] = Array.isArray(raw) ? raw : (raw?.results ?? []);
-    if (!results.length) return null;
+    if (!results.length) {
+      _hdxError = `HDX ok but empty. Keys: ${Object.keys(json ?? {}).join(',')}`;
+      return null;
+    }
 
     let totalReq = 0;
     let totalFund = 0;
@@ -250,7 +258,7 @@ export async function fetchAllLiveData(): Promise<{
       apiBase: 'https://hapi.humdata.org/api/v1/',
       dataType: { uk: 'Фінансування, населення, 4W матриця', en: 'Funding, population, 4W matrix' },
       updateFrequency: { uk: 'Щоденно (80% automated)', en: 'Daily (80% automated)' },
-      error: hdxFunding || hdxPopulation ? undefined : 'Network/CORS error or API unavailable',
+      error: hdxFunding || hdxPopulation ? undefined : (_hdxError ?? 'Network/CORS error or API unavailable'),
     },
     {
       id: 'activityinfo',
