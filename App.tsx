@@ -10,6 +10,9 @@ import {
   FUNDING_VS_REACH_DATA, REGIONAL_BARRIERS_HEATMAP, DISORDER_IMPACT_BUBBLE,
   ECONOMIC_BURDEN_INDICATORS, REGIONAL_DISORDER_DATA,
   CAPACITY_CEILING_DATA, ROI_CARDS, CONNECTED_ASSETS,
+  MACRO_GAP, BACKLOG_DATA, INFRA_LEVELS, FEEL_AGAIN_POSITION,
+  FEEL_AGAIN_ARCHITECTURE, HEAL_UKRAINE,
+  THRIVE_PROJECT, HEAL_C4_PROCUREMENT, COUNTERARGUMENTS, ARCH_FLOW,
 } from './constants';
 import { Language, SectionFilter } from './types';
 import { Card } from './components/ui/Card';
@@ -162,9 +165,8 @@ const App: React.FC = () => {
         {/* Header */}
         <header className="pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-cyber-border pb-8 mb-8">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-cyber-amber flex items-center justify-center cyber-glow-amber">
-              <ShieldCheck className="w-7 h-7 text-cyber-bg" />
-            </div>
+            <img src="/logo.svg" alt="FEEL Again" className="w-12 h-12 rounded-xl" />
+            <div className="w-px h-10 bg-cyber-border" />
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tighter flex items-center gap-3">
                 {TEXTS.header.title[lang]}
@@ -883,6 +885,249 @@ const App: React.FC = () => {
 
         {/* Footer */}
         <footer className="mt-20 border-t border-cyber-border pt-12 pb-16">
+           {/* Feel Again Solution — IS / IS NOT */}
+           <div className="mb-12 cyber-card border border-cyber-cyan/30 rounded-2xl overflow-hidden">
+             <div className="bg-cyber-cyan/5 px-6 py-4 border-b border-cyber-cyan/20 flex items-center gap-4">
+               <CircleDot className="w-4 h-4 text-cyber-cyan" />
+               <span className="cyber-label text-[11px] text-cyber-cyan">
+                 {lang === 'uk' ? 'FEEL AGAIN — ЦИФРОВА ІНФРАСТРУКТУРА ДЛЯ MHPSS' : 'FEEL AGAIN — DIGITAL INFRASTRUCTURE FOR MHPSS'}
+               </span>
+               <span className="ml-auto text-[9px] font-mono text-slate-600 border border-slate-700 px-2 py-0.5 rounded">FA-2026-UA</span>
+             </div>
+             <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+               <div className="space-y-3">
+                 <div className="text-[10px] text-cyber-cyan uppercase tracking-wider font-mono border-b border-cyber-cyan/20 pb-2">
+                   {lang === 'uk' ? 'ЦЕ Є:' : 'THIS IS:'}
+                 </div>
+                 <p className="text-[12px] text-slate-300 leading-relaxed">{FEEL_AGAIN_POSITION(lang).is}</p>
+               </div>
+               <div className="space-y-3">
+                 <div className="text-[10px] text-rose-400 uppercase tracking-wider font-mono border-b border-rose-500/20 pb-2">
+                   {lang === 'uk' ? 'ЦЕ НЕ Є:' : 'THIS IS NOT:'}
+                 </div>
+                 <p className="text-[12px] text-slate-400 leading-relaxed italic">{FEEL_AGAIN_POSITION(lang).isNot}</p>
+               </div>
+               <div className="space-y-3">
+                 <div className="bg-cyber-success/5 border border-cyber-success/20 rounded-xl p-4 text-center">
+                   <div className="text-[9px] text-cyber-success uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Вартість для держави' : 'Cost to state'}</div>
+                   <div className="text-4xl font-bold text-cyber-success font-mono">{FEEL_AGAIN_POSITION(lang).costToState}</div>
+                   <div className="text-[9px] text-slate-500 mt-1">{FEEL_AGAIN_POSITION(lang).costNote}</div>
+                 </div>
+                 <div className="grid grid-cols-2 gap-2">
+                   <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-rose-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Втрати ВВП' : 'GDP loss'}</div>
+                     <div className="text-base font-bold text-rose-400 font-mono">{FEEL_AGAIN_POSITION(lang).gdpLoss}</div>
+                     <div className="text-[8px] text-slate-600">{lang === 'uk' ? 'щорічно' : 'annually'}</div>
+                   </div>
+                   <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-amber-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Заблоковано' : 'Locked'}</div>
+                     <div className="text-base font-bold text-amber-400 font-mono">{FEEL_AGAIN_POSITION(lang).lockedFunds}</div>
+                     <div className="text-[8px] text-slate-600">HEAL/THRIVE</div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+
+             {/* 6-layer architecture + HEAL Ukraine entry point */}
+             <div className="border-t border-cyber-cyan/10 px-6 pb-6 pt-5 grid grid-cols-1 lg:grid-cols-2 gap-6">
+               <div>
+                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-3">
+                   {lang === 'uk' ? '6 ШАРІВ ІНФРАСТРУКТУРИ' : '6 INFRASTRUCTURE LAYERS'}
+                 </div>
+                 <div className="space-y-1.5">
+                   {FEEL_AGAIN_ARCHITECTURE(lang).map((layer) => (
+                     <div key={layer.num} className="flex items-center gap-3 rounded-lg px-3 py-2 bg-slate-800/40 border border-slate-700/30">
+                       <span className="text-[9px] font-mono text-slate-600 w-4 flex-shrink-0">#{layer.num}</span>
+                       <span className="text-[10px] text-slate-300 flex-1 font-medium">{layer.flow}</span>
+                       <span className="text-[9px] text-cyber-cyan font-mono text-right">{layer.tool}</span>
+                     </div>
+                   ))}
+                 </div>
+                 <p className="text-[9px] text-slate-600 mt-2 italic">{lang === 'uk' ? 'Вимір ВВП: кожен шар генерує дані для оцінки впливу на людський капітал.' : 'GDP measurement: each layer generates data for human capital impact assessment.'}</p>
+               </div>
+               <div>
+                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-3">
+                   {lang === 'uk' ? 'ТОЧКА ВХОДУ: HEAL UKRAINE P180245 (World Bank)' : 'ENTRY POINT: HEAL UKRAINE P180245 (World Bank)'}
+                 </div>
+                 <div className="space-y-2">
+                   {HEAL_UKRAINE(lang).kpis.map((kpi, i) => (
+                     <div key={i} className={`flex items-center justify-between rounded-lg px-3 py-2 border text-[10px] ${kpi.status === 'critical' ? 'bg-rose-500/5 border-rose-500/30' : 'bg-slate-800/40 border-slate-700/30'}`}>
+                       <span className={kpi.status === 'critical' ? 'text-rose-400 font-bold' : 'text-slate-400'}>{kpi.name}</span>
+                       <div className="flex items-center gap-2 text-right flex-shrink-0">
+                         <span className="font-mono font-bold" style={{ color: kpi.status === 'critical' ? '#FF4444' : kpi.pct >= 100 ? '#00FF66' : '#F59E0B' }}>
+                           {kpi.actual.toLocaleString()}
+                         </span>
+                         <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${kpi.status === 'critical' ? 'bg-rose-500/20 text-rose-400' : 'bg-cyber-success/10 text-cyber-success'}`}>
+                           {kpi.pct}%
+                         </span>
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+                 <div className="mt-3 bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
+                   <p className="text-[10px] text-amber-400/80 leading-relaxed">{HEAL_UKRAINE(lang).insight}</p>
+                 </div>
+               </div>
+             </div>
+           </div>
+
+           {/* Architectural Flow: CommCare → FEEL Again → ESOZ */}
+           <div className="mb-12 cyber-card border border-cyber-cyan/30 rounded-2xl overflow-hidden">
+             <div className="bg-cyber-cyan/5 px-6 py-4 border-b border-cyber-cyan/20 flex items-center gap-4">
+               <Zap className="w-4 h-4 text-cyber-cyan" />
+               <span className="cyber-label text-[11px] text-cyber-cyan">
+                 {lang === 'uk' ? 'АРХІТЕКТУРНИЙ ПОТІК: CommCare \u2192 FEEL Again \u2192 ЕСОЗ' : 'ARCHITECTURE FLOW: CommCare \u2192 FEEL Again \u2192 ESOZ'}
+               </span>
+             </div>
+             <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+               {/* Humanitarian Zone */}
+               <div className="border border-rose-500/30 rounded-xl p-4 bg-rose-500/5">
+                 <div className="text-[9px] font-mono text-rose-400 uppercase tracking-wider mb-3 border-b border-rose-500/20 pb-2">
+                   {ARCH_FLOW(lang).humanitarian.label}
+                 </div>
+                 <div className="space-y-1.5 mb-3">
+                   {ARCH_FLOW(lang).humanitarian.sources.map((src) => (
+                     <div key={src} className="text-[11px] text-slate-300 bg-slate-800/60 rounded-lg px-3 py-1.5 border border-slate-700/40">{src}</div>
+                   ))}
+                 </div>
+                 <div className="space-y-1">
+                   {ARCH_FLOW(lang).humanitarian.highlights.map((h) => (
+                     <div key={h} className="text-[10px] text-rose-300 border border-rose-500/30 rounded-lg px-3 py-1.5 bg-rose-500/10 font-mono">{h}</div>
+                   ))}
+                 </div>
+               </div>
+               {/* FEEL Again Middleware */}
+               <div className="border-2 border-cyber-amber/50 rounded-xl p-4 bg-cyber-amber/5 flex flex-col">
+                 <div className="text-[11px] font-bold text-cyber-amber text-center mb-1">FEEL Again</div>
+                 <div className="text-[9px] text-cyber-amber/60 text-center uppercase tracking-wider mb-3">MIDDLEWARE</div>
+                 <div className="text-[9px] text-slate-500 text-center uppercase tracking-wider mb-3 border-b border-cyber-amber/20 pb-2">Universal Adapter</div>
+                 <div className="space-y-1.5 flex-1">
+                   {ARCH_FLOW(lang).middleware.components.map((c) => (
+                     <div key={c} className="text-[10px] text-slate-300 bg-slate-800/60 rounded px-2.5 py-1.5 border border-slate-700/40">{c}</div>
+                   ))}
+                 </div>
+               </div>
+               {/* State Zone */}
+               <div className="border border-cyber-success/30 rounded-xl p-4 bg-cyber-success/5">
+                 <div className="text-[9px] font-mono text-cyber-success uppercase tracking-wider mb-3 border-b border-cyber-success/20 pb-2">
+                   {ARCH_FLOW(lang).state.label}
+                 </div>
+                 <div className="space-y-2">
+                   {ARCH_FLOW(lang).state.systems.map((sys) => (
+                     <div key={sys.name} className="rounded-lg px-3 py-2 border border-slate-700/40 bg-slate-800/40 flex items-center justify-between">
+                       <span className="text-[11px] font-bold" style={{ color: sys.color }}>{sys.name}</span>
+                       {sys.sub && <span className="text-[9px] text-slate-500 font-mono">{sys.sub}</span>}
+                     </div>
+                   ))}
+                 </div>
+               </div>
+             </div>
+           </div>
+
+           {/* THRIVE + Component 4 Procurement */}
+           <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-6">
+             {/* THRIVE PforR */}
+             <div className="cyber-card border border-amber-500/30 rounded-2xl overflow-hidden">
+               <div className="bg-amber-500/5 px-6 py-4 border-b border-amber-500/20 flex items-center gap-4">
+                 <Lock className="w-4 h-4 text-cyber-amber" />
+                 <span className="cyber-label text-[11px] text-cyber-amber">THRIVE (P505616) — PforR $454M</span>
+                 <span className="ml-auto text-[9px] font-mono text-slate-600 border border-slate-700 px-2 py-0.5 rounded">DLI-based</span>
+               </div>
+               <div className="p-5 space-y-4">
+                 <div className="grid grid-cols-3 gap-3">
+                   <div className="bg-cyber-success/5 border border-cyber-success/20 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-cyber-success uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Дисбурсовано' : 'Disbursed'}</div>
+                     <div className="text-lg font-bold text-cyber-success font-mono">{THRIVE_PROJECT(lang).disbursed}</div>
+                     <div className="text-[8px] text-slate-600">{THRIVE_PROJECT(lang).disbursedPct}%</div>
+                   </div>
+                   <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-slate-500 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Загалом' : 'Total'}</div>
+                     <div className="text-lg font-bold text-cyber-amber font-mono">{THRIVE_PROJECT(lang).total}</div>
+                   </div>
+                   <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-slate-500 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Підписано' : 'Signed'}</div>
+                     <div className="text-sm font-bold text-slate-300 font-mono">{THRIVE_PROJECT(lang).signed}</div>
+                   </div>
+                 </div>
+                 <div className="bg-slate-800/30 rounded-lg p-3">
+                   <p className="text-[11px] text-slate-400 leading-relaxed">{THRIVE_PROJECT(lang).detail}</p>
+                 </div>
+                 <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-3">
+                   <div className="text-[8px] text-rose-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'КРИТИЧНА ДЕТАЛЬ' : 'CRITICAL DETAIL'}</div>
+                   <p className="text-[11px] text-rose-300 leading-relaxed">{THRIVE_PROJECT(lang).critical}</p>
+                 </div>
+               </div>
+             </div>
+             {/* HEAL Component 4 Procurement Gap */}
+             <div className="cyber-card border border-cyber-success/30 rounded-2xl overflow-hidden">
+               <div className="bg-cyber-success/5 px-6 py-4 border-b border-cyber-success/20 flex items-center gap-4">
+                 <Database className="w-4 h-4 text-cyber-success" />
+                 <span className="cyber-label text-[11px] text-cyber-success">HEAL Component 4 — $50M Procurement</span>
+               </div>
+               <div className="p-5 space-y-4">
+                 <div className="grid grid-cols-2 gap-3 mb-2">
+                   <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-slate-500 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Закуплено' : 'Procured'}</div>
+                     <div className="text-lg font-bold text-cyber-amber font-mono">{HEAL_C4_PROCUREMENT(lang).procured}</div>
+                   </div>
+                   <div className="bg-cyber-success/5 border border-cyber-success/30 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-cyber-success uppercase tracking-wider font-mono mb-1">AVAILABLE BUDGET SPACE</div>
+                     <div className="text-lg font-bold text-cyber-success font-mono">{HEAL_C4_PROCUREMENT(lang).unallocated}</div>
+                   </div>
+                 </div>
+                 <div className="space-y-1">
+                   {HEAL_C4_PROCUREMENT(lang).categories.map((cat) => (
+                     <div key={cat.name} className="flex items-center justify-between text-[10px] px-2.5 py-1.5 rounded-lg bg-slate-800/30 border border-slate-700/20">
+                       <span className="text-slate-400 flex-1 mr-2">{cat.name}</span>
+                       <span className="text-slate-300 font-mono flex-shrink-0">${cat.amountK}K</span>
+                     </div>
+                   ))}
+                 </div>
+                 <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
+                   <p className="text-[10px] text-amber-400/80 leading-relaxed">{HEAL_C4_PROCUREMENT(lang).note}</p>
+                 </div>
+                 <div className="bg-slate-800/30 rounded-lg p-3">
+                   <div className="text-[8px] text-slate-500 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'МЕХАНІЗМ ДОСТУПУ' : 'ACCESS MECHANISM'}</div>
+                   <p className="text-[10px] text-slate-300 leading-relaxed">{HEAL_C4_PROCUREMENT(lang).accessMechanism}</p>
+                 </div>
+               </div>
+             </div>
+           </div>
+
+           {/* Risks & Counter-arguments */}
+           <div className="mb-12 cyber-card border border-slate-700/50 rounded-2xl overflow-hidden">
+             <div className="bg-slate-800/40 px-6 py-4 border-b border-slate-700/30 flex items-center gap-4">
+               <AlertTriangle className="w-4 h-4 text-cyber-amber" />
+               <span className="cyber-label text-[11px] text-cyber-amber">
+                 {lang === 'uk' ? 'РИЗИКИ ТА КОНТРАРГУМЕНТИ' : 'RISKS & COUNTER-ARGUMENTS'}
+               </span>
+             </div>
+             <div className="overflow-x-auto">
+               <table className="w-full">
+                 <thead>
+                   <tr className="border-b border-slate-700/30">
+                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider w-1/3">{lang === 'uk' ? 'Контраргумент' : 'Objection'}</th>
+                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider">{lang === 'uk' ? 'Відповідь' : 'Response'}</th>
+                     <th className="text-right px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider w-20">Risk</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   {COUNTERARGUMENTS(lang).map((row, i) => (
+                     <tr key={i} className="border-b border-slate-700/20 hover:bg-slate-800/30 transition-colors">
+                       <td className="px-5 py-3 text-[11px] text-slate-300 italic">{row.objection}</td>
+                       <td className="px-5 py-3 text-[11px] text-slate-400 leading-relaxed">{row.response}</td>
+                       <td className="px-5 py-3 text-right">
+                         <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${row.risk === 'High' ? 'text-rose-400 bg-rose-500/10' : row.risk === 'Medium' ? 'text-amber-400 bg-amber-500/10' : 'text-cyber-success bg-cyber-success/10'}`}>
+                           {row.risk}
+                         </span>
+                       </td>
+                     </tr>
+                   ))}
+                 </tbody>
+               </table>
+             </div>
+           </div>
+
            {/* Feel Again Website Section */}
            <motion.div 
              whileHover={{ scale: 1.01 }}

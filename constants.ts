@@ -308,6 +308,7 @@ export const COORD_ITEMS = (l: Language) => [
 ];
 
 export const REACH_TABLE_DATA = (l: Language) => [
+    [l === 'uk' ? 'Отримали МЗ-послуги (HEAL ISR #6)' : 'MH services received (HEAL ISR #6)', '624,464', 'World Bank / HEAL', '2025'],
     [l === 'uk' ? 'Консультації з МЗ' : 'MH consultations', '80,000+', l === 'uk' ? 'ВООЗ' : 'WHO', '02.2022–2024'],
     [l === 'uk' ? 'Важкі розлади — пряма допомога' : 'Severe disorders — direct care', '2,000+', l === 'uk' ? 'ВООЗ' : 'WHO', '02.2022–2024'],
     [l === 'uk' ? 'Діти, опікуни, фронтлайн' : 'Children, caregivers, frontline', '757,807', 'UNICEF', '2024'],
@@ -340,6 +341,40 @@ export const CAPACITY_CEILING_DATA = (l: Language) => [
   { name: l === 'uk' ? '+100% ефективності' : '+100% Efficiency', value: 1100, fill: COLORS.cyberPurple },
   { name: l === 'uk' ? '+200% ефективності' : '+200% Efficiency', value: 1650, fill: COLORS.cyberCyan },
 ];
+
+// Feel Again 6-layer architecture (War Room)
+export const FEEL_AGAIN_ARCHITECTURE = (l: Language) => [
+  { num: 1, flow: l === 'uk' ? 'Потреба \u2192 Ідентифікація' : 'Need \u2192 Identification', tool: l === 'uk' ? 'Портал самовизначення' : 'Self-assessment portal' },
+  { num: 2, flow: l === 'uk' ? 'Навчання \u2192 Рекомендація' : 'Training \u2192 Recommendation', tool: l === 'uk' ? 'Match на готовність' : 'Readiness matching' },
+  { num: 3, flow: l === 'uk' ? 'Формалізація \u2192 Реєстр' : 'Formalisation \u2192 Registry', tool: l === 'uk' ? 'Цифровий підпис кваліфікації' : 'Digital qualification signature' },
+  { num: 4, flow: l === 'uk' ? 'Вимірювання \u2192 Верифікація' : 'Measurement \u2192 Verification', tool: 'WHO QoL, PCL-5, CORE-OM' },
+  { num: 5, flow: l === 'uk' ? 'Платіжка \u2192 Результат' : 'Payment \u2192 Outcome', tool: 'Outcome-based, SDK.finance' },
+  { num: 6, flow: l === 'uk' ? 'Інтеграція \u2192 Держава' : 'Integration \u2192 State', tool: 'ESOZ+, budget harmonization' },
+];
+
+// HEAL Ukraine P180245 — World Bank ISR #6 (Sep 2025, canonical)
+export const HEAL_UKRAINE = (l: Language) => ({
+  project: 'HEAL Ukraine (P180245)',
+  total: '$500M',
+  disbursed: '$171M',
+  disbursedPct: 51,
+  closing: 'Dec 2026',
+  components: [
+    { name: l === 'uk' ? 'Психічне здоров\u2019я та реабілітація' : 'Mental Health & Rehabilitation', amount: 100, status: 'EXCEEDED' },
+    { name: l === 'uk' ? 'Первинна медична допомога' : 'Primary Health Care', amount: 150, status: 'EXCEEDED' },
+    { name: l === 'uk' ? 'Модернізація лікарень' : 'Hospital Modernization', amount: 200, status: 'ON TRACK' },
+    { name: l === 'uk' ? 'Діджиталізація та інновації' : 'Digitalization & Innovations', amount: 50, status: 'PARTIAL' },
+  ],
+  kpis: [
+    { name: l === 'uk' ? 'Отримують МЗ-послуги' : 'People receiving MH services', target: 500000, actual: 624464, pct: 125, status: 'exceeded' },
+    { name: l === 'uk' ? 'Отримують реабілітацію' : 'People receiving rehabilitation', target: 312500, actual: 670303, pct: 214, status: 'exceeded' },
+    { name: l === 'uk' ? 'Заклади переналаштовано для МЗ' : 'Facilities reconfigured for MH', target: 400, actual: 0, pct: 0, status: 'critical' },
+    { name: l === 'uk' ? 'Мобільні МЗ-команди' : 'Mobile MH teams deployed', target: 75, actual: 118, pct: 157, status: 'exceeded' },
+  ],
+  insight: l === 'uk'
+    ? "Component 4 Digitalization ($50M) \u2014 це точка входу: $0 витрачено на реконфігурацію закладів для МЗ (0/400). Feel Again = Digital Bus для цього компоненту."
+    : "Component 4 Digitalization ($50M) is the entry point: $0 spent on MH facility reconfiguration (0/400). Feel Again = the Digital Bus for this component.",
+});
 
 // ROI Investment Case: World Bank, UNICEF, DALY
 export const ROI_CARDS = (l: Language) => [
@@ -405,6 +440,106 @@ export const CONNECTED_ASSETS = (l: Language) => [
     desc: l === 'uk' ? 'Робоча папка з усіма матеріалами' : 'Working folder with all materials',
   },
 ];
+
+// THRIVE World Bank Program-for-Results (P505616/P506083)
+export const THRIVE_PROJECT = (l: Language) => ({
+  id: 'P505616/P506083',
+  mechanism: 'Program-for-Results (PforR)',
+  total: '$454M',
+  disbursed: '~$320M',
+  disbursedPct: 70,
+  signed: 'Dec 2024',
+  detail: l === 'uk'
+    ? 'Гроші виплачуються виключно після досягнення результатів через DLI. Фокус \u2014 ефективн\u0456сть витрат на охорону здоров\u2019я, оптим\u0456зац\u0456я ПМГ, п\u0456двищення операц\u0456йної потужност\u0456 НСЗУ.'
+    : 'Funds disbursed only upon achieving results through DLI. Focus: health spending efficiency, PMG optimization, NHSU capacity.',
+  critical: l === 'uk'
+    ? 'THRIVE вим\u0456рює ефективн\u0456сть через дан\u0456 ЕСОЗ/НСЗУ. Якщо послуги HEAL (624K МЗ, 118 моб\u0456льних команд) не в\u0456дображаються в ЕСОЗ \u2014 вони не \u0456снують для метрик THRIVE.'
+    : 'THRIVE measures efficiency via ESOZ/NHSU data. If HEAL services (624K MH, 118 mobile teams) are not in ESOZ \u2014 they do not exist for THRIVE metrics.',
+});
+
+// HEAL Component 4 Digitalization: procurement breakdown
+export const HEAL_C4_PROCUREMENT = (l: Language) => ({
+  budget: '$50M',
+  procured: '~$8.9M',
+  unallocated: '~$41.1M',
+  note: l === 'uk'
+    ? '\u0416\u043e\u0434\u043d\u0430 \u043f\u043e\u0437\u0438\u0446\u0456\u044f \u043d\u0435 \u0441\u0442\u043e\u0441\u0443\u0454\u0442\u044c\u0441\u044f interoperability middleware, FHIR-\u0442\u0440\u0430\u043d\u0441\u0444\u043e\u0440\u043c\u0430\u0446\u0456\u0457, \u0430\u0431\u043e \u0456\u043d\u0442\u0435\u0433\u0440\u0430\u0446\u0456\u0457 \u0433\u0443\u043c\u0430\u043d\u0456\u0442\u0430\u0440\u043d\u0438\u0445 \u0434\u0430\u043d\u0438\u0445. \u0417\u0430\u043a\u0443\u043f\u0456\u0432\u043b\u0456 \u2014 \u043f\u0435\u0440\u0435\u0432\u0430\u0436\u043d\u043e hardware, \u043a\u0456\u0431\u0435\u0440\u0431\u0435\u0437\u043f\u0435\u043a\u0430 \u0442\u0430 MIS \u0434\u043b\u044f \u043e\u043a\u0440\u0435\u043c\u0438\u0445 \u0437\u0430\u043a\u043b\u0430\u0434\u0456\u0432.'
+    : 'No position relates to interoperability middleware, FHIR transformation, or humanitarian data integration. Procurement is predominantly hardware, cybersecurity, and facility-specific MIS.',
+  accessMechanism: l === 'uk'
+    ? 'Procurement (RFQ / Direct Selection), \u043d\u0435 \u0433\u0440\u0430\u043d\u0442. FEEL Again \u2014 vendor/consultant \u0447\u0435\u0440\u0435\u0437 MoH (\u041c\u041e\u0417).'
+    : 'Procurement (RFQ / Direct Selection), not a grant. FEEL Again enters as vendor/consultant via MoH.',
+  categories: [
+    { name: 'MIS deployments (specific facilities)', amountK: 163, examples: 'Doctor Eleks \u2192 Heart Institute ($65K); HELSI \u2192 Pediatric Cardiology ($98K)' },
+    { name: 'ERP/SAP (Medical Procurement)', amountK: 1222, examples: 'SAP licenses for Enkidu/\u041c\u041f\u0423 \u2014 direct international' },
+    { name: 'Cybersecurity', amountK: 2569, examples: 'WAF ($473K), Intrusion detection ($278K), Privileged Access ($330K), Cybersecurity Center ($1,488K)' },
+    { name: 'Hardware & servers', amountK: 1474, examples: 'PHC computers ($1M), server equipment, data storage' },
+    { name: 'Document management', amountK: 325, examples: 'E-doc systems for Heart Institute, MoH, Pediatric Cardiology' },
+    { name: 'MoH Contact Center', amountK: 333, examples: 'National Contact Center of Ministry of Health' },
+    { name: 'Other (elevator, generators, tokens)', amountK: 294, examples: 'Elevator in MoH building ($190K), backup power, USB tokens' },
+  ],
+});
+
+// Counter-arguments to investor objections
+export const COUNTERARGUMENTS = (l: Language) => [
+  {
+    objection: '"World Bank can build its own middleware"',
+    response: l === 'uk'
+      ? 'HEAL Component 4 \u043c\u0430\u0454 $50M, \u0430\u043b\u0435 0 \u0437\u0430\u043a\u043b\u0430\u0434\u0456\u0432 \u0440\u0435\u043a\u043e\u043d\u0444\u0456\u0433\u0443\u0440\u043e\u0432\u0430\u043d\u043e \u0437\u0430 2.5 \u0440\u043e\u043a\u0438. WB \u043d\u0435 \u0431\u0443\u0434\u0443\u0454 software \u2014 \u0432\u043e\u043d\u0438 \u0444\u0456\u043d\u0430\u043d\u0441\u0443\u044e\u0442\u044c.'
+      : 'HEAL Component 4 has $50M but 0 facilities reconfigured in 2.5 years. WB does not build software \u2014 they finance.',
+    risk: 'Medium',
+  },
+  {
+    objection: '"MIS (Helsi) will integrate humanitarian data themselves"',
+    response: l === 'uk'
+      ? '\u041f\u0440\u043e\u0442\u0438 \u0457\u0445\u043d\u044c\u043e\u0457 \u0431\u0456\u0437\u043d\u0435\u0441-\u043c\u043e\u0434\u0435\u043b\u0456 (\u043b\u0456\u0446\u0435\u043d\u0437\u0456\u044f \u0437\u0430 \u0440\u043e\u0431\u043e\u0447\u0435 \u043c\u0456\u0441\u0446\u0435). 118 \u043c\u043e\u0431\u0456\u043b\u044c\u043d\u0438\u0445 \u043a\u043e\u043c\u0430\u043d\u0434 \u2260 \u043f\u043e\u0442\u0435\u043d\u0446\u0456\u0439\u043d\u0456 \u043a\u043b\u0456\u0454\u043d\u0442\u0438 Helsi.'
+      : 'Against their business model (per-seat license). 118 mobile teams \u2260 potential Helsi clients.',
+    risk: 'Low',
+  },
+  {
+    objection: '"ESOZ already captures this data"',
+    response: l === 'uk'
+      ? 'ISR \u043f\u043e\u043a\u0430\u0437\u0443\u0454 624K \u041c\u0417-\u0441\u0435\u0440\u0432\u0456\u0441\u0456\u0432, \u0430\u043b\u0435 0/400 \u0440\u0435\u043a\u043e\u043d\u0444\u0456\u0433\u043e\u0432\u0430\u043d\u0438\u0445 \u0437\u0430\u043a\u043b\u0430\u0434\u0456\u0432. \u0414\u0430\u043d\u0456 \u0437\u0431\u0438\u0440\u0430\u044e\u0442\u044c\u0441\u044f \u0432 \u043f\u0430\u0440\u0430\u043b\u0435\u043b\u044c\u043d\u0438\u0445 \u0441\u0438\u0441\u0442\u0435\u043c\u0430\u0445 HEAL, \u043d\u0435 \u0432 \u0415\u0421\u041e\u0417.'
+      : 'ISR shows 624K MH services but 0/400 reconfigured facilities. Data is collected in parallel HEAL systems, not in ESOZ.',
+    risk: 'Low',
+  },
+  {
+    objection: '"THRIVE DLIs may not measure mental health specifically"',
+    response: l === 'uk'
+      ? '\u041f\u043e\u0442\u0440\u0456\u0431\u043d\u0430 \u0432\u0435\u0440\u0438\u0444\u0456\u043a\u0430\u0446\u0456\u044f. PAD THRIVE \u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u0438\u0439 \u043f\u0443\u0431\u043b\u0456\u0447\u043d\u043e. \u0410\u043b\u0435 PforR \u0437\u0430 \u0432\u0438\u0437\u043d\u0430\u0447\u0435\u043d\u043d\u044f\u043c \u0432\u0438\u043c\u0456\u0440\u044e\u0454 \u0447\u0435\u0440\u0435\u0437 \u0415\u0421\u041e\u0417.'
+      : 'Verification needed. PAD THRIVE is not publicly available. But PforR by definition measures via ESOZ.',
+    risk: 'High',
+  },
+  {
+    objection: '"December 2026 closing is too soon for middleware"',
+    response: l === 'uk'
+      ? 'HEAL \u0437\u0430\u043a\u0440\u0438\u0432\u0430\u0454\u0442\u044c\u0441\u044f Dec/2026. \u0410\u043b\u0435 THRIVE \u0449\u043e\u0439\u043d\u043e \u0441\u0442\u0430\u0440\u0442\u0443\u0432\u0430\u0432 (Dec 2024). Middleware \u043f\u043e\u0442\u0440\u0456\u0431\u043d\u0438\u0439 \u0434\u043b\u044f THRIVE, \u043d\u0435 \u0442\u0456\u043b\u044c\u043a\u0438 HEAL.'
+      : 'HEAL closes Dec/2026. But THRIVE just started (Dec 2024). Middleware is needed for THRIVE, not only HEAL.',
+    risk: 'Medium',
+  },
+];
+
+// Architectural data flow: Humanitarian Zone → FEEL Again → State Zone
+export const ARCH_FLOW = (l: Language) => ({
+  humanitarian: {
+    label: l === 'uk' ? 'ГУМАН\u0406ТАРНА ЗОНА' : 'HUMANITARIAN ZONE',
+    sources: ['CommCare (ODK)', 'KoboToolbox', 'ActivityInfo', l === 'uk' ? 'Excel / Paper forms' : 'Excel / Paper forms'],
+    highlights: ['118 Mobile MH Teams', '624,464 MH services'],
+  },
+  middleware: {
+    label: 'FEEL Again\nMIDDLEWARE',
+    components: ['Universal Adapter', 'Data Normalization', '\u2192 FHIR R4 Bundle', 'Shadow Record Tagging', 'Provenance Resource', 'Batch Processing'],
+  },
+  state: {
+    label: l === 'uk' ? '\u0414\u0415\u0420\u0416\u0410\u0412\u041d\u0410 ЗОНА' : 'STATE ZONE',
+    systems: [
+      { name: 'Trembita', sub: 'X-Road | 230+ inst.', color: '#3B82F6' },
+      { name: 'ESOZ', sub: '36.5M users', color: '#00FF66' },
+      { name: 'NHSU (\u041d\u0421\u0417\u0423)', sub: '', color: '#F59E0B' },
+      { name: 'THRIVE', sub: '$454M PforR', color: '#F59E0B' },
+      { name: 'EHDS', sub: 'EU Integration', color: '#3B82F6' },
+    ],
+  },
+});
 
 export const SOURCES = {
     primary: [
