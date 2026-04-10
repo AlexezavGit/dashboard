@@ -71,29 +71,28 @@ let _hdxError: string | undefined;
 
 /**
  * OCHA FTS — Ukraine humanitarian response plan funding
- * API: https://api.hpc.tools/v1/public/plan?countryiso3=UKR
- * Public, no auth, no rate limiting for reasonable use.
+ * Correct endpoint: /v1/public/fts/flow?groupby=plan&countryISO3=UKR&year=YYYY
+ * Response: data.report3.planContributions[] → revisedRequirements, totalFunding
+ * We query 2025 first (most recent complete HRP), then 2024 as fallback.
  */
 async function fetchFtsFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
   try {
-    const year = new Date().getFullYear();
-    // Try current year first, fall back to previous if empty
-    for (const y of [year, year - 1]) {
-      const url = `/api/fts/v1/public/plan?countryiso3=UKR&year=${y}`;
+    for (const year of [2025, 2024]) {
+      const url = `/api/fts/v1/public/fts/flow?groupby=plan&countryISO3=UKR&year=${year}`;
       const res = await fetchWithTimeout(url);
       if (!res.ok) {
-        _hdxError = `OCHA FTS API помилка ${res.status}`;
+        _hdxError = `OCHA FTS помилка ${res.status}`;
         continue;
       }
       const json = await res.json();
-      const plans: any[] = json?.data ?? [];
+      const plans: any[] = json?.data?.report3?.planContributions ?? [];
       if (!plans.length) continue;
 
       let totalReq = 0;
       let totalFund = 0;
       for (const p of plans) {
-        totalReq += p.revisedRequirements ?? p.requirements?.revisedRequirements ?? 0;
-        totalFund += p.funding?.totalFunding ?? 0;
+        totalReq += p.revisedRequirements ?? 0;
+        totalFund += p.totalFunding ?? 0;
       }
       if (totalReq === 0 && totalFund === 0) continue;
       _hdxError = undefined;
@@ -104,7 +103,7 @@ async function fetchFtsFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
         appealCount: plans.length,
       };
     }
-    if (!_hdxError) _hdxError = 'OCHA FTS: дані по Україні відсутні';
+    if (!_hdxError) _hdxError = 'OCHA FTS: дані HRP по Україні відсутні';
     return null;
   } catch {
     _hdxError = 'Помилка мережі при зверненні до OCHA FTS';
