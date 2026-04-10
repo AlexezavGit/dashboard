@@ -74,7 +74,9 @@ async function fetchHdxFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
     const res = await fetchWithTimeout(url);
     if (!res.ok) return null;
     const json = await res.json();
-    const results: any[] = json?.data?.results ?? [];
+    // HDX HAPI returns either {data: [...]} or {data: {results: [...]}}
+    const raw = json?.data;
+    const results: any[] = Array.isArray(raw) ? raw : (raw?.results ?? []);
     if (!results.length) return null;
 
     let totalReq = 0;
@@ -101,7 +103,8 @@ async function fetchHdxPopulation(): Promise<LiveMetrics['hdxPopulation'] | null
     const res = await fetchWithTimeout(url);
     if (!res.ok) return null;
     const json = await res.json();
-    const results: any[] = json?.data?.results ?? [];
+    const raw = json?.data;
+    const results: any[] = Array.isArray(raw) ? raw : (raw?.results ?? []);
     if (!results.length) return null;
     // Sum all age/gender groups or take latest total
     const latest = results[0];
