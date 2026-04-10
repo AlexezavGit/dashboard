@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dashboard",
+  "account_id": "ccf4cbf0a8234b639c049c7dd1c627ae",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-04-09",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application",
+    "binding": "ASSETS"
+  }
+  // Secrets (set via Cloudflare Dashboard → Workers → dashboard → Settings → Variables):
+  // KOBO_API_TOKEN          = 66bb52de75381723cdaec050cf9ffa5ae05fbb5d
+  // ACTIVITYINFO_API_KEY    = <add after registration>
+}

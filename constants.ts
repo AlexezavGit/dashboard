@@ -334,6 +334,86 @@ export const INPUTS_OUTCOMES_DATA = (l: Language) => [
 
 // --- Banker Narrative Data ---
 
+// Macro Gap — canonical session-level calculation (War Room canonical, NSZU verified)
+export const MACRO_GAP = {
+  beneficiaries: 3_900_000,         // WHO 2025, Lancet 2023
+  sessionsPerPerson: 16,             // WHO standard avg 12-20
+  totalSessionDemand: 62_400_000,    // 3.9M × 16
+  currentCapacity: 180_000,          // NSZU verified (primary care)
+  coveragePct: 0.28,                 // 180K / 62.4M
+  sessionGap: 62_220_000,            // 62.4M - 180K
+  blendedFinanceRateUAH: 1914.5,     // = 2000 - (285×0.3) UAH/session
+  blendedFinanceNeedUAH: 119_120_190_000, // 62.22M × 1914.5
+  marketMinEurBln: 2.5,              // 62.4M hr × €40/hr
+  marketMaxEurBln: 4.1,              // 62.4M hr × €65/hr
+  gdpLossUSD: '$1.2B+',             // War Room canonical
+  lockedFundsUSD: '$954M',           // HEAL/THRIVE (War Room)
+};
+
+// Backlog chart — years to clear at different specialist counts
+// Corrected capacity: 8 hrs/day × 5 days × 50 weeks = 2,000 sessions/year (theoretical)
+// Sustainable: 1,500/yr (30 sessions/week × 50 weeks). Theoretical: 2,000/yr (8 hrs/day)
+// Even at 2,000/yr with 4,000 specialists: 62.4M ÷ 8M = 7.8 years → IMPOSSIBLE
+export const BACKLOG_DATA = (l: Language) => [
+  {
+    name: l === 'uk' ? '4,000 (зареєстр.)' : '4,000 (registered)',
+    sustainable: 10.4, theoretical: 7.8,
+    verdict: 'IMPOSSIBLE', verdictColor: '#FF4444',
+  },
+  {
+    name: l === 'uk' ? '8,000 (подвоєно)' : '8,000 (doubled)',
+    sustainable: 5.2, theoretical: 3.9,
+    verdict: 'IMPOSSIBLE', verdictColor: '#FF4444',
+  },
+  {
+    name: l === 'uk' ? '19,000 (макс+тінь)' : '19,000 (max+shadow)',
+    sustainable: 2.2, theoretical: 1.6,
+    verdict: l === 'uk' ? 'ТЕОРЕТИЧНО' : 'THEORETICAL ONLY', verdictColor: '#F59E0B',
+  },
+];
+
+// Three-level data infrastructure crisis (War Room)
+export const INFRA_LEVELS = (l: Language) => [
+  {
+    label: l === 'uk' ? 'РІВЕНЬ 1: ДЕРЖАВА (ЕСОЗ)' : 'LEVEL 1: STATE (ESOZ)',
+    status: l === 'uk' ? 'НЕСПРАВНІСТЬ' : 'MALFUNCTION',
+    color: '#FF4444',
+    desc: l === 'uk'
+      ? 'API заблоковано. Неможливо верифікувати держфінансовані сесії або приймати зовнішні дані НГО.'
+      : 'API connection blocked. Cannot verify state-funded sessions or accept external NGO data.',
+  },
+  {
+    label: l === 'uk' ? 'РІВЕНЬ 2: ГУМАНІТАРНИЙ API' : 'LEVEL 2: HUMANITARIAN API',
+    status: l === 'uk' ? 'АКТИВНИЙ (5W)' : 'ACTIVE (5W)',
+    color: '#00FF66',
+    desc: l === 'uk'
+      ? 'Дані НГО/кластерів готові, але ізольовані. Неможливо верифікувати проти держреєстрів без Digital Bus.'
+      : 'NGO/Cluster data is ready, but isolated. Cannot be verified against state registries without Digital Bus.',
+  },
+  {
+    label: l === 'uk' ? 'РІВЕНЬ 3: КОШТИ ДОНОРІВ' : 'LEVEL 3: DONOR FUNDS',
+    status: '$954M LOCKED',
+    color: '#F59E0B',
+    desc: l === 'uk'
+      ? 'Кошти HEAL/THRIVE не можуть бути повністю виплачені без верифікованого двостороннього обміну даними.'
+      : 'HEAL/THRIVE funds cannot be fully disbursed without verified bilateral data exchange.',
+  },
+];
+
+// Feel Again positioning (War Room canonical)
+export const FEEL_AGAIN_POSITION = (l: Language) => ({
+  costToState: '\u20ac0',
+  costNote: l === 'uk' ? 'Держава купує послугу (SaaS). Zero CAPEX.' : 'State buys service (SaaS). Zero CAPEX.',
+  gdpLoss: '$1.2B+',
+  lockedFunds: '$954M',
+  is: l === 'uk'
+    ? 'Цифрові фінансові рейки та інфраструктура даних. Система вимірювання та платежів, що доповнює існуючі програми.'
+    : 'Digital financial rails and data infrastructure. A measurement and payment system that complements existing programs.',
+  isNot: l === 'uk'
+    ? 'Не постачальник послуг ментального здоров\u2019я. Не застосунок і не стартап. Ми не надаємо терапію \u2014 ми робимо її фінансованою, доступною та підзвітною.'
+    : 'NOT a mental health service provider. Not an app or startup. We do not provide therapy \u2014 we make it fundable, findable, and accountable.',
+});
+
 // Capacity Ceiling: mathematical proof the gap can't close with efficiency alone
 export const CAPACITY_CEILING_DATA = (l: Language) => [
   { name: l === 'uk' ? 'Клінічна потреба' : 'Clinical Need', value: 3500, fill: '#FF4444' },
@@ -353,8 +433,11 @@ export const FEEL_AGAIN_ARCHITECTURE = (l: Language) => [
 ];
 
 // HEAL Ukraine P180245 — World Bank ISR #6 (Sep 2025, canonical)
+// NOTE: HEAL is IPF (Investment Project Financing) with PBC, NOT PforR
+// THRIVE (P505616) is the real PforR. Two separate instruments.
 export const HEAL_UKRAINE = (l: Language) => ({
   project: 'HEAL Ukraine (P180245)',
+  mechanism: 'IPF + PBC',
   total: '$500M',
   disbursed: '$171M',
   disbursedPct: 51,
@@ -372,8 +455,11 @@ export const HEAL_UKRAINE = (l: Language) => ({
     { name: l === 'uk' ? 'Мобільні МЗ-команди' : 'Mobile MH teams deployed', target: 75, actual: 118, pct: 157, status: 'exceeded' },
   ],
   insight: l === 'uk'
-    ? "Component 4 Digitalization ($50M) \u2014 це точка входу: $0 витрачено на реконфігурацію закладів для МЗ (0/400). Feel Again = Digital Bus для цього компоненту."
-    : "Component 4 Digitalization ($50M) is the entry point: $0 spent on MH facility reconfiguration (0/400). Feel Again = the Digital Bus for this component.",
+    ? "Component 4 Digitalization ($50M) \u2014 точка входу. \u007e$41M незакуплено. 0/400 заклад\u0456в реконф\u0456гуровано для МЗ. Feel Again = Digital Bus. Механ\u0456зм доступу: procurement (RFQ/Direct Selection) через МОЗ."
+    : "Component 4 Digitalization ($50M) is the entry point. \u007e$41M unallocated. 0/400 facilities reconfigured for MH. Feel Again = Digital Bus. Access: procurement (RFQ/Direct Selection) via MoH.",
+  synergy: l === 'uk'
+    ? "HEAL (IPF, $500M) генеру\u0454 послуги \u2014 624K МЗ, 118 команд, але ДАН\u0406 поза ЕСОЗ. THRIVE (PforR, $454M) вим\u0456рю\u0454 через ЕСОЗ. GAP: виходи HEAL \u2260 входи THRIVE. FEEL Again middleware закриває цей розрив."
+    : "HEAL (IPF, $500M) deploys services \u2014 624K MH, 118 teams, but DATA is outside ESOZ. THRIVE (PforR, $454M) measures via ESOZ. GAP: HEAL outputs \u2260 THRIVE inputs. FEEL Again middleware bridges this gap.",
 });
 
 // ROI Investment Case: World Bank, UNICEF, DALY
@@ -540,6 +626,125 @@ export const ARCH_FLOW = (l: Language) => ({
     ],
   },
 });
+
+// Stakeholder Matrix: who benefits from middleware and why
+export const STAKEHOLDER_MATRIX = (l: Language) => [
+  {
+    stakeholder: 'World Bank',
+    pain: l === 'uk'
+      ? 'HEAL надає 624K МЗ-послуг, але не може верифікувати, що вони зараховуються до метрик THRIVE PforR'
+      : 'HEAL delivers 624K MH services but can\u2019t verify they count for THRIVE PforR metrics',
+    gain: l === 'uk'
+      ? 'Unified data pipeline: виходи HEAL \u2192 ЕСОЗ \u2192 KPI THRIVE'
+      : 'Unified data pipeline: HEAL outputs \u2192 ESOZ \u2192 THRIVE KPIs',
+  },
+  {
+    stakeholder: 'MoH / Ukraine',
+    pain: l === 'uk'
+      ? 'Втрачає транші THRIVE, якщо ЕСОЗ не відображає реальний обсяг послуг'
+      : 'Loses THRIVE tranches if ESOZ doesn\u2019t reflect actual service volume',
+    gain: l === 'uk'
+      ? '"Digital deoccupation": 624K+ невидимих послуг стають видимими в ЕСОЗ'
+      : '"Digital deoccupation": 624K+ invisible services become visible in ESOZ',
+  },
+  {
+    stakeholder: 'NHSU (\u041d\u0421\u0417\u0423)',
+    pain: l === 'uk'
+      ? 'Не може вимірювати ефективність ПМГ без даних гуманітарних послуг'
+      : 'Can\u2019t measure PMG efficiency without humanitarian service data',
+    gain: l === 'uk'
+      ? 'Non-billing shadow records \u2014 клінічні дані входять до ЕСОЗ без запуску платежів НСЗУ'
+      : 'Non-billing shadow records \u2014 clinical data enters ESOZ without triggering NSZU payments',
+  },
+  {
+    stakeholder: l === 'uk' ? '118 мобільних МЗ-команд' : '118 Mobile MH teams',
+    pain: l === 'uk'
+      ? 'Працюють у CommCare/Kobo/Excel \u2014 дані в силосах, немає континуїтету допомоги'
+      : 'Working in CommCare/Kobo/Excel \u2014 data sits in silos, no continuity of care',
+    gain: l === 'uk'
+      ? 'Universal adapter: CommCare \u2192 FHIR R4 \u2192 Trembita \u2192 ЕСОЗ'
+      : 'Universal adapter: CommCare \u2192 FHIR R4 \u2192 Trembita \u2192 ESOZ',
+  },
+  {
+    stakeholder: 'MIS operators (Helsi, Doctor Eleks)',
+    pain: l === 'uk'
+      ? 'Не будуть інтегрувати дані НГО \u2014 проти моделі ліцензії за робоче місце'
+      : 'Won\u2019t integrate NGO data \u2014 against per-seat license business model',
+    gain: l === 'uk'
+      ? 'FEEL не конкурує з MIS; доставляє попередньо відформатовані дані FHIR для їх споживання'
+      : 'FEEL doesn\u2019t compete with MIS; delivers pre-formatted FHIR data they can consume',
+  },
+  {
+    stakeholder: l === 'uk' ? 'Пацієнт / Ветеран' : 'Patient / Veteran',
+    pain: l === 'uk'
+      ? 'Переходить від мобільної НГО-команди до сімейного лікаря \u2014 лікар бачить "чистий аркуш"'
+      : 'Goes from NGO mobile team to family doctor \u2014 doctor sees "clean sheet"',
+    gain: l === 'uk'
+      ? 'Повна медична історія подорожує разом з пацієнтом'
+      : 'Complete medical history travels with the patient',
+  },
+  {
+    stakeholder: l === 'uk' ? 'Донори (гуманітарні)' : 'Donors (humanitarian)',
+    pain: l === 'uk'
+      ? 'Не можуть продемонструвати вплив у термінах державної системи'
+      : 'Can\u2019t demonstrate impact in state-system terms',
+    gain: l === 'uk'
+      ? 'Кожна сесія тегована "Funded by [Donor], Project ID [X]" \u2014 входить до ЕСОЗ як provenance'
+      : 'Every session tagged "Funded by [Donor], Project ID [X]" \u2014 enters ESOZ as provenance',
+  },
+  {
+    stakeholder: 'EU / EHDS',
+    pain: l === 'uk'
+      ? 'Зобов\u2019язання України щодо \u0454вроінтеграції вимагає інтероперабельності медичних даних'
+      : 'Ukraine\u2019s EU integration obligation requires health data interoperability',
+    gain: l === 'uk'
+      ? 'FHIR R4 compliance \u2014 перший крок до European Health Data Space'
+      : 'FHIR R4 compliance as first step toward European Health Data Space',
+  },
+];
+
+// Formalization cost model v3 — full decomposition
+export const FORMALIZATION_COST_V3 = (l: Language) => ({
+  assumption: l === 'uk'
+    ? '\u0404вро 1,500/міс середній дохід, \u0454вро 46/год ставка, 1,000 год/рік реальний обсяг роботи'
+    : '\u20ac1,500/month avg income, \u20ac46/hr rate, 1,000 hrs/year actual shadow workload',
+  shadowNet: '\u20ac1,500/month',
+  formalNet: '\u20ac335\u2013520/month (23\u201335%)',
+  penaltyPct: 65,
+  directCosts: {
+    label: l === 'uk' ? 'A. Пряме навантаження (податки + адмін)' : 'A. Direct costs (taxes + admin)',
+    items: [
+      { label: l === 'uk' ? 'ФОП Група 3 (5% від \u20ac1,500)' : 'FOP Group 3 tax (5% of \u20ac1,500)', amountPerMonth: 75 },
+      { label: l === 'uk' ? '\u0404СВ (мінімум)' : 'ESV (minimum)', amountPerMonth: 32 },
+      { label: l === 'uk' ? 'Бухгалтерські послуги' : 'Accounting services', amountPerMonth: 100 },
+    ],
+    totalPerMonth: 207,
+    totalPerYear: 2484,
+  },
+  opportunityCost: {
+    label: l === 'uk' ? 'B. Opportunity cost (втрачені продуктивні години)' : 'B. Opportunity cost (lost productive hours)',
+    items: [
+      { label: l === 'uk' ? '20% часу адм\u0456н: 200 год/рік \u00d7 \u20ac46/год' : '20% admin time: 200 hrs/year \u00d7 \u20ac46/hr', amountPerMonth: 767 },
+      { label: l === 'uk' ? '5% комплаєнс: 50 год/рік \u00d7 \u20ac46/год' : '5% tax compliance: 50 hrs/year \u00d7 \u20ac46/hr', amountPerMonth: 192 },
+    ],
+    totalPerMonth: 958,
+    totalPerYear: 11500,
+  },
+  total: {
+    perMonth: 1165,
+    perYear: 13984,
+    label: 'TOTAL A + B',
+  },
+  conclusion: l === 'uk'
+    ? 'Формалізація знищує 2/3 доходу психолога. При \u20ac2,000-3,000/міс (Київ) пропорція покращується, але структурна пастка залишається: 25% часу \u2014 на адміністрування замість клієнтів.'
+    : 'Formalization destroys 2/3 of practitioner income. At \u20ac2,000-3,000/month (Kyiv) the ratio improves, but the structural trap remains: 25% of time on admin instead of clients.',
+});
+
+// Dual-project synergy: corrected narrative (replaces PforR misattribution to HEAL)
+export const DUAL_PROJECT_NARRATIVE = (l: Language) =>
+  l === 'uk'
+    ? 'Св\u0456товий Банк \u0456нвестував $954M в охорону здоров\u2019я України через два взаємопов\u2019язаних \u0456нструменти. HEAL ($500M, IPF) розгорта\u0454 послуги \u2014 624,464 ос\u0456б отримали МЗ допомогу, 118 моб\u0456льних команд працюють у пол\u0456. THRIVE ($454M, PforR) вим\u0456рю\u0454 ефективн\u0456сть системи через ЕСОЗ. Але ЕСОЗ не бачить б\u0456льш\u0456сть послуг HEAL: моб\u0456льн\u0456 команди працюють у CommCare/Kobo/ActivityInfo. Trembita (230+ \u0456нституц\u0456й, 7B+ транзакц\u0456й) п\u0456дключена до НСЗУ, але не розум\u0456\u0454 формат гуман\u0456тарних систем. Результат: $500M-проєкт генеру\u0454 послуги, як\u0456 $454M-проєкт не може побачити. FEEL Again middleware \u2014 це "по\u0457зд" м\u0456ж зонами: CommCare/Kobo \u2192 FHIR R4 \u2192 Trembita \u2192 ЕСОЗ. Component 4 HEAL ($50M на диг\u0456тал\u0456зац\u0456ю) \u2014 вже затверджене ф\u0456нансове в\u0456кно.'
+    : 'World Bank invested $954M in Ukraine health via two linked instruments. HEAL ($500M, IPF) deploys services \u2014 624,464 people received MH support, 118 mobile teams in the field. THRIVE ($454M, PforR) measures system efficiency via ESOZ. But ESOZ cannot see most HEAL services: mobile teams work in CommCare/Kobo/ActivityInfo. Trembita (230+ institutions, 7B+ transactions) connects to NHSU but does not understand humanitarian data formats. Result: the $500M project generates services the $454M project cannot see. FEEL Again middleware is the "train" between zones: CommCare/Kobo \u2192 FHIR R4 \u2192 Trembita \u2192 ESOZ. HEAL Component 4 ($50M digitalization) is the pre-approved funding window.';
 
 export const SOURCES = {
     primary: [
