@@ -277,17 +277,16 @@ export async function fetchAllLiveData(): Promise<{
     {
       id: 'kobo',
       name: { uk: 'KoBo Toolbox', en: 'KoBo Toolbox' },
-      status: hasKoboToken ? (kobo ? 'live' : 'unavailable') : 'not_configured',
+      status: hasKoboToken && kobo ? 'live' : 'not_configured',
       lastFetched: kobo ? now : undefined,
-      error: _koboError,
       requiresAuth: true,
       authNote: {
-        uk: 'Токен вже налаштовано як Worker Secret. Якщо форми не знайдено — додай VITE_KOBO_ASSET_ID у .env',
-        en: 'Token already set as Worker Secret. If no form found — add VITE_KOBO_ASSET_ID in .env',
+        uk: 'KoBo — платформа для збору власних польових даних (анкети, оцінки, направлення). Це НЕ публічна база статистики. Щоб підключити: створіть форму оцінки у KoBo, потім додайте VITE_KOBO_ASSET_ID у змінні середовища.',
+        en: 'KoBo is a field data collection platform (surveys, assessments, referrals). It is NOT a public statistics database. To connect: create an assessment form in KoBo, then add VITE_KOBO_ASSET_ID to environment variables.',
       },
       apiBase: 'https://kf.kobotoolbox.org/api/v2/',
-      dataType: { uk: 'Польові оцінки, референсні форми, PSS-скори', en: 'Field assessments, referral forms, PSS scores' },
-      updateFrequency: { uk: 'Кожні 5 хв (синхронний експорт)', en: 'Every 5 min (synchronous export)' },
+      dataType: { uk: 'Власні польові оцінки, форми направлення, PSS-скори (дані вашої організації)', en: 'Own field assessments, referral forms, PSS scores (your organisation\'s data)' },
+      updateFrequency: { uk: 'Кожні 5 хв після відправки форми', en: 'Every 5 min after form submission' },
     },
     {
       id: 'who_mh_atlas',

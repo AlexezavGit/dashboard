@@ -74,9 +74,7 @@ export default {
     // HDX HAPI proxy (public, no auth — proxied to avoid browser CORS)
     if (pathname.startsWith('/api/hdx/')) {
       const path = pathname.replace('/api/hdx', '');
-      return proxy(
-        `https://hapi.humdata.org${path}${search}${search ? '&' : '?'}app_identifier=mhpss-ua-dashboard`
-      );
+      return proxy(`https://hapi.humdata.org${path}${search}`);
     }
 
     // ActivityInfo proxy
