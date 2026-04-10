@@ -1003,14 +1003,14 @@ const App: React.FC = () => {
              <div className="bg-slate-900/60 px-5 py-3 border-b border-slate-800 flex items-center gap-3">
                <span className="w-2 h-2 rounded-full bg-amber-500/70 flex-shrink-0" />
                <span className="cyber-label text-[10px] text-amber-500/80">
-                 {lang === 'uk' ? 'ЧОМУ LIVE-ДАНІ НЕДОСЯЖНІ: СИСТЕМНА ПРИЧИНА' : 'WHY LIVE DATA IS STRUCTURALLY UNAVAILABLE'}
+                 {lang === 'uk' ? 'ШПАРГАЛКА: ЧОМУ LIVE-ДАНІ СТРУКТУРНО НЕДОСЯЖНІ' : 'CHEAT SHEET: WHY LIVE DATA IS STRUCTURALLY UNAVAILABLE'}
                </span>
              </div>
              <div className="px-5 py-4 space-y-4">
                <p className="text-[11px] text-slate-400 leading-relaxed">
                  {lang === 'uk'
-                   ? "Цифрова фрагментація замінила паперову. Проблема крос-секторальної розпорошеності залишається невирішеною: дані про психічне здоров\u2019я існують мінімум у п\u2019яти несумісних системах, жодна з яких не має повністю відкритого публічного API."
-                   : 'Digital fragmentation replaced paper fragmentation. Cross-sector data silos remain unsolved: mental health data exists across at least five incompatible systems, none with a fully open public API.'}
+                   ? "Цифрова фрагментація замінила паперову. Проблема цифрової та крос-секторальної фрагментації залишається невирішеною. Через розпорошеність даних між медичними і соціальними службами та необхідність звітувати у несинхронізовані системи гуманітарних кластерів, сукупне адміністративне навантаження на фахівців продовжує складати розрахункові 20\u201340% робочого часу."
+                   : 'Digital fragmentation replaced paper fragmentation. The problem of digital and cross-sector fragmentation remains unsolved. Due to data dispersal between health and social services, and the need to report into unsynchronised humanitarian cluster systems, the cumulative administrative burden on specialists continues to represent an estimated 20–40% of working time.'}
                </p>
                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                  {[
@@ -1028,11 +1028,25 @@ const App: React.FC = () => {
                    </div>
                  ))}
                </div>
+
+               {/* Cost of fragmentation */}
                <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-4">
                  <p className="text-[11px] text-amber-400/80 leading-relaxed">
                    {lang === 'uk'
-                     ? "Наслідок: через необхідність паралельно звітувати у несинхронізовані системи адміністративний тягар на MHPSS-фахівців складає розрахункові 20\u201340% робочого часу. При чисельності ~35\u00a0000 активних фахівців це еквівалентно ~$60\u00a0млн втраченої клінічної ємності щорічно \u2014 кошти, що з\u2019їдені не відсутністю спеціалістів, а цифровою неефективністю. Інфраструктура FEEL AGAIN інтегрується саме для усунення цього залишкового цифрового бар\u2019єру."
-                     : `Consequence: parallel reporting into unsynchronised systems creates an estimated 20–40% administrative burden on MHPSS professionals. Across ~35,000 active specialists, this equates to ~$60M in lost clinical capacity annually — not from staff shortages, but from digital inefficiency. FEEL AGAIN infrastructure is designed specifically to eliminate this residual digital barrier.`}
+                     ? "Наслідок: при ~35\u202f000 активних фахівців 20\u201340% адмін-навантаження = ~$60\u202fмлн втраченої клінічної ємності щорічно \u2014 не через нестачу людей, а через цифрову неефективність. Інфраструктура FEEL AGAIN інтегрується саме для усунення цього залишкового цифрового бар\u2019єру."
+                     : "Consequence: across ~35,000 active specialists, a 20–40% admin burden equals ~$60M in lost clinical capacity annually — not from staff shortages, but from digital inefficiency. FEEL AGAIN infrastructure is designed specifically to eliminate this residual digital barrier."}
+                 </p>
+               </div>
+
+               {/* DALY / FHI 360 note */}
+               <div className="bg-slate-800/40 border border-slate-700/40 rounded-lg p-4 space-y-2">
+                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono">
+                   {lang === 'uk' ? 'DALY-аналіз та економічна модель (FHI 360 / PIN)' : 'DALY analysis & economic model (FHI 360 / PIN)'}
+                 </div>
+                 <p className="text-[11px] text-slate-400 leading-relaxed">
+                   {lang === 'uk'
+                     ? "FHI\u00a0360 розробила для People in Need (Україна) симуляційну модель, яка конвертує результати MHPSS-втручань у показники економічної продуктивності (повернені робочі дні, скорочення стаціонарних витрат, освітні outcomes дітей). Окремо: стандартний курс терапії в Україні ($150\u2013350) авертує 0.5\u20132 DALY. Поріг рентабельності ВООЗ для України \u2248\u00a0$4\u202f300/DALY (1\u00d7 ВНД на душу населення). Розрахункова ефективність: $75\u2013700/DALY \u2014 у 6\u201357\u00d7 нижче порогу. Це найсильніший аргумент для інвестора: не просто \u2018ефективно\u2019, а \u2018математично поза конкуренцією за будь-якою галуззю охорони здоров\u2019я\u2019."
+                     : "FHI 360 developed for People in Need (Ukraine) a simulation model converting MHPSS outcomes into economic productivity metrics (recovered workdays, reduced inpatient costs, children\u2019s educational outcomes). Separately: a standard therapy course in Ukraine ($150\u2013350) averts 0.5\u20132 DALYs. WHO cost-effectiveness threshold for Ukraine \u2248\u00a0$4,300/DALY (1\u00d7 GNI per capita). Calculated effectiveness: $75\u2013700/DALY \u2014 6\u201357\u00d7 below threshold. This is the strongest investor argument: not just \u2018efficient\u2019 but \u2018mathematically unrivalled across any health sector\u2019."}
                  </p>
                </div>
              </div>
