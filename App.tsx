@@ -648,7 +648,7 @@ const App: React.FC = () => {
                     <Card title={lang === 'uk' ? 'Розподіл бюджету' : 'Budget Split'} subtitle="Inpatient vs Outpatient">
                        <CustomDonutChart data={BUDGET_SPLIT_DATA(lang)} height={250} />
                        <InsightBox type="critical">
-                          {lang === 'uk' ? '⚠ 89% бюджету йде на стаціонари, хоча 64–71% пацієнтів звертаються в амбулаторні заклади.' : '⚠ 89% of budget goes to inpatient care, though 64–71% of patients seek outpatient care.'}
+                          {lang === 'uk' ? '⚠ 55.5% спеціалізованої допомоги (80.2B з 144.6B UAH) → стаціонар, хоча 64–71% пацієнтів звертаються амбулаторно. Первинна допомога: лише 25.6B UAH (МОЗ 2025).' : '⚠ 55.5% of specialized care (80.2B of 144.6B UAH) → inpatient, though 64–71% of patients seek outpatient care. Primary care: only 25.6B UAH (MOH 2025).'}
                        </InsightBox>
                     </Card>
                     <Card title={lang === 'uk' ? 'Міжнародне фінансування МЗПСП' : 'International MHPSS Funding'} subtitle={lang === 'uk' ? 'Млн USD/EUR (2024-2025)' : 'M USD/EUR (2024-2025)'}>
@@ -734,21 +734,24 @@ const App: React.FC = () => {
                          </div>
                        </div>
                     </Card>
-                  </div>
-                  <Card colSpan="full" title={lang === 'uk' ? "Бюджет охорони здоров'я та частка на ментальне здоров'я" : "Health Budget & Mental Health Share"}>
-                     <ResponsiveContainer width="100%" height={300} minWidth={1}>
+                    <Card title={lang === 'uk' ? "Бюджет охорони здоров'я та частка на ментальне здоров'я" : "Health Budget & Mental Health Share"} subtitle={lang === 'uk' ? 'Млрд ₴ · МОЗ 2024-2026' : 'B UAH · MOH 2024-2026'}>
+                     <ResponsiveContainer width="100%" height={220} minWidth={1}>
                         <ComposedChart data={[{year:'2024', health:239, mh:5.98}, {year:'2025', health:222.1, mh:5.55}, {year:'2026', health:258.6, mh:6.47}]}>
                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                            <XAxis dataKey="year" tick={{fontSize: 10, fill: '#94a3b8', fontFamily: 'JetBrains Mono'}} />
-                           <YAxis yAxisId="left" tick={{fontSize:11}} label={{value: lang==='uk'?'Млрд ₴':'B ₴', angle:-90, position:'insideLeft'}} />
-                           <YAxis yAxisId="right" orientation="right" tick={{fontSize:11}} label={{value: lang==='uk'?'МЗ (2.5%)':'MH (2.5%)', angle:90, position:'insideRight'}} />
+                           <YAxis yAxisId="left" tick={{fontSize:10}} label={{value: lang==='uk'?'Млрд ₴':'B ₴', angle:-90, position:'insideLeft', style:{fontSize:9}}} />
+                           <YAxis yAxisId="right" orientation="right" tick={{fontSize:10}} label={{value: lang==='uk'?'МЗ (2.5%)':'MH (2.5%)', angle:90, position:'insideRight', style:{fontSize:9}}} />
                            <Tooltip cursor={{fill: 'transparent'}} contentStyle={{borderRadius: 8}} />
-                           <Legend />
-                           <Bar yAxisId="left" dataKey="health" name={lang === 'uk' ? "Бюджет охорони здоров'я" : "Health Budget"} fill={COLORS.blueLight} radius={[4,4,0,0]} barSize={40} />
-                           <Line yAxisId="right" type="monotone" dataKey="mh" name={lang === 'uk' ? "Оцінка МЗ (2.5%)" : "Est. MH (2.5%)"} stroke={COLORS.red} strokeWidth={2} dot={{r:4}} />
+                           <Legend wrapperStyle={{fontSize:10}} />
+                           <Bar yAxisId="left" dataKey="health" name={lang === 'uk' ? "Бюджет охорони здоров'я" : "Health Budget"} fill={COLORS.blueLight} radius={[4,4,0,0]} barSize={32} />
+                           <Line yAxisId="right" type="monotone" dataKey="mh" name={lang === 'uk' ? "Оцінка МЗ (2.5%)" : "Est. MH (2.5%)"} stroke={COLORS.red} strokeWidth={2} dot={{r:3}} />
                         </ComposedChart>
                      </ResponsiveContainer>
-                  </Card>
+                     <div className="mt-2 text-[9px] text-slate-500 font-mono">
+                       {lang === 'uk' ? 'Спеціалізована 144.6B · Стаціонар 80.2B (55.5%) · Первинна 25.6B — МОЗ 2025' : 'Specialized 144.6B · Inpatient 80.2B (55.5%) · Primary 25.6B — MOH 2025'}
+                     </div>
+                    </Card>
+                  </div>
                 </div>
               )}
 
@@ -1068,8 +1071,8 @@ const App: React.FC = () => {
                         <p className="text-[10px] text-rose-300 leading-relaxed">
                           <span className="font-bold">⚡ {lang === 'uk' ? 'Висновок:' : 'Conclusion:'}</span>{' '}
                           {lang === 'uk'
-                            ? 'Приватний ринок перевищує гуманітарний у 110 разів — тіньовий сектор реально фінансує систему. Дефіцит mhGAP: 3,571× нижче від очікуваного (150K сертифікатів → 42 практикуючих). Адмін. gap у 3.1× і бюджетна інверсія 8.1× (стаціонар vs реальна потреба) — системні, не тимчасові. Жоден проєкт не вирішить ці множники без структурних змін в інфраструктурі.'
-                            : 'Private market is 110× humanitarian — the shadow sector actually finances the system. mhGAP deficit: 3,571× below expected (150K certs → 42 practicing). Admin gap 3.1× and budget inversion 8.1× (inpatient vs actual need) are systemic, not temporary. No project resolves these multipliers without structural infrastructure change.'}
+                            ? 'Приватний ринок перевищує гуманітарний у 110 разів — тіньовий сектор реально фінансує систему. Дефіцит mhGAP: 3,571× нижче від очікуваного (150K сертифікатів → 42 практикуючих). Адмін. gap у 3.1× і бюджетна інверсія 5.0× (55.5% спеціалізованої → стаціонар, МОЗ 2025) — системні, не тимчасові. Жоден проєкт не вирішить ці множники без структурних змін в інфраструктурі.'
+                            : 'Private market is 110× humanitarian — the shadow sector actually finances the system. mhGAP deficit: 3,571× below expected (150K certs → 42 practicing). Admin gap 3.1× and budget inversion 5.0× (55.5% of specialized → inpatient, MOH 2025) are systemic, not temporary. No project resolves these multipliers without structural infrastructure change.'}
                         </p>
                       </div>
                     </div>

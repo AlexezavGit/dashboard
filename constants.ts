@@ -266,6 +266,8 @@ export const ECONOMIC_BURDEN_INDICATORS = (l: Language) => [
   { name: l === 'uk' ? 'Втрати ВВП (World Bank)' : 'GDP losses (World Bank)', percent: '4.5', value: '$6,000,000,000', source: 'World Bank', period: '2025', units: l === 'uk' ? 'USD (оцінка)' : 'USD (est.)' },
   // LSE/FHI360 methodology: 4-5% of pre-war GDP. Pre-war MH budget ~8B UAH; war-adjusted 10-12B UAH
   { name: l === 'uk' ? 'Втрати ВВП з поправкою на війну (LSE/FHI 360)' : 'War-adjusted GDP loss (LSE/FHI 360)', percent: '10–12', value: l === 'uk' ? '10–12 млрд ₴' : '₴10–12B', source: 'LSE/FHI 360', period: '2023–2025', units: l === 'uk' ? 'оцінка, UAH' : 'estimate, UAH' },
+  // World Bank / UNDP: >70% of population experienced income decline due to war
+  { name: l === 'uk' ? 'Падіння доходів населення' : 'Population income decline', percent: '>70', value: l === 'uk' ? '>70% населення' : '>70% of population', source: 'World Bank / UNDP', period: '2022–2024', units: l === 'uk' ? 'зафіксували падіння доходів через війну' : 'reported income decline due to war' },
 ];
 
 export const REGIONAL_BARRIERS_HEATMAP = (l: Language) => [
@@ -407,10 +409,11 @@ export const MACRO_GAP = {
 //     Ukraine MH practitioners: ~25-30% time on admin (WHO SIMH 2024)
 //     WHO norm: ~8-10% admin overhead in outpatient MH settings
 //     Ratio: 27% / 8.7% ≈ 3.1
-//   8.1× (Budget inversion — inpatient vs actual need):
-//     89% of MH budget → inpatient care
+//   5.0× (Budget inversion — inpatient vs actual need, МОЗ 2025):
+//     Спеціалізована допомога: 144.6B UAH; стаціонарна: 80.2B UAH = 55.5% of specialized
+//     Первинна допомога: 25.6B UAH (where psychological support is now primarily delivered)
 //     Only 11% of MH cases clinically require inpatient
-//     Ratio: 89% / 11% = 8.1
+//     Ratio: 55.5% / 11% = 5.0× | Specialized/Primary: 144.6/25.6 = 5.6×
 export const STRUCTURAL_DISP_DATA = (l: Language) => [
   {
     name: l === 'uk' ? 'Приватний / Гуманітарний дохід' : 'Private / Humanitarian income',
@@ -440,13 +443,13 @@ export const STRUCTURAL_DISP_DATA = (l: Language) => [
       : '~27% time on admin (WHO SIMH 2024) ÷ WHO norm ~8.7% = 3.1×',
   },
   {
-    name: l === 'uk' ? 'Бюджет стаціонар / реальна потреба' : 'Budget inpatient / actual need',
-    value: 8.1,
-    displayValue: '8.1×',
+    name: l === 'uk' ? 'Стаціонар / реальна клінічна потреба' : 'Inpatient share / clinical need',
+    value: 5.0,
+    displayValue: '5.0×',
     fill: '#06B6D4',
     calc: l === 'uk'
-      ? '89% бюджету МЗ → стаціонар ÷ 11% випадків, що дійсно потребують стаціонарного лікування = 8.1×'
-      : '89% MH budget → inpatient ÷ 11% of cases actually requiring inpatient care = 8.1×',
+      ? 'Стаціонар 80.2B з 144.6B спеціалізованої = 55.5% ÷ 11% випадків, що дійсно потребують стаціонару = 5.0× (МОЗ 2025)'
+      : 'Inpatient 80.2B of 144.6B specialized = 55.5% ÷ 11% of cases actually requiring inpatient = 5.0× (MOH 2025)',
   },
 ];
 
@@ -910,8 +913,8 @@ export const KEY_CONCLUSIONS = (l: Language) => [
     num: '3',
     title: l === 'uk' ? 'Бюджетна інверсія' : 'Budget inversion',
     body: l === 'uk'
-      ? 'Більша частина бюджету МЗ на психічне здоров\'я йде на стаціонарне лікування, хоча світова практика вимагає фокус на амбулаторній допомозі. Це створює «пляшкове горлечко» на лінії первинної медичної допомоги (ПМД).'
-      : 'The majority of the MH mental health budget goes to inpatient care, whereas best practice requires an outpatient focus. This creates a bottleneck at the primary care (PHC) level.',
+      ? '55.5% спеціалізованої допомоги (80.2B з 144.6B UAH, МОЗ 2025) йде на стаціонар — у 5.0× більше, ніж клінічно потрібно. Первинна допомога отримує лише 25.6B UAH, тоді як саме там надається психологічна підтримка. Це структурна інверсія, яку не виправити тренінгами.'
+      : '55.5% of specialized care (80.2B of 144.6B UAH, MOH 2025) goes to inpatient — 5.0× more than clinically needed. Primary care gets only 25.6B UAH, yet that is where psychological support is actually delivered. This is a structural inversion that training alone cannot fix.',
   },
   {
     icon: 'Database',
@@ -951,8 +954,8 @@ export const ALL_CONCLUSIONS_GRID = (l: Language) => [
     section: 'BUDGET',
     color: '#EF4444',
     text: l === 'uk'
-      ? '2.5% бюджету МЗ на ментальне здоров\'я. Домінуюча частина → стаціонар. HEAL+THRIVE ($954M) > держвидатки на МЗ за кілька років.'
-      : '2.5% of MH budget for mental health. Dominant share → inpatient. HEAL+THRIVE ($954M) > state MH spending for several years combined.',
+      ? '2.5% бюджету МЗ на ментальне здоров\'я. 55.5% спеціалізованої (80.2B UAH) → стаціонар — 5.0× більше кл. норми. HEAL+THRIVE ($954M) > держвидатки на МЗ за кілька років. (МОЗ 2025)'
+      : '2.5% of MH budget for mental health. 55.5% of specialized (80.2B UAH) → inpatient — 5.0× clinical need. HEAL+THRIVE ($954M) > state MH spending for several years combined. (MOH 2025)',
   },
   {
     section: 'WORLDBANK',
