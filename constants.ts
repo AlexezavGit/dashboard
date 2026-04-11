@@ -25,7 +25,7 @@ export const COLORS = {
 export const TEXTS = {
   header: {
     title: { uk: 'Стан сектору МЗПСП в Україні', en: 'MHPSS Sector Status in Ukraine' },
-    subtitle: { uk: "Ментальне здоров'я та психосоціальна підтримка — Огляд для донорів", en: "Mental Health & Psychosocial Support — Donor Overview" },
+    subtitle: { uk: "Ментальне здоров\u2019я та психосоціальна підтримка \u2014 перший набір відкритих даних, зібраних вручну: цифровий міжсекторний обмін відсутній", en: "Mental Health & Psychosocial Support \u2014 first manually assembled open dataset: no digital cross-sector data exchange exists" },
     date: { uk: 'Дані: 2020–2025', en: 'Data: 2020–2025' },
   },
   filters: {
@@ -161,18 +161,20 @@ export const WAR_IMPACT_DATA = (l: Language) => [
 ];
 
 export const SECTOR_DIST_DATA = (l: Language) => [
-  { name: l === 'uk' ? 'Державний сектор' : 'Public sector', value: 8201, fill: COLORS.blue },
-  { name: l === 'uk' ? 'НУО / гуманітарний' : 'NGO / humanitarian', value: 38000, fill: COLORS.green },
-  { name: l === 'uk' ? 'Приватний сектор' : 'Private sector', value: 0, fill: COLORS.gray }, 
+  { name: l === 'uk' ? 'Держ. сектор (8,201)' : 'Public sector (8,201)', value: 8201, fill: COLORS.blue },
+  { name: l === 'uk' ? 'НУО / гуманітарний (38,000+)' : 'NGO / humanitarian (38,000+)', value: 38000, fill: COLORS.green },
+  // Private sector: conservative 5-8K estimate from KVED/FOP registrations (practitioners with relevant KVEDs who are potentially accessible)
+  // Shadow (unregistered) practitioners NOT counted — too long a path to formalization
+  { name: l === 'uk' ? 'Приватний (оцінка 5–8K)' : 'Private (est. 5–8K)', value: 6500, fill: COLORS.purple },
 ];
 
 export const BUDGET_SPLIT_DATA = (l: Language) => [
-  // 2025 NHSU budget structure (МОЗ/НСЗУ 2025)
-  // Specialized care total: 144.6B UAH → inpatient ~80.2B (55%), outpatient ~64.4B (45%)
-  // Primary care (mhGAP integration): 25.6B UAH
-  { name: l === 'uk' ? 'Спеціаліз. стаціонар (55%)' : 'Specialized inpatient (55%)', value: 55, fill: COLORS.red },
-  { name: l === 'uk' ? 'Спеціаліз. амбулаторія (34%)' : 'Specialized outpatient (34%)', value: 34, fill: COLORS.orange },
-  { name: l === 'uk' ? 'Первинна ланка (11%)' : 'Primary care (11%)', value: 11, fill: COLORS.green },
+  // 2025 NHSU mental health budget structure (МОЗ/НСЗУ 2025)
+  // Total health budget 2025: 222.1B UAH. MH share ~2.5% = ~5.55B UAH
+  // 55% inpatient = ~3.05B UAH; 34% outpatient = ~1.89B UAH; 11% primary = ~0.61B UAH
+  { name: l === 'uk' ? 'Стаціонар 55% (~3.05 млрд ₴)' : 'Inpatient 55% (~₴3.05B)', value: 55, fill: COLORS.red },
+  { name: l === 'uk' ? 'Амбулаторія 34% (~1.89 млрд ₴)' : 'Outpatient 34% (~₴1.89B)', value: 34, fill: COLORS.orange },
+  { name: l === 'uk' ? 'Первинна 11% (~0.61 млрд ₴)' : 'Primary 11% (~₴0.61B)', value: 11, fill: COLORS.green },
 ];
 
 export const DONOR_DATA = (l: Language) => [
@@ -227,7 +229,7 @@ export const CHILDREN_DATA = (l: Language) => [
 ];
 
 export const MHGAP_FUNNEL_DATA = (l: Language) => [
-  { name: l === 'uk' ? 'Онлайн-сертифікати' : 'Online certificates', value: 130000, fill: COLORS.blueLight },
+  { name: l === 'uk' ? 'Онлайн-сертифікати' : 'Online certificates', value: 150000, fill: COLORS.blueLight },
   { name: l === 'uk' ? 'З них — первинні лікарі' : 'Of which — primary docs', value: 19000, fill: COLORS.blue },
   { name: l === 'uk' ? 'Заклади з пакетом НСЗУ' : 'NHSU MH package facilities', value: 1000, fill: COLORS.orange },
   { name: l === 'uk' ? 'Очне навчання + супервізія' : 'In-person + supervision', value: 700, fill: COLORS.green },
@@ -261,7 +263,9 @@ export const FUNDING_VS_REACH_DATA = [
 export const ECONOMIC_BURDEN_INDICATORS = (l: Language) => [
   { name: l === 'uk' ? 'Поширеність розладів' : 'Disorder Prevalence', percent: '22', value: '9,600,000', source: 'Lancet', period: '2023', units: l === 'uk' ? 'осіб' : 'people' },
   { name: l === 'uk' ? 'Потребують підтримки (МОЗ)' : 'Need support (MOH)', percent: '35', value: '15,000,000', source: 'MOH', period: '2024', units: l === 'uk' ? 'осіб' : 'people' },
-  { name: l === 'uk' ? 'Економічні втрати (ВВП)' : 'Economic losses (GDP)', percent: '4.5', value: '$6,000,000,000', source: 'World Bank', period: '2025', units: l === 'uk' ? 'USD' : 'USD' },
+  { name: l === 'uk' ? 'Втрати ВВП (World Bank)' : 'GDP losses (World Bank)', percent: '4.5', value: '$6,000,000,000', source: 'World Bank', period: '2025', units: l === 'uk' ? 'USD (оцінка)' : 'USD (est.)' },
+  // LSE/FHI360 methodology: 4-5% of pre-war GDP. Pre-war MH budget ~8B UAH; war-adjusted 10-12B UAH
+  { name: l === 'uk' ? 'Втрати ВВП з поправкою на війну (LSE/FHI 360)' : 'War-adjusted GDP loss (LSE/FHI 360)', percent: '10–12', value: l === 'uk' ? '10–12 млрд ₴' : '₴10–12B', source: 'LSE/FHI 360', period: '2023–2025', units: l === 'uk' ? 'оцінка, UAH' : 'estimate, UAH' },
 ];
 
 export const REGIONAL_BARRIERS_HEATMAP = (l: Language) => [
@@ -305,10 +309,10 @@ export const ADMIN_BURDEN = (l: Language) => [
 ];
 
 export const COORD_ITEMS = (l: Language) => [
-    { title: l === 'uk' ? '«ТИ ЯК» — Всеукраїнська програма' : '"TI YAK" — National MH Program', desc: l === 'uk' ? 'Ініціатива першої леді. Координаційний центр створено постановою КМУ від 30.03.2023 як тимчасовий дорадчий орган. Бюджет програми публічно не розкритий.' : 'First Lady initiative. Coordination Center created by CMU resolution 30.03.2023 as temporary advisory body. Program budget not publicly disclosed.', status: l === 'uk' ? 'Бюджет невідомий' : 'Budget unknown', color: 'orange' },
-    { title: l === 'uk' ? 'Ключовий продукт: PDF «Аптечка самодопомоги»' : '"Self-help first aid kit" PDF', desc: l === 'uk' ? 'Буклет з базовою інформацією про стрес та ПТСР на сайті howareu.com. Для програми національного масштабу з вищим патронатом та координаційною радою КМУ — непропорційно заявленим амбіціям.' : 'Basic stress/PTSD brochure on howareu.com. For a national-scale program with highest patronage and CMU coordination council — disproportionate to stated ambitions.', status: l === 'uk' ? 'Факт' : 'Fact', color: 'gray' },
-    { title: l === 'uk' ? '«400 000 слухачів»' : '"400,000 listeners"', desc: l === 'uk' ? 'Заявлена цифра «ТИ ЯК». Це population-level awareness, не клінічна допомога. Різниця між «слухачем вебінару» та «клінічним психологом» — як між глядачем операції на YouTube та хірургом.' : 'TI YAK claimed figure. This is population-level awareness, not clinical care. The difference between "webinar listener" and "clinical psychologist" is like watching surgery on YouTube vs. being a surgeon.', status: l === 'uk' ? 'Awareness ≠ лікування' : 'Awareness ≠ treatment', color: 'red' },
-    { title: l === 'uk' ? 'MHPSS TWG (ВООЗ + IMC)' : 'MHPSS TWG (WHO + IMC)', desc: l === 'uk' ? '450+ організацій-учасників, збори 2 рази на тиждень, 3 регіональних хаби, 4 task teams. Ручна координація. Гуманітарний стандарт — виконано. Операційна ефективність — під питанням.' : '450+ member organizations, meetings 2x/week, 3 regional hubs, 4 task teams. Manual coordination. Humanitarian standard — met. Operational efficiency — questionable.', status: l === 'uk' ? 'Координація є' : 'Coordination exists', color: 'blue' },
+    { title: l === 'uk' ? '«ТИ ЯК» — Всеукраїнська програма' : '"TI YAK" — National MH Program', desc: l === 'uk' ? 'Державна ініціатива на підтримку ментального здоров\u2019я населення. Координаційний центр при КМУ. Платформа масової обізнаності: howareu.com, лінія психологічної підтримки, навчальні матеріали.' : 'State mental health awareness initiative. Coordination Center under CMU. Mass awareness platform: howareu.com, psychological support line, educational materials.', status: l === 'uk' ? 'Awareness' : 'Awareness', color: 'blue' },
+    { title: l === 'uk' ? 'Awareness vs Clinical Care' : 'Awareness vs Clinical Care', desc: l === 'uk' ? 'Population-level awareness programs (400K+ учасників) є першим кроком. Відстань між усвідомленням потреби та отриманням клінічної допомоги залишається системним бар\u2019єром, що потребує адресного вирішення.' : 'Population-level awareness (400K+ participants) is a first step. The gap between awareness and clinical care access remains a systemic barrier requiring dedicated infrastructure.', status: l === 'uk' ? 'Gap: 15M потреба' : 'Gap: 15M need', color: 'orange' },
+    { title: l === 'uk' ? 'MHPSS TWG (ВООЗ + IMC)' : 'MHPSS TWG (WHO + IMC)', desc: l === 'uk' ? '450+ організацій-учасників, збори 2 рази на тиждень, 3 регіональних хаби, 4 task teams. Ручна координація без єдиної цифрової платформи обміну даними.' : '450+ member organizations, meetings 2x/week, 3 regional hubs, 4 task teams. Manual coordination without unified data exchange platform.', status: l === 'uk' ? 'Координація є' : 'Coordination exists', color: 'blue' },
+    { title: l === 'uk' ? 'OCHA Health Cluster' : 'OCHA Health Cluster', desc: l === 'uk' ? 'Гуманітарний кластер охорони здоров\u2019я координує надання послуг у зонах конфлікту. Дані збираються через ActivityInfo (5W) — паралельна система, не інтегрована з ЕСОЗ.' : 'Health cluster coordinates service delivery in conflict zones. Data collected via ActivityInfo (5W) — parallel system not integrated with ESOZ.', status: l === 'uk' ? 'Активний' : 'Active', color: 'blue' },
 ];
 
 export const REACH_TABLE_DATA = (l: Language) => [
@@ -355,8 +359,12 @@ export const MACRO_GAP = {
 };
 
 // Backlog chart — years to clear at different specialist counts
-// Corrected capacity: 8 hrs/day × 5 days × 50 weeks = 2,000 sessions/year (theoretical)
-// Sustainable: 1,500/yr (30 sessions/week × 50 weeks). Theoretical: 2,000/yr (8 hrs/day)
+// Sustainable (realistic norm): 1,500/yr = 30 sessions/week × 50 weeks
+//   Rationale: 4 hrs client work + 4 hrs admin/supervision/notes daily.
+//   Wartime practice: psychologists at 7-9hr/day burn out within ~3 months.
+//   1,500 already 1.5× above the 4hr-clinical-day norm.
+// Theoretical max: 2,000/yr (8hrs clinical/day) — does not exist in sustained practice.
+// Charts use sustainable=1,500 and theoretical=2,000 to show range.
 // Even at 2,000/yr with 4,000 specialists: 62.4M ÷ 8M = 7.8 years → IMPOSSIBLE
 export const BACKLOG_DATA = (l: Language) => [
   {
@@ -545,6 +553,9 @@ export const THRIVE_PROJECT = (l: Language) => ({
   critical: l === 'uk'
     ? 'THRIVE вим\u0456рює ефективн\u0456сть через дан\u0456 ЕСОЗ/НСЗУ. Якщо послуги HEAL (624K МЗ, 118 моб\u0456льних команд) не в\u0456дображаються в ЕСОЗ \u2014 вони не \u0456снують для метрик THRIVE.'
     : 'THRIVE measures efficiency via ESOZ/NHSU data. If HEAL services (624K MH, 118 mobile teams) are not in ESOZ \u2014 they do not exist for THRIVE metrics.',
+  advance: l === 'uk'
+    ? '\u0423\u0432\u0430\u0433\u0430: \u0431\u043b\u0438\u0437\u044c\u043a\u043e $220M \u0431\u0443\u043b\u043e \u0432\u0438\u043f\u043b\u0430\u0447\u0435\u043d\u043e \u0430\u0432\u0430\u043d\u0441\u043e\u043c \u2014 \u0437\u0430 \u043d\u0438\u043c \u0449\u0435 \u043d\u0435\u043e\u0431\u0445\u0456\u0434\u043d\u043e \u0437\u0432\u0456\u0442\u0443\u0432\u0430\u0442\u0438\u0441\u044c \u0447\u0435\u0440\u0435\u0437 DLI. \u0417\u0430\u043b\u0438\u0448\u043e\u043a \u2014 ~$234M \u043f\u0456\u0434 \u043f\u0456\u0434\u0442\u0432\u0435\u0440\u0434\u0436\u0435\u043d\u043d\u044f \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0456\u0432.'
+    : 'Note: ~$220M was disbursed as advance \u2014 still requires DLI reporting. Remaining ~$234M pending results verification.',
 });
 
 // HEAL Component 4 Digitalization: procurement breakdown

@@ -390,10 +390,10 @@ const App: React.FC = () => {
                     <h2 className="text-xl font-bold text-white tracking-tight uppercase group-hover:text-cyber-amber transition-colors">{section.title[lang]}</h2>
                     <div className="flex items-center gap-3 mt-1">
                       <div className="h-0.5 w-16 bg-gradient-to-r from-cyber-cyan to-transparent" />
-                      <span className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">
+                      <span className="text-[11px] font-mono text-slate-400 uppercase tracking-widest">
                         {section.id === 'prevalence' && (lang === 'uk' ? '9.6M під впливом · 22% населення' : '9.6M affected · 22% of population')}
                         {section.id === 'workforce' && (lang === 'uk' ? '1.3 психолога / 100K · потрібно 5×' : '1.3 psychologists / 100K · needs 5×')}
-                        {section.id === 'budget' && (lang === 'uk' ? '2.5% бюджету МЗ · ВООЗ рекомендує ≥5%' : '2.5% MH budget · WHO recommends ≥5%')}
+                        {section.id === 'budget' && (lang === 'uk' ? '2.5% бюджету МЗ · ~5.55 млрд ₴ · ВООЗ ≥5%' : '2.5% MH budget · ~₴5.55B · WHO ≥5%')}
                         {section.id === 'gap' && (lang === 'uk' ? '0.28% покриття · беклог 7.8 років' : '0.28% coverage · 7.8 yr backlog')}
                         {section.id === 'shadow' && (lang === 'uk' ? '110× приватний > гуманітарний · €65% штраф формалізації' : '110× private > humanitarian · 65% formalization penalty')}
                         {section.id === 'economic' && (lang === 'uk' ? '$1→$4 ROI · $1.2B+ втрати ВВП' : '$1→$4 ROI · $1.2B+ GDP loss')}
@@ -403,7 +403,7 @@ const App: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex-shrink-0 flex items-center gap-2">
-                    <span className="text-[9px] font-mono text-slate-600 uppercase tracking-widest hidden md:block">
+                    <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest hidden md:block">
                       {expandedSections.has(section.id) ? (lang === 'uk' ? 'ЗГОРНУТИ' : 'COLLAPSE') : (lang === 'uk' ? 'РОЗГОРНУТИ' : 'EXPAND')}
                     </span>
                     {expandedSections.has(section.id)
@@ -584,22 +584,30 @@ const App: React.FC = () => {
                          {[
                            { org: 'UNICEF (group PSS)', costPerPerson: 12, reach: 760, color: COLORS.teal, note: lang === 'uk' ? '$5–15/особу (групова)' : '$5–15/person (group)' },
                            { org: 'WHO (consultations)', costPerPerson: 28, reach: 80, color: COLORS.blue, note: lang === 'uk' ? '$20–35/особу' : '$20–35/person' },
+                           { org: lang === 'uk' ? 'Держ. сектор (НСЗУ)' : 'State sector (NHSU)', costPerPerson: 35, reach: 435, color: COLORS.green, note: lang === 'uk' ? '~\u20b91,400 (~$35)/випадок' : '~\u20b91,400 (~$35)/case' },
                            { org: lang === 'uk' ? 'USAID (individual therapy)' : 'USAID (individual therapy)', costPerPerson: 250, reach: 60, color: COLORS.orange, note: lang === 'uk' ? '$150–350/курс' : '$150–350/course' },
-                           { org: lang === 'uk' ? 'Держ. сектор (НСЗУ)' : 'State sector (NHSU)', costPerPerson: 35, reach: 435, color: COLORS.green, note: lang === 'uk' ? '~₴1,400 (~$35)/випадок' : '~₴1,400 (~$35)/case' },
-                         ].map(item => (
+                         ].map(item => {
+                           const pct = Math.min((item.costPerPerson / 250) * 100, 100);
+                           const isNarrow = pct < 20;
+                           return (
                            <div key={item.org} className="flex items-center gap-3">
-                             <div className="w-36 text-[10px] text-slate-400 text-right flex-shrink-0">{item.org}</div>
-                             <div className="flex-1 bg-slate-800/50 rounded-full h-6 overflow-hidden relative">
+                             <div className="w-40 text-[10px] text-slate-400 text-right flex-shrink-0">{item.org}</div>
+                             <div className="flex-1 relative h-7 flex items-center">
+                               <div className="absolute inset-y-0 left-0 right-0 bg-slate-800/50 rounded-full" />
                                <div
-                                 className="h-full rounded-full flex items-center justify-end pr-2 transition-all"
-                                 style={{ width: `${Math.min((item.costPerPerson / 250) * 100, 100)}%`, backgroundColor: item.color + '30', borderRight: `2px solid ${item.color}` }}
-                               >
-                                 <span className="text-[10px] font-mono font-bold" style={{ color: item.color }}>${item.costPerPerson}</span>
-                               </div>
+                                 className="absolute inset-y-0 left-0 rounded-full"
+                                 style={{ width: `${pct}%`, backgroundColor: item.color + '25', borderRight: `2px solid ${item.color}` }}
+                               />
+                               {isNarrow ? (
+                                 <span className="relative z-10 text-[11px] font-mono font-bold ml-2" style={{ marginLeft: `calc(${pct}% + 6px)`, color: item.color }}>${item.costPerPerson}</span>
+                               ) : (
+                                 <span className="absolute right-2 z-10 text-[11px] font-mono font-bold" style={{ left: `calc(${pct}% - 40px)`, color: item.color }}>${item.costPerPerson}</span>
+                               )}
                              </div>
-                             <div className="w-24 text-[9px] text-slate-600 flex-shrink-0">{item.note}</div>
+                             <div className="w-28 text-[9px] text-slate-500 flex-shrink-0">{item.note}</div>
                            </div>
-                         ))}
+                           );
+                         })}
                          <div className="mt-4 pt-3 border-t border-cyber-border/20 text-[10px] text-slate-500 font-mono">
                            {lang === 'uk'
                              ? 'Охоплення (тис. осіб): UNICEF 760K · НСЗУ 435K · WHO 80K · USAID 60K'
@@ -863,7 +871,7 @@ const App: React.FC = () => {
                       <div className="flex items-center gap-3 mb-4">
                         <TrendingUp className="w-4 h-4 text-cyber-cyan" />
                         <span className="cyber-label text-[11px] text-cyber-cyan">
-                          {lang === 'uk' ? 'КЕЙС ДЛЯ ІНВЕСТОРА: ДОВЕДЕНИЙ ROI' : 'INVESTOR CASE: PROVEN ROI'}
+                          {lang === 'uk' ? 'ДОВЕДЕНИЙ ROI: ВАРТІСТЬ БЕЗДІЯЛЬНОСТІ' : 'PROVEN ROI: COST OF INACTION'}
                         </span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -966,7 +974,9 @@ const App: React.FC = () => {
                              </BarChart>
                           </ResponsiveContainer>
                           <InsightBox type="neutral">
-                             {lang === 'uk' ? 'З 96 000 сертифікатів лише ~1 000 закладів реально впровадили пакет НСЗУ. (Логарифмічна шкала)' : 'Of 96,000 certificates, only ~1,000 facilities actually implemented the NHSU package. (Logarithmic scale)'}
+                             {lang === 'uk'
+                               ? '\u0417 150\u202f000 \u0441\u0435\u0440\u0442\u0438\u0444\u0456\u043a\u0430\u0442\u0456\u0432 \u043b\u0438\u0448\u0435 ~1\u202f000 \u0437\u0430\u043a\u043b\u0430\u0434\u0456\u0432 \u0440\u0435\u0430\u043b\u044c\u043d\u043e \u0432\u043f\u0440\u043e\u0432\u0430\u0434\u0438\u043b\u0438 \u043f\u0430\u043a\u0435\u0442 \u041d\u0421\u0417\u0423 (\u043f\u0441\u0438\u0445\u043e\u043b\u043e\u0433\u0456\u0447\u043d\u0430 \u0434\u043e\u043f\u043e\u043c\u043e\u0433\u0430). 3\u202f346 \u0437\u0430\u043a\u043b\u0430\u0434\u0456\u0432 HeRAMS \u2014 \u0446\u0435 \u0432\u0441\u0456 \u0437\u0430\u043a\u043b\u0430\u0434\u0438, \u0449\u043e \u0437\u0432\u0456\u0442\u0443\u044e\u0442\u044c, \u0430 \u043d\u0435 \u0442\u0456, \u0449\u043e \u0432\u043f\u0440\u043e\u0432\u0430\u0434\u0438\u043b\u0438 \u043f\u0441\u0438\u0445\u043e\u043b\u043e\u0433\u0456\u0447\u043d\u0438\u0439 \u043f\u0430\u043a\u0435\u0442.'
+                               : 'Of 150,000 certificates only ~1,000 facilities actually implemented the NHSU psychological help package. The 3,346 HeRAMS figure = all reporting facilities, not those with the MH package specifically.'}
                           </InsightBox>
                        </Card>
                        <Card title={lang === 'uk' ? '«Навчені фахівці»: реальність' : "'Trained Professionals': Reality"}>
@@ -1348,6 +1358,10 @@ const App: React.FC = () => {
                    <div className="text-[8px] text-rose-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'КРИТИЧНА ДЕТАЛЬ' : 'CRITICAL DETAIL'}</div>
                    <p className="text-[11px] text-rose-300 leading-relaxed">{THRIVE_PROJECT(lang).critical}</p>
                  </div>
+                 <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
+                   <div className="text-[8px] text-amber-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'АВАНСОВІ ВИПЛАТИ' : 'ADVANCE DISBURSEMENT'}</div>
+                   <p className="text-[10px] text-amber-300/80 leading-relaxed">{THRIVE_PROJECT(lang).advance}</p>
+                 </div>
                </div>
              </div>
              {/* HEAL Component 4 Procurement Gap */}
@@ -1494,12 +1508,12 @@ const App: React.FC = () => {
                  {FORMALIZATION_COST_V3(lang).directCosts.items.map((item) => (
                    <div key={item.label} className="flex justify-between text-[11px] px-2 py-1.5 rounded bg-slate-800/30 border border-slate-700/20">
                      <span className="text-slate-400">{item.label}</span>
-                     <span className="text-slate-300 font-mono">\u20ac{item.amountPerMonth}/mo</span>
+                     <span className="text-slate-300 font-mono">&euro;{item.amountPerMonth.toLocaleString('en-US')}/mo</span>
                    </div>
                  ))}
                  <div className="flex justify-between text-[12px] px-2 py-2 rounded bg-rose-500/10 border border-rose-500/20 font-bold">
                    <span className="text-rose-300">Subtotal A</span>
-                   <span className="text-rose-300 font-mono">\u20ac{FORMALIZATION_COST_V3(lang).directCosts.totalPerMonth}/mo</span>
+                   <span className="text-rose-300 font-mono">&euro;{FORMALIZATION_COST_V3(lang).directCosts.totalPerMonth.toLocaleString('en-US')}/mo</span>
                  </div>
                </div>
                <div className="space-y-3">
@@ -1507,19 +1521,19 @@ const App: React.FC = () => {
                  {FORMALIZATION_COST_V3(lang).opportunityCost.items.map((item) => (
                    <div key={item.label} className="flex justify-between text-[11px] px-2 py-1.5 rounded bg-slate-800/30 border border-slate-700/20">
                      <span className="text-slate-400">{item.label}</span>
-                     <span className="text-slate-300 font-mono">\u20ac{item.amountPerMonth}/mo</span>
+                     <span className="text-slate-300 font-mono">&euro;{item.amountPerMonth.toLocaleString('en-US')}/mo</span>
                    </div>
                  ))}
                  <div className="flex justify-between text-[12px] px-2 py-2 rounded bg-rose-500/10 border border-rose-500/20 font-bold">
                    <span className="text-rose-300">Subtotal B</span>
-                   <span className="text-rose-300 font-mono">\u20ac{FORMALIZATION_COST_V3(lang).opportunityCost.totalPerMonth}/mo</span>
+                   <span className="text-rose-300 font-mono">&euro;{FORMALIZATION_COST_V3(lang).opportunityCost.totalPerMonth.toLocaleString('en-US')}/mo</span>
                  </div>
                </div>
                <div className="space-y-3">
                  <div className="bg-rose-500/10 border border-rose-500/30 rounded-xl p-4 text-center">
                    <div className="text-[8px] text-rose-400 uppercase tracking-wider font-mono mb-1">TOTAL A + B</div>
-                   <div className="text-3xl font-bold text-rose-400 font-mono">\u20ac{FORMALIZATION_COST_V3(lang).total.perMonth}/mo</div>
-                   <div className="text-[9px] text-slate-500 mt-1">\u20ac{FORMALIZATION_COST_V3(lang).total.perYear.toLocaleString()}/year</div>
+                   <div className="text-3xl font-bold text-rose-400 font-mono">&euro;{FORMALIZATION_COST_V3(lang).total.perMonth.toLocaleString('en-US')}/mo</div>
+                   <div className="text-[9px] text-slate-500 mt-1">&euro;{FORMALIZATION_COST_V3(lang).total.perYear.toLocaleString('en-US')}/year</div>
                  </div>
                  <div className="grid grid-cols-2 gap-2">
                    <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
@@ -1558,93 +1572,51 @@ const App: React.FC = () => {
                 rel="noreferrer" 
                 className="inline-flex items-center gap-3 bg-cyber-cyan text-cyber-bg px-8 py-3 rounded-lg font-bold text-sm hover:bg-white transition-all shadow-lg cyber-glow-cyan uppercase tracking-widest"
               >
-                <Globe className="w-4 h-4" /> {lang === 'uk' ? 'Відвідати FEEL AGAIN' : 'Visit FEEL AGAIN'}
+                <Globe className="w-4 h-4" /> FEEL AGAIN
               </a>
            </motion.div>
 
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-              <div>
-                <h4 className="cyber-label mb-6 text-cyber-amber">{TEXTS.footer.primarySources[lang]}</h4>
-                <div className="flex flex-col gap-4">
-                  {SOURCES.primary.map((s, idx) => (
-                    <motion.a 
-                      key={idx} 
-                      href={s.url} 
-                      target="_blank" 
-                      rel="noreferrer" 
-                      whileHover={{ x: 5 }}
-                      className="text-xs text-slate-500 hover:text-cyber-cyan transition-colors flex items-center gap-3 group"
-                    >
-                       <Download className="w-3.5 h-3.5 text-cyber-cyan opacity-50 group-hover:opacity-100" /> 
+           {/* Sources — collapsible */}
+           <details className="mb-12 border border-slate-800 rounded-xl overflow-hidden group/sources">
+             <summary className="bg-slate-900/60 px-5 py-3 flex items-center gap-3 cursor-pointer list-none hover:bg-slate-800/60 transition-colors">
+               <BookOpen className="w-3.5 h-3.5 text-cyber-amber flex-shrink-0" />
+               <span className="cyber-label text-[10px] text-cyber-amber flex-1">{TEXTS.footer.sources[lang]}</span>
+               <ChevronDown className="w-3.5 h-3.5 text-slate-500 group-open/sources:rotate-180 transition-transform" />
+             </summary>
+             <div className="px-5 py-6 grid grid-cols-1 md:grid-cols-2 gap-12">
+               <div>
+                 <h4 className="cyber-label mb-4 text-cyber-amber text-[10px]">{TEXTS.footer.primarySources[lang]}</h4>
+                 <div className="flex flex-col gap-3">
+                   {SOURCES.primary.map((s, idx) => (
+                     <motion.a key={idx} href={s.url} target="_blank" rel="noreferrer" whileHover={{ x: 4 }}
+                       className="text-xs text-slate-500 hover:text-cyber-cyan transition-colors flex items-center gap-3 group">
+                       <Download className="w-3.5 h-3.5 text-cyber-cyan opacity-50 group-hover:opacity-100 flex-shrink-0" />
                        <span className="font-mono">{s.name}</span>
-                    </motion.a>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <h4 className="cyber-label mb-6 text-cyber-amber">{TEXTS.footer.secondarySources[lang]}</h4>
-                <div className="flex flex-col gap-4">
-                  {SOURCES.secondary.map((s, idx) => (
-                    <motion.a 
-                      key={idx} 
-                      href={s.url} 
-                      target="_blank" 
-                      rel="noreferrer" 
-                      whileHover={{ x: 5 }}
-                      className="text-xs text-slate-500 hover:text-cyber-cyan transition-colors flex items-center gap-3 group"
-                    >
-                       <Globe className="w-3.5 h-3.5 text-slate-600 group-hover:text-cyber-cyan" /> 
+                     </motion.a>
+                   ))}
+                 </div>
+               </div>
+               <div>
+                 <h4 className="cyber-label mb-4 text-cyber-amber text-[10px]">{TEXTS.footer.secondarySources[lang]}</h4>
+                 <div className="flex flex-col gap-3">
+                   {SOURCES.secondary.map((s, idx) => (
+                     <motion.a key={idx} href={s.url} target="_blank" rel="noreferrer" whileHover={{ x: 4 }}
+                       className="text-xs text-slate-500 hover:text-cyber-cyan transition-colors flex items-center gap-3 group">
+                       <Globe className="w-3.5 h-3.5 text-slate-600 group-hover:text-cyber-cyan flex-shrink-0" />
                        <span className="font-mono">{s.name}</span>
-                    </motion.a>
-                  ))}
-                </div>
-              </div>
-           </div>
-
-           {/* Connected Assets */}
-           <div className="mb-10 border border-cyber-cyan/20 rounded-xl overflow-hidden">
-             <div className="bg-cyber-surface px-5 py-3 border-b border-cyber-cyan/20 flex items-center gap-3">
-               <FolderOpen className="w-4 h-4 text-cyber-cyan" />
-               <span className="cyber-label text-[10px] text-cyber-cyan">
-                 {lang === 'uk' ? 'ПОВ\u2019ЯЗАНІ МАТЕРІАЛИ' : 'CONNECTED ASSETS'}
-               </span>
+                     </motion.a>
+                   ))}
+                 </div>
+               </div>
              </div>
-             <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-               {CONNECTED_ASSETS(lang).map((asset, i) => {
-                 const typeIcon = asset.type === 'repo'
-                   ? <Database className="w-3.5 h-3.5 text-cyber-cyan flex-shrink-0" />
-                   : asset.type === 'dashboard'
-                   ? <LayoutDashboard className="w-3.5 h-3.5 text-cyber-amber flex-shrink-0" />
-                   : asset.type === 'drive'
-                   ? <FolderOpen className="w-3.5 h-3.5 text-cyber-purple flex-shrink-0" />
-                   : <BookOpen className="w-3.5 h-3.5 text-cyber-success flex-shrink-0" />;
-                 return (
-                   <motion.a
-                     key={i}
-                     href={asset.url}
-                     target="_blank"
-                     rel="noreferrer"
-                     whileHover={{ x: 4 }}
-                     className="flex items-start gap-3 p-3 rounded-lg bg-slate-800/40 border border-slate-700/40 hover:border-cyber-cyan/30 hover:bg-slate-800/70 transition-all group"
-                   >
-                     {typeIcon}
-                     <div className="min-w-0">
-                       <div className="text-[11px] font-bold text-slate-300 group-hover:text-white transition-colors truncate">{asset.name}</div>
-                       <div className="text-[9px] text-slate-600 mt-0.5">{asset.desc}</div>
-                     </div>
-                     <ExternalLink className="w-3 h-3 text-slate-700 group-hover:text-cyber-cyan flex-shrink-0 ml-auto mt-0.5 transition-colors" />
-                   </motion.a>
-                 );
-               })}
-             </div>
-           </div>
+           </details>
 
            {/* Data Infrastructure Gap — why live data is structurally impossible */}
            <div className="mb-10 border border-slate-800 rounded-xl overflow-hidden">
              <div className="bg-slate-900/60 px-5 py-3 border-b border-slate-800 flex items-center gap-3">
                <span className="w-2 h-2 rounded-full bg-amber-500/70 flex-shrink-0" />
                <span className="cyber-label text-[10px] text-amber-500/80">
-                 {lang === 'uk' ? 'ШПАРГАЛКА: ЧОМУ LIVE-ДАНІ СТРУКТУРНО НЕДОСЯЖНІ' : 'CHEAT SHEET: WHY LIVE DATA IS STRUCTURALLY UNAVAILABLE'}
+                 {lang === 'uk' ? 'ЧОМУ LIVE-ДАНІ СТРУКТУРНО НЕДОСЯЖНІ' : 'WHY LIVE DATA IS STRUCTURALLY UNAVAILABLE'}
                </span>
              </div>
              <div className="px-5 py-4 space-y-4">
