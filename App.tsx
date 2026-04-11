@@ -15,6 +15,7 @@ import {
   THRIVE_PROJECT, HEAL_C4_PROCUREMENT, COUNTERARGUMENTS, ARCH_FLOW,
   STAKEHOLDER_MATRIX, FORMALIZATION_COST_V3, DUAL_PROJECT_NARRATIVE, MISSING_MIDDLE,
   PERFECT_STORM_SCALE, STRUCTURAL_DISP_DATA,
+  KEY_CONCLUSIONS, ALL_CONCLUSIONS_GRID, MISSING_DATA,
 } from './constants';
 import { Language, SectionFilter } from './types';
 import { Card } from './components/ui/Card';
@@ -135,7 +136,20 @@ const App: React.FC = () => {
     loadLiveData();
   }, [loadLiveData]);
 
-  const filteredSections = activeSection === 'all' 
+  // Auto-expand section when a specific filter is selected
+  useEffect(() => {
+    if (activeSection !== 'all') {
+      setExpandedSections(new Set([activeSection]));
+    }
+  }, [activeSection]);
+
+  // Email subscribe state
+  const [emailTop, setEmailTop] = React.useState('');
+  const [emailBottom, setEmailBottom] = React.useState('');
+  const [submittedTop, setSubmittedTop] = React.useState(false);
+  const [submittedBottom, setSubmittedBottom] = React.useState(false);
+
+  const filteredSections = activeSection === 'all'
     ? SECTIONS_CONFIG 
     : SECTIONS_CONFIG.filter(s => s.id === activeSection);
 
@@ -173,37 +187,36 @@ const App: React.FC = () => {
         
         {/* Header */}
         <header className="pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-cyber-border pb-8 mb-8">
-          <div className="flex items-center gap-4">
-            <img src="/logo.svg" alt="FEEL Again" className="w-12 h-12 rounded-xl" />
-            <div className="w-px h-10 bg-cyber-border" />
+          <div className="flex items-center gap-5">
+            <img src="/logo.svg" alt="FEEL Again" className="w-24 h-24 rounded-xl" />
+            <div className="w-px h-12 bg-cyber-border" />
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tighter flex items-center gap-3">
                 {TEXTS.header.title[lang]}
-                <span className="text-[10px] bg-cyber-success/20 text-cyber-success px-2 py-0.5 rounded border border-cyber-success/30 font-mono animate-pulse uppercase">
+                <span className="text-[10px] bg-cyber-success/10 text-cyber-success px-2 py-0.5 rounded border border-cyber-success/30 font-mono uppercase" style={{animation:'pulse 6s ease-in-out infinite'}}>
                   SECURE
                 </span>
               </h1>
               <p className="text-slate-500 text-xs md:text-sm font-mono mt-1">{TEXTS.header.subtitle[lang]}</p>
             </div>
           </div>
-          
+
           <div className="flex flex-col md:items-end gap-3 w-full md:w-auto">
             <div className="flex bg-cyber-surface border border-cyber-border p-1 rounded-lg">
-              <button 
+              <button
                 onClick={() => setLang('uk')}
-                className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${lang === 'uk' ? 'bg-cyber-amber text-cyber-bg shadow-lg' : 'text-slate-500 hover:text-white'}`}
+                className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${lang === 'uk' ? 'bg-cyber-amber text-cyber-bg shadow-lg scale-[1.04]' : 'text-slate-500 hover:text-white hover:bg-slate-800'}`}
               >
                 UA
               </button>
-              <button 
+              <button
                 onClick={() => setLang('en')}
-                className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${lang === 'en' ? 'bg-cyber-amber text-cyber-bg shadow-lg' : 'text-slate-500 hover:text-white'}`}
+                className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${lang === 'en' ? 'bg-cyber-amber text-cyber-bg shadow-lg scale-[1.04]' : 'text-slate-500 hover:text-white hover:bg-slate-800'}`}
               >
                 EN
               </button>
             </div>
-            <div className="text-[10px] font-mono text-cyber-amber uppercase tracking-widest flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyber-amber animate-ping" />
+            <div className="text-[10px] font-mono text-cyber-amber uppercase tracking-widest">
               SYSTEM_TIME: {new Date().toLocaleTimeString()} | {TEXTS.header.date[lang]}
             </div>
           </div>
@@ -359,6 +372,70 @@ const App: React.FC = () => {
           </p>
         </div>
 
+        {/* Key Conclusions — 4 primary thesis cards */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <CircleDot className="w-4 h-4 text-cyber-amber" />
+            <span className="cyber-label text-[11px] text-cyber-amber uppercase tracking-widest">
+              {lang === 'uk' ? 'КЛЮЧОВІ ВИСНОВКИ' : 'KEY CONCLUSIONS'}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {KEY_CONCLUSIONS(lang).map((c, i) => {
+              const icons: Record<string, React.ReactNode> = {
+                Zap: <Zap className="w-4 h-4 flex-shrink-0" style={{ color: c.color }} />,
+                AlertTriangle: <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: c.color }} />,
+                TrendingUp: <TrendingUp className="w-4 h-4 flex-shrink-0" style={{ color: c.color }} />,
+                Database: <Database className="w-4 h-4 flex-shrink-0" style={{ color: c.color }} />,
+              };
+              return (
+                <div key={i} className="cyber-card rounded-xl p-5 border-l-2 flex flex-col gap-2" style={{ borderLeftColor: c.color }}>
+                  <div className="flex items-center gap-2">
+                    {icons[c.icon]}
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider" style={{ color: c.color }}>
+                      {c.num}. {c.title}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 leading-relaxed">{c.body}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Email CTA #1 — Get Report */}
+        <div className="mb-8 rounded-xl border border-cyber-amber/30 bg-cyber-amber/5 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex-1">
+            <div className="text-[11px] font-mono font-bold text-cyber-amber uppercase tracking-widest mb-1">
+              {lang === 'uk' ? 'ОТРИМАТИ ЗВІТ НА ПОШТУ' : 'GET REPORT BY EMAIL'}
+            </div>
+            <p className="text-[11px] text-slate-400">
+              {lang === 'uk'
+                ? 'Надішлемо зведений PDF-звіт з усіма висновками та оновленнями даних'
+                : 'We\'ll send a summarised PDF report with all findings and data updates'}
+            </p>
+          </div>
+          {submittedTop ? (
+            <div className="flex items-center gap-2 text-cyber-success text-[11px] font-mono font-bold">
+              <Check className="w-4 h-4" /> {lang === 'uk' ? 'Дякуємо!' : 'Thank you!'}
+            </div>
+          ) : (
+            <form className="flex gap-2 w-full sm:w-auto" onSubmit={e => { e.preventDefault(); if (emailTop) setSubmittedTop(true); }}>
+              <input
+                type="email"
+                required
+                value={emailTop}
+                onChange={e => setEmailTop(e.target.value)}
+                placeholder={lang === 'uk' ? 'your@email.com' : 'your@email.com'}
+                className="flex-1 sm:w-56 bg-cyber-surface border border-cyber-border rounded-lg px-3 py-2 text-[11px] font-mono text-white placeholder-slate-600 focus:outline-none focus:border-cyber-amber/60 transition-colors"
+              />
+              <button type="submit" className="bg-cyber-amber text-cyber-bg px-4 py-2 rounded-lg text-[11px] font-mono font-bold hover:bg-white transition-colors uppercase tracking-wider flex-shrink-0">
+                {lang === 'uk' ? 'Надіслати' : 'Send'}
+              </button>
+            </form>
+          )}
+        </div>
+
         {/* KPIs Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-4">
           {KPI_DATA.map((kpi, idx) => (
@@ -381,6 +458,27 @@ const App: React.FC = () => {
                 <div className="text-[22px] font-bold tracking-tighter leading-none mb-1" style={{ color: m.color }}>{m.val}</div>
                 <div className="text-[9px] text-slate-400 uppercase tracking-widest">{m.label}</div>
                 <div className="text-[9px] text-slate-600 mt-0.5 leading-tight">{m.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* All Conclusions Summary Grid — 8-cell cross-section digest */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-4 px-1">
+            <div className="h-px flex-1 bg-gradient-to-r from-slate-700/60 to-transparent" />
+            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-[0.2em] px-2">
+              {lang === 'uk' ? 'ВСІ КЛЮЧОВІ ВИСНОВКИ — ЗВЕДЕНИЙ ОГЛЯД' : 'ALL KEY CONCLUSIONS — SUMMARY VIEW'}
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-l from-slate-700/60 to-transparent" />
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+            {ALL_CONCLUSIONS_GRID(lang).map((c, i) => (
+              <div key={i} className="bg-cyber-surface border border-cyber-border/50 rounded-lg p-3 flex flex-col gap-1.5 hover:border-cyber-border transition-colors">
+                <div className="text-[9px] font-mono font-bold uppercase tracking-widest" style={{ color: c.color }}>
+                  {c.section}
+                </div>
+                <p className="text-[10px] text-slate-400 leading-relaxed">{c.text}</p>
               </div>
             ))}
           </div>
@@ -1331,6 +1429,63 @@ const App: React.FC = () => {
           </div>
         </div>
 
+        {/* Missing Data — Future Sections */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-4">
+            <Database className="w-4 h-4 text-slate-500" />
+            <span className="cyber-label text-[11px] text-slate-400 uppercase tracking-widest">
+              {lang === 'uk' ? 'ДАНІ, ЯКИХ НЕ ВИСТАЧАЄ — МАЙБУТНІ РОЗДІЛИ' : 'MISSING DATA — FUTURE SECTIONS'}
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {MISSING_DATA(lang).map((item, i) => (
+              <div key={i} className="bg-cyber-surface border border-slate-700/40 rounded-xl p-4 flex flex-col gap-2 relative overflow-hidden">
+                <div className="absolute top-2.5 right-2.5 text-[8px] font-mono text-slate-600 border border-slate-700/50 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                  COMING SOON
+                </div>
+                <div className="text-[11px] font-bold text-slate-300 pr-20 leading-tight">{item.title}</div>
+                <p className="text-[10px] text-slate-500 leading-relaxed">{item.desc}</p>
+                <div className="text-[9px] font-mono text-cyber-amber/60 border-t border-slate-700/30 pt-1.5 mt-auto">
+                  {lang === 'uk' ? 'Рандах:' : 'Roadmap:'} {item.roadmap}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Email CTA #2 — Dashboard Updates */}
+        <div className="mb-12 rounded-xl border border-cyber-cyan/20 bg-cyber-cyan/3 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex-1">
+            <div className="text-[11px] font-mono font-bold text-cyber-cyan uppercase tracking-widest mb-1">
+              {lang === 'uk' ? 'ОНОВЛЕННЯ ДАШБОРДУ' : 'DASHBOARD UPDATES'}
+            </div>
+            <p className="text-[11px] text-slate-400">
+              {lang === 'uk'
+                ? 'Залишіть email — надсилатимемо оновлення даних і нові версії аналізу'
+                : 'Leave your email — we\'ll send data updates and new analysis versions'}
+            </p>
+          </div>
+          {submittedBottom ? (
+            <div className="flex items-center gap-2 text-cyber-success text-[11px] font-mono font-bold">
+              <Check className="w-4 h-4" /> {lang === 'uk' ? 'Підписано!' : 'Subscribed!'}
+            </div>
+          ) : (
+            <form className="flex gap-2 w-full sm:w-auto" onSubmit={e => { e.preventDefault(); if (emailBottom) setSubmittedBottom(true); }}>
+              <input
+                type="email"
+                required
+                value={emailBottom}
+                onChange={e => setEmailBottom(e.target.value)}
+                placeholder="your@email.com"
+                className="flex-1 sm:w-56 bg-cyber-surface border border-cyber-border rounded-lg px-3 py-2 text-[11px] font-mono text-white placeholder-slate-600 focus:outline-none focus:border-cyber-cyan/60 transition-colors"
+              />
+              <button type="submit" className="bg-cyber-cyan text-cyber-bg px-4 py-2 rounded-lg text-[11px] font-mono font-bold hover:bg-white transition-colors uppercase tracking-wider flex-shrink-0">
+                {lang === 'uk' ? 'Підписатись' : 'Subscribe'}
+              </button>
+            </form>
+          )}
+        </div>
+
         {/* Footer */}
         <footer className="mt-12 border-t border-cyber-border pt-12 pb-16">
            {/* Feel Again Solution — IS / IS NOT */}
@@ -1836,9 +1991,21 @@ const App: React.FC = () => {
              </div>
            </div>
 
-           <p className="text-[10px] text-slate-600 italic border-t border-cyber-border pt-6 font-mono">
-              {TEXTS.footer.disclaimer[lang]}
-           </p>
+           <div className="border-t border-cyber-border pt-6 space-y-2">
+             <p className="text-[10px] text-slate-600 italic font-mono">
+               {TEXTS.footer.disclaimer[lang]}
+             </p>
+             <p className="text-[10px] text-slate-700 font-mono">
+               &copy; 2026 FEEL Again Program.{' '}
+               {lang === 'uk' ? 'Всі права захищено.' : 'All rights reserved.'}{' '}
+               dashboard.feelagain.me
+             </p>
+             <p className="text-[10px] text-slate-700 italic font-mono">
+               {lang === 'uk'
+                 ? 'Дані надані виключно для інформаційних цілей. Не є офіційним звітом гуманітарних акторів, фінансових інституцій, або урядових структур.'
+                 : 'Data provided for informational purposes only. Not an official report of humanitarian actors, financial institutions, or governmental structures.'}
+             </p>
+           </div>
         </footer>
       </div>
     </div>

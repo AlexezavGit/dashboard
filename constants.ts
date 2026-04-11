@@ -884,6 +884,152 @@ export const MISSING_MIDDLE = (l: Language) => ({
   },
 });
 
+// Key Conclusions — 4 primary thesis cards (shown after executive thesis)
+export const KEY_CONCLUSIONS = (l: Language) => [
+  {
+    icon: 'Zap',
+    color: '#F59E0B',
+    num: '1',
+    title: l === 'uk' ? 'Інфраструктура, а не тренінги' : 'Infrastructure, not training',
+    body: l === 'uk'
+      ? 'Система не потребує більше тренінгів — вона потребує цифрових фінансових рейок, що дозволяють фахівцям фіксувати ефективність. Беклог 7.8–10.4 роки неможливо подолати без автоматизації та оптимізації процесів надання послуг.'
+      : 'The system does not need more training — it needs digital financial rails enabling practitioners to track outcomes. A 7.8–10.4 year backlog cannot be cleared without automating and optimising service delivery.',
+  },
+  {
+    icon: 'AlertTriangle',
+    color: '#EF4444',
+    num: '2',
+    title: l === 'uk' ? 'Тіньовий сектор як донор' : 'Shadow sector as a donor',
+    body: l === 'uk'
+      ? 'Приватний ринок де-факто субсидує державну систему. Без легалізації та інтеграції тіньового сектору — який стримується штрафом за формалізацію у 65% доходу — система не матиме ресурс для масштабування.'
+      : 'The private market de facto subsidises the state system. Without legalising and integrating the shadow sector — held back by a 65% income penalty on formalisation — the system will lack the resource to scale.',
+  },
+  {
+    icon: 'TrendingUp',
+    color: '#F97316',
+    num: '3',
+    title: l === 'uk' ? 'Бюджетна інверсія' : 'Budget inversion',
+    body: l === 'uk'
+      ? 'Більша частина бюджету МЗ на психічне здоров\'я йде на стаціонарне лікування, хоча світова практика вимагає фокус на амбулаторній допомозі. Це створює «пляшкове горлечко» на лінії первинної медичної допомоги (ПМД).'
+      : 'The majority of the MH mental health budget goes to inpatient care, whereas best practice requires an outpatient focus. This creates a bottleneck at the primary care (PHC) level.',
+  },
+  {
+    icon: 'Database',
+    color: '#00F5FF',
+    num: '4',
+    title: l === 'uk' ? 'Дані як зброя' : 'Data as a weapon',
+    body: l === 'uk'
+      ? 'Відсутність верифікованих даних про надані послуги (Missing Middle) не дозволяє залучати інвестиції. Інвестори не бачать ROI, тому що система не генерує надійних метрик ефективності для фінансових планів.'
+      : 'The absence of verified service delivery data (Missing Middle) blocks investment. Investors cannot see ROI because the system generates no reliable performance metrics for financial planning.',
+  },
+];
+
+// All Conclusions Summary Grid — 8-cell cross-section digest
+export const ALL_CONCLUSIONS_GRID = (l: Language) => [
+  {
+    section: 'PERFECTSTORM',
+    color: '#F59E0B',
+    text: l === 'uk'
+      ? 'Масштаб кризи перевищує будь-яку здатність сектору реагувати тренінгами або проєктами. Потрібна інфраструктура — рейки, а не потяги.'
+      : 'The scale of the crisis exceeds any sector capacity to respond with training or projects. Infrastructure needed — rails, not trains.',
+  },
+  {
+    section: 'PREVALENCE',
+    color: '#A855F7',
+    text: l === 'uk'
+      ? '44% депресія, 25% ПТСР, 23% тривожність — і це лише клінічно виражені. 1.9 млн потребують лікування зараз.'
+      : '44% depression, 25% PTSD, 23% anxiety — clinically expressed only. 1.9M need treatment now.',
+  },
+  {
+    section: 'WORKFORCE',
+    color: '#3B82F6',
+    text: l === 'uk'
+      ? '1.3 психолога на 100K (ВООЗ рекомендує 6.5). 23% кадрів втрачено. ~15K у тіні — невидимі для системи.'
+      : '1.3 psychologists per 100K (WHO recommends 6.5). 23% of workforce lost. ~15K in shadow — invisible to the system.',
+  },
+  {
+    section: 'BUDGET',
+    color: '#EF4444',
+    text: l === 'uk'
+      ? '2.5% бюджету МЗ на ментальне здоров\'я. Домінуюча частина → стаціонар. HEAL+THRIVE ($954M) > держвидатки на МЗ за кілька років.'
+      : '2.5% of MH budget for mental health. Dominant share → inpatient. HEAL+THRIVE ($954M) > state MH spending for several years combined.',
+  },
+  {
+    section: 'WORLDBANK',
+    color: '#10B981',
+    text: l === 'uk'
+      ? '624K послуг надано, 0% верифіковано в ЕСОЗ. $41M Component 4 не витрачено — вікно можливостей відкрите.'
+      : '624K services delivered, 0% verified in ESOZ. $41M Component 4 unspent — opportunity window open.',
+  },
+  {
+    section: 'GAP',
+    color: '#F59E0B',
+    text: l === 'uk'
+      ? '54% визнають потребу але не шукають допомогу. Головний бар\'єр — «не серйозно» (29%), не ціна. Запит є — шляху немає.'
+      : '54% recognise need but don\'t seek help. Main barrier — "not serious" (29%), not cost. Demand exists — no pathway.',
+  },
+  {
+    section: 'SHADOW',
+    color: '#8B5CF6',
+    text: l === 'uk'
+      ? '€979/міс штраф за формалізацію = 65% доходу. Без зниження friction формалізація не відбудеться — система не отримає кадрів.'
+      : '€979/mo penalty for formalisation = 65% of income. Without friction reduction, formalisation won\'t happen — system won\'t gain workforce.',
+  },
+  {
+    section: 'INPUTS',
+    color: '#06B6D4',
+    text: l === 'uk'
+      ? '150K сертифікатів → 42 практикуючих. 624K послуг → 0% в ЕСОЗ. Тренінг без інфраструктури = вода в пісок.'
+      : '150K certificates → 42 practicing. 624K services → 0% in ESOZ. Training without infrastructure = water into sand.',
+  },
+];
+
+// Missing Data — future sections (COMING SOON)
+export const MISSING_DATA = (l: Language) => [
+  {
+    title: l === 'uk' ? 'Регіональний розподіл фахівців' : 'Regional specialist distribution',
+    desc: l === 'uk'
+      ? 'Доступні MH ресурси по регіонах та адміністративних одиницях. Рівень: дані НСЗУ / HeRAMS по районах.'
+      : 'Available MH resources by region and administrative unit. Level: NHSU / HeRAMS district data.',
+    roadmap: l === 'uk' ? 'Платформа: Реєстр НСЗУ' : 'Platform: NHSU Registry',
+  },
+  {
+    title: l === 'uk' ? 'Ціни на сесії (тіньовий ринок)' : 'Session pricing (shadow market)',
+    desc: l === 'uk'
+      ? 'Актуальні дані середніх цін на приватні сесії та їх регіональна варіативність.'
+      : 'Current average prices for private sessions and their regional variance.',
+    roadmap: l === 'uk' ? 'Тарифна модель платформи' : 'Platform pricing model',
+  },
+  {
+    title: l === 'uk' ? 'Результативність існуючих програм' : 'Effectiveness of existing programmes',
+    desc: l === 'uk'
+      ? 'Дані результатів кожної існуючої програми та програм-аналогів. Benchmark для оцінки порталу.'
+      : 'Outcome data for each existing programme and analogues. Benchmark for portal evaluation.',
+    roadmap: l === 'uk' ? 'FEEL Again портал оцінки' : 'FEEL Again assessment portal',
+  },
+  {
+    title: l === 'uk' ? 'Реєстр надавачів (НСЗУ)' : 'Provider registry (NHSU)',
+    desc: l === 'uk'
+      ? 'Дані щодо MH надавачів в НСЗУ: контакти, спеціалізація, завантаженість.'
+      : 'NHSU MH provider data: contacts, specialisation, caseload.',
+    roadmap: l === 'uk' ? 'Основа реєстру платформи' : 'Platform registry foundation',
+  },
+  {
+    title: l === 'uk' ? 'Дані ЕСОЗ (МЗ потоки)' : 'ESOZ data (MH flows)',
+    desc: l === 'uk'
+      ? 'Структура медичного потоку в ЕСОЗ та НСЗУ і їхній поточний стан верифікації.'
+      : 'Medical flow structure in ESOZ and NHSU and current verification status.',
+    roadmap: l === 'uk' ? 'Reporting Bus / протоколювання' : 'Reporting Bus / logging layer',
+  },
+  {
+    title: l === 'uk' ? 'Закон 4223-IX — імплементація' : 'Law 4223-IX — implementation',
+    desc: l === 'uk'
+      ? 'Актуальний стан імплементації закону про психологічну допомогу, поточний статус регуляторних актів.'
+      : 'Current implementation status of the psychological assistance law, regulatory act status.',
+    roadmap: l === 'uk' ? 'Formalization Engine' : 'Formalization Engine',
+  },
+];
+
 export const SOURCES = {
     primary: [
         { name: 'WHO Special Initiative for Mental Health (SIMH) 2024', url: 'https://www.who.int/publications/m/item/special-initiative-for-mental-health-ukraine' },
