@@ -14,6 +14,7 @@ import {
   FEEL_AGAIN_ARCHITECTURE, HEAL_UKRAINE,
   THRIVE_PROJECT, HEAL_C4_PROCUREMENT, COUNTERARGUMENTS, ARCH_FLOW,
   STAKEHOLDER_MATRIX, FORMALIZATION_COST_V3, DUAL_PROJECT_NARRATIVE, MISSING_MIDDLE,
+  PERFECT_STORM_SCALE, STRUCTURAL_DISP_DATA,
 } from './constants';
 import { Language, SectionFilter } from './types';
 import { Card } from './components/ui/Card';
@@ -359,10 +360,30 @@ const App: React.FC = () => {
         </div>
 
         {/* KPIs Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-4">
           {KPI_DATA.map((kpi, idx) => (
             <KpiCard key={idx} data={kpi} lang={lang} />
           ))}
+        </div>
+
+        {/* Perfect Storm — Market Scale Row */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-3 px-1">
+            <div className="h-px flex-1 bg-gradient-to-r from-cyber-amber/40 to-transparent" />
+            <span className="text-[10px] font-mono text-cyber-amber uppercase tracking-[0.2em] px-2">
+              ⚡ {lang === 'uk' ? 'PERFECT STORM — МАСШТАБ КРИЗИ' : 'PERFECT STORM — SCALE OF CRISIS'}
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-l from-cyber-amber/40 to-transparent" />
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-1.5 font-mono">
+            {PERFECT_STORM_SCALE(lang).map((m) => (
+              <div key={m.label} className="bg-cyber-surface/60 border border-cyber-border/60 px-4 py-3 rounded-lg relative overflow-hidden group hover:border-cyber-amber/30 transition-colors">
+                <div className="text-[22px] font-bold tracking-tighter leading-none mb-1" style={{ color: m.color }}>{m.val}</div>
+                <div className="text-[9px] text-slate-400 uppercase tracking-widest">{m.label}</div>
+                <div className="text-[9px] text-slate-600 mt-0.5 leading-tight">{m.sub}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Sections */}
@@ -398,7 +419,7 @@ const App: React.FC = () => {
                         {section.id === 'shadow' && (lang === 'uk' ? '110× приватний > гуманітарний · €65% штраф формалізації' : '110× private > humanitarian · 65% formalization penalty')}
                         {section.id === 'economic' && (lang === 'uk' ? '$1→$4 ROI · $1.2B+ втрати ВВП' : '$1→$4 ROI · $1.2B+ GDP loss')}
                         {section.id === 'children' && (lang === 'uk' ? '1.5M дітей у групі ризику ПТСР' : '1.5M children at PTSD risk')}
-                        {section.id === 'inputs' && (lang === 'uk' ? '130K сертифікатів → 0% даних про результат' : '130K certificates → 0% outcome data')}
+                        {section.id === 'inputs' && (lang === 'uk' ? '150K сертифікатів → 0% даних про результат' : '150K certificates → 0% outcome data')}
                       </span>
                     </div>
                   </div>
@@ -892,8 +913,72 @@ const App: React.FC = () => {
 
               {/* SHADOW */}
               {section.id === 'shadow' && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                   <Card title={lang === 'uk' ? 'Рівні формалізації практики' : 'Practice Formalization Levels'}>
+                <div className="space-y-6">
+                  {/* Structural Disproportions — multiplier chart */}
+                  <div className="cyber-card border border-rose-500/20 rounded-xl overflow-hidden">
+                    <div className="bg-rose-500/5 px-5 py-3 border-b border-rose-500/20 flex items-center gap-3">
+                      <AlertOctagon className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
+                      <span className="cyber-label text-[11px] text-rose-400 flex-1">
+                        {lang === 'uk' ? 'СТРУКТУРНІ ДИСПРОПОРЦІЇ (×)' : 'STRUCTURAL DISPROPORTIONS (×)'}
+                      </span>
+                      <span className="text-[9px] font-mono text-slate-500">
+                        {lang === 'uk' ? 'Множники — наскільки система далека від норми' : 'Multipliers — how far the system deviates from norm'}
+                      </span>
+                    </div>
+                    <div className="p-4">
+                      <ResponsiveContainer width="100%" height={200} minWidth={1}>
+                        <BarChart
+                          layout="vertical"
+                          data={STRUCTURAL_DISP_DATA(lang)}
+                          margin={{ left: 10, right: 80, top: 4, bottom: 4 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#1e293b" />
+                          <XAxis
+                            type="number"
+                            domain={[0, 120]}
+                            tick={{ fontSize: 10, fill: '#64748b', fontFamily: 'monospace' }}
+                            tickFormatter={(v) => `${v}×`}
+                          />
+                          <YAxis
+                            type="category"
+                            dataKey="name"
+                            width={220}
+                            tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'monospace' }}
+                          />
+                          <Tooltip
+                            cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+                            contentStyle={{ background: '#0f1923', border: '1px solid #1e293b', borderRadius: 8, fontSize: 11 }}
+                            formatter={(_value: number, _name: string, props: { payload?: { displayValue?: string; calc?: string } }) => {
+                              const entry = props.payload;
+                              return [entry?.displayValue ?? '', entry?.calc ?? ''];
+                            }}
+                            labelStyle={{ color: '#94a3b8', fontSize: 11 }}
+                          />
+                          <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={22}>
+                            {STRUCTURAL_DISP_DATA(lang).map((entry, idx) => (
+                              <Cell key={idx} fill={entry.fill} />
+                            ))}
+                            <LabelList
+                              dataKey="displayValue"
+                              position="right"
+                              style={{ fill: '#e2e8f0', fontSize: 12, fontFamily: 'monospace', fontWeight: 700 }}
+                            />
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                      <div className="mt-2 bg-rose-500/5 border border-rose-500/20 rounded-lg px-4 py-2.5">
+                        <p className="text-[10px] text-rose-300 leading-relaxed">
+                          <span className="font-bold">⚡ {lang === 'uk' ? 'Висновок:' : 'Conclusion:'}</span>{' '}
+                          {lang === 'uk'
+                            ? 'Приватний ринок перевищує гуманітарний у 110 разів — тіньовий сектор реально фінансує систему. Дефіцит mhGAP: 3,571× нижче від очікуваного (150K сертифікатів → 42 практикуючих). Адмін. gap у 3.1× і бюджетна інверсія 8.1× (стаціонар vs реальна потреба) — системні, не тимчасові. Жоден проєкт не вирішить ці множники без структурних змін в інфраструктурі.'
+                            : 'Private market is 110× humanitarian — the shadow sector actually finances the system. mhGAP deficit: 3,571× below expected (150K certs → 42 practicing). Admin gap 3.1× and budget inversion 8.1× (inpatient vs actual need) are systemic, not temporary. No project resolves these multipliers without structural infrastructure change.'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <Card title={lang === 'uk' ? 'Рівні формалізації практики' : 'Practice Formalization Levels'}>
                       <ResponsiveContainer width="100%" height={300} minWidth={1}>
                          <BarChart layout="vertical" data={SHADOW_DATA(lang)} margin={{left:140}}>
                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
@@ -905,8 +990,8 @@ const App: React.FC = () => {
                             </Bar>
                          </BarChart>
                       </ResponsiveContainer>
-                   </Card>
-                   <Card title={lang === 'uk' ? 'Хронологія регулювання' : 'Regulatory Timeline'}>
+                    </Card>
+                    <Card title={lang === 'uk' ? 'Хронологія регулювання' : 'Regulatory Timeline'}>
                       <div className="relative pl-4 border-l-2 border-cyber-border/30 space-y-6 py-2">
                          {TIMELINE_ITEMS(lang).map((item, idx) => (
                            <div key={idx} className="relative">
@@ -919,7 +1004,8 @@ const App: React.FC = () => {
                       <InsightBox type="neutral">
                         {lang === 'uk' ? 'ℹ Тіньова економіка України: 38.5% ВВП (2017). Конкретних досліджень тіньового сектору в ментальному здоров\'ї не знайдено.' : 'ℹ Ukraine shadow economy: 38.5% of GDP (2017). No specific studies on mental health shadow sector found.'}
                       </InsightBox>
-                   </Card>
+                    </Card>
+                  </div>
                 </div>
               )}
 

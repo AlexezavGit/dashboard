@@ -86,36 +86,36 @@ export const TOP_METRICS = (l: Language) => [
 
 export const KPI_DATA: KpiData[] = [
   {
-    label: { uk: 'Населення под впливом', en: 'Population Affected' },
-    value: '9.6 млн',
-    sub: { uk: '22% населення потребують підтримки', en: '22% of population needs support' },
-    change: { uk: '↑ до 15 млн (оцінка МОЗ)', en: '↑ up to 15M (MOH estimate)' },
-    status: 'danger',
-    source: { uk: 'Lancet 2023 / МОЗ', en: 'Lancet 2023 / MOH' }
-  },
-  {
-    label: { uk: 'Розрив у лікуванні', en: 'Treatment Gap' },
-    value: '74%',
-    sub: { uk: 'ВПО не отримують допомоги', en: 'IDPs not receiving care' },
-    change: { uk: 'лише 3.2% з депресією лікувались', en: 'only 3.2% with depression treated' },
-    status: 'danger',
-    source: { uk: 'WHO MH Atlas', en: 'WHO MH Atlas' }
-  },
-  {
-    label: { uk: "Бюджет на МЗ", en: 'Mental Health Budget' },
-    value: '2.5%',
-    sub: { uk: "від бюджету охорони здоров'я", en: 'of total health budget' },
-    change: { uk: 'ВООЗ рекомендує ≥5%', en: 'WHO recommends ≥5%' },
+    label: { uk: '~15-те місце в світі', en: '~15th Global Rank' },
+    value: '~15',
+    sub: { uk: 'за ринковим потенціалом ментального здоров\'я', en: 'by MH market potential' },
+    change: { uk: '↑ $3.5 млрд потенційний ринок', en: '↑ $3.5B potential market' },
     status: 'warning',
-    source: { uk: 'CMU 2026 / ВООЗ', en: 'CMU 2026 / WHO' }
+    source: { uk: 'аналітичний розрахунок 2025', en: 'analytical estimate 2025' }
   },
   {
-    label: { uk: 'Психологів на 100 тис.', en: 'Psychologists per 100K' },
-    value: '1.3 чол.',
-    sub: { uk: 'середнє по ЄС: 2.7', en: 'EU average: 2.7' },
-    change: { uk: 'Потрібно збільшити у 5 разів', en: 'Needs 5x increase' },
-    status: 'neutral',
-    source: { uk: 'WHO Atlas', en: 'WHO Atlas' }
+    label: { uk: 'Клінічна потреба', en: 'Clinical Need' },
+    value: '3 900 000',
+    sub: { uk: '22% населення потребують клінічного лікування', en: '22% of population in clinical need' },
+    change: { uk: '↑ 54% шукають — не знаходять', en: '↑ 54% seek help, find nothing' },
+    status: 'danger',
+    source: { uk: 'WHO 2025 / Lancet 2023', en: 'WHO 2025 / Lancet 2023' }
+  },
+  {
+    label: { uk: '54% РОЗРИВ', en: '54% TREATMENT GAP' },
+    value: '54%',
+    sub: { uk: 'визнають потребу (71%) — реально не лікуються', en: 'recognise need (71%) — not treated' },
+    change: { uk: 'Постійний розрив між потребою і реальністю', en: 'Persistent gap: need vs. actual care' },
+    status: 'danger',
+    source: { uk: 'Gradus Research / Українська Правда', en: 'Gradus Research / UA Pravda' }
+  },
+  {
+    label: { uk: 'AFTERSHOCK (кумул.)', en: 'AFTERSHOCK (cumul.)' },
+    value: '6 720 000',
+    sub: { uk: '€5.4 млрд ринок · беклог 21.5 роки', en: '€5.4B market · 21.5yr backlog' },
+    change: { uk: 'Включ. ВПО, біженці, демобілізовані', en: 'Incl. IDPs, refugees, demobilised' },
+    status: 'danger',
+    source: { uk: 'аналітичний розрахунок', en: 'analytical estimate' }
   }
 ];
 
@@ -342,6 +342,35 @@ export const INPUTS_OUTCOMES_DATA = (l: Language) => [
 
 // --- Banker Narrative Data ---
 
+// Perfect Storm scale tiles (market opportunity row, shown below KPI cards)
+export const PERFECT_STORM_SCALE = (l: Language) => [
+  {
+    val: '62.4M',
+    label: l === 'uk' ? 'СЕСІЙ / РІК' : 'SESSIONS / YEAR',
+    sub: l === 'uk' ? '3.9M × 16 сес. (ВООЗ норма)' : '3.9M × 16 sess. (WHO standard)',
+    color: '#00F5FF',
+  },
+  {
+    val: '€2.5–4.1B',
+    label: l === 'uk' ? 'РИНКОВИЙ ПОТЕНЦІАЛ' : 'MARKET POTENTIAL',
+    sub: l === 'uk' ? '62.4M год × €40–65/год' : '62.4M hr × €40–65/hr',
+    color: '#00FF66',
+  },
+  {
+    val: '$140M',
+    label: l === 'uk' ? 'МІН. ПУБЛІЧНІ ВИТРАТИ' : 'MIN PUBLIC COST',
+    // 62.4M sessions × ~90 UAH NHSU tariff / 40 UAH per USD ≈ $140M
+    sub: l === 'uk' ? '62.4M сес. × тариф НСЗУ ~90₴' : '62.4M sess. × NHSU tariff ~₴90',
+    color: '#F59E0B',
+  },
+  {
+    val: '7.8–12',
+    label: l === 'uk' ? 'РОКІВ БЕКЛОГУ' : 'YEAR BACKLOG',
+    sub: l === 'uk' ? '4 000 фахівців навіть при +100% ефект.' : '4,000 spec. even at +100% efficiency',
+    color: '#FF4444',
+  },
+];
+
 // Macro Gap — canonical session-level calculation (War Room canonical, NSZU verified)
 export const MACRO_GAP = {
   beneficiaries: 3_900_000,         // WHO 2025, Lancet 2023
@@ -356,7 +385,70 @@ export const MACRO_GAP = {
   marketMaxEurBln: 4.1,              // 62.4M hr × €65/hr
   gdpLossUSD: '$1.2B+',             // War Room canonical
   lockedFundsUSD: '$954M',           // HEAL/THRIVE (War Room)
+  // Aftershock: extended cumulative estimate (moderate + severe, incl. IDPs returning, refugees, cumulative trauma)
+  // 6.72M × 16 = 107.52M sessions; × €50 avg = €5.376B ≈ €5.4B; / (4000 × 1250/yr) = 21.5 years
+  aftershockBeneficiaries: 6_720_000,
+  aftershockMarketEurBln: 5.4,
+  aftershockBacklogYears: 21.5,
 };
+
+// Structural Disproportions — multiplier chart (shadow economy section)
+// Shows how far the system is from norms: each bar = "Ukraine / WHO-benchmark or peer-sector"
+// Calculation notes:
+//   110× (Private / Humanitarian income):
+//     Private: 6,500 practitioners × €1,500 net/mo × 12 = €117M/yr
+//     Humanitarian direct MHPSS service fees flowing to practitioners ≈ $1.065M (OCHA 2025: ~38K sessions × $28/session avg)
+//     Ratio: €117M / €1.065M ≈ 110
+//   3,571× (mhGAP training-to-practice deficit):
+//     Certificates issued: 150,000 (mhGAP online, 2020-2024)
+//     Documented actively practicing as psychologists: 42 (WHO/MOH 2020 survey, last verified)
+//     Ratio: 150,000 / 42 = 3,571 (bar truncated in chart at 120×, label shown outside)
+//   3.1× (Admin burden vs WHO recommendation):
+//     Ukraine MH practitioners: ~25-30% time on admin (WHO SIMH 2024)
+//     WHO norm: ~8-10% admin overhead in outpatient MH settings
+//     Ratio: 27% / 8.7% ≈ 3.1
+//   8.1× (Budget inversion — inpatient vs actual need):
+//     89% of MH budget → inpatient care
+//     Only 11% of MH cases clinically require inpatient
+//     Ratio: 89% / 11% = 8.1
+export const STRUCTURAL_DISP_DATA = (l: Language) => [
+  {
+    name: l === 'uk' ? 'Приватний / Гуманітарний дохід' : 'Private / Humanitarian income',
+    value: 110,
+    displayValue: '110×',
+    fill: '#FF4444',
+    calc: l === 'uk'
+      ? '6,500 фахівців × €1,500/міс × 12 = €117M/рік ÷ $1.065M (38K сесій × $28, OCHA 2025) ≈ 110×'
+      : '6,500 practitioners × €1,500/mo × 12 = €117M/yr ÷ $1.065M (38K sessions × $28, OCHA 2025) ≈ 110×',
+  },
+  {
+    name: l === 'uk' ? 'Дефіцит mhGAP навчання' : 'mhGAP training deficit',
+    value: 120, // Truncated for chart display — actual = 3,571 (150,000 certs / 42 practicing)
+    displayValue: '3 571×',
+    fill: '#FF6666',
+    calc: l === 'uk'
+      ? '150,000 сертифікатів (2020–2024) ÷ 42 задокументованих практикуючих (ВООЗ/МОЗ 2020) = 3,571× (бар усічено)'
+      : '150,000 certificates (2020–2024) ÷ 42 documented practicing (WHO/MOH 2020) = 3,571× (bar truncated)',
+  },
+  {
+    name: l === 'uk' ? 'Адмін. gap (ВООЗ рекомендація)' : 'Admin gap (WHO recommendation)',
+    value: 3.1,
+    displayValue: '3.1×',
+    fill: '#8B5CF6',
+    calc: l === 'uk'
+      ? '~27% часу на адмін (ВООЗ SIMH 2024) ÷ ВООЗ норма ~8.7% = 3.1×'
+      : '~27% time on admin (WHO SIMH 2024) ÷ WHO norm ~8.7% = 3.1×',
+  },
+  {
+    name: l === 'uk' ? 'Бюджет стаціонар / реальна потреба' : 'Budget inpatient / actual need',
+    value: 8.1,
+    displayValue: '8.1×',
+    fill: '#06B6D4',
+    calc: l === 'uk'
+      ? '89% бюджету МЗ → стаціонар ÷ 11% випадків, що дійсно потребують стаціонарного лікування = 8.1×'
+      : '89% MH budget → inpatient ÷ 11% of cases actually requiring inpatient care = 8.1×',
+  },
+];
 
 // Backlog chart — years to clear at different specialist counts
 // Sustainable (realistic norm): 1,500/yr = 30 sessions/week × 50 weeks
