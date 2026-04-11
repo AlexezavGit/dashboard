@@ -343,7 +343,7 @@ export const MACRO_GAP = {
   beneficiaries: 3_900_000,         // WHO 2025, Lancet 2023
   sessionsPerPerson: 16,             // WHO standard avg 12-20
   totalSessionDemand: 62_400_000,    // 3.9M × 16
-  currentCapacity: 180_000,          // NSZU verified (primary care)
+  currentCapacity: 180_000,          // NSZU primary-care psychological help package: ~3,346 contracted facilities × ~54 sessions/yr average (NSZU open data dashboard 2024)
   coveragePct: 0.28,                 // 180K / 62.4M
   sessionGap: 62_220_000,            // 62.4M - 180K
   blendedFinanceRateUAH: 1914.5,     // = 2000 - (285×0.3) UAH/session

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot } from 'lucide-react';
+import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot, CalendarDays, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   TEXTS, COLORS, KPI_DATA, SECTIONS_CONFIG, TOP_METRICS,
@@ -1118,8 +1118,65 @@ const App: React.FC = () => {
         </AnimatePresence>
         </div>
 
+        {/* ── BANKER CTA ─────────────────────────────────────── */}
+        <div className="mt-20 mb-0 rounded-2xl overflow-hidden border border-cyber-amber/40 relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-cyber-amber/5 via-transparent to-cyber-cyan/5 pointer-events-none" />
+          <div className="relative px-8 py-12 text-center">
+            <div className="inline-flex items-center gap-2 bg-cyber-amber/10 border border-cyber-amber/30 rounded-full px-4 py-1.5 mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyber-amber animate-pulse" />
+              <span className="text-[10px] font-mono text-cyber-amber uppercase tracking-widest">
+                {lang === 'uk' ? 'Інвестиційна можливість · Q2 2026' : 'Investment Opportunity · Q2 2026'}
+              </span>
+            </div>
+            <h2 className="text-[26px] md:text-[34px] font-bold text-white font-mono leading-tight mb-4 tracking-tight">
+              {lang === 'uk' ? '$954M заблоковано.' : '$954M locked.'}<br />
+              <span className="text-cyber-amber">{lang === 'uk' ? '0.28% покриття клінічної потреби.' : '0.28% of clinical demand covered.'}</span><br />
+              <span className="text-cyber-cyan">{lang === 'uk' ? 'FEEL Again \u2014 єдиний middleware-ключ.' : 'FEEL Again \u2014 the only middleware key.'}</span>
+            </h2>
+            <p className="text-[13px] text-slate-400 max-w-2xl mx-auto leading-relaxed mb-8">
+              {lang === 'uk'
+                ? 'Цифровий middleware між 118 мобільними командами та державними реєстрами (ЕСОЗ, ТРЕМБІТА). Єдина точка доступу до $41.1M невикористаного бюджетного простору HEAL Component 4. Механізм входу: МОЗ / RFQ / Direct Selection.'
+                : 'Digital middleware bridging 118 mobile MH teams to state registries (ESOZ, Trembita). The only access route to $41.1M unused HEAL Component 4 budget space. Entry mechanism: MoH / RFQ / Direct Selection.'}
+            </p>
+            <div className="flex flex-wrap gap-4 justify-center mb-10">
+              <a
+                href="mailto:hello@feelagain.com.ua?subject=Partnership%20%E2%80%94%20MHPSS%20Dashboard"
+                className="inline-flex items-center gap-2 bg-cyber-amber text-cyber-bg px-8 py-3.5 rounded-xl font-bold text-[13px] hover:bg-white transition-all shadow-lg uppercase tracking-widest font-mono"
+              >
+                <CalendarDays className="w-4 h-4" /> {lang === 'uk' ? 'Запланувати демо' : 'Schedule a Demo'}
+              </a>
+              <a
+                href="mailto:hello@feelagain.com.ua?subject=Investment%20Deck%20Request%20%E2%80%94%20MHPSS"
+                className="inline-flex items-center gap-2 border border-cyber-cyan/50 text-cyber-cyan px-8 py-3.5 rounded-xl font-bold text-[13px] hover:bg-cyber-cyan/10 transition-all uppercase tracking-widest font-mono"
+              >
+                <Download className="w-4 h-4" /> {lang === 'uk' ? 'Отримати Deck' : 'Get Deck'}
+              </a>
+              <a
+                href="https://feelagain.com.ua"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 border border-slate-700 text-slate-400 px-8 py-3.5 rounded-xl font-bold text-[13px] hover:border-slate-500 hover:text-white transition-all uppercase tracking-widest font-mono"
+              >
+                <Globe className="w-4 h-4" /> {lang === 'uk' ? 'Сайт' : 'Website'}
+              </a>
+            </div>
+            <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
+              {[
+                { val: '$41.1M', label: lang === 'uk' ? 'HEAL C4 бюджет' : 'HEAL C4 budget space', color: '#00FF66' },
+                { val: '4:1', label: lang === 'uk' ? 'ROI (World Bank)' : 'ROI (World Bank)', color: '#F59E0B' },
+                { val: '\u20ac2.5B+', label: lang === 'uk' ? 'Ринок (62.4M сесій)' : 'Market (62.4M sessions)', color: '#00F5FF' },
+              ].map((m) => (
+                <div key={m.label} className="bg-slate-800/50 border border-slate-700/40 rounded-xl p-3 text-center">
+                  <div className="text-xl font-bold font-mono" style={{ color: m.color }}>{m.val}</div>
+                  <div className="text-[9px] text-slate-500 mt-1 font-mono uppercase tracking-wider leading-tight">{m.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Footer */}
-        <footer className="mt-20 border-t border-cyber-border pt-12 pb-16">
+        <footer className="mt-12 border-t border-cyber-border pt-12 pb-16">
            {/* Feel Again Solution — IS / IS NOT */}
            <div className="mb-12 cyber-card border border-cyber-cyan/30 rounded-2xl overflow-hidden">
              <div className="bg-cyber-cyan/5 px-6 py-4 border-b border-cyber-cyan/20 flex items-center gap-4">
