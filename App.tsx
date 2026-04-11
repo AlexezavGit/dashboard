@@ -111,6 +111,13 @@ const App: React.FC = () => {
   const [liveMetrics, setLiveMetrics] = useState<LiveMetrics>({});
   const [dataSources, setDataSources] = useState<DataSourceInfo[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
+  // Collapsible sections — GAP open by default as it's the core thesis
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['gap']));
+  const toggleSection = (id: string) => setExpandedSections(prev => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    return next;
+  });
 
   const loadLiveData = useCallback(async () => {
     setIsLoadingData(true);
@@ -369,29 +376,52 @@ const App: React.FC = () => {
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 25 }}
               >
-                <div className="flex items-center gap-4 mb-8 border-b border-cyber-border pb-4">
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-cyber-surface border border-cyber-cyan/30 rounded-lg">
+                {/* Section header — clickable to expand/collapse */}
+                <button
+                  onClick={() => toggleSection(section.id)}
+                  className="w-full flex items-center gap-4 mb-0 border-b border-cyber-border pb-4 hover:border-cyber-amber/40 transition-colors group text-left"
+                >
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-cyber-surface border border-cyber-cyan/30 rounded-lg group-hover:border-cyber-amber/50 transition-colors">
                     <span className="text-[11px] font-bold text-cyber-cyan font-mono">
                       {String(sectionIdx + 1).padStart(2, '0')}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h2 className="text-xl font-bold text-white tracking-tight uppercase">{section.title[lang]}</h2>
-                    <div className="h-0.5 w-24 bg-gradient-to-r from-cyber-cyan to-transparent mt-1" />
+                    <h2 className="text-xl font-bold text-white tracking-tight uppercase group-hover:text-cyber-amber transition-colors">{section.title[lang]}</h2>
+                    <div className="flex items-center gap-3 mt-1">
+                      <div className="h-0.5 w-16 bg-gradient-to-r from-cyber-cyan to-transparent" />
+                      <span className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">
+                        {section.id === 'prevalence' && (lang === 'uk' ? '9.6M під впливом · 22% населення' : '9.6M affected · 22% of population')}
+                        {section.id === 'workforce' && (lang === 'uk' ? '1.3 психолога / 100K · потрібно 5×' : '1.3 psychologists / 100K · needs 5×')}
+                        {section.id === 'budget' && (lang === 'uk' ? '2.5% бюджету МЗ · ВООЗ рекомендує ≥5%' : '2.5% MH budget · WHO recommends ≥5%')}
+                        {section.id === 'gap' && (lang === 'uk' ? '0.28% покриття · беклог 7.8 років' : '0.28% coverage · 7.8 yr backlog')}
+                        {section.id === 'shadow' && (lang === 'uk' ? '110× приватний > гуманітарний · €65% штраф формалізації' : '110× private > humanitarian · 65% formalization penalty')}
+                        {section.id === 'economic' && (lang === 'uk' ? '$1→$4 ROI · $1.2B+ втрати ВВП' : '$1→$4 ROI · $1.2B+ GDP loss')}
+                        {section.id === 'children' && (lang === 'uk' ? '1.5M дітей у групі ризику ПТСР' : '1.5M children at PTSD risk')}
+                        {section.id === 'inputs' && (lang === 'uk' ? '130K сертифікатів → 0% даних про результат' : '130K certificates → 0% outcome data')}
+                      </span>
+                    </div>
                   </div>
-                  <div className="hidden md:block text-right">
-                    <span className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">
-                      {section.id === 'prevalence' && (lang === 'uk' ? 'МАСШТАБ КРИЗИ' : 'CRISIS SCALE')}
-                      {section.id === 'workforce' && (lang === 'uk' ? 'РЕСУРСНА СТЕЛЯ' : 'CAPACITY CEILING')}
-                      {section.id === 'budget' && (lang === 'uk' ? 'ФІНАНСОВИЙ РОЗРИВ' : 'FUNDING GAP')}
-                      {section.id === 'gap' && (lang === 'uk' ? 'МАТЕМАТИКА НЕМОЖЛИВОСТІ' : 'IMPOSSIBILITY PROOF')}
-                      {section.id === 'shadow' && (lang === 'uk' ? 'ТІНЬОВА ЕКОНОМІКА' : 'SHADOW ECONOMY')}
-                      {section.id === 'economic' && (lang === 'uk' ? 'ROI ДЛЯ ІНВЕСТОРІВ' : 'INVESTOR ROI')}
-                      {section.id === 'children' && (lang === 'uk' ? 'ДИТЯЧА КОМПОНЕНТА' : 'CHILDREN COMPONENT')}
-                      {section.id === 'inputs' && (lang === 'uk' ? 'АУДИТ ДАНИХ' : 'DATA AUDIT')}
+                  <div className="flex-shrink-0 flex items-center gap-2">
+                    <span className="text-[9px] font-mono text-slate-600 uppercase tracking-widest hidden md:block">
+                      {expandedSections.has(section.id) ? (lang === 'uk' ? 'ЗГОРНУТИ' : 'COLLAPSE') : (lang === 'uk' ? 'РОЗГОРНУТИ' : 'EXPAND')}
                     </span>
+                    {expandedSections.has(section.id)
+                      ? <ChevronUp className="w-4 h-4 text-cyber-amber" />
+                      : <ChevronDown className="w-4 h-4 text-slate-500 group-hover:text-cyber-amber transition-colors" />}
                   </div>
-                </div>
+                </button>
+                <AnimatePresence initial={false}>
+                {expandedSections.has(section.id) && (
+                <motion.div
+                  key={section.id + '-content'}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.25, ease: 'easeInOut' }}
+                  className="overflow-hidden"
+                >
+                <div className="mt-8">
 
               {/* Content Switcher based on Section ID */}
               
@@ -549,18 +579,33 @@ const App: React.FC = () => {
                          </div>
                        )}
                     </Card>
-                    <Card title={lang === 'uk' ? 'Фінансування vs Охоплення' : 'Funding vs Reach'} subtitle={lang === 'uk' ? 'Оцінка ефективності за організаціями' : 'Efficiency estimation by organization'}>
-                       <CustomScatterPlot 
-                          data={FUNDING_VS_REACH_DATA.map(d => ({
-                            name: d.name,
-                            x: d.funding,
-                            y: d.reach,
-                            fill: d.name === 'UNICEF' ? COLORS.teal : d.name === 'WHO' ? COLORS.blue : COLORS.gray
-                          }))}
-                          xLabel={lang === 'uk' ? 'Фінансування ($M)' : 'Funding ($M)'}
-                          yLabel={lang === 'uk' ? 'Охоплення (тис.)' : 'Reach (K)'}
-                          height={250}
-                       />
+                    <Card title={lang === 'uk' ? 'Ефективність: вартість на бенефіціара' : 'Efficiency: Cost per Beneficiary'} subtitle={lang === 'uk' ? 'Нижче = ефективніше · Дані: OCHA/UNICEF/WHO 2024' : 'Lower = more efficient · Data: OCHA/UNICEF/WHO 2024'}>
+                       <div className="space-y-3 py-2">
+                         {[
+                           { org: 'UNICEF (group PSS)', costPerPerson: 12, reach: 760, color: COLORS.teal, note: lang === 'uk' ? '$5–15/особу (групова)' : '$5–15/person (group)' },
+                           { org: 'WHO (consultations)', costPerPerson: 28, reach: 80, color: COLORS.blue, note: lang === 'uk' ? '$20–35/особу' : '$20–35/person' },
+                           { org: lang === 'uk' ? 'USAID (individual therapy)' : 'USAID (individual therapy)', costPerPerson: 250, reach: 60, color: COLORS.orange, note: lang === 'uk' ? '$150–350/курс' : '$150–350/course' },
+                           { org: lang === 'uk' ? 'Держ. сектор (НСЗУ)' : 'State sector (NHSU)', costPerPerson: 35, reach: 435, color: COLORS.green, note: lang === 'uk' ? '~₴1,400 (~$35)/випадок' : '~₴1,400 (~$35)/case' },
+                         ].map(item => (
+                           <div key={item.org} className="flex items-center gap-3">
+                             <div className="w-36 text-[10px] text-slate-400 text-right flex-shrink-0">{item.org}</div>
+                             <div className="flex-1 bg-slate-800/50 rounded-full h-6 overflow-hidden relative">
+                               <div
+                                 className="h-full rounded-full flex items-center justify-end pr-2 transition-all"
+                                 style={{ width: `${Math.min((item.costPerPerson / 250) * 100, 100)}%`, backgroundColor: item.color + '30', borderRight: `2px solid ${item.color}` }}
+                               >
+                                 <span className="text-[10px] font-mono font-bold" style={{ color: item.color }}>${item.costPerPerson}</span>
+                               </div>
+                             </div>
+                             <div className="w-24 text-[9px] text-slate-600 flex-shrink-0">{item.note}</div>
+                           </div>
+                         ))}
+                         <div className="mt-4 pt-3 border-t border-cyber-border/20 text-[10px] text-slate-500 font-mono">
+                           {lang === 'uk'
+                             ? 'Охоплення (тис. осіб): UNICEF 760K · НСЗУ 435K · WHO 80K · USAID 60K'
+                             : 'Reach (K persons): UNICEF 760K · NHSU 435K · WHO 80K · USAID 60K'}
+                         </div>
+                       </div>
                     </Card>
                   </div>
                   <Card colSpan="full" title={lang === 'uk' ? "Бюджет охорони здоров'я та частка на ментальне здоров'я" : "Health Budget & Mental Health Share"}>
@@ -662,21 +707,21 @@ const App: React.FC = () => {
                   <Card colSpan="full" title={lang === 'uk' ? 'Охоплення послугами МЗПСП (фактичні дані)' : 'MHPSS Service Reach (Actual Data)'}>
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm text-left">
-                        <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+                        <thead className="text-xs text-slate-500 uppercase bg-slate-800/60 border-b border-cyber-border">
                           <tr>
-                            <th className="px-6 py-3">{lang === 'uk' ? 'Показник' : 'Indicator'}</th>
-                            <th className="px-6 py-3">{lang === 'uk' ? 'Значення' : 'Value'}</th>
-                            <th className="px-6 py-3">{lang === 'uk' ? 'Організація' : 'Organization'}</th>
-                            <th className="px-6 py-3">{lang === 'uk' ? 'Період' : 'Period'}</th>
+                            <th className="px-5 py-3 font-mono tracking-wider">{lang === 'uk' ? 'Показник' : 'Indicator'}</th>
+                            <th className="px-5 py-3 font-mono tracking-wider">{lang === 'uk' ? 'Значення' : 'Value'}</th>
+                            <th className="px-5 py-3 font-mono tracking-wider">{lang === 'uk' ? 'Організація' : 'Organization'}</th>
+                            <th className="px-5 py-3 font-mono tracking-wider">{lang === 'uk' ? 'Період' : 'Period'}</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-cyber-border/20">
                           {REACH_TABLE_DATA(lang).map((row, idx) => (
-                            <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                              <td className="px-6 py-4 font-medium text-slate-700">{row[0]}</td>
-                              <td className="px-6 py-4 font-bold text-cyber-cyan font-mono">{row[1]}</td>
-                              <td className="px-6 py-4 text-slate-600">{row[2]}</td>
-                              <td className="px-6 py-4 text-slate-500 text-xs">{row[3]}</td>
+                            <tr key={idx} className="hover:bg-cyber-cyan/5 transition-colors">
+                              <td className="px-5 py-3 text-slate-300 text-[12px]">{row[0]}</td>
+                              <td className="px-5 py-3 font-bold text-cyber-cyan font-mono text-[13px]">{row[1]}</td>
+                              <td className="px-5 py-3 text-slate-400 text-[11px]">{row[2]}</td>
+                              <td className="px-5 py-3 text-slate-600 text-[10px] font-mono">{row[3]}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -1062,6 +1107,11 @@ const App: React.FC = () => {
                     </Card>
                  </div>
               )}
+
+                </div>{/* end mt-8 */}
+                </motion.div>
+                )}
+                </AnimatePresence>
 
             </motion.div>
           ))}
