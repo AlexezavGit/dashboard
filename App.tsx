@@ -201,6 +201,54 @@ const App: React.FC = () => {
           </div>
         </header>
 
+        {/* ── CRISIS HERO BAR ─────────────────────────────────────────── */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-1.5 mb-6 font-mono">
+          {[
+            {
+              val: '0.28%',
+              label: lang === 'uk' ? 'ПОКРИТТЯ КЛІН. ПОТРЕБИ' : 'CLINICAL NEED COVERED',
+              sub: '180K / 62.4M sessions',
+              color: '#FF4444',
+              pulse: true,
+            },
+            {
+              val: '62.4M',
+              label: lang === 'uk' ? 'РОЗРИВ СЕСІЙ / РІК' : 'SESSION GAP / YEAR',
+              sub: '3.9M × 16 sessions',
+              color: '#F59E0B',
+              pulse: false,
+            },
+            {
+              val: '$954M',
+              label: lang === 'uk' ? 'ЗАБЛОКОВАНО (WB)' : 'LOCKED (WB FUNDS)',
+              sub: 'HEAL $500M + THRIVE $454M',
+              color: '#F59E0B',
+              pulse: false,
+            },
+            {
+              val: '7.8 ' + (lang === 'uk' ? 'РОК.' : 'YRS'),
+              label: lang === 'uk' ? 'БЕКЛОГ (4,000 ФАХІВЦІВ)' : 'BACKLOG (4,000 SPECIALISTS)',
+              sub: lang === 'uk' ? 'навіть при +100% ефективності' : 'even at +100% efficiency',
+              color: '#FF4444',
+              pulse: true,
+            },
+          ].map((m) => (
+            <div key={m.label} className="bg-cyber-surface border border-cyber-border px-4 py-3 rounded-lg relative overflow-hidden group hover:border-cyber-amber/40 transition-colors">
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-900/20" />
+              <div className="relative">
+                <div className="text-[28px] md:text-[32px] font-bold tracking-tighter leading-none mb-1" style={{ color: m.color }}>
+                  {m.val}
+                </div>
+                <div className="text-[9px] text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                  {m.pulse && <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping flex-shrink-0" />}
+                  {m.label}
+                </div>
+                <div className="text-[9px] text-slate-600 mt-0.5">{m.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
         {/* Top Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           {TOP_METRICS(lang).map((metric, idx) => (
@@ -293,6 +341,16 @@ const App: React.FC = () => {
           </div>
         </div>
 
+        {/* Executive Thesis */}
+        <div className="mb-8 px-5 py-4 rounded-xl border border-cyber-amber/20 bg-cyber-amber/3 flex items-start gap-4">
+          <div className="w-0.5 h-full bg-cyber-amber/40 self-stretch rounded flex-shrink-0 min-h-[2rem]" />
+          <p className="text-[13px] text-slate-300 leading-relaxed font-mono">
+            {lang === 'uk'
+              ? 'FEEL Again \u2014 цифрова шина між гуманітарними даними (CommCare/Kobo/ActivityInfo) та державною eHealth системою (ESOZ/Trembita). Світовий Банк інвестував $954M через два взаємопов\u2019язані проєкти — HEAL ($500M, IPF) генерує послуги, THRIVE ($454M, PforR) вимірює через ESOZ. \u2764\ufe0f\u200d\ud83d\udd25 Gap: послуги існують, але невидимі для вимірювання.'
+              : 'FEEL Again is the digital bus between humanitarian data (CommCare/Kobo/ActivityInfo) and the state eHealth system (ESOZ/Trembita). World Bank invested $954M via two linked instruments — HEAL ($500M, IPF) deploys services; THRIVE ($454M, PforR) measures via ESOZ. \u2764\ufe0f\u200d\ud83d\udd25 Gap: services exist but are invisible to the measurement layer.'}
+          </p>
+        </div>
+
         {/* KPIs Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {KPI_DATA.map((kpi, idx) => (
@@ -303,8 +361,8 @@ const App: React.FC = () => {
         {/* Sections */}
         <div className="space-y-16">
           <AnimatePresence>
-            {filteredSections.map((section) => (
-              <motion.div 
+            {filteredSections.map((section, sectionIdx) => (
+              <motion.div
                 key={section.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -312,12 +370,26 @@ const App: React.FC = () => {
                 transition={{ type: 'spring', stiffness: 200, damping: 25 }}
               >
                 <div className="flex items-center gap-4 mb-8 border-b border-cyber-border pb-4">
-                  <div className="p-2.5 bg-cyber-surface border border-cyber-cyan/30 rounded-lg text-cyber-cyan cyber-glow-cyan">
-                    <LayoutDashboard className="w-5 h-5" />
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-cyber-surface border border-cyber-cyan/30 rounded-lg">
+                    <span className="text-[11px] font-bold text-cyber-cyan font-mono">
+                      {String(sectionIdx + 1).padStart(2, '0')}
+                    </span>
                   </div>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <h2 className="text-xl font-bold text-white tracking-tight uppercase">{section.title[lang]}</h2>
                     <div className="h-0.5 w-24 bg-gradient-to-r from-cyber-cyan to-transparent mt-1" />
+                  </div>
+                  <div className="hidden md:block text-right">
+                    <span className="text-[9px] font-mono text-slate-600 uppercase tracking-widest">
+                      {section.id === 'prevalence' && (lang === 'uk' ? 'МАСШТАБ КРИЗИ' : 'CRISIS SCALE')}
+                      {section.id === 'workforce' && (lang === 'uk' ? 'РЕСУРСНА СТЕЛЯ' : 'CAPACITY CEILING')}
+                      {section.id === 'budget' && (lang === 'uk' ? 'ФІНАНСОВИЙ РОЗРИВ' : 'FUNDING GAP')}
+                      {section.id === 'gap' && (lang === 'uk' ? 'МАТЕМАТИКА НЕМОЖЛИВОСТІ' : 'IMPOSSIBILITY PROOF')}
+                      {section.id === 'shadow' && (lang === 'uk' ? 'ТІНЬОВА ЕКОНОМІКА' : 'SHADOW ECONOMY')}
+                      {section.id === 'economic' && (lang === 'uk' ? 'ROI ДЛЯ ІНВЕСТОРІВ' : 'INVESTOR ROI')}
+                      {section.id === 'children' && (lang === 'uk' ? 'ДИТЯЧА КОМПОНЕНТА' : 'CHILDREN COMPONENT')}
+                      {section.id === 'inputs' && (lang === 'uk' ? 'АУДИТ ДАНИХ' : 'DATA AUDIT')}
+                    </span>
                   </div>
                 </div>
 
