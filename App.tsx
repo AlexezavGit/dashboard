@@ -13,7 +13,7 @@ import {
   MACRO_GAP, BACKLOG_DATA, INFRA_LEVELS, FEEL_AGAIN_POSITION,
   FEEL_AGAIN_ARCHITECTURE, HEAL_UKRAINE,
   THRIVE_PROJECT, HEAL_C4_PROCUREMENT, COUNTERARGUMENTS, ARCH_FLOW,
-  STAKEHOLDER_MATRIX, FORMALIZATION_COST_V3, DUAL_PROJECT_NARRATIVE,
+  STAKEHOLDER_MATRIX, FORMALIZATION_COST_V3, DUAL_PROJECT_NARRATIVE, MISSING_MIDDLE,
 } from './constants';
 import { Language, SectionFilter } from './types';
 import { Card } from './components/ui/Card';
@@ -800,6 +800,66 @@ const App: React.FC = () => {
                     </div>
                   </div>
 
+                  {/* Missing Middle */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Clinical missing middle */}
+                    <div className="cyber-card border border-slate-700/50 rounded-xl overflow-hidden">
+                      <div className="bg-slate-800/60 px-5 py-3 border-b border-slate-700/30 flex items-center gap-3">
+                        <span className="w-7 h-7 rounded-lg bg-slate-700/60 flex items-center justify-center flex-shrink-0">
+                          <AlertOctagon className="w-3.5 h-3.5 text-slate-400" />
+                        </span>
+                        <div>
+                          <div className="text-[11px] font-bold text-white uppercase tracking-wider font-mono">MISSING MIDDLE</div>
+                          <div className="text-[9px] text-slate-500 font-mono uppercase tracking-wider">{lang === 'uk' ? 'КРИТИЧНИЙ ПРОБІЛ ДАНИХ' : 'CRITICAL DATA GAP'}</div>
+                        </div>
+                      </div>
+                      <div className="p-4 space-y-2">
+                        {MISSING_MIDDLE(lang).clinical.items.map((item, i) => (
+                          <div key={i} className="flex items-start gap-3 bg-slate-800/40 border border-slate-700/20 rounded-lg p-3">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 flex-shrink-0 mt-1.5" />
+                            <div>
+                              <div className="text-[11px] font-bold text-white">{item.label}</div>
+                              <div className="text-[10px] text-slate-400 mt-0.5 leading-relaxed">{item.desc}</div>
+                            </div>
+                          </div>
+                        ))}
+                        <div className="bg-slate-800/20 border border-slate-700/20 rounded-lg p-3 mt-3">
+                          <p className="text-[10px] text-slate-500 leading-relaxed italic">{MISSING_MIDDLE(lang).clinical.desc}</p>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Coordination missing middle */}
+                    <div className="cyber-card border border-slate-700/50 rounded-xl overflow-hidden">
+                      <div className="bg-slate-800/60 px-5 py-3 border-b border-slate-700/30 flex items-center gap-3">
+                        <span className="w-7 h-7 rounded-lg bg-slate-700/60 flex items-center justify-center flex-shrink-0">
+                          <Zap className="w-3.5 h-3.5 text-slate-400" />
+                        </span>
+                        <div>
+                          <div className="text-[11px] font-bold text-white uppercase tracking-wider font-mono">{lang === 'uk' ? 'ЦИФРОВА КООРДИНАЦІЯ' : 'DIGITAL COORDINATION'}</div>
+                          <div className="text-[9px] text-slate-500 font-mono uppercase tracking-wider">{lang === 'uk' ? 'ВІДСУТНЯ СЕРЕДИНА' : 'MISSING MIDDLE'}</div>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <div className="grid grid-cols-2 gap-2 mb-4">
+                          {[
+                            { val: '450+', label: lang === 'uk' ? 'орг. у MHPSS TWG' : 'orgs in MHPSS TWG', color: '#F59E0B' },
+                            { val: '2×/тиж', label: lang === 'uk' ? 'фізичних зустрічей' : 'physical meetings/wk', color: '#F59E0B' },
+                            { val: '0', label: lang === 'uk' ? 'цифрових платформ' : 'digital platforms', color: '#FF4444' },
+                            { val: '624K', label: lang === 'uk' ? 'сесій поза ЕСОЗ' : 'sessions outside ESOZ', color: '#FF4444' },
+                          ].map((m) => (
+                            <div key={m.label} className="bg-slate-800/40 border border-slate-700/20 rounded-lg p-3 text-center">
+                              <div className="text-xl font-bold font-mono" style={{ color: m.color }}>{m.val}</div>
+                              <div className="text-[9px] text-slate-500 mt-0.5 leading-tight">{m.label}</div>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="bg-slate-800/20 border border-slate-700/20 rounded-lg p-3">
+                          <p className="text-[10px] text-slate-400 leading-relaxed">{MISSING_MIDDLE(lang).coordination.desc}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Three-level infrastructure crisis */}
                   <div className="cyber-card border border-amber-500/30 rounded-xl overflow-hidden">
                     <div className="bg-amber-500/5 px-5 py-3 border-b border-amber-500/20 flex items-center gap-3">
@@ -1232,42 +1292,67 @@ const App: React.FC = () => {
 
              {/* 6-layer architecture + HEAL Ukraine entry point */}
              <div className="border-t border-cyber-cyan/10 px-6 pb-6 pt-5 grid grid-cols-1 lg:grid-cols-2 gap-6">
+               {/* 6-layer architecture: reverse waterfall */}
                <div>
-                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-3">
+                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-1">
                    {lang === 'uk' ? '6 ШАРІВ ІНФРАСТРУКТУРИ' : '6 INFRASTRUCTURE LAYERS'}
                  </div>
-                 <div className="space-y-1.5">
-                   {FEEL_AGAIN_ARCHITECTURE(lang).map((layer) => (
-                     <div key={layer.num} className="flex items-center gap-3 rounded-lg px-3 py-2 bg-slate-800/40 border border-slate-700/30">
-                       <span className="text-[9px] font-mono text-slate-600 w-4 flex-shrink-0">#{layer.num}</span>
-                       <span className="text-[10px] text-slate-300 flex-1 font-medium">{layer.flow}</span>
-                       <span className="text-[9px] text-cyber-cyan font-mono text-right">{layer.tool}</span>
+                 <div className="text-[9px] text-slate-600 font-mono mb-3">6 {lang === 'uk' ? 'розривів' : 'gaps'} → 6 {lang === 'uk' ? 'шарів' : 'layers'}</div>
+                 <div className="space-y-1">
+                   {FEEL_AGAIN_ARCHITECTURE(lang).map((layer, i) => (
+                     <div
+                       key={layer.num}
+                       className="flex items-center gap-3 rounded-lg px-3 py-2.5 border border-slate-700/30 transition-all"
+                       style={{
+                         marginLeft: `${i * 6}px`,
+                         backgroundColor: `rgba(245,158,11,${0.03 + i * 0.01})`,
+                         borderLeftColor: `rgba(245,158,11,${1 - i * 0.12})`,
+                         borderLeftWidth: '3px',
+                       }}
+                     >
+                       <span className="text-[10px] font-bold font-mono flex-shrink-0" style={{ color: `rgba(245,158,11,${1 - i * 0.12})` }}>#{layer.num}</span>
+                       <span className="text-[11px] text-white font-semibold flex-1">{layer.flow}</span>
+                       <span className="text-[9px] text-slate-400 font-mono text-right flex-shrink-0">{layer.tool}</span>
                      </div>
                    ))}
                  </div>
-                 <p className="text-[9px] text-slate-600 mt-2 italic">{lang === 'uk' ? 'Вимір ВВП: кожен шар генерує дані для оцінки впливу на людський капітал.' : 'GDP measurement: each layer generates data for human capital impact assessment.'}</p>
-               </div>
-               <div>
-                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-3">
-                   {lang === 'uk' ? 'ТОЧКА ВХОДУ: HEAL UKRAINE P180245 (World Bank)' : 'ENTRY POINT: HEAL UKRAINE P180245 (World Bank)'}
+                 <div className="mt-3 bg-slate-800/30 border border-slate-700/20 rounded-lg p-3">
+                   <p className="text-[9px] text-slate-400 leading-relaxed">
+                     <strong className="text-cyber-amber">
+                       {lang === 'uk' ? 'Вимір ВВП:' : 'GDP measure:'}
+                     </strong>{' '}
+                     {lang === 'uk'
+                       ? 'Кожен шар генерує дані для оцінки впливу на людський капітал (~$8B/рік втрат, OECD). НБУ/НСЗУ індекс ментального добробуту.'
+                       : 'Each layer generates data for human capital impact assessment (~$8B/yr losses, OECD). NBU/NHSU mental wellbeing index.'}
+                   </p>
                  </div>
-                 <div className="space-y-2">
+               </div>
+               {/* HEAL ISR #6 full KPI table */}
+               <div>
+                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-1">
+                   {lang === 'uk' ? 'HEAL P180245 — ISR #6 (WB, 25.03.2026)' : 'HEAL P180245 — ISR #6 (WB, 25.03.2026)'}
+                 </div>
+                 <div className="text-[9px] text-slate-600 font-mono mb-3">{lang === 'uk' ? 'Конверт: $160M PBC + $340M інвестиції' : 'Envelope: $160M PBC + $340M investment'}</div>
+                 <div className="space-y-1">
                    {HEAL_UKRAINE(lang).kpis.map((kpi, i) => (
-                     <div key={i} className={`flex items-center justify-between rounded-lg px-3 py-2 border text-[10px] ${kpi.status === 'critical' ? 'bg-rose-500/5 border-rose-500/30' : 'bg-slate-800/40 border-slate-700/30'}`}>
-                       <span className={kpi.status === 'critical' ? 'text-rose-400 font-bold' : 'text-slate-400'}>{kpi.name}</span>
+                     <div key={i} className={`flex items-center justify-between rounded-lg px-3 py-2 border text-[10px] ${kpi.status === 'critical' ? 'bg-rose-500/5 border-rose-500/30' : 'bg-slate-800/30 border-slate-700/20'}`}>
+                       <span className={`flex-1 mr-2 ${kpi.status === 'critical' ? 'text-rose-400 font-bold' : 'text-slate-400'}`}>{kpi.name}</span>
                        <div className="flex items-center gap-2 text-right flex-shrink-0">
-                         <span className="font-mono font-bold" style={{ color: kpi.status === 'critical' ? '#FF4444' : kpi.pct >= 100 ? '#00FF66' : '#F59E0B' }}>
+                         <span className="font-mono font-bold text-[11px]" style={{ color: kpi.status === 'critical' ? '#FF4444' : kpi.pct >= 100 ? '#00FF66' : '#F59E0B' }}>
                            {kpi.actual.toLocaleString()}
                          </span>
-                         <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${kpi.status === 'critical' ? 'bg-rose-500/20 text-rose-400' : 'bg-cyber-success/10 text-cyber-success'}`}>
+                         <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded min-w-[36px] text-center ${kpi.status === 'critical' ? 'bg-rose-500/20 text-rose-400' : 'bg-cyber-success/10 text-cyber-success'}`}>
                            {kpi.pct}%
                          </span>
                        </div>
                      </div>
                    ))}
                  </div>
-                 <div className="mt-3 bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
-                   <p className="text-[10px] text-amber-400/80 leading-relaxed">{HEAL_UKRAINE(lang).insight}</p>
+                 <div className="mt-2 bg-rose-500/5 border border-rose-500/20 rounded-lg p-2.5">
+                   <p className="text-[9px] text-rose-300 leading-relaxed font-mono">⚠ 0/400 {lang === 'uk' ? 'заклади переоблаштовано (0%)' : 'facilities reconfigured (0%)'} — {lang === 'uk' ? 'критичний індикатор. Дані 624K МЗ-сесій зібрані поза ЕСОЗ.' : 'critical indicator. 624K MH sessions collected outside ESOZ.'}</p>
+                 </div>
+                 <div className="mt-2 bg-slate-800/30 rounded-lg p-2.5 border border-slate-700/20">
+                   <p className="text-[9px] text-slate-500 leading-relaxed">{HEAL_UKRAINE(lang).restructuring}</p>
                  </div>
                </div>
              </div>

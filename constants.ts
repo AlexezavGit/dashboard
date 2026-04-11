@@ -452,25 +452,34 @@ export const HEAL_UKRAINE = (l: Language) => ({
   mechanism: 'IPF + PBC',
   total: '$500M',
   disbursed: '$171M',
-  disbursedPct: 51,
-  closing: 'Dec 2026',
+  disbursedPct: 34,
+  closing: '23 Dec 2026',
+  // Restructured Aug 2024: extended from 31-Dec-2024 to 23-Dec-2026
+  // Co-financing: CEB $22M + URTF. Envelope: $160M (PBC) + $340M (investment)
+  restructuring: l === 'uk'
+    ? 'Реструктуризація (серп. 2024): закриття подовжено з 31-Dec-2024 до 23-Dec-2026. Со-фінансування: CEB $22M + URTF. Конверт: $160M (PBC) + $340M (інвестиції). До закриття залишається ~9 міс.'
+    : 'Restructured Aug 2024: closure extended from 31-Dec-2024 to 23-Dec-2026. Co-financing: CEB $22M + URTF. Envelope: $160M (PBC) + $340M (investment). ~9 months to closure.',
   components: [
     { name: l === 'uk' ? 'Психічне здоров\u2019я та реабілітація' : 'Mental Health & Rehabilitation', amount: 100, status: 'EXCEEDED' },
     { name: l === 'uk' ? 'Первинна медична допомога' : 'Primary Health Care', amount: 150, status: 'EXCEEDED' },
     { name: l === 'uk' ? 'Модернізація лікарень' : 'Hospital Modernization', amount: 200, status: 'ON TRACK' },
     { name: l === 'uk' ? 'Діджиталізація та інновації' : 'Digitalization & Innovations', amount: 50, status: 'PARTIAL' },
   ],
+  // Full ISR #6 KPI table (as of 25-Mar-2026, WB ISR #6)
   kpis: [
-    { name: l === 'uk' ? 'Отримують МЗ-послуги' : 'People receiving MH services', target: 500000, actual: 624464, pct: 125, status: 'exceeded' },
-    { name: l === 'uk' ? 'Отримують реабілітацію' : 'People receiving rehabilitation', target: 312500, actual: 670303, pct: 214, status: 'exceeded' },
-    { name: l === 'uk' ? 'Заклади переналаштовано для МЗ' : 'Facilities reconfigured for MH', target: 400, actual: 0, pct: 0, status: 'critical' },
+    { name: l === 'uk' ? 'Отримали МЗ-послуги' : 'People receiving MH services', target: 500000, actual: 624464, pct: 125, status: 'exceeded' },
+    { name: l === 'uk' ? 'Реабілітаційні послуги' : 'People receiving rehabilitation', target: 312500, actual: 670303, pct: 214, status: 'exceeded' },
+    { name: l === 'uk' ? 'Розширені огляди ПМГ' : 'Extended PHC examinations', target: 3500000, actual: 10388635, pct: 297, status: 'exceeded' },
     { name: l === 'uk' ? 'Мобільні МЗ-команди' : 'Mobile MH teams deployed', target: 75, actual: 118, pct: 157, status: 'exceeded' },
+    { name: l === 'uk' ? 'Заклади переоблаштовані (МЗ)' : 'Facilities reconfigured for MH', target: 400, actual: 0, pct: 0, status: 'critical' },
+    { name: l === 'uk' ? 'Навчені (GBV)' : 'PHC personnel trained (GBV)', target: 3000, actual: 5288, pct: 176, status: 'exceeded' },
+    { name: l === 'uk' ? 'Програма доступних ліків' : 'Affordable Medicine Program', target: 4767838, actual: 5502976, pct: 115, status: 'exceeded' },
   ],
   insight: l === 'uk'
-    ? "Component 4 Digitalization ($50M) \u2014 точка входу. \u007e$41M незакуплено. 0/400 заклад\u0456в реконф\u0456гуровано для МЗ. Feel Again = Digital Bus. Механ\u0456зм доступу: procurement (RFQ/Direct Selection) через МОЗ."
+    ? "Component 4 Digitalization ($50M) \u2014 точка входу. \u007e$41M незакуплено. 0/400 закладів реконфігуровано для МЗ. Feel Again = Digital Bus. Механізм доступу: procurement (RFQ/Direct Selection) через МОЗ."
     : "Component 4 Digitalization ($50M) is the entry point. \u007e$41M unallocated. 0/400 facilities reconfigured for MH. Feel Again = Digital Bus. Access: procurement (RFQ/Direct Selection) via MoH.",
   synergy: l === 'uk'
-    ? "HEAL (IPF, $500M) генеру\u0454 послуги \u2014 624K МЗ, 118 команд, але ДАН\u0406 поза ЕСОЗ. THRIVE (PforR, $454M) вим\u0456рю\u0454 через ЕСОЗ. GAP: виходи HEAL \u2260 входи THRIVE. FEEL Again middleware закриває цей розрив."
+    ? "HEAL (IPF, $500M) генерує послуги \u2014 624K МЗ, 118 команд, але ДАНІ поза ЕСОЗ. THRIVE (PforR, $454M) вимірює через ЕСОЗ. GAP: виходи HEAL \u2260 входи THRIVE. FEEL Again middleware закриває цей розрив."
     : "HEAL (IPF, $500M) deploys services \u2014 624K MH, 118 teams, but DATA is outside ESOZ. THRIVE (PforR, $454M) measures via ESOZ. GAP: HEAL outputs \u2260 THRIVE inputs. FEEL Again middleware bridges this gap.",
 });
 
@@ -554,8 +563,8 @@ export const THRIVE_PROJECT = (l: Language) => ({
     ? 'THRIVE вим\u0456рює ефективн\u0456сть через дан\u0456 ЕСОЗ/НСЗУ. Якщо послуги HEAL (624K МЗ, 118 моб\u0456льних команд) не в\u0456дображаються в ЕСОЗ \u2014 вони не \u0456снують для метрик THRIVE.'
     : 'THRIVE measures efficiency via ESOZ/NHSU data. If HEAL services (624K MH, 118 mobile teams) are not in ESOZ \u2014 they do not exist for THRIVE metrics.',
   advance: l === 'uk'
-    ? '\u0423\u0432\u0430\u0433\u0430: \u0431\u043b\u0438\u0437\u044c\u043a\u043e $220M \u0431\u0443\u043b\u043e \u0432\u0438\u043f\u043b\u0430\u0447\u0435\u043d\u043e \u0430\u0432\u0430\u043d\u0441\u043e\u043c \u2014 \u0437\u0430 \u043d\u0438\u043c \u0449\u0435 \u043d\u0435\u043e\u0431\u0445\u0456\u0434\u043d\u043e \u0437\u0432\u0456\u0442\u0443\u0432\u0430\u0442\u0438\u0441\u044c \u0447\u0435\u0440\u0435\u0437 DLI. \u0417\u0430\u043b\u0438\u0448\u043e\u043a \u2014 ~$234M \u043f\u0456\u0434 \u043f\u0456\u0434\u0442\u0432\u0435\u0440\u0434\u0436\u0435\u043d\u043d\u044f \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0456\u0432.'
-    : 'Note: ~$220M was disbursed as advance \u2014 still requires DLI reporting. Remaining ~$234M pending results verification.',
+    ? 'При підписанні (10-Dec-2024) Україна отримала $220M. Груд. 2025: +$19.5M після виконання DLI. Разом ~$320M з $454M (=70%) дисбурсовано. Кошти проходять через НБУ як depository bank для операцій Світового банку.'
+    : 'At signing (10-Dec-2024) Ukraine received $220M. Dec 2025: +$19.5M after DLI completion. Total ~$320M of $454M (=70%) disbursed. Funds flow through NBU as depository bank for World Bank operations.',
 });
 
 // HEAL Component 4 Digitalization: procurement breakdown
@@ -760,6 +769,28 @@ export const DUAL_PROJECT_NARRATIVE = (l: Language) =>
   l === 'uk'
     ? 'Св\u0456товий Банк \u0456нвестував $954M в охорону здоров\u2019я України через два взаємопов\u2019язаних \u0456нструменти. HEAL ($500M, IPF) розгорта\u0454 послуги \u2014 624,464 ос\u0456б отримали МЗ допомогу, 118 моб\u0456льних команд працюють у пол\u0456. THRIVE ($454M, PforR) вим\u0456рю\u0454 ефективн\u0456сть системи через ЕСОЗ. Але ЕСОЗ не бачить б\u0456льш\u0456сть послуг HEAL: моб\u0456льн\u0456 команди працюють у CommCare/Kobo/ActivityInfo. Trembita (230+ \u0456нституц\u0456й, 7B+ транзакц\u0456й) п\u0456дключена до НСЗУ, але не розум\u0456\u0454 формат гуман\u0456тарних систем. Результат: $500M-проєкт генеру\u0454 послуги, як\u0456 $454M-проєкт не може побачити. FEEL Again middleware \u2014 це "по\u0457зд" м\u0456ж зонами: CommCare/Kobo \u2192 FHIR R4 \u2192 Trembita \u2192 ЕСОЗ. Component 4 HEAL ($50M на диг\u0456тал\u0456зац\u0456ю) \u2014 вже затверджене ф\u0456нансове в\u0456кно.'
     : 'World Bank invested $954M in Ukraine health via two linked instruments. HEAL ($500M, IPF) deploys services \u2014 624,464 people received MH support, 118 mobile teams in the field. THRIVE ($454M, PforR) measures system efficiency via ESOZ. But ESOZ cannot see most HEAL services: mobile teams work in CommCare/Kobo/ActivityInfo. Trembita (230+ institutions, 7B+ transactions) connects to NHSU but does not understand humanitarian data formats. Result: the $500M project generates services the $454M project cannot see. FEEL Again middleware is the "train" between zones: CommCare/Kobo \u2192 FHIR R4 \u2192 Trembita \u2192 ESOZ. HEAL Component 4 ($50M digitalization) is the pre-approved funding window.';
+
+// Missing Middle: two invisible layers that statistics cannot capture
+export const MISSING_MIDDLE = (l: Language) => ({
+  title: l === 'uk' ? 'MISSING MIDDLE: ДВА НЕВИДИМІ ШАРИ' : 'MISSING MIDDLE: TWO INVISIBLE LAYERS',
+  clinical: {
+    title: l === 'uk' ? 'Клінічна пропущена середина' : 'Clinical missing middle',
+    desc: l === 'uk'
+      ? 'Реальна середня ланка клінічної допомоги. Неможливо зробити вигляд, що її немає — тільки тому що статистично не видно. Приватні та неформальні фахівці присутні і в гуманітарній, і в тіньовій статистиці, працюють на фронтлайні, приймають удар — але скромно не вважають себе частиною гуманітарного реагування і не мають доступу до фінансування. За консервативною оцінкою вони можуть дорівнювати сукупній кількості зайнятих у гуманітарному хелс-кластері разом із клінічним сектором НСЗУ. Нове регулювання закриває пастку замість того, щоб відкрити вихід.'
+      : 'The real clinical middle layer — cannot be ignored just because statistics cannot see it. Private/informal practitioners appear in both humanitarian and shadow data, work frontline, take the hit — but modestly do not see themselves as humanitarian responders and have no access to funding. Conservative estimate: they may equal the combined headcount of the humanitarian health cluster plus NHSU clinical sector. New regulation closes the trap instead of opening an exit.',
+    items: [
+      { label: l === 'uk' ? 'Реальна пропускна здатність' : 'Actual throughput capacity', desc: l === 'uk' ? 'Немає даних про фактичну кількість сесій на одного фахівця в системі ЕСОЗ' : 'No data on actual sessions per specialist in ESOZ' },
+      { label: l === 'uk' ? 'Конверсія mhGAP (<10%)' : 'mhGAP conversion (<10%)', desc: l === 'uk' ? 'З 150,000+ навчених лікарів реально надають послуги — оцінка: менше 10%' : 'Of 150,000+ trained doctors — estimate: <10% actually delivering services' },
+      { label: l === 'uk' ? 'Тіньовий ринок' : 'Shadow market volume', desc: l === 'uk' ? 'Точний обсяг приватного ринку, який не проходить через офіційну статистику' : 'Exact volume of private market not captured in official statistics' },
+    ],
+  },
+  coordination: {
+    title: l === 'uk' ? 'Цифрова координаційна середина' : 'Digital coordination middle',
+    desc: l === 'uk'
+      ? 'Координувати 1,000+ осіб і 450+ організацій через чати та фізичні зустрічі — це видимість координації. Реальні надскладні завдання MHPSS (дедуплікація, outcome tracking, gap analysis в реальному часі) потребують цифрової платформи, якої не існує. Відсутня цифрова координаційна середина — це і є структурна причина, чому 624K МЗ-сесій не видно у метриках THRIVE.'
+      : 'Coordinating 1,000+ people and 450+ organisations via chats and physical meetings creates the appearance of coordination. Real complex MHPSS tasks (deduplication, outcome tracking, real-time gap analysis) require a digital platform that does not exist. The absent digital coordination layer is the structural reason why 624K MH sessions are invisible to THRIVE metrics.',
+  },
+});
 
 export const SOURCES = {
     primary: [
