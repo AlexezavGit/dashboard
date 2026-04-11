@@ -167,8 +167,12 @@ export const SECTOR_DIST_DATA = (l: Language) => [
 ];
 
 export const BUDGET_SPLIT_DATA = (l: Language) => [
-  { name: l === 'uk' ? 'Стаціонар (89%)' : 'Inpatient (89%)', value: 89, fill: COLORS.red },
-  { name: l === 'uk' ? 'Амбулаторія (11%)' : 'Outpatient (11%)', value: 11, fill: COLORS.green },
+  // 2025 NHSU budget structure (МОЗ/НСЗУ 2025)
+  // Specialized care total: 144.6B UAH → inpatient ~80.2B (55%), outpatient ~64.4B (45%)
+  // Primary care (mhGAP integration): 25.6B UAH
+  { name: l === 'uk' ? 'Спеціаліз. стаціонар (55%)' : 'Specialized inpatient (55%)', value: 55, fill: COLORS.red },
+  { name: l === 'uk' ? 'Спеціаліз. амбулаторія (34%)' : 'Specialized outpatient (34%)', value: 34, fill: COLORS.orange },
+  { name: l === 'uk' ? 'Первинна ланка (11%)' : 'Primary care (11%)', value: 11, fill: COLORS.green },
 ];
 
 export const DONOR_DATA = (l: Language) => [
