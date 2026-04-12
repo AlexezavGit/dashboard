@@ -67,9 +67,9 @@ export const TOP_METRICS = (l: Language) => [
   },
   {
     label: l === 'uk' ? 'Активні заклади НСЗУ' : 'Active NHSU Facilities',
-    value: 3346,
-    sub: l === 'uk' ? 'Заклади HeRAMS (Держава)' : 'HeRAMS facilities (Gov)',
-    tooltip: l === 'uk' ? 'Медичні заклади, що надають послуги за пакетом НСЗУ та звітують через систему HeRAMS.' : 'Medical facilities providing services under the NHSU package and reporting via HeRAMS.',
+    value: 3383,
+    sub: l === 'uk' ? 'Надавачів у реєстрі НСЗУ (портал 10.04.2026)' : 'Providers in NHSU registry (portal 10.04.2026)',
+    tooltip: l === 'uk' ? 'Усі медичні заклади, зареєстровані в реєстрі надавачів НСЗУ. Із них 943 мають принаймні одного спеціаліста з МЗ-спеціалізацією (1,229 МНП-пакетів МЗ).' : 'All medical facilities registered in the NHSU provider registry. Of these, 943 have at least one MH-specialised doctor (1,229 MH service packages).',
     icon: 'Building2',
     color: COLORS.cyberAmber
   },
@@ -231,7 +231,8 @@ export const CHILDREN_DATA = (l: Language) => [
 export const MHGAP_FUNNEL_DATA = (l: Language) => [
   { name: l === 'uk' ? 'Онлайн-сертифікати' : 'Online certificates', value: 150000, fill: COLORS.blueLight },
   { name: l === 'uk' ? 'З них — первинні лікарі' : 'Of which — primary docs', value: 19000, fill: COLORS.blue },
-  { name: l === 'uk' ? 'Заклади з пакетом НСЗУ' : 'NHSU MH package facilities', value: 1000, fill: COLORS.orange },
+  // NSZU portal verified (10.04.2026): 943 providers / 1,229 MH packages / 4,427 MH doctors
+  { name: l === 'uk' ? 'Заклади з пакетом НСЗУ (МЗ)' : 'NHSU MH package facilities', value: 943, fill: COLORS.orange },
   { name: l === 'uk' ? 'Очне навчання + супервізія' : 'In-person + supervision', value: 700, fill: COLORS.green },
   { name: l === 'uk' ? 'Задокументовано (2020)' : 'Documented practicing (2020)', value: 42, fill: COLORS.red },
 ];
@@ -327,10 +328,17 @@ export const REACH_TABLE_DATA = (l: Language) => [
     [l === 'uk' ? 'Очне навчення + 6 міс. супервізія' : 'In-person training + 6mo supervision', '700', l === 'uk' ? 'ВООЗ mhGAP' : 'WHO mhGAP', '2019–2022'],
     [l === 'uk' ? 'Онлайн-сертифікати (self-paced)' : 'Online certificates (self-paced)', '130,000+', l === 'uk' ? 'ВООЗ mhGAP' : 'WHO mhGAP', l === 'uk' ? 'до жовт. 2024' : 'to Oct 2024'],
     [l === 'uk' ? 'З них — первинні лікарі' : 'Of which — primary care doctors', '~19,000', l === 'uk' ? 'ВООЗ mhGAP' : 'WHO mhGAP', l === 'uk' ? 'до серп. 2024' : 'to Aug 2024'],
-    [l === 'uk' ? 'Заклади з пакетом МЗ' : 'Facilities with MH package', '~1,000', 'НСЗУ/NHSU', l === 'uk' ? 'сер. 2024' : 'mid-2024'],
-    [l === 'uk' ? 'Заклади HeRAMS' : 'HeRAMS facilities', '3,346', l === 'uk' ? 'Держава' : 'Government', '2024'],
-    [l === 'uk' ? 'Кваліфіковані спеціалісти' : 'Qualified specialists', '8,201', l === 'uk' ? 'Держава' : 'Government', '2024'],
-    [l === 'uk' ? 'Реально практикують МЗ' : 'Actually practicing MH', '42', 'PMC 2020', '2020'],
+    // NSZU portal verified 10.04.2026 — станом на 10.04.2026 08:06
+    [l === 'uk' ? 'Надавачів у реєстрі НСЗУ' : 'Providers in NHSU registry', '3,383', 'НСЗУ портал', '10.04.2026'],
+    [l === 'uk' ? 'Надавачів з МЗ-спеціалізацією' : 'Providers with MH specialization', '943', 'НСЗУ портал', '10.04.2026'],
+    [l === 'uk' ? 'МНП-пакетів (МЗ)' : 'MH service packages (МНП)', '1,229', 'НСЗУ портал', '10.04.2026'],
+    [l === 'uk' ? 'Лікарів МЗ-спеціалізацій в НСЗУ' : 'MH-specialised doctors in NHSU', '4,427', 'НСЗУ портал', '10.04.2026'],
+    [l === 'uk' ? 'Психіатрів (усього НСЗУ)' : 'Psychiatrists (total NHSU)', '~2,600', 'НСЗУ портал', '10.04.2026'],
+    [l === 'uk' ? 'Психіатрів у приватному/ФОП секторі' : 'Psychiatrists in private/FOP sector', '17', 'НСЗУ портал', '10.04.2026'],
+    [l === 'uk' ? 'МЗ-спеціалістів у приватному/ФОП' : 'MH specialists in private/FOP NHSU', '~65', 'НСЗУ портал', '10.04.2026'],
+    [l === 'uk' ? 'Заклади HeRAMS (Держава, 2024)' : 'HeRAMS facilities (Gov, 2024)', '3,346', l === 'uk' ? 'Держава' : 'Government', '2024'],
+    [l === 'uk' ? 'Кваліфіковані спеціалісти (Держава)' : 'Qualified specialists (Gov)', '8,201', l === 'uk' ? 'Держава' : 'Government', '2024'],
+    [l === 'uk' ? 'Реально практикують МЗ (mhGAP, 2020)' : 'Actually practicing MH (mhGAP, 2020)', '42', 'PMC 2020', '2020'],
 ];
 
 export const INPUTS_OUTCOMES_DATA = (l: Language) => [
@@ -393,6 +401,43 @@ export const MACRO_GAP = {
   aftershockMarketEurBln: 5.4,
   aftershockBacklogYears: 21.5,
 };
+
+// NSZU (NHSU) Portal Verified Snapshot — станом на 10.04.2026 08:06
+// Source: Реєстр надавачів НСЗУ (https://portal.nszu.gov.ua)
+// Screenshot filters documented by user: All / MH-specializations / Private+FOP / Ambulatory
+export const NSZU_SNAPSHOT = {
+  // ── All providers ────────────────────────────────────────────
+  totalProviders:      3_383,   // all registered contractors
+  totalMnp:            9_192,   // total MH service packages across all specialties
+  totalDoctors:       15_587,   // all doctors in NHSU system
+
+  // ── MH-specialized (filter: Psych / Clinical Psych / Psychologist / Narcologist / Therapist) ─
+  mhProviders:           943,   // providers with ≥1 MH specialization
+  mhMnp:               1_229,   // MH-specific service packages
+  mhDoctors:           4_427,   // total MH-specialised doctors contracted
+  mhPsychiatrists:     2_600,   // лікар-психіатр (approx from bar chart)
+  mhClinicalPsych:     1_000,   // клінічний психолог
+  mhPsychologists:       600,   // лікар-психолог
+  mhNarcologists:        300,   // лікар-нарколог
+
+  // ── Private + FOP sector only (state/communal excluded) ──────
+  privateFopProviders: 1_418,
+  privateFopMnp:       1_899,
+  privateFopDoctors:   2_007,
+  // MH specialists within private/FOP:
+  privateFopPsychiatrists:  17, // лікар-психіатр
+  privateFopPsychologists:  16, // лікар-психолог
+  privateFopChildPsych:     15, // лікар-психіатр дитячий
+  privateFopClinicalPsych:   9, // клінічний психолог
+  // Total MH in private/FOP ≈ 57–65 (vs ~6,500 shadow not in NHSU)
+
+  // ── Ambulatory (outpatient) only ─────────────────────────────
+  ambulatoryProviders:  1_088,
+  ambulatoryMnp:        1_821,
+  ambulatoryDoctors:    4_114,
+
+  asOf: '10.04.2026',
+} as const;
 
 // Structural Disproportions — multiplier chart (shadow economy section)
 // Shows how far the system is from norms: each bar = "Ukraine / WHO-benchmark or peer-sector"

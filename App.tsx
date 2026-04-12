@@ -16,6 +16,7 @@ import {
   STAKEHOLDER_MATRIX, FORMALIZATION_COST_V3, DUAL_PROJECT_NARRATIVE, MISSING_MIDDLE,
   PERFECT_STORM_SCALE, STRUCTURAL_DISP_DATA,
   KEY_CONCLUSIONS, ALL_CONCLUSIONS_GRID, MISSING_DATA,
+  NSZU_SNAPSHOT,
 } from './constants';
 import { Language, SectionFilter } from './types';
 import { Card } from './components/ui/Card';
@@ -1106,6 +1107,79 @@ const App: React.FC = () => {
                         {lang === 'uk' ? 'ℹ Тіньова економіка України: 38.5% ВВП (2017). Конкретних досліджень тіньового сектору в ментальному здоров\'ї не знайдено.' : 'ℹ Ukraine shadow economy: 38.5% of GDP (2017). No specific studies on mental health shadow sector found.'}
                       </InsightBox>
                     </Card>
+                  </div>
+
+                  {/* NSZU Verified Snapshot — private/FOP vs shadow */}
+                  <div className="cyber-card border border-cyan-500/20 rounded-xl overflow-hidden">
+                    <div className="bg-cyan-500/5 px-5 py-3 border-b border-cyan-500/20 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Database className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
+                        <span className="cyber-label text-[11px] text-cyan-400">
+                          {lang === 'uk' ? 'РЕЄСТР НСЗУ — ВЕРИФІКОВАНІ ДАНІ ПОРТАЛУ' : 'NHSU REGISTRY — VERIFIED PORTAL DATA'}
+                        </span>
+                      </div>
+                      <span className="text-[9px] font-mono text-slate-500">{lang === 'uk' ? 'Станом на' : 'As of'} {NSZU_SNAPSHOT.asOf}</span>
+                    </div>
+                    <div className="p-5 space-y-4">
+                      {/* Three-column summary */}
+                      <div className="grid grid-cols-3 gap-3">
+                        {[
+                          { label: lang === 'uk' ? 'Усього надавачів' : 'Total providers', value: NSZU_SNAPSHOT.totalProviders.toLocaleString(), sub: lang === 'uk' ? `${NSZU_SNAPSHOT.totalDoctors.toLocaleString()} лікарів` : `${NSZU_SNAPSHOT.totalDoctors.toLocaleString()} doctors`, color: '#94a3b8' },
+                          { label: lang === 'uk' ? 'МЗ-спеціалізація' : 'MH specialization', value: NSZU_SNAPSHOT.mhProviders.toLocaleString(), sub: `${NSZU_SNAPSHOT.mhMnp.toLocaleString()} МНП · ${NSZU_SNAPSHOT.mhDoctors.toLocaleString()} ${lang === 'uk' ? 'лік.' : 'drs'}`, color: '#00F5FF' },
+                          { label: lang === 'uk' ? 'Приватний + ФОП' : 'Private + FOP', value: NSZU_SNAPSHOT.privateFopProviders.toLocaleString(), sub: lang === 'uk' ? `${NSZU_SNAPSHOT.privateFopDoctors.toLocaleString()} лікарів` : `${NSZU_SNAPSHOT.privateFopDoctors.toLocaleString()} doctors`, color: '#F59E0B' },
+                        ].map((item, i) => (
+                          <div key={i} className="bg-slate-800/30 rounded-lg p-3 text-center">
+                            <div className="text-[9px] text-slate-500 font-mono uppercase mb-1">{item.label}</div>
+                            <div className="text-xl font-bold font-mono" style={{ color: item.color }}>{item.value}</div>
+                            <div className="text-[9px] text-slate-500 font-mono mt-1">{item.sub}</div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Key insight: private/FOP MH specialists vs shadow */}
+                      <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-4">
+                        <div className="text-[10px] font-bold text-rose-300 mb-2 uppercase font-mono tracking-wider">
+                          {lang === 'uk' ? '⚡ МЗ-фахівців у приватному/ФОП секторі НСЗУ:' : '⚡ MH specialists in private/FOP NHSU sector:'}
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+                          {[
+                            { role: lang === 'uk' ? 'Психіатр' : 'Psychiatrist', n: NSZU_SNAPSHOT.privateFopPsychiatrists },
+                            { role: lang === 'uk' ? 'Психолог' : 'Psychologist', n: NSZU_SNAPSHOT.privateFopPsychologists },
+                            { role: lang === 'uk' ? 'Псих. дитячий' : 'Child psychiatrist', n: NSZU_SNAPSHOT.privateFopChildPsych },
+                            { role: lang === 'uk' ? 'Кліні. психолог' : 'Clinical psych.', n: NSZU_SNAPSHOT.privateFopClinicalPsych },
+                          ].map((d, i) => (
+                            <div key={i} className="bg-slate-800/50 rounded px-2 py-1.5 text-center">
+                              <div className="text-[9px] text-slate-500 font-mono">{d.role}</div>
+                              <div className="text-sm font-bold font-mono text-rose-300">{d.n}</div>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-[10px] text-rose-300/80 leading-relaxed font-mono">
+                          {lang === 'uk'
+                            ? `Усього МЗ-фахівців у приватному/ФОП секторі НСЗУ: ~${NSZU_SNAPSHOT.privateFopPsychiatrists + NSZU_SNAPSHOT.privateFopPsychologists + NSZU_SNAPSHOT.privateFopChildPsych + NSZU_SNAPSHOT.privateFopClinicalPsych} — проти ~6,500 у тіньовому секторі (оцінка). Тобто на кожного приватного МЗ-фахівця в НСЗУ припадає ~100 тіньових. Вони лікують, заробляють, платять — але невидимі для системи ЕСОЗ/ТHRIVE.`
+                            : `Total MH specialists in private/FOP NHSU sector: ~${NSZU_SNAPSHOT.privateFopPsychiatrists + NSZU_SNAPSHOT.privateFopPsychologists + NSZU_SNAPSHOT.privateFopChildPsych + NSZU_SNAPSHOT.privateFopClinicalPsych} — vs ~6,500 in the shadow sector (est.). That is ~100 shadow practitioners per formal private MH specialist in NHSU. They treat, earn, pay taxes — but are invisible to ESOZ/THRIVE.`}
+                        </p>
+                      </div>
+
+                      {/* Doctor type distribution in MH-specialized providers */}
+                      <div className="grid grid-cols-4 gap-2">
+                        {[
+                          { label: lang === 'uk' ? 'Психіатрів' : 'Psychiatrists', n: `~${(NSZU_SNAPSHOT.mhPsychiatrists/1000).toFixed(1)}K`, pct: Math.round(NSZU_SNAPSHOT.mhPsychiatrists / NSZU_SNAPSHOT.mhDoctors * 100), color: '#EF4444' },
+                          { label: lang === 'uk' ? 'Кліні. психологів' : 'Clinical psychol.', n: `~${(NSZU_SNAPSHOT.mhClinicalPsych/1000).toFixed(1)}K`, pct: Math.round(NSZU_SNAPSHOT.mhClinicalPsych / NSZU_SNAPSHOT.mhDoctors * 100), color: '#8B5CF6' },
+                          { label: lang === 'uk' ? 'Психологів' : 'Psychologists', n: `~${(NSZU_SNAPSHOT.mhPsychologists/1000).toFixed(1)}K`, pct: Math.round(NSZU_SNAPSHOT.mhPsychologists / NSZU_SNAPSHOT.mhDoctors * 100), color: '#00F5FF' },
+                          { label: lang === 'uk' ? 'Наркологів' : 'Narcologists', n: `~${(NSZU_SNAPSHOT.mhNarcologists/1000).toFixed(1)}K`, pct: Math.round(NSZU_SNAPSHOT.mhNarcologists / NSZU_SNAPSHOT.mhDoctors * 100), color: '#F59E0B' },
+                        ].map((d, i) => (
+                          <div key={i} className="bg-slate-800/30 rounded-lg p-2">
+                            <div className="text-[9px] text-slate-500 font-mono mb-1">{d.label}</div>
+                            <div className="text-base font-bold font-mono" style={{ color: d.color }}>{d.n}</div>
+                            <div className="mt-1 h-1 bg-slate-700 rounded-full overflow-hidden">
+                              <div className="h-full rounded-full" style={{ width: `${d.pct}%`, backgroundColor: d.color + '80' }} />
+                            </div>
+                            <div className="text-[8px] text-slate-600 font-mono mt-0.5">{d.pct}% {lang === 'uk' ? 'від МЗ' : 'of MH'}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
