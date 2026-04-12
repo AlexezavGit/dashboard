@@ -77,8 +77,10 @@ export const TOP_METRICS = (l: Language) => [
     label: l === 'uk' ? 'Навчений персонал' : 'Trained Personnel',
     value: 38000,
     suffix: '+',
-    sub: l === 'uk' ? 'Фахівці МЗПСП (UNICEF)' : 'MHPSS professionals (UNICEF)',
-    tooltip: l === 'uk' ? 'Кількість фахівців, які пройшли навчання з надання МЗПСП.' : 'Number of professionals trained in providing MHPSS.',
+    sub: l === 'uk' ? 'Фахівці МЗПСП (UNICEF 2023)' : 'MHPSS professionals (UNICEF 2023)',
+    tooltip: l === 'uk'
+      ? 'UNICEF MHPSS навчальні модулі 2021-2023. За фахом: вчителі та шкільні психологи (~18K), соціальні працівники (~9K), первинні медики / медсестри (~7K), психологи-консультанти (~4K+). Навчання охоплює базові MHPSS навички (психологічна перша допомога, психосоціальна підтримка, направлення), але НЕ клінічна терапія. Клінічні результати цих навчань — не вимірюються в ЕСОЗ.'
+      : 'UNICEF MHPSS training modules 2021-2023. By specialty: teachers & school psychologists (~18K), social workers (~9K), primary care / nurses (~7K), counselling psychologists (~4K+). Training covers basic MHPSS skills (PFA, psychosocial support, referrals) — NOT clinical therapy. Clinical outcomes of this training are not tracked in ESOZ.',
     icon: 'GraduationCap',
     color: COLORS.cyberPurple
   }
@@ -1082,7 +1084,7 @@ export const ALL_CONCLUSIONS_GRID = (l: Language) => [
 export const KILLER_QUOTES = (l: Language) => [
   {
     id: 'inputs-outputs-outcomes',
-    uk: 'Діяльність фінансується. Процеси відбуваються. Результати у відновленні — невимірні.',
+    uk: 'Реагування фінансується. Процеси відбуваються. Клінічні результати відновлення — не вимірювані.',
     en: 'Inputs are funded. Outputs are reported. Outcomes are invisible.',
     source: 'FEEL Again War Room',
     color: '#EF4444',

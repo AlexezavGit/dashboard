@@ -224,48 +224,74 @@ const App: React.FC = () => {
         </header>
 
         {/* ── CRISIS HERO BAR ─────────────────────────────────────────── */}
+        <div className="mb-1.5 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping flex-shrink-0" />
+          <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">
+            {lang === 'uk' ? 'МАСШТАБ КРИЗИ — ЦИФРИ, ЩО НЕ МОЖНА ІГНОРУВАТИ' : 'CRISIS SCALE — NUMBERS THAT CANNOT BE IGNORED'}
+          </span>
+        </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-1.5 mb-6 font-mono">
           {[
             {
               val: '0.28%',
               label: lang === 'uk' ? 'ПОКРИТТЯ КЛІН. ПОТРЕБИ' : 'CLINICAL NEED COVERED',
-              sub: '180K / 62.4M sessions',
+              sub: lang === 'uk'
+                ? '180K сес./рік (НСЗУ ПМД, 2024) / 62.4M потреба (3.9M × 16, ВООЗ)'
+                : '180K sessions/yr (NHSU primary care, 2024) / 62.4M need (3.9M × 16, WHO)',
               color: '#FF4444',
               pulse: true,
+              tooltip: lang === 'uk'
+                ? '180K — надані НСЗУ психологічні послуги в первинній медичній допомозі за 2024 рік. 62.4M — загальна клінічна потреба в сесіях для 3.9M осіб (22% населення) при нормі ВООЗ 16 сес./особу. Джерела: НСЗУ відкриті дані 2024 / ВООЗ / Lancet 2023.'
+                : '180K — NHSU psychological services delivered in primary care during 2024. 62.4M — total clinical session need for 3.9M people (22% of population) at WHO norm of 16 sessions/person. Sources: NHSU open data 2024 / WHO / Lancet 2023.',
             },
             {
-              val: '62.4M',
-              label: lang === 'uk' ? 'РОЗРИВ СЕСІЙ / РІК' : 'SESSION GAP / YEAR',
-              sub: '3.9M × 16 sessions',
+              val: '62.2M',
+              label: lang === 'uk' ? 'НЕЗАКРИТА ПОТРЕБА / РІК' : 'UNMET NEED / YEAR',
+              sub: lang === 'uk'
+                ? '62,220,000 сесій · 3.9M осіб × 16 сес. (ВООЗ) − 180K надано'
+                : '62,220,000 sessions · 3.9M people × 16 (WHO) − 180K delivered',
               color: '#F59E0B',
-              pulse: false,
+              pulse: true,
+              tooltip: lang === 'uk'
+                ? 'Реальний розрив: 62,400,000 − 180,000 = 62,220,000 сесій незакрито. Вартість закриття за blended public-humanitarian тарифом $30/сес. = $1.87B/рік. За нижньою межею ринку (€40/сес.) = €2.5B/рік. Джерела: НСЗУ 2024 / ВООЗ норма / FEEL Again calculation.'
+                : 'Real gap: 62,400,000 − 180,000 = 62,220,000 sessions unmet. Cost to close at blended public-humanitarian rate $30/session = $1.87B/year. At market lower bound (€40/session) = €2.5B/year. Sources: NHSU 2024 / WHO norm / FEEL Again calculation.',
             },
             {
               val: '$954M',
-              label: lang === 'uk' ? 'ЗАБЛОКОВАНО (WB)' : 'LOCKED (WB FUNDS)',
-              sub: 'HEAL $500M + THRIVE $454M',
+              label: lang === 'uk' ? 'WB ЗАБЛОКОВАНО / У РОБОТІ' : 'WB LOCKED / IN PROGRESS',
+              sub: lang === 'uk'
+                ? 'HEAL $500M (34% дисб.) + THRIVE $454M (70% дисб.) · разом ~$491M виплачено'
+                : 'HEAL $500M (34% disb.) + THRIVE $454M (70% disb.) · total ~$491M disbursed',
               color: '#F59E0B',
               pulse: false,
+              tooltip: lang === 'uk'
+                ? 'HEAL P180245 (IPF+PBC): загальний конверт $500M, дисбурсовано $171M (34%). THRIVE P505616 (PforR): $454M, дисбурсовано ~$320M (70%), з яких $220M аванс при підписанні (груд. 2024) + $19.5M після DLI (груд. 2025). Загалом: ~$491M / $954M = ~51% виплачено. Фокус HEAL C4 — $50M на цифровізацію.'
+                : 'HEAL P180245 (IPF+PBC): total $500M, disbursed $171M (34%). THRIVE P505616 (PforR): $454M, disbursed ~$320M (70%): $220M advance at signing (Dec 2024) + $19.5M after DLI (Dec 2025). Total: ~$491M / $954M = ~51% disbursed. HEAL C4 focus: $50M for digitalization.',
             },
             {
               val: '7.8 ' + (lang === 'uk' ? 'РОК.' : 'YRS'),
-              label: lang === 'uk' ? 'БЕКЛОГ (4,000 ФАХІВЦІВ)' : 'BACKLOG (4,000 SPECIALISTS)',
-              sub: lang === 'uk' ? 'навіть при +100% ефективності' : 'even at +100% efficiency',
+              label: lang === 'uk' ? 'БЕКЛОГ ПРИ 4,000 СПЕЦ.' : 'BACKLOG AT 4,000 SPEC.',
+              sub: lang === 'uk'
+                ? '4,000 НСЗУ-контрактних МЗ-спеціалістів (психіатри + клін. психологи) × 1,250 сес./рік'
+                : '4,000 NHSU-contracted MH specialists (psychiatrists + clinical psychol.) × 1,250 sessions/year',
               color: '#FF4444',
               pulse: true,
+              tooltip: lang === 'uk'
+                ? '4,000 — консервативна оцінка НСЗУ-зареєстрованих МЗ-спеціалістів (психіатрів + клінічних психологів), що ведуть прийом. Норма навантаження: ~1,250 сесій/рік (50 тиж × 25 сес/тиж). Beклог = 62.22M / (4,000 × 1,250) = 12.4 років; при +100% ефективності = 7.8 р. При 19K фахівців (включаючи тінь) = 1.6-2.2 р. Джерела: НСЗУ портал 2026 / ВООЗ SIMH 2024.'
+                : '4,000 — conservative estimate of NHSU-registered MH specialists (psychiatrists + clinical psychologists) in active practice. Workload norm: ~1,250 sessions/year (50 weeks × 25 sessions/week). Backlog = 62.22M / (4,000 × 1,250) = 12.4 years; at +100% efficiency = 7.8 years. With 19K specialists (incl. shadow) = 1.6-2.2 years. Sources: NHSU portal 2026 / WHO SIMH 2024.',
             },
           ].map((m) => (
-            <div key={m.label} className="bg-cyber-surface border border-cyber-border px-4 py-3 rounded-lg relative overflow-hidden group hover:border-cyber-amber/40 transition-colors">
+            <div key={m.label} className="bg-cyber-surface border border-cyber-border px-4 py-3 rounded-lg relative overflow-hidden group hover:border-cyber-amber/40 transition-colors cursor-help" title={m.tooltip}>
               <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-900/20" />
               <div className="relative">
                 <div className="text-[28px] md:text-[32px] font-bold tracking-tighter leading-none mb-1" style={{ color: m.color }}>
                   {m.val}
                 </div>
                 <div className="text-[9px] text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
-                  {m.pulse && <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping flex-shrink-0" />}
+                  {m.pulse && <span className="w-1.5 h-1.5 rounded-full animate-ping flex-shrink-0" style={{ backgroundColor: m.color }} />}
                   {m.label}
                 </div>
-                <div className="text-[9px] text-slate-600 mt-0.5">{m.sub}</div>
+                <div className="text-[9px] text-slate-600 mt-0.5 leading-snug">{m.sub}</div>
               </div>
             </div>
           ))}
@@ -527,7 +553,7 @@ const App: React.FC = () => {
                         {section.id === 'workforce' && (lang === 'uk' ? '1.3 психолога / 100K · потрібно 5×' : '1.3 psychologists / 100K · needs 5×')}
                         {section.id === 'budget' && (lang === 'uk' ? '2.5% бюджету МЗ · ~5.55 млрд ₴ · ВООЗ ≥5%' : '2.5% MH budget · ~₴5.55B · WHO ≥5%')}
                         {section.id === 'gap' && (lang === 'uk' ? '0.28% покриття · беклог 7.8 років' : '0.28% coverage · 7.8 yr backlog')}
-                        {section.id === 'shadow' && (lang === 'uk' ? '110× приватний > гуманітарний · €65% штраф формалізації' : '110× private > humanitarian · 65% formalization penalty')}
+                        {section.id === 'shadow' && (lang === 'uk' ? '110× приватний > гуманітарний · штраф формалізації 65% доходу (ФОП3 5%+ЄСВ+бухг.+200 год адмін)' : '110× private > humanitarian · 65% income formalization penalty (FOP3 5%+SSC+accounting+200h admin)')}
                         {section.id === 'economic' && (lang === 'uk' ? '$1→$4 ROI · $1.2B+ втрати ВВП' : '$1→$4 ROI · $1.2B+ GDP loss')}
                         {section.id === 'children' && (lang === 'uk' ? '1.5M дітей у групі ризику ПТСР' : '1.5M children at PTSD risk')}
                         {section.id === 'inputs' && (lang === 'uk' ? '150K сертифікатів → 0% даних про результат' : '150K certificates → 0% outcome data')}
@@ -933,8 +959,8 @@ const App: React.FC = () => {
                           </div>
                           <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3 text-center">
                             <div className="text-[9px] text-amber-400 uppercase tracking-wider font-mono mb-1">Blended Finance</div>
-                            <div className="text-[13px] font-bold text-amber-400 font-mono leading-tight">119 млрд грн</div>
-                            <div className="text-[8px] text-slate-600">~$2.8B</div>
+                            <div className="text-[13px] font-bold text-amber-400 font-mono leading-tight">$1.87B</div>
+                            <div className="text-[8px] text-slate-600">62.2M × $30 · або 119 млрд грн</div>
                           </div>
                         </div>
                         <div className="bg-cyber-success/5 border border-cyber-success/20 rounded-lg p-3">
