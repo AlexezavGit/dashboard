@@ -16,7 +16,7 @@ import {
   STAKEHOLDER_MATRIX, FORMALIZATION_COST_V3, DUAL_PROJECT_NARRATIVE, MISSING_MIDDLE,
   PERFECT_STORM_SCALE, STRUCTURAL_DISP_DATA,
   KEY_CONCLUSIONS, ALL_CONCLUSIONS_GRID, MISSING_DATA,
-  NSZU_SNAPSHOT,
+  NSZU_SNAPSHOT, KILLER_QUOTES, GRAND_BARGAIN_3,
 } from './constants';
 import { Language, SectionFilter } from './types';
 import { Card } from './components/ui/Card';
@@ -371,6 +371,18 @@ const App: React.FC = () => {
               ? 'FEEL Again \u2014 цифрова шина між гуманітарними даними (CommCare/Kobo/ActivityInfo) та державною eHealth системою (ESOZ/Trembita). Світовий Банк інвестував $954M через два взаємопов\u2019язані проєкти — HEAL ($500M, IPF) генерує послуги, THRIVE ($454M, PforR) вимірює через ESOZ. \u2764\ufe0f\u200d\ud83d\udd25 Gap: послуги існують, але невидимі для вимірювання.'
               : 'FEEL Again is the digital bus between humanitarian data (CommCare/Kobo/ActivityInfo) and the state eHealth system (ESOZ/Trembita). World Bank invested $954M via two linked instruments — HEAL ($500M, IPF) deploys services; THRIVE ($454M, PforR) measures via ESOZ. \u2764\ufe0f\u200d\ud83d\udd25 Gap: services exist but are invisible to the measurement layer.'}
           </p>
+        </div>
+
+        {/* Killer Quotes Strip */}
+        <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {KILLER_QUOTES(lang).slice(0, 4).map((q, i) => (
+            <div key={q.id} className="cyber-card rounded-xl p-4 border-l-2 flex flex-col gap-2" style={{ borderLeftColor: q.color }}>
+              <p className="text-[11px] font-mono font-bold leading-snug" style={{ color: q.color }}>
+                &ldquo;{lang === 'uk' ? q.uk : q.en}&rdquo;
+              </p>
+              <p className="text-[8px] text-slate-600 font-mono mt-auto">{q.source}</p>
+            </div>
+          ))}
         </div>
 
         {/* Key Conclusions — 4 primary thesis cards */}
@@ -752,6 +764,42 @@ const App: React.FC = () => {
                        {lang === 'uk' ? 'Спеціалізована 144.6B · Стаціонар 80.2B (55.5%) · Первинна 25.6B — МОЗ 2025' : 'Specialized 144.6B · Inpatient 80.2B (55.5%) · Primary 25.6B — MOH 2025'}
                      </div>
                     </Card>
+                  </div>
+
+                  {/* Grand Bargain 3.0 Compliance */}
+                  <div className="cyber-card border border-amber-500/20 rounded-xl overflow-hidden">
+                    <div className="bg-amber-500/5 px-5 py-3 border-b border-amber-500/20 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <AlertTriangle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                        <span className="cyber-label text-[11px] text-amber-400">
+                          {lang === 'uk' ? 'GRAND BARGAIN 3.0 — РОЗРИВ МІЖ ЦІЛЛЮ ТА РЕАЛЬНІСТЮ' : 'GRAND BARGAIN 3.0 — GAP BETWEEN TARGET AND REALITY'}
+                        </span>
+                      </div>
+                      <span className="text-[9px] font-mono text-slate-500">IASC / ALNAP 2024-2025</span>
+                    </div>
+                    <div className="p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {GRAND_BARGAIN_3(lang).map((item, i) => (
+                        <div key={i} className="space-y-2">
+                          <div className="text-[9px] text-slate-500 font-mono uppercase tracking-wider">{item.indicator}</div>
+                          <div className="flex items-end gap-2">
+                            <span className="text-2xl font-bold font-mono" style={{ color: item.color }}>{item.actual}{item.unit}</span>
+                            <span className="text-[10px] text-slate-500 font-mono mb-1">/ {item.target}{item.unit} ціль</span>
+                          </div>
+                          <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                            <div className="h-full rounded-full transition-all" style={{ width: `${Math.min((item.actual / item.target) * 100, 100)}%`, backgroundColor: item.color }} />
+                          </div>
+                          <p className="text-[9px] text-slate-600 font-mono leading-snug">{item.note}</p>
+                          <div className="text-[8px] text-slate-700 font-mono">{item.source}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="px-5 pb-4">
+                      <p className="text-[10px] text-amber-300/70 font-mono leading-relaxed">
+                        {lang === 'uk'
+                          ? '⚡ Tom Fletcher (ERC): "Криза легітимності, моральності та фінансування." FEEL Again — локалізована технологічна відповідь на всі 4 показники: підзвітність, якість, доступність, довгостроковість.'
+                          : '⚡ Tom Fletcher (ERC): "Crisis of legitimacy, morality and financing." FEEL Again is a localised tech response to all 4 metrics: accountability, quality, access, multi-year sustainability.'}
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}

@@ -564,6 +564,37 @@ export const FEEL_AGAIN_POSITION = (l: Language) => ({
   isNot: l === 'uk'
     ? 'Не постачальник послуг ментального здоров\u2019я. Не застосунок і не стартап. Ми не надаємо терапію \u2014 ми робимо її фінансованою, доступною та підзвітною.'
     : 'NOT a mental health service provider. Not an app or startup. We do not provide therapy \u2014 we make it fundable, findable, and accountable.',
+  // Business model: transaction fee split (Platform ops + Tech + Compliance + Reserve + Dev)
+  transactionFee: {
+    total: '3.5\u20137%',
+    breakdown: [
+      { label: 'Platform ops', pct: '1.0%' },
+      { label: 'Tech infra', pct: '0.5%' },
+      { label: 'Compliance', pct: '0.5%' },
+      { label: 'Reserve', pct: '0.5%' },
+      { label: 'Development', pct: '0.5\u20131.0%' },
+      { label: l === 'uk' ? '\u0413\u0443\u043c\u0430\u043d\u0456\u0442\u0430\u0440\u043d\u0438\u0439 \u0432\u0430\u0436\u0456\u043b\u044c' : 'Humanitarian leverage', pct: l === 'uk' ? '\u0437\u0430\u043b\u0438\u0448\u043e\u043a \u2192 P2P' : 'remainder \u2192 P2P' },
+    ],
+    note: l === 'uk'
+      ? 'P2P lever: \u043d\u0430\u0432\u0456\u0442\u044c \u0441\u043a\u0440\u043e\u043c\u043d\u0430 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u0430 \u0456\u043d\u0432\u0435\u0441\u0442\u0438\u0446\u0456\u044f \u0432\u0430\u043b\u0456\u0434\u0443\u0454 \u043f\u043e\u0442\u0440\u0435\u0431\u0443 \u2192 \u0442\u0440\u0438\u0433\u0435\u0440\u0438\u0442\u044c \u0441\u043f\u0456\u0432\u0444\u0456\u043d\u0430\u043d\u0441\u0443\u0432\u0430\u043d\u043d\u044f \u0437 \u0433\u0443\u043c\u0430\u043d\u0456\u0442\u0430\u0440\u043d\u0438\u0445 \u0431\u044e\u0434\u0436\u0435\u0442\u0456\u0432.'
+      : 'P2P lever: even a modest personal donation validates need \u2192 triggers humanitarian budget co-financing.',
+  },
+  // Phase 1 anchor: corporate sector legal obligation (Veterans Charter)
+  phase1: l === 'uk'
+    ? '\u041a\u043e\u0440\u043f\u043e\u0440\u0430\u0442\u0438\u0432\u043d\u0438\u0439 \u0441\u0435\u043a\u0442\u043e\u0440: \u044e\u0440\u0438\u0434\u0438\u0447\u043d\u0438\u0439 \u043e\u0431\u043e\u0432\u2019\u044f\u0437\u043e\u043a \u043f\u0440\u0438\u0439\u043c\u0430\u0442\u0438 \u0434\u0435\u043c\u043e\u0431\u0456\u043b\u0456\u0437\u043e\u0432\u0430\u043d\u0438\u0445 + \u043f\u0441\u0438\u0445\u043e\u043b\u043e\u0433\u0456\u0447\u043d\u0456 \u0441\u043b\u0443\u0436\u0431\u0438 (>\u200950 \u043e\u0441\u0456\u0431). \u0414\u0435\u0448\u0435\u0432\u0448\u0435 \u043f\u043e\u0432\u0435\u0440\u043d\u0443\u0442\u0438 \u0437\u043d\u0430\u0439\u043e\u043c\u043e\u0433\u043e \u2014 \u043d\u0456\u0436 \u043d\u0430\u0439\u043d\u044f\u0442\u0438 \u043d\u043e\u0432\u043e\u0433\u043e. Veterans Charter\u00a0= Phase\u00a01 banking/corporate pilot.'
+    : 'Corporate sector: legal obligation to rehire demobilised employees + psychological services (>50 staff). Cheaper to re-onboard a known person than hire anew. Veterans Charter\u00a0= Phase\u00a01 banking/corporate pilot.',
+  // Integration targets (Phase 1 \u2014 RAILS)
+  integrationTargets: [
+    { name: 'eHealth / ESOZ', type: 'API', priority: 1 },
+    { name: 'Helsi MIS', type: 'API', priority: 1 },
+    { name: 'WHO DHIS2', type: 'API', priority: 1 },
+    { name: 'OCHA FTS', type: 'API', priority: 1 },
+    { name: 'IATI Registry', type: 'API', priority: 2 },
+    { name: 'Trembita / \u041d\u0421\u0417\u0423', type: 'FHIR R4', priority: 1 },
+    { name: 'CommCare / KoboToolbox', type: 'Webhook', priority: 1 },
+    { name: 'ActivityInfo (5W)', type: 'Webhook', priority: 2 },
+    { name: 'SDK.finance', type: 'Payment', priority: 1 },
+  ],
 });
 
 // Capacity Ceiling: mathematical proof the gap can't close with efficiency alone
@@ -910,25 +941,38 @@ export const DUAL_PROJECT_NARRATIVE = (l: Language) =>
     ? 'Св\u0456товий Банк \u0456нвестував $954M в охорону здоров\u2019я України через два взаємопов\u2019язаних \u0456нструменти. HEAL ($500M, IPF) розгорта\u0454 послуги \u2014 624,464 ос\u0456б отримали МЗ допомогу, 118 моб\u0456льних команд працюють у пол\u0456. THRIVE ($454M, PforR) вим\u0456рю\u0454 ефективн\u0456сть системи через ЕСОЗ. Але ЕСОЗ не бачить б\u0456льш\u0456сть послуг HEAL: моб\u0456льн\u0456 команди працюють у CommCare/Kobo/ActivityInfo. Trembita (230+ \u0456нституц\u0456й, 7B+ транзакц\u0456й) п\u0456дключена до НСЗУ, але не розум\u0456\u0454 формат гуман\u0456тарних систем. Результат: $500M-проєкт генеру\u0454 послуги, як\u0456 $454M-проєкт не може побачити. FEEL Again middleware \u2014 це "по\u0457зд" м\u0456ж зонами: CommCare/Kobo \u2192 FHIR R4 \u2192 Trembita \u2192 ЕСОЗ. Component 4 HEAL ($50M на диг\u0456тал\u0456зац\u0456ю) \u2014 вже затверджене ф\u0456нансове в\u0456кно.'
     : 'World Bank invested $954M in Ukraine health via two linked instruments. HEAL ($500M, IPF) deploys services \u2014 624,464 people received MH support, 118 mobile teams in the field. THRIVE ($454M, PforR) measures system efficiency via ESOZ. But ESOZ cannot see most HEAL services: mobile teams work in CommCare/Kobo/ActivityInfo. Trembita (230+ institutions, 7B+ transactions) connects to NHSU but does not understand humanitarian data formats. Result: the $500M project generates services the $454M project cannot see. FEEL Again middleware is the "train" between zones: CommCare/Kobo \u2192 FHIR R4 \u2192 Trembita \u2192 ESOZ. HEAL Component 4 ($50M digitalization) is the pre-approved funding window.';
 
-// Missing Middle: two invisible layers that statistics cannot capture
+// Missing Middle: FOUR invisible layers at the convergence of humanitarian response, clinical care,
+// finance, and technology — beneficiary ↔ client ↔ patient continuum
 export const MISSING_MIDDLE = (l: Language) => ({
-  title: l === 'uk' ? 'MISSING MIDDLE: ДВА НЕВИДИМІ ШАРИ' : 'MISSING MIDDLE: TWO INVISIBLE LAYERS',
+  title: l === 'uk' ? 'MISSING MIDDLE: ЧОТИРИ НЕВИДИМІ ШАРИ' : 'MISSING MIDDLE: FOUR INVISIBLE LAYERS',
   clinical: {
-    title: l === 'uk' ? 'Клінічна пропущена середина' : 'Clinical missing middle',
+    title: l === 'uk' ? '① Клінічна середина' : '① Clinical middle',
     desc: l === 'uk'
-      ? 'Реальна середня ланка клінічної допомоги. Неможливо зробити вигляд, що її немає — тільки тому що статистично не видно. Приватні та неформальні фахівці присутні і в гуманітарній, і в тіньовій статистиці, працюють на фронтлайні, приймають удар — але скромно не вважають себе частиною гуманітарного реагування і не мають доступу до фінансування. За консервативною оцінкою вони можуть дорівнювати сукупній кількості зайнятих у гуманітарному хелс-кластері разом із клінічним сектором НСЗУ. Нове регулювання закриває пастку замість того, щоб відкрити вихід.'
-      : 'The real clinical middle layer — cannot be ignored just because statistics cannot see it. Private/informal practitioners appear in both humanitarian and shadow data, work frontline, take the hit — but modestly do not see themselves as humanitarian responders and have no access to funding. Conservative estimate: they may equal the combined headcount of the humanitarian health cluster plus NHSU clinical sector. New regulation closes the trap instead of opening an exit.',
+      ? 'Реальна середня ланка клінічної допомоги. Неможливо вдавати, що її немає — лише тому що статистично не видно. Приватні та неформальні фахівці присутні і в гуманітарній, і в тіньовій статистиці, працюють на фронтлайні — але не вважають себе гуманітарними реагувальниками і не мають доступу до фінансування. Нове регулювання закриває пастку замість того, щоб відкрити вихід. Бенефіціар → Клієнт → Пацієнт: жодного єдиного маршруту.'
+      : 'The real clinical middle layer — cannot be ignored just because statistics cannot see it. Private/informal practitioners appear in both humanitarian and shadow data, work frontline — but do not see themselves as humanitarian responders and have no funding access. New regulation closes the trap instead of opening an exit. Beneficiary → Client → Patient: no unified pathway.',
     items: [
       { label: l === 'uk' ? 'Реальна пропускна здатність' : 'Actual throughput capacity', desc: l === 'uk' ? 'Немає даних про фактичну кількість сесій на одного фахівця в системі ЕСОЗ' : 'No data on actual sessions per specialist in ESOZ' },
       { label: l === 'uk' ? 'Конверсія mhGAP (<10%)' : 'mhGAP conversion (<10%)', desc: l === 'uk' ? 'З 150,000+ навчених лікарів реально надають послуги — оцінка: менше 10%' : 'Of 150,000+ trained doctors — estimate: <10% actually delivering services' },
-      { label: l === 'uk' ? 'Тіньовий ринок' : 'Shadow market volume', desc: l === 'uk' ? 'Точний обсяг приватного ринку, який не проходить через офіційну статистику' : 'Exact volume of private market not captured in official statistics' },
+      { label: l === 'uk' ? 'Тіньовий ринок невидимий' : 'Shadow market invisible', desc: l === 'uk' ? 'НСЗУ: лише 17 психіатрів у приватному/ФОП секторі — проти ~6,500 у тіні' : 'NHSU: only 17 psychiatrists in private/FOP sector — vs ~6,500 in shadow' },
     ],
   },
-  coordination: {
-    title: l === 'uk' ? 'Цифрова координаційна середина' : 'Digital coordination middle',
+  financial: {
+    title: l === 'uk' ? '② Фінансова середина' : '② Financial middle',
     desc: l === 'uk'
-      ? 'Координувати 1,000+ осіб і 450+ організацій через чати та фізичні зустрічі — це видимість координації. Реальні надскладні завдання MHPSS (дедуплікація, outcome tracking, gap analysis в реальному часі) потребують цифрової платформи, якої не існує. Відсутня цифрова координаційна середина — це і є структурна причина, чому 624K МЗ-сесій не видно у метриках THRIVE.'
-      : 'Coordinating 1,000+ people and 450+ organisations via chats and physical meetings creates the appearance of coordination. Real complex MHPSS tasks (deduplication, outcome tracking, real-time gap analysis) require a digital platform that does not exist. The absent digital coordination layer is the structural reason why 624K MH sessions are invisible to THRIVE metrics.',
+      ? 'Гуманітарний фронтлайн профінансовано і створено: 150 центрів, мобільні бригади — але той, хто повинен бути на підхваті після первинної допомоги, отримав подвійний штраф за вхід: погодинна платня нижча + податки + адмін + кабінет. Приватна практика — це не комунальний заклад. Це стадо газелей-ФОПів, кожен з яких приймає рішення самостійно. Навантаження адмінуванням = годинам прийому. Хто сам на себе повісить це добровільно?'
+      : 'Humanitarian frontline funded and deployed: 150 centres, mobile teams — but whoever should step up after primary care got a double penalty for entry: lower hourly rate + taxes + admin + workspace cost. Private practice ≠ communal facility. This is a herd of FOP gazelles, each deciding independently. Admin load = clinical hours lost. Who volunteers for this?',
+  },
+  humanitarian: {
+    title: l === 'uk' ? '③ Гуманітарна середина' : '③ Humanitarian middle',
+    desc: l === 'uk'
+      ? 'Тисячі навчених практиків із гуманітарного сектору — справжній "запасний парашут" для всіх квазідержавних ініціатив і єдиний шлях до сталості після завершення гуманітарних програм. Коли закриються програми — досвід 10 років роботи з рецептами і без може безслідно зникнути. FEEL Again — це спосіб перетворити гуманітарний капітал на сталий ресурс, а не дати йому випаруватись.'
+      : 'Thousands of trained humanitarian-sector practitioners are the real "backup parachute" for quasi-state initiatives and the only path to sustainability after humanitarian programs shut down. When programs close — a decade of frontline experience may vanish without trace. FEEL Again converts humanitarian capital into a sustainable asset instead of letting it evaporate.',
+  },
+  coordination: {
+    title: l === 'uk' ? '④ Технологічна середина (конвергенція)' : '④ Technology middle (convergence)',
+    desc: l === 'uk'
+      ? 'Конвергенція технологій у секторі MHPSS: між гуманітарним реагуванням та клінічною допомогою — принципово різні дані (CommCare/Kobo/ActivityInfo ≠ ЕСОЗ ≠ НСЗУ). Координувати 1,000+ осіб і 450+ організацій через чати та фізичні зустрічі — це видимість координації. Відсутня цифрова координаційна середина — структурна причина, чому 624K МЗ-сесій не видно у метриках THRIVE. Рішення: Transparency Layer + Coordination Protocol + Financial Rails = FEEL Again.'
+      : 'Technology convergence in MHPSS sector: between humanitarian response and clinical care — fundamentally different data systems (CommCare/Kobo/ActivityInfo ≠ ESOZ ≠ NHSU). Coordinating 1,000+ people and 450+ organisations via chats creates the appearance of coordination. The absent digital coordination layer is the structural reason why 624K MH sessions are invisible to THRIVE metrics. Solution: Transparency Layer + Coordination Protocol + Financial Rails = FEEL Again.',
   },
 });
 
@@ -1029,6 +1073,150 @@ export const ALL_CONCLUSIONS_GRID = (l: Language) => [
     text: l === 'uk'
       ? '150K сертифікатів → 42 практикуючих. 624K послуг → 0% в ЕСОЗ. Тренінг без інфраструктури = вода в пісок.'
       : '150K certificates → 42 practicing. 624K services → 0% in ESOZ. Training without infrastructure = water into sand.',
+  },
+];
+
+// ── KILLER QUOTES ─────────────────────────────────────────────────────────────
+// War Room canonical positioning — used in dashboard quotes strip, pitch decks, reports.
+// Source: FEEL Again internal strategy documents + Tom Fletcher (ERC) + GPPi 2024
+export const KILLER_QUOTES = (l: Language) => [
+  {
+    id: 'inputs-outputs-outcomes',
+    uk: 'Діяльність фінансується. Процеси відбуваються. Результати у відновленні — невимірні.',
+    en: 'Inputs are funded. Outputs are reported. Outcomes are invisible.',
+    source: 'FEEL Again War Room',
+    color: '#EF4444',
+    section: 'inputs',
+  },
+  {
+    id: 'stop-counting-certs',
+    uk: 'Припиніть рахувати сертифікати. Почніть вимірювати відновлення людей.',
+    en: 'Stop Counting Certificates. Start Measuring Recovery.',
+    source: 'FEEL Again War Room',
+    color: '#F59E0B',
+    section: 'inputs',
+  },
+  {
+    id: 'visa-mastercard',
+    uk: 'Програма — це Visa/Mastercard для послуг ментального здоров\'я. Не локомотив — рейки.',
+    en: 'Program is Visa/Mastercard for MHPSS Services. Not the locomotive — the rails.',
+    source: 'FEEL Again War Room',
+    color: '#00F5FF',
+    section: 'positioning',
+  },
+  {
+    id: 'training-scales',
+    uk: 'Навчання легко масштабується. Ефективність — ні.',
+    en: 'Training scales easily, effectiveness does not.',
+    source: 'FEEL Again War Room',
+    color: '#8B5CF6',
+    section: 'inputs',
+  },
+  {
+    id: 'donors-fund',
+    uk: 'Донори фінансують транзакції, а не прогнози. Держава купує послуги, а не сервери.',
+    en: 'Donors fund transactions, not forecasts. State buys service, not servers.',
+    source: 'FEEL Again War Room',
+    color: '#00FF66',
+    section: 'positioning',
+  },
+  {
+    id: '60m-hours',
+    uk: 'А ні в напівручному, а ні в напівавтоматичному режимі адмініструвати 60 мільйонів годин неможливо.',
+    en: 'Cannot administer 60 million hours semi-manually or semi-automatically.',
+    source: 'FEEL Again War Room',
+    color: '#FF6600',
+    section: 'gap',
+  },
+  {
+    id: 'shadow-exists',
+    uk: 'Відсутність приватної практики в статистиці не дозволяє вдавати, що її не існує.',
+    en: 'Absence of private practice in statistics does not allow pretending it does not exist.',
+    source: 'FEEL Again War Room',
+    color: '#EC4899',
+    section: 'shadow',
+  },
+  {
+    id: 'bypass-road',
+    uk: 'Якщо автобан застрягне або перекриється — поїдемо по об\'їзній FEEL Again.',
+    en: 'If the highway jams or closes — we take the FEEL Again bypass road.',
+    source: 'FEEL Again War Room',
+    color: '#F59E0B',
+    section: 'positioning',
+  },
+  {
+    id: 'fletcher-crisis',
+    uk: '"Криза легітимності, моральності та фінансування." Будьте легшими, швидшими, менш бюрократичними.',
+    en: '"Crisis of legitimacy, morality and financing." Be lighter, faster, less bureaucratic.',
+    source: 'Tom Fletcher, ERC (Emergency Relief Coordinator)',
+    color: '#94a3b8',
+    section: 'positioning',
+  },
+  {
+    id: 'gppi-warning',
+    uk: 'Класичної системи може просто не залишитись, якщо не буде швидких пілотів.',
+    en: 'The classic system may simply cease to exist without rapid pilots.',
+    source: 'GPPi 2024',
+    color: '#EF4444',
+    section: 'positioning',
+  },
+  {
+    id: 'two-banks',
+    uk: 'Два береги однієї системи: постачальники послуг (фахівці) та глобальні організації (ресурси). FEEL Again — міст.',
+    en: 'Two Banks of a Single Aid System: clinician-vendors (one shore); global organizations with resources (other shore). FEEL Again = the bridge.',
+    source: 'FEEL Again War Room',
+    color: '#00F5FF',
+    section: 'positioning',
+  },
+  {
+    id: 'petri',
+    uk: 'Україна — величезна чашка Петрі. Не використати цей момент для парадигмального зсуву — халатність.',
+    en: 'Ukraine is a massive Petri dish. Not using this moment for a paradigm shift is negligence.',
+    source: 'FEEL Again War Room',
+    color: '#A855F7',
+    section: 'r&d',
+  },
+];
+
+// ── GRAND BARGAIN 3.0 COMPLIANCE ─────────────────────────────────────────────
+// Source: IASC Grand Bargain 2023–2025 annual reports / ALNAP 2024 / Tom Fletcher ERC
+// Target year for full compliance: 2030 (Grand Bargain 3.0 framework)
+export const GRAND_BARGAIN_3 = (l: Language) => [
+  {
+    indicator: l === 'uk' ? 'Локалізація фінансування' : 'Funding localisation',
+    actual: 1.2,
+    target: 25,
+    unit: '%',
+    source: 'IASC Grand Bargain 2025',
+    color: '#EF4444',
+    note: l === 'uk' ? 'Лише 1.2% гуманітарних коштів потрапляє напряму до місцевих організацій (vs ціль 25%)' : 'Only 1.2% of humanitarian funding goes directly to local organisations (vs 25% target)',
+  },
+  {
+    indicator: l === 'uk' ? 'Якісне фінансування' : 'Quality funding',
+    actual: 12,
+    target: 30,
+    unit: '%',
+    source: 'ALNAP 2024',
+    color: '#F59E0B',
+    note: l === 'uk' ? '<12% коштів — якісні (нецільові, довгострокові, з мін. звітністю) (vs ціль 30%)' : '<12% of funding is quality (flexible, multi-year, low reporting burden) (vs 30% target)',
+  },
+  {
+    indicator: l === 'uk' ? 'Підзвітність постраждалим (AAP)' : 'Accountability to Affected Populations',
+    actual: 15,
+    target: 100,
+    unit: '%',
+    source: 'IASC AAP Framework 2024',
+    color: '#8B5CF6',
+    note: l === 'uk' ? '~15% організацій мають реальні механізми AAP (vs ціль 100%)' : '~15% of organisations have genuine AAP mechanisms (vs 100% target)',
+  },
+  {
+    indicator: l === 'uk' ? 'Довгострокове фінансування' : 'Multi-year funding',
+    actual: 20,
+    target: 30,
+    unit: '%',
+    source: 'Grand Bargain Signatories 2025',
+    color: '#06B6D4',
+    note: l === 'uk' ? '~20% коштів — багаторічні (vs ціль 30%). Україна: критична залежність від річних циклів' : '~20% of funds are multi-year (vs 30% target). Ukraine: critical dependency on annual cycles',
   },
 ];
 
