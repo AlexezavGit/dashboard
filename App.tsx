@@ -194,8 +194,8 @@ const App: React.FC = () => {
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tighter flex items-center gap-3">
                 {TEXTS.header.title[lang]}
-                <span className="text-[10px] bg-cyber-success/10 text-cyber-success px-2 py-0.5 rounded border border-cyber-success/30 font-mono uppercase" style={{animation:'pulse 6s ease-in-out infinite'}}>
-                  SECURE
+                <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-mono uppercase">
+                  OPEN DATA
                 </span>
               </h1>
               <p className="text-slate-500 text-xs md:text-sm font-mono mt-1">{TEXTS.header.subtitle[lang]}</p>
@@ -217,11 +217,94 @@ const App: React.FC = () => {
                 EN
               </button>
             </div>
-            <div className="text-[10px] font-mono text-cyber-amber uppercase tracking-widest">
-              SYSTEM_TIME: {new Date().toLocaleTimeString()} | {TEXTS.header.date[lang]}
+            <div className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+              {TEXTS.header.date[lang]} · {lang === 'uk' ? 'Верифіковано вручну' : 'Manually verified'}
             </div>
           </div>
         </header>
+
+        {/* ── INSTITUTIONAL MISSION STATEMENT ─────────────────────────── */}
+        <div className="mb-8 rounded-2xl overflow-hidden border border-slate-700/60" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #0A1628 50%, #0D1B2A 100%)' }}>
+          {/* Top band */}
+          <div className="flex items-center gap-0 border-b border-slate-700/60">
+            <div className="flex-1 px-6 py-3 bg-blue-900/20 border-r border-slate-700/60 flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0" />
+              <span className="text-[10px] font-mono text-blue-300 uppercase tracking-[0.2em]">
+                {lang === 'uk' ? 'ПРОБЛЕМА' : 'THE PROBLEM'}
+              </span>
+            </div>
+            <div className="flex-1 px-6 py-3 bg-amber-900/10 border-r border-slate-700/60 flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-cyber-amber flex-shrink-0" />
+              <span className="text-[10px] font-mono text-cyber-amber uppercase tracking-[0.2em]">
+                {lang === 'uk' ? 'РОЗРИВ' : 'THE GAP'}
+              </span>
+            </div>
+            <div className="flex-1 px-6 py-3 bg-emerald-900/10 flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-[0.2em]">
+                {lang === 'uk' ? 'РІШЕННЯ' : 'THE SOLUTION'}
+              </span>
+            </div>
+          </div>
+          {/* Content */}
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-700/60">
+            {/* Problem */}
+            <div className="px-6 py-5">
+              <p className="text-white text-[14px] font-semibold leading-snug mb-2">
+                {lang === 'uk'
+                  ? '3.9 мільйона людей потребують клінічної допомоги з психічного здоров\'я'
+                  : '3.9 million people need clinical mental health care'}
+              </p>
+              <p className="text-slate-400 text-[12px] leading-relaxed">
+                {lang === 'uk'
+                  ? '22% населення України — під клінічно значущим психологічним тиском внаслідок війни. Існуюча система покриває 0.28% від потреби.'
+                  : '22% of Ukraine\'s population is under clinically significant psychological distress due to war. The existing system covers 0.28% of need.'}
+              </p>
+            </div>
+            {/* Gap */}
+            <div className="px-6 py-5">
+              <p className="text-white text-[14px] font-semibold leading-snug mb-2">
+                {lang === 'uk'
+                  ? 'World Bank інвестував $954M — але послуги залишаються невидимими'
+                  : 'World Bank invested $954M — but services remain invisible to measurement'}
+              </p>
+              <p className="text-slate-400 text-[12px] leading-relaxed">
+                {lang === 'uk'
+                  ? 'HEAL ($500M) та THRIVE ($454M) фінансують послуги, але гуманітарні та державні системи не обмінюються даними. 62.2M сесій/рік — незакрита потреба вартістю $1.87B.'
+                  : 'HEAL ($500M) and THRIVE ($454M) fund services, but humanitarian and state systems don\'t share data. 62.2M sessions/year — unmet need worth $1.87B.'}
+              </p>
+            </div>
+            {/* Solution */}
+            <div className="px-6 py-5">
+              <p className="text-white text-[14px] font-semibold leading-snug mb-2">
+                {lang === 'uk'
+                  ? 'FEEL Again: цифрова шина між гуманітарними даними та державним eHealth'
+                  : 'FEEL Again: digital bus between humanitarian data and state eHealth'}
+              </p>
+              <p className="text-slate-400 text-[12px] leading-relaxed">
+                {lang === 'uk'
+                  ? 'Кожна надана сесія стає видимою для DLI-вимірювання THRIVE/ESOZ. Модель: 3.5–7% транзакційна комісія від NHSU-тарифу. Ціль: $25M GMV до кінця 2026.'
+                  : 'Every delivered session becomes visible to THRIVE/ESOZ DLI measurement. Model: 3.5–7% transaction fee on NHSU tariff. Target: $25M GMV by end of 2026.'}
+              </p>
+            </div>
+          </div>
+          {/* Footer citation */}
+          <div className="border-t border-slate-700/60 px-6 py-2 flex items-center justify-between">
+            <span className="text-[9px] font-mono text-slate-600">
+              {lang === 'uk'
+                ? 'Джерела: ВООЗ / Lancet 2023 · НСЗУ відкриті дані 2024 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'
+                : 'Sources: WHO / Lancet 2023 · NHSU open data 2024 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'}
+            </span>
+            <div className="flex items-center gap-3">
+              {liveMetrics.worldBankHealth && (
+                <span className="text-[9px] font-mono text-blue-400">
+                  WB: Ukraine health {liveMetrics.worldBankHealth.healthSpendingPctGdp}% GDP ({liveMetrics.worldBankHealth.year})
+                </span>
+              )}
+              <DataSourceBadge status="live" lang={lang} compact />
+            </div>
+          </div>
+        </div>
 
         {/* ── CRISIS HERO BAR ─────────────────────────────────────────── */}
         <div className="mb-1.5 flex items-center gap-2">
@@ -789,6 +872,50 @@ const App: React.FC = () => {
                      <div className="mt-2 text-[9px] text-slate-500 font-mono">
                        {lang === 'uk' ? 'Спеціалізована 144.6B · Стаціонар 80.2B (55.5%) · Первинна 25.6B — МОЗ 2025' : 'Specialized 144.6B · Inpatient 80.2B (55.5%) · Primary 25.6B — MOH 2025'}
                      </div>
+                     {/* World Bank live health spending % GDP */}
+                     {liveMetrics.worldBankHealth ? (
+                       <div className="mt-3 p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
+                         <div className="flex items-center gap-2 mb-2">
+                           <DataSourceBadge status="live" lang={lang} lastFetched={dataSources.find(s => s.id === 'world_bank')?.lastFetched} compact />
+                           <span className="text-[10px] text-slate-400 font-mono">World Bank WDI — SH.XPD.CHEX.GD.ZS</span>
+                         </div>
+                         <div className="flex items-end gap-4">
+                           <div className="text-center">
+                             <div className="text-2xl font-bold text-blue-400 font-mono">{liveMetrics.worldBankHealth.healthSpendingPctGdp}%</div>
+                             <div className="text-[9px] text-slate-500 uppercase">{lang === 'uk' ? 'Україна ВВП' : 'Ukraine GDP'} ({liveMetrics.worldBankHealth.year})</div>
+                           </div>
+                           <div className="h-8 w-px bg-slate-700" />
+                           <div className="text-center">
+                             <div className="text-2xl font-bold text-amber-400 font-mono">≥5%</div>
+                             <div className="text-[9px] text-slate-500 uppercase">{lang === 'uk' ? 'Мінімум ВООЗ' : 'WHO minimum'}</div>
+                           </div>
+                           <div className="flex-1">
+                             <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                               <div
+                                 className="h-full rounded-full"
+                                 style={{
+                                   width: `${Math.min((liveMetrics.worldBankHealth.healthSpendingPctGdp / 12) * 100, 100)}%`,
+                                   backgroundColor: liveMetrics.worldBankHealth.healthSpendingPctGdp >= 5 ? '#3b82f6' : '#f59e0b',
+                                 }}
+                               />
+                             </div>
+                             <div className="text-[8px] text-slate-600 mt-1 font-mono">
+                               {lang === 'uk' ? 'Тренд:' : 'Trend:'}{' '}
+                               {liveMetrics.worldBankHealth.trend.map(t => `${t.year}: ${t.value}%`).join(' · ')}
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     ) : (
+                       <div className="mt-3 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30 flex items-center gap-2">
+                         <DataSourceBadge status={isLoadingData ? 'loading' : (dataSources.find(s => s.id === 'world_bank')?.status ?? 'unavailable')} lang={lang} compact />
+                         <span className="text-[10px] text-slate-500 font-mono">
+                           {isLoadingData
+                             ? (lang === 'uk' ? 'Завантаження World Bank WDI...' : 'Loading World Bank WDI...')
+                             : (lang === 'uk' ? 'World Bank WDI недоступне — статичні дані' : 'World Bank WDI unavailable — static data')}
+                         </span>
+                       </div>
+                     )}
                     </Card>
                   </div>
 
