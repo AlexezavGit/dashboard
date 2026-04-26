@@ -1285,3 +1285,98 @@ export const SOURCES = {
         { name: 'CSIS Investing in Mental Health 2024', url: 'https://www.csis.org/analysis/investing-mental-health-will-be-critical-ukraines-economic-future' }
     ]
 };
+
+// ── DATA INTELLIGENCE: NOW vs CANONICAL ──────────────────────────────────────
+// Documents the diagnostic: which systems return open data and which don't.
+// The data access gap IS the system fragmentation.
+export const DATA_INTELLIGENCE = (l: Language) => ({
+  sectionTitle: l === 'uk' ? 'Дані як діагностика системи' : 'Data Access as System Diagnostic',
+  sectionSub: l === 'uk'
+    ? 'Те, що одні системи повертають дані а інші ні — само по собі є діагностикою фрагментації. Ось що доступно зараз і чого бракує до канонічного набору WB/WHO.'
+    : 'The fact that some systems return data and others don\'t is itself a diagnostic of fragmentation. Here is what\'s available now versus the canonical WB/WHO dataset.',
+  now: [
+    { name: 'World Bank WDI API', status: 'live' as const, what: l === 'uk' ? 'Витрати на охорону здоров\'я % ВВП' : 'Health expenditure % GDP', tech: 'api.worldbank.org · CORS · no auth' },
+    { name: 'OCHA FTS Ukraine', status: 'live' as const, what: l === 'uk' ? 'Гуманітарне фінансування, HRP 2025' : 'Humanitarian funding, HRP 2025', tech: 'api.hpc.tools · REST · no auth' },
+    { name: l === 'uk' ? 'НСЗУ портал (знімок)' : 'NHSU portal (snapshot)', status: 'static' as const, what: l === 'uk' ? '3,383 надавачі, 943 МЗ-спеціалізованих' : '3,383 providers, 943 MH-specialized', tech: l === 'uk' ? 'Ручне збирання · 10.04.2026' : 'Manual collection · 10.04.2026' },
+    { name: 'WHO MH Atlas 2020', status: 'static' as const, what: l === 'uk' ? 'Кадри, бюджет, заклади (бенчмарк)' : 'Workforce, budget, facilities (benchmark)', tech: l === 'uk' ? 'PDF/XLSX · раз на 5 років' : 'PDF/XLSX · every 5 years' },
+    { name: 'Lancet / PMC research', status: 'static' as const, what: l === 'uk' ? 'Поширеність розладів, ПТСР' : 'Disorder prevalence, PTSD', tech: l === 'uk' ? 'Наукові публікації · вручну' : 'Academic publications · manual' },
+  ],
+  canonical: [
+    { name: l === 'uk' ? 'МОЗ ЄСОЗ — медичні записи' : 'MoH ESOZ — medical records', status: 'locked' as const, barrier: l === 'uk' ? 'Ліцензія МОЗ + сертифікація ПЗ' : 'MoH licence + software certification', what: l === 'uk' ? '~6M+ пацієнтів, ICD-10 епізоди, ПТСР діагнози' : '~6M+ patients, ICD-10 episodes, PTSD diagnoses', feelbridges: true },
+    { name: l === 'uk' ? 'НСЗУ — сесії та результати' : 'NHSU — sessions & outcomes', status: 'locked' as const, barrier: l === 'uk' ? 'Захист персональних даних' : 'Personal data protection', what: l === 'uk' ? 'Сесії з МЗ, клінічні результати (PCL-5/PHQ-9)' : 'MH sessions, clinical outcomes (PCL-5/PHQ-9)', feelbridges: true },
+    { name: 'ActivityInfo cluster 5W', status: 'auth_required' as const, barrier: l === 'uk' ? 'Членство в кластері МЗПСП' : 'MHPSS cluster membership', what: l === 'uk' ? 'Гуманітарне охоплення, хто/що/де/коли' : 'Humanitarian reach, who/what/where/when', feelbridges: true },
+    { name: 'KoBo Toolbox assessments', status: 'auth_required' as const, barrier: l === 'uk' ? 'API-ключ кожної організації окремо' : 'Per-organisation API token', what: l === 'uk' ? 'Польові оцінки потреб, PSS-скори' : 'Field needs assessments, PSS scores', feelbridges: true },
+    { name: 'Helsi telemedicine data', status: 'locked' as const, barrier: l === 'uk' ? 'Комерційна угода NDA + Kyivstar' : 'Commercial NDA + Kyivstar agreement', what: l === 'uk' ? 'Онлайн-консультації з психологами, черги' : 'Online MH consultations, waitlists', feelbridges: true },
+  ],
+  gapStatement: l === 'uk'
+    ? 'Цифровий розрив між гуманітарними та державними системами = 100% недосяжного канонічного набору. FEEL Again Digital Bus закриває цей розрив через FHIR R4 + Trembita gateway.'
+    : 'The digital gap between humanitarian and state systems = 100% of canonical dataset unreachable. FEEL Again Digital Bus closes this gap via FHIR R4 + Trembita gateway.',
+});
+
+// ── FEEL AGAIN 4 CORE FUNCTIONS ──────────────────────────────────────────────
+export const FEEL_AGAIN_4_FUNCTIONS = (l: Language) => [
+  {
+    num: '①',
+    title: l === 'uk' ? 'РЕЄСТР' : 'REGISTRY',
+    subtitle: l === 'uk' ? 'Unified Provider Registry' : 'Unified Provider Registry',
+    color: '#D4A017',
+    points: [
+      l === 'uk' ? 'Сертифікаційні шляхи для тіньових практиків' : 'Certification pathways for shadow practitioners',
+      l === 'uk' ? 'Тінь → формальна практика без штрафу 65%' : 'Shadow → formal practice without 65% income penalty',
+      l === 'uk' ? 'Невидима робоча сила стає видимою' : 'Invisible workforce becomes visible',
+    ],
+    tech: 'W3C Verifiable Credentials',
+    impact: l === 'uk' ? '5–15K тіньових → формальні' : '5–15K shadow → formal',
+  },
+  {
+    num: '②',
+    title: l === 'uk' ? 'МЕТРУВАННЯ' : 'METERING',
+    subtitle: l === 'uk' ? 'Session Metering & Outcomes' : 'Session Metering & Outcomes',
+    color: '#2A9D8F',
+    points: [
+      l === 'uk' ? 'PCL-5, PHQ-9, GAD-7 на кожній сесії' : 'PCL-5, PHQ-9, GAD-7 at every session',
+      l === 'uk' ? '62.4M сесій = 62.4M записів результатів' : '62.4M sessions = 62.4M outcome records',
+      l === 'uk' ? 'Національний набір даних результатів' : 'National outcomes dataset',
+    ],
+    tech: 'HL7 FHIR R4 bundles',
+    impact: l === 'uk' ? '0% → 100% вимірювання' : '0% → 100% measurement',
+  },
+  {
+    num: '③',
+    title: l === 'uk' ? 'ОПЛАТА' : 'PAYMENT',
+    subtitle: l === 'uk' ? 'Outcome-Based Payment' : 'Outcome-Based Payment',
+    color: '#EF4444',
+    points: [
+      l === 'uk' ? '3 потоки одночасно: НСЗУ + гуманітарний + приватний' : '3 simultaneous flows: NHSU + humanitarian + private',
+      l === 'uk' ? 'Комісія 3.5–7% від тарифу (не від донора)' : '3.5–7% commission on tariff (not donor)',
+      l === 'uk' ? 'Ресурси слідують за бенефіціаром' : 'Resources follow the beneficiary',
+    ],
+    tech: 'ISO 20022 · BVNK bridge',
+    impact: l === 'uk' ? 'Мета $25M GMV до кін. 2026' : 'Target $25M GMV by end 2026',
+  },
+  {
+    num: '④',
+    title: l === 'uk' ? 'ІНТЕРОП' : 'INTEROP',
+    subtitle: l === 'uk' ? 'Interoperability Layer' : 'Interoperability Layer',
+    color: '#3B82F6',
+    points: [
+      l === 'uk' ? 'Open API → ЄСОЗ (36.5M користувачів)' : 'Open API → ESOZ (36.5M users)',
+      l === 'uk' ? 'Helsi (49,000+ закладів) + Trembita' : 'Helsi (49,000+ facilities) + Trembita',
+      l === 'uk' ? 'МОЗ + МінЕкон + донорська звітність' : 'MoH + MinEcon + donor reporting',
+    ],
+    tech: 'FHIR R4 · IATI 2.03 · DHIS2',
+    impact: l === 'uk' ? '0% → 100% синхронізація' : '0% → 100% synchronisation',
+  },
+];
+
+// ── ROI CALCULATOR PARAMS ─────────────────────────────────────────────────────
+export const ROI_PARAMS = {
+  costPerSessionUsd: 30,       // blended public-humanitarian tariff
+  sessionsPerBeneficiary: 16,  // WHO norm for trauma populations
+  roiMultiplier: 4,            // WHO: $1 MH investment → $4 return
+  dalysPerCourse: 1.25,        // midpoint of 0.5–2 DALYs averted per therapy course
+  whodalyThresholdUsd: 4300,   // 1× Ukraine GNI per capita (WHO cost-effectiveness threshold)
+  adminOverheadCurrent: 0.22,  // 22% current humanitarian admin overhead
+  adminOverheadTarget: 0.07,   // 7% target with digital infrastructure
+  monthlyFragmentationCostM: 5, // ~$60M annual clinical capacity lost to admin / 12 months
+};
