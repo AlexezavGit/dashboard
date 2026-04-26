@@ -52,6 +52,11 @@ export interface LiveMetrics {
     assessmentsCount: number;
     lastSubmission: string;
   } | null;
+  worldBankHealth?: {
+    healthSpendingPctGdp: number;
+    year: number;
+    trend: Array<{ year: number; value: number }>;
+  } | null;
 }
 
 const FETCH_TIMEOUT_MS = 8000;
@@ -152,6 +157,38 @@ async function fetchFtsFunding(): Promise<LiveMetrics['hdxFunding'] | null> {
     return null;
   } catch {
     _hdxError = 'Помилка мережі при зверненні до OCHA FTS';
+    return null;
+  }
+}
+
+/**
+ * World Bank Open Data API — Ukraine health spending % of GDP.
+ * Indicator SH.XPD.CHEX.GD.ZS: Current health expenditure (% of GDP).
+ * Public API, no auth, CORS-enabled.
+ */
+async function fetchWorldBankHealthData(): Promise<LiveMetrics['worldBankHealth']> {
+  try {
+    const url =
+      'https://api.worldbank.org/v2/country/UA/indicator/SH.XPD.CHEX.GD.ZS?format=json&mrv=6&per_page=6';
+    const res = await fetchWithTimeout(url);
+    if (!res.ok) return null;
+    type WBEntry = { date: string; value: number | null };
+    const json: [unknown, WBEntry[]] = await res.json();
+    const entries = (json[1] ?? []).filter((e) => e.value !== null) as Array<{
+      date: string;
+      value: number;
+    }>;
+    if (!entries.length) return null;
+    const latest = entries[0];
+    return {
+      healthSpendingPctGdp: Math.round(latest.value * 10) / 10,
+      year: parseInt(latest.date),
+      trend: entries.slice(0, 5).map((e) => ({
+        year: parseInt(e.date),
+        value: Math.round(e.value * 10) / 10,
+      })),
+    };
+  } catch {
     return null;
   }
 }
@@ -270,10 +307,11 @@ export async function fetchAllLiveData(): Promise<{
   const hasKoboToken = proxyHealth.kobo === 'configured';
   const hasActivityInfoToken = proxyHealth.activityinfo === 'configured';
 
-  const [hdxFunding, activityInfo, kobo] = await Promise.all([
+  const [hdxFunding, activityInfo, kobo, worldBankHealth] = await Promise.all([
     fetchFtsFunding(),
     fetchActivityInfo(),
     fetchKobo(),
+    fetchWorldBankHealthData(),
   ]);
   const hdxPopulation = getUkrainePopulation();
 
@@ -282,11 +320,25 @@ export async function fetchAllLiveData(): Promise<{
     hdxPopulation: hdxPopulation ?? undefined,
     activityInfo,
     kobo,
+    worldBankHealth,
   };
 
   const now = new Date();
 
   const sources: DataSourceInfo[] = [
+    {
+      id: 'world_bank',
+      name: { uk: 'World Bank Open Data', en: 'World Bank Open Data' },
+      status: worldBankHealth ? 'live' : 'unavailable',
+      lastFetched: worldBankHealth ? now : undefined,
+      requiresAuth: false,
+      apiBase: 'https://api.worldbank.org/v2/',
+      dataType: {
+        uk: 'Витрати на охорону здоров\'я (% ВВП), Україна — індикатор SH.XPD.CHEX.GD.ZS',
+        en: 'Health expenditure (% of GDP), Ukraine — indicator SH.XPD.CHEX.GD.ZS',
+      },
+      updateFrequency: { uk: 'Щорічно (World Development Indicators)', en: 'Annual (World Development Indicators)' },
+    },
     {
       id: 'hdx_hapi',
       name: { uk: 'OCHA FTS (фінансування)', en: 'OCHA FTS (funding)' },

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot, CalendarDays, Mail } from 'lucide-react';
+import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot, CalendarDays, Mail, Menu, X, Activity, Calculator, GitMerge } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   TEXTS, COLORS, KPI_DATA, SECTIONS_CONFIG, TOP_METRICS,
@@ -17,6 +17,7 @@ import {
   PERFECT_STORM_SCALE, STRUCTURAL_DISP_DATA,
   KEY_CONCLUSIONS, ALL_CONCLUSIONS_GRID, MISSING_DATA,
   NSZU_SNAPSHOT, KILLER_QUOTES, GRAND_BARGAIN_3,
+  DATA_INTELLIGENCE, FEEL_AGAIN_4_FUNCTIONS, ROI_PARAMS,
 } from './constants';
 import { Language, SectionFilter } from './types';
 import { Card } from './components/ui/Card';
@@ -114,6 +115,23 @@ const App: React.FC = () => {
   const [liveMetrics, setLiveMetrics] = useState<LiveMetrics>({});
   const [dataSources, setDataSources] = useState<DataSourceInfo[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const [roiInvestment, setRoiInvestment] = useState<number>(5); // $M
+
+  const roiResults = useMemo(() => {
+    const investUsd = roiInvestment * 1_000_000;
+    const sessions = Math.round(investUsd / ROI_PARAMS.costPerSessionUsd);
+    const beneficiaries = Math.round(sessions / ROI_PARAMS.sessionsPerBeneficiary);
+    const directRoi = investUsd * ROI_PARAMS.roiMultiplier;
+    const dalys = Math.round(beneficiaries * ROI_PARAMS.dalysPerCourse);
+    const dalyValue = Math.round(dalys * ROI_PARAMS.whodalyThresholdUsd);
+    const totalReturn = directRoi + dalyValue;
+    const roiRatio = (totalReturn / investUsd).toFixed(1);
+    const fmt = (n: number): string => n >= 1_000_000
+      ? `$${(n / 1_000_000).toFixed(1)}M`
+      : n >= 1_000 ? `${(n / 1_000).toFixed(0)}K` : `${n}`;
+    return { sessions, beneficiaries, directRoi, dalys, dalyValue, totalReturn, roiRatio, fmt };
+  }, [roiInvestment]);
   // Collapsible sections — GAP open by default as it's the core thesis
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['gap']));
   const toggleSection = (id: string) => setExpandedSections(prev => {
@@ -182,25 +200,134 @@ const App: React.FC = () => {
     return data;
   }, [lang, sortConfig, statusFilter]);
 
+  // Sidebar navigation items
+  const SIDEBAR_GROUPS = [
+    {
+      items: [{ id: 'overview', label: lang === 'uk' ? 'Огляд' : 'Overview', icon: LayoutDashboard, target: 'hero-top' }],
+    },
+    {
+      label: 'World Bank',
+      items: [
+        { id: 'heal', label: 'HEAL P180245', icon: Database, target: 'section-inputs' },
+        { id: 'thrive', label: 'THRIVE P505616', icon: TrendingUp, target: 'section-inputs' },
+      ],
+    },
+    {
+      label: lang === 'uk' ? 'Сектор' : 'Sector',
+      items: [
+        { id: 'workforce', label: lang === 'uk' ? 'Кадри' : 'Workforce', icon: Users, target: 'section-workforce' },
+        { id: 'coverage', label: lang === 'uk' ? 'Охоплення' : 'Coverage', icon: Activity, target: 'section-gap' },
+        { id: 'shadow', label: lang === 'uk' ? 'Тіньовий сектор' : 'Shadow Economy', icon: CircleDot, target: 'section-shadow' },
+      ],
+    },
+    {
+      label: lang === 'uk' ? 'Фінансування' : 'Finance',
+      items: [
+        { id: 'funding', label: lang === 'uk' ? 'Фінансові потоки' : 'Funding Flow', icon: TrendingUp, target: 'section-budget' },
+        { id: 'roi', label: lang === 'uk' ? 'ROI Калькулятор' : 'ROI Calculator', icon: Calculator, target: 'roi-calc' },
+      ],
+    },
+    {
+      label: lang === 'uk' ? 'Інфраструктура' : 'Infrastructure',
+      items: [
+        { id: 'data-intel', label: lang === 'uk' ? '8 систем: статус API' : '8 Systems: API Status', icon: GitMerge, target: 'data-intelligence' },
+        { id: 'functions', label: lang === 'uk' ? '4 функції FEEL Again' : '4 Core Functions', icon: Zap, target: 'feel-functions' },
+      ],
+    },
+  ];
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (window.innerWidth < 1024) setSidebarOpen(false);
+  };
+
   return (
-    <div className="min-h-screen pb-12 bg-cyber-bg text-slate-300 font-sans custom-scrollbar">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-cyber-bg text-slate-300 font-sans custom-scrollbar flex">
+
+      {/* ── SIDEBAR ──────────────────────────────────────────────────── */}
+      {/* Mobile backdrop */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+      <aside
+        className={`fixed top-0 left-0 h-screen z-40 flex flex-col border-r border-cyber-border bg-[#070e1a] transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} w-56`}
+      >
+        {/* Sidebar header */}
+        <div className="px-4 py-4 border-b border-cyber-border flex items-center justify-between flex-shrink-0">
+          <div>
+            <div className="text-[13px] font-bold text-cyber-amber font-mono tracking-tight">FEEL Again</div>
+            <div className="text-[8px] text-slate-600 font-mono uppercase tracking-wider">MHPSS Dashboard</div>
+          </div>
+          <button onClick={() => setSidebarOpen(false)} className="text-slate-600 hover:text-slate-400 lg:hidden">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        {/* Nav items */}
+        <nav className="flex-1 overflow-y-auto py-3 space-y-0.5 px-2">
+          {SIDEBAR_GROUPS.map((group, gi) => (
+            <div key={gi} className="mb-1">
+              {group.label && (
+                <div className="px-2 pt-3 pb-1 text-[8px] font-mono font-bold uppercase tracking-[0.15em] text-slate-700">{group.label}</div>
+              )}
+              {group.items.map(item => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollTo(item.target)}
+                    className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-[11px] text-slate-500 hover:text-slate-200 hover:bg-white/5 transition-colors text-left"
+                  >
+                    <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </nav>
+        {/* Sidebar footer links */}
+        <div className="px-2 py-3 border-t border-cyber-border space-y-1 flex-shrink-0">
+          <a href="https://feelagain.com.ua" target="_blank" rel="noreferrer"
+            className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-[11px] text-cyber-amber hover:bg-cyber-amber/10 transition-colors">
+            <Globe className="w-3.5 h-3.5" />
+            <span>feelagain.com.ua →</span>
+          </a>
+          <div className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-[11px] text-slate-600">
+            <div className="text-[8px] font-mono">v2.1 · {new Date().toLocaleDateString()}</div>
+          </div>
+        </div>
+      </aside>
+
+      {/* ── MAIN CONTENT (shifts right when sidebar open on lg+) ─────── */}
+      <div className={`flex-1 min-h-screen transition-all duration-300 ${sidebarOpen ? 'lg:ml-56' : 'ml-0'}`}>
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-12" id="hero-top">
         
         {/* Header */}
         <header className="pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-cyber-border pb-8 mb-8">
+          <div className="flex items-center gap-4">
+            {/* Sidebar toggle */}
+            <button
+              onClick={() => setSidebarOpen(o => !o)}
+              className="flex-shrink-0 p-2 rounded-lg border border-cyber-border text-slate-500 hover:text-cyber-amber hover:border-cyber-amber/40 transition-colors"
+              title={sidebarOpen ? 'Close nav' : 'Open nav'}
+            >
+              {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
           <div className="flex items-center gap-5">
             <img src="/logo.svg" alt="FEEL Again" className="w-24 h-24 rounded-xl" />
             <div className="w-px h-12 bg-cyber-border" />
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tighter flex items-center gap-3">
                 {TEXTS.header.title[lang]}
-                <span className="text-[10px] bg-cyber-success/10 text-cyber-success px-2 py-0.5 rounded border border-cyber-success/30 font-mono uppercase" style={{animation:'pulse 6s ease-in-out infinite'}}>
-                  SECURE
+                <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-mono uppercase">
+                  OPEN DATA
                 </span>
               </h1>
               <p className="text-slate-500 text-xs md:text-sm font-mono mt-1">{TEXTS.header.subtitle[lang]}</p>
             </div>
           </div>
+          </div>{/* end flex items-center gap-4 */}
 
           <div className="flex flex-col md:items-end gap-3 w-full md:w-auto">
             <div className="flex bg-cyber-surface border border-cyber-border p-1 rounded-lg">
@@ -217,11 +344,94 @@ const App: React.FC = () => {
                 EN
               </button>
             </div>
-            <div className="text-[10px] font-mono text-cyber-amber uppercase tracking-widest">
-              SYSTEM_TIME: {new Date().toLocaleTimeString()} | {TEXTS.header.date[lang]}
+            <div className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+              {TEXTS.header.date[lang]} · {lang === 'uk' ? 'Верифіковано вручну' : 'Manually verified'}
             </div>
           </div>
         </header>
+
+        {/* ── INSTITUTIONAL MISSION STATEMENT ─────────────────────────── */}
+        <div className="mb-8 rounded-2xl overflow-hidden border border-slate-700/60" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #0A1628 50%, #0D1B2A 100%)' }}>
+          {/* Top band */}
+          <div className="flex items-center gap-0 border-b border-slate-700/60">
+            <div className="flex-1 px-6 py-3 bg-blue-900/20 border-r border-slate-700/60 flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0" />
+              <span className="text-[10px] font-mono text-blue-300 uppercase tracking-[0.2em]">
+                {lang === 'uk' ? 'ПРОБЛЕМА' : 'THE PROBLEM'}
+              </span>
+            </div>
+            <div className="flex-1 px-6 py-3 bg-amber-900/10 border-r border-slate-700/60 flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-cyber-amber flex-shrink-0" />
+              <span className="text-[10px] font-mono text-cyber-amber uppercase tracking-[0.2em]">
+                {lang === 'uk' ? 'РОЗРИВ' : 'THE GAP'}
+              </span>
+            </div>
+            <div className="flex-1 px-6 py-3 bg-emerald-900/10 flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
+              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-[0.2em]">
+                {lang === 'uk' ? 'РІШЕННЯ' : 'THE SOLUTION'}
+              </span>
+            </div>
+          </div>
+          {/* Content */}
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-700/60">
+            {/* Problem */}
+            <div className="px-6 py-5">
+              <p className="text-white text-[14px] font-semibold leading-snug mb-2">
+                {lang === 'uk'
+                  ? '3.9 мільйона людей потребують клінічної допомоги з психічного здоров\'я'
+                  : '3.9 million people need clinical mental health care'}
+              </p>
+              <p className="text-slate-400 text-[12px] leading-relaxed">
+                {lang === 'uk'
+                  ? '22% населення України — під клінічно значущим психологічним тиском внаслідок війни. Існуюча система покриває 0.28% від потреби.'
+                  : '22% of Ukraine\'s population is under clinically significant psychological distress due to war. The existing system covers 0.28% of need.'}
+              </p>
+            </div>
+            {/* Gap */}
+            <div className="px-6 py-5">
+              <p className="text-white text-[14px] font-semibold leading-snug mb-2">
+                {lang === 'uk'
+                  ? 'World Bank інвестував $954M — але послуги залишаються невидимими'
+                  : 'World Bank invested $954M — but services remain invisible to measurement'}
+              </p>
+              <p className="text-slate-400 text-[12px] leading-relaxed">
+                {lang === 'uk'
+                  ? 'HEAL ($500M) та THRIVE ($454M) фінансують послуги, але гуманітарні та державні системи не обмінюються даними. 62.2M сесій/рік — незакрита потреба вартістю $1.87B.'
+                  : 'HEAL ($500M) and THRIVE ($454M) fund services, but humanitarian and state systems don\'t share data. 62.2M sessions/year — unmet need worth $1.87B.'}
+              </p>
+            </div>
+            {/* Solution */}
+            <div className="px-6 py-5">
+              <p className="text-white text-[14px] font-semibold leading-snug mb-2">
+                {lang === 'uk'
+                  ? 'FEEL Again: цифрова шина між гуманітарними даними та державним eHealth'
+                  : 'FEEL Again: digital bus between humanitarian data and state eHealth'}
+              </p>
+              <p className="text-slate-400 text-[12px] leading-relaxed">
+                {lang === 'uk'
+                  ? 'Кожна надана сесія стає видимою для DLI-вимірювання THRIVE/ESOZ. Модель: 3.5–7% транзакційна комісія від NHSU-тарифу. Ціль: $25M GMV до кінця 2026.'
+                  : 'Every delivered session becomes visible to THRIVE/ESOZ DLI measurement. Model: 3.5–7% transaction fee on NHSU tariff. Target: $25M GMV by end of 2026.'}
+              </p>
+            </div>
+          </div>
+          {/* Footer citation */}
+          <div className="border-t border-slate-700/60 px-6 py-2 flex items-center justify-between">
+            <span className="text-[9px] font-mono text-slate-600">
+              {lang === 'uk'
+                ? 'Джерела: ВООЗ / Lancet 2023 · НСЗУ відкриті дані 2024 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'
+                : 'Sources: WHO / Lancet 2023 · NHSU open data 2024 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'}
+            </span>
+            <div className="flex items-center gap-3">
+              {liveMetrics.worldBankHealth && (
+                <span className="text-[9px] font-mono text-blue-400">
+                  WB: Ukraine health {liveMetrics.worldBankHealth.healthSpendingPctGdp}% GDP ({liveMetrics.worldBankHealth.year})
+                </span>
+              )}
+              <DataSourceBadge status="live" lang={lang} compact />
+            </div>
+          </div>
+        </div>
 
         {/* ── CRISIS HERO BAR ─────────────────────────────────────────── */}
         <div className="mb-1.5 flex items-center gap-2">
@@ -230,7 +440,7 @@ const App: React.FC = () => {
             {lang === 'uk' ? 'МАСШТАБ КРИЗИ — ЦИФРИ, ЩО НЕ МОЖНА ІГНОРУВАТИ' : 'CRISIS SCALE — NUMBERS THAT CANNOT BE IGNORED'}
           </span>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-1.5 mb-6 font-mono">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1.5 mb-6 font-mono">
           {[
             {
               val: '0.28%',
@@ -279,6 +489,30 @@ const App: React.FC = () => {
               tooltip: lang === 'uk'
                 ? '4,000 — консервативна оцінка НСЗУ-зареєстрованих МЗ-спеціалістів (психіатрів + клінічних психологів), що ведуть прийом. Норма навантаження: ~1,250 сесій/рік (50 тиж × 25 сес/тиж). Beклог = 62.22M / (4,000 × 1,250) = 12.4 років; при +100% ефективності = 7.8 р. При 19K фахівців (включаючи тінь) = 1.6-2.2 р. Джерела: НСЗУ портал 2026 / ВООЗ SIMH 2024.'
                 : '4,000 — conservative estimate of NHSU-registered MH specialists (psychiatrists + clinical psychologists) in active practice. Workload norm: ~1,250 sessions/year (50 weeks × 25 sessions/week). Backlog = 62.22M / (4,000 × 1,250) = 12.4 years; at +100% efficiency = 7.8 years. With 19K specialists (incl. shadow) = 1.6-2.2 years. Sources: NHSU portal 2026 / WHO SIMH 2024.',
+            },
+            {
+              val: '0%',
+              label: lang === 'uk' ? 'СИНХРОНІЗАЦІЯ ДАНИХ' : 'DATA SYNCHRONISATION',
+              sub: lang === 'uk'
+                ? 'Гуманітарні ↔ ЄСОЗ/НСЗУ: 0% цифрового обміну даними (CommCare/Kobo → ЄСОЗ = 0)'
+                : 'Humanitarian ↔ ESOZ/NHSU: 0% digital data exchange (CommCare/Kobo → ESOZ = 0)',
+              color: '#8B5CF6',
+              pulse: true,
+              tooltip: lang === 'uk'
+                ? 'Жодна гуманітарна організація в Україні не передає дані про сесії безпосередньо до ЄСОЗ/НСЗУ. CommCare, KoBo, ActivityInfo — ізольовані острівці. THRIVE вимагає 400K verified sessions у ЄСОЗ для disbursement, але source-to-ЄСОЗ pipeline = 0. FEEL Again Digital Bus = рішення.'
+                : 'No humanitarian organisation in Ukraine transmits session data directly to ESOZ/NHSU. CommCare, KoBo, ActivityInfo — isolated silos. THRIVE requires 400K verified sessions in ESOZ for disbursement, but source-to-ESOZ pipeline = 0. FEEL Again Digital Bus = the solution.',
+            },
+            {
+              val: '$5M',
+              label: lang === 'uk' ? 'ЩОМІСЯЦЯ ВТРАЧАЄТЬСЯ' : 'MONTHLY CAPACITY LOST',
+              sub: lang === 'uk'
+                ? '~$60M/рік клінічної ємності втрачено через цифрову фрагментацію (35K спеціалістів × 20% адмін)'
+                : '~$60M/yr clinical capacity lost to digital fragmentation (35K specialists × 20% admin overhead)',
+              color: '#F59E0B',
+              pulse: false,
+              tooltip: lang === 'uk'
+                ? 'Розрахунок: ~35,000 активних МЗПСП-фахівців × 20% адміністративного навантаження × $30/год (blended rate) × ~200 год/міс / 12 = ~$35M-$60M на рік втраченої клінічної ємності. Щомісяця: ~$3M–5M. Цифрова інтеграція може скоротити адмін-навантаження з 22% до 7%, звільнивши ~15% часу = +45K сесій/міс. FEEL Again calculation.'
+                : 'Calculation: ~35,000 active MHPSS specialists × 20% admin overhead × $30/hr (blended rate) × ~200 hrs/mo / 12 = ~$35M-$60M/yr lost clinical capacity. Monthly: ~$3M–5M. Digital integration can reduce admin from 22% to 7%, freeing ~15% of time = +45K sessions/month. FEEL Again calculation.',
             },
           ].map((m) => (
             <div key={m.label} className="bg-cyber-surface border border-cyber-border px-4 py-3 rounded-lg relative overflow-hidden group hover:border-cyber-amber/40 transition-colors cursor-help" title={m.tooltip}>
@@ -523,12 +757,189 @@ const App: React.FC = () => {
           </div>
         </div>
 
+        {/* ── DATA INTELLIGENCE: NOW vs CANONICAL ────────────────────── */}
+        <div className="mb-12" id="data-intelligence">
+          <div className="flex items-center gap-3 mb-4 px-1">
+            <div className="h-px flex-1 bg-gradient-to-r from-blue-500/40 to-transparent" />
+            <span className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.2em] px-2">
+              {DATA_INTELLIGENCE(lang).sectionTitle}
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-l from-blue-500/40 to-transparent" />
+          </div>
+          <p className="text-[11px] text-slate-500 mb-4 font-mono text-center leading-relaxed">
+            {DATA_INTELLIGENCE(lang).sectionSub}
+          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* NOW — what's available */}
+            <div className="border border-blue-500/20 rounded-xl overflow-hidden">
+              <div className="bg-blue-500/5 px-4 py-2.5 border-b border-blue-500/20 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                <span className="text-[10px] font-mono font-bold text-blue-300 uppercase tracking-wider">
+                  {lang === 'uk' ? 'ЩО МАЄМОзАРАЗ' : 'WHAT WE HAVE NOW'}
+                </span>
+              </div>
+              <div className="divide-y divide-slate-800/60">
+                {DATA_INTELLIGENCE(lang).now.map((row, i) => (
+                  <div key={i} className="px-4 py-3 flex items-start gap-3">
+                    <span className={`mt-0.5 flex-shrink-0 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${row.status === 'live' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-slate-700/60 text-slate-400'}`}>
+                      {row.status === 'live' ? 'LIVE' : 'STATIC'}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[11px] text-white font-medium">{row.name}</div>
+                      <div className="text-[10px] text-slate-500 leading-snug">{row.what}</div>
+                      <div className="text-[9px] text-slate-700 font-mono mt-0.5">{row.tech}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* CANONICAL — what WB/WHO use */}
+            <div className="border border-amber-500/20 rounded-xl overflow-hidden">
+              <div className="bg-amber-500/5 px-4 py-2.5 border-b border-amber-500/20 flex items-center gap-2">
+                <AlertTriangle className="w-3 h-3 text-amber-400 flex-shrink-0" />
+                <span className="text-[10px] font-mono font-bold text-amber-300 uppercase tracking-wider">
+                  {lang === 'uk' ? 'КАНОНІЧНИЙ НАБІР WB / WHO' : 'CANONICAL WB / WHO DATASET'}
+                </span>
+              </div>
+              <div className="divide-y divide-slate-800/60">
+                {DATA_INTELLIGENCE(lang).canonical.map((row, i) => (
+                  <div key={i} className="px-4 py-3 flex items-start gap-3">
+                    <span className={`mt-0.5 flex-shrink-0 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${row.status === 'locked' ? 'bg-rose-500/15 text-rose-400' : 'bg-amber-500/15 text-amber-400'}`}>
+                      {row.status === 'locked' ? 'LOCKED' : 'AUTH'}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[11px] text-white font-medium flex items-center gap-1.5">
+                        {row.name}
+                        {row.feelbridges && <span className="text-[8px] bg-emerald-500/15 text-emerald-400 px-1 py-0.5 rounded font-mono">FEEL bridges</span>}
+                      </div>
+                      <div className="text-[10px] text-slate-500 leading-snug">{row.what}</div>
+                      <div className="text-[9px] text-amber-600/80 font-mono mt-0.5">{lang === 'uk' ? 'Бар\'єр:' : 'Barrier:'} {row.barrier}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* Gap statement */}
+          <div className="mt-4 px-5 py-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
+            <GitMerge className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <p className="text-[11px] text-emerald-300 font-mono leading-relaxed">{DATA_INTELLIGENCE(lang).gapStatement}</p>
+          </div>
+        </div>
+
+        {/* ── FEEL AGAIN 4 CORE FUNCTIONS ─────────────────────────────── */}
+        <div className="mb-12" id="feel-functions">
+          <div className="flex items-center gap-3 mb-6 px-1">
+            <div className="h-px flex-1 bg-gradient-to-r from-cyber-amber/40 to-transparent" />
+            <span className="text-[10px] font-mono text-cyber-amber uppercase tracking-[0.2em] px-2">
+              {lang === 'uk' ? 'FEEL AGAIN — 4 КЛЮЧОВІ ФУНКЦІЇ ІНФРАСТРУКТУРИ' : 'FEEL AGAIN — 4 CORE INFRASTRUCTURE FUNCTIONS'}
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-l from-cyber-amber/40 to-transparent" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {FEEL_AGAIN_4_FUNCTIONS(lang).map((fn, i) => (
+              <div key={i} className="rounded-xl border overflow-hidden flex flex-col" style={{ borderColor: fn.color + '30' }}>
+                <div className="px-4 py-3 flex items-center gap-3" style={{ backgroundColor: fn.color + '12', borderBottom: `1px solid ${fn.color}30` }}>
+                  <span className="text-2xl font-bold font-mono" style={{ color: fn.color }}>{fn.num}</span>
+                  <div>
+                    <div className="text-[13px] font-bold" style={{ color: fn.color }}>{fn.title}</div>
+                    <div className="text-[9px] text-slate-500 font-mono">{fn.subtitle}</div>
+                  </div>
+                </div>
+                <div className="px-4 py-3 flex-1 space-y-2">
+                  {fn.points.map((pt, j) => (
+                    <div key={j} className="flex items-start gap-2">
+                      <span className="text-[9px] mt-0.5 flex-shrink-0" style={{ color: fn.color }}>▸</span>
+                      <span className="text-[10px] text-slate-400 leading-snug">{pt}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="px-4 pb-3 space-y-1.5">
+                  <div className="text-[8px] font-mono text-slate-700 border-t border-slate-800/60 pt-2">{fn.tech}</div>
+                  <div className="text-[9px] font-mono font-bold" style={{ color: fn.color }}>{fn.impact}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Architecture summary */}
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
+            {[
+              { label: lang === 'uk' ? 'Вхід' : 'Input', val: lang === 'uk' ? 'CommCare · KoBo · ActivityInfo' : 'CommCare · KoBo · ActivityInfo', color: '#8B5CF6' },
+              { label: lang === 'uk' ? 'FEEL Again шина' : 'FEEL Again bus', val: 'FHIR R4 → Trembita → ESOZ', color: '#D4A017' },
+              { label: lang === 'uk' ? 'Вихід (DLI)' : 'Output (DLI)', val: lang === 'uk' ? 'ЄСОЗ · НСЗУ · MOH · Donor reporting' : 'ESOZ · NHSU · MOH · Donor reporting', color: '#16A34A' },
+            ].map((item, i) => (
+              <div key={i} className="rounded-lg px-4 py-3 border" style={{ borderColor: item.color + '30', backgroundColor: item.color + '08' }}>
+                <div className="text-[8px] font-mono uppercase tracking-wider text-slate-600 mb-1">{item.label}</div>
+                <div className="text-[10px] font-mono font-bold" style={{ color: item.color }}>{item.val}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── ROI CALCULATOR ───────────────────────────────────────────── */}
+        <div className="mb-12" id="roi-calc">
+          <div className="flex items-center gap-3 mb-6 px-1">
+            <div className="h-px flex-1 bg-gradient-to-r from-emerald-500/40 to-transparent" />
+            <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-[0.2em] px-2">
+              {lang === 'uk' ? 'ROI КАЛЬКУЛЯТОР — ВКЛАДІТЬ, ОТРИМАЙТЕ' : 'ROI CALCULATOR — INVEST, RECEIVE'}
+            </span>
+            <div className="h-px flex-1 bg-gradient-to-l from-emerald-500/40 to-transparent" />
+          </div>
+          <div className="cyber-card border border-emerald-500/20 rounded-2xl overflow-hidden">
+            <div className="p-6">
+              {/* Slider */}
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider">
+                    {lang === 'uk' ? 'Обсяг інвестиції' : 'Investment amount'}
+                  </span>
+                  <span className="text-2xl font-bold text-emerald-400 font-mono">${roiInvestment}M</span>
+                </div>
+                <input
+                  type="range" min="1" max="50" step="1"
+                  value={roiInvestment}
+                  onChange={e => setRoiInvestment(Number(e.target.value))}
+                  className="w-full h-2 rounded-full appearance-none cursor-pointer"
+                  style={{ accentColor: '#10b981' }}
+                />
+                <div className="flex justify-between text-[9px] text-slate-700 font-mono mt-1">
+                  <span>$1M</span><span>$50M</span>
+                </div>
+              </div>
+              {/* Results grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {[
+                  { label: lang === 'uk' ? 'Сесій забезпечено' : 'Sessions funded', val: roiResults.fmt(roiResults.sessions), color: '#3b82f6', note: `@ $${ROI_PARAMS.costPerSessionUsd}/session` },
+                  { label: lang === 'uk' ? 'Бенефіціарів' : 'Beneficiaries', val: roiResults.fmt(roiResults.beneficiaries), color: '#2A9D8F', note: `÷ ${ROI_PARAMS.sessionsPerBeneficiary} sessions/person` },
+                  { label: lang === 'uk' ? 'Прямий ROI (4:1)' : 'Direct ROI (4:1)', val: roiResults.fmt(roiResults.directRoi), color: '#10b981', note: `WHO $1 → $${ROI_PARAMS.roiMultiplier}` },
+                  { label: lang === 'uk' ? 'DALYs авертовано' : 'DALYs averted', val: roiResults.dalys.toLocaleString(), color: '#A855F7', note: `${ROI_PARAMS.dalysPerCourse} DALY/course (avg)` },
+                  { label: lang === 'uk' ? 'Вартість DALYs' : 'DALY value', val: roiResults.fmt(roiResults.dalyValue), color: '#F59E0B', note: `$${ROI_PARAMS.whodalyThresholdUsd.toLocaleString()}/DALY (WHO UA)` },
+                  { label: lang === 'uk' ? 'Загальний ROI' : 'Total return', val: `${roiResults.roiRatio}×`, color: '#EF4444', note: roiResults.fmt(roiResults.totalReturn) + ' total value' },
+                ].map((card, i) => (
+                  <div key={i} className="rounded-lg p-3 text-center" style={{ backgroundColor: card.color + '10', border: `1px solid ${card.color}25` }}>
+                    <div className="text-[8px] font-mono text-slate-500 uppercase tracking-wider mb-1">{card.label}</div>
+                    <div className="text-xl font-bold font-mono" style={{ color: card.color }}>{card.val}</div>
+                    <div className="text-[8px] text-slate-700 font-mono mt-0.5">{card.note}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Assumptions note */}
+              <div className="mt-4 text-[9px] text-slate-700 font-mono leading-relaxed">
+                {lang === 'uk'
+                  ? `Припущення: $${ROI_PARAMS.costPerSessionUsd}/сесія (blended public-humanitarian тариф) · ${ROI_PARAMS.sessionsPerBeneficiary} сесій/особу (WHO норма) · ROI 4:1 (WHO) · ${ROI_PARAMS.dalysPerCourse} DALY/курс (середнє 0.5–2) · $${ROI_PARAMS.whodalyThresholdUsd.toLocaleString()}/DALY (ВООЗ поріг Україна = 1× ВНД). Не фінансова порада.`
+                  : `Assumptions: $${ROI_PARAMS.costPerSessionUsd}/session (blended public-humanitarian tariff) · ${ROI_PARAMS.sessionsPerBeneficiary} sessions/person (WHO norm) · ROI 4:1 (WHO) · ${ROI_PARAMS.dalysPerCourse} DALYs/course (avg 0.5–2) · $${ROI_PARAMS.whodalyThresholdUsd.toLocaleString()}/DALY (WHO threshold Ukraine = 1× GNI). Not financial advice.`}
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Sections */}
         <div className="space-y-16">
           <AnimatePresence>
             {filteredSections.map((section, sectionIdx) => (
               <motion.div
                 key={section.id}
+                id={`section-${section.id}`}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
@@ -789,6 +1200,50 @@ const App: React.FC = () => {
                      <div className="mt-2 text-[9px] text-slate-500 font-mono">
                        {lang === 'uk' ? 'Спеціалізована 144.6B · Стаціонар 80.2B (55.5%) · Первинна 25.6B — МОЗ 2025' : 'Specialized 144.6B · Inpatient 80.2B (55.5%) · Primary 25.6B — MOH 2025'}
                      </div>
+                     {/* World Bank live health spending % GDP */}
+                     {liveMetrics.worldBankHealth ? (
+                       <div className="mt-3 p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
+                         <div className="flex items-center gap-2 mb-2">
+                           <DataSourceBadge status="live" lang={lang} lastFetched={dataSources.find(s => s.id === 'world_bank')?.lastFetched} compact />
+                           <span className="text-[10px] text-slate-400 font-mono">World Bank WDI — SH.XPD.CHEX.GD.ZS</span>
+                         </div>
+                         <div className="flex items-end gap-4">
+                           <div className="text-center">
+                             <div className="text-2xl font-bold text-blue-400 font-mono">{liveMetrics.worldBankHealth.healthSpendingPctGdp}%</div>
+                             <div className="text-[9px] text-slate-500 uppercase">{lang === 'uk' ? 'Україна ВВП' : 'Ukraine GDP'} ({liveMetrics.worldBankHealth.year})</div>
+                           </div>
+                           <div className="h-8 w-px bg-slate-700" />
+                           <div className="text-center">
+                             <div className="text-2xl font-bold text-amber-400 font-mono">≥5%</div>
+                             <div className="text-[9px] text-slate-500 uppercase">{lang === 'uk' ? 'Мінімум ВООЗ' : 'WHO minimum'}</div>
+                           </div>
+                           <div className="flex-1">
+                             <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                               <div
+                                 className="h-full rounded-full"
+                                 style={{
+                                   width: `${Math.min((liveMetrics.worldBankHealth.healthSpendingPctGdp / 12) * 100, 100)}%`,
+                                   backgroundColor: liveMetrics.worldBankHealth.healthSpendingPctGdp >= 5 ? '#3b82f6' : '#f59e0b',
+                                 }}
+                               />
+                             </div>
+                             <div className="text-[8px] text-slate-600 mt-1 font-mono">
+                               {lang === 'uk' ? 'Тренд:' : 'Trend:'}{' '}
+                               {liveMetrics.worldBankHealth.trend.map(t => `${t.year}: ${t.value}%`).join(' · ')}
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     ) : (
+                       <div className="mt-3 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30 flex items-center gap-2">
+                         <DataSourceBadge status={isLoadingData ? 'loading' : (dataSources.find(s => s.id === 'world_bank')?.status ?? 'unavailable')} lang={lang} compact />
+                         <span className="text-[10px] text-slate-500 font-mono">
+                           {isLoadingData
+                             ? (lang === 'uk' ? 'Завантаження World Bank WDI...' : 'Loading World Bank WDI...')
+                             : (lang === 'uk' ? 'World Bank WDI недоступне — статичні дані' : 'World Bank WDI unavailable — static data')}
+                         </span>
+                       </div>
+                     )}
                     </Card>
                   </div>
 
@@ -2158,7 +2613,8 @@ const App: React.FC = () => {
              </p>
            </div>
         </footer>
-      </div>
+      </div>{/* end max-w content */}
+      </div>{/* end shifted main */}
     </div>
   );
 };
