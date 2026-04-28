@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot, CalendarDays, Mail, Menu, X, Activity, Calculator, GitMerge } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { ScreenRouter } from './components/screens/ScreenRouter';
 import {
   TEXTS, COLORS, KPI_DATA, SECTIONS_CONFIG, TOP_METRICS,
   PREVALENCE_DATA, RISK_GROUP_DATA, WORKFORCE_DATA, WAR_IMPACT_DATA, SECTOR_DIST_DATA,
@@ -38,30 +39,37 @@ import {
 
 // KPI Card Component
 const KpiCard: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
-  const statusColors = {
-    danger: 'border-rose-500/50 text-rose-500',
-    warning: 'border-cyber-amber/50 text-cyber-amber',
-    success: 'border-cyber-success/50 text-cyber-success',
-    neutral: 'border-cyber-cyan/50 text-cyber-cyan'
+  const statusBorderColor: Record<string, string> = {
+    danger:  '#e05c5c',
+    warning: 'var(--color-ds-gold)',
+    success: 'var(--color-ds-teal)',
+    neutral: 'var(--color-ds-teal)',
+  };
+  const statusTextColor: Record<string, string> = {
+    danger:  '#e05c5c',
+    warning: 'var(--color-ds-gold)',
+    success: 'var(--color-ds-teal)',
+    neutral: 'var(--color-ds-teal)',
   };
 
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ scale: 1.02, translateY: -4 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className={`cyber-card p-5 border-t-2 ${statusColors[data.status]} flex flex-col h-full group`}
+      className="cyber-card p-5 flex flex-col h-full group"
+      style={{ borderTop: `2px solid ${statusBorderColor[data.status]}` }}
     >
       <div className="cyber-label mb-2 flex justify-between items-center">
         <span>{data.label[lang]}</span>
-        <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${data.status === 'danger' ? 'bg-rose-500' : 'bg-cyber-cyan'}`} />
+        <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: statusBorderColor[data.status] }} />
       </div>
-      <div className="cyber-number text-3xl font-bold mb-1 group-hover:text-white transition-colors">{data.value}</div>
-      <div className="text-[10px] text-slate-500 mb-3 font-medium">{data.sub[lang]}</div>
+      <div className="cyber-number text-3xl font-bold mb-1">{data.value}</div>
+      <div className="text-[10px] mb-3 font-medium" style={{ color: 'var(--color-ds-muted)' }}>{data.sub[lang]}</div>
       <div className="mt-auto space-y-2">
-        <div className={`text-[10px] font-bold flex items-center gap-1 ${statusColors[data.status]}`}>
+        <div className="text-[10px] font-bold flex items-center gap-1" style={{ color: statusTextColor[data.status] }}>
            {data.change[lang]}
         </div>
-        <div className="text-[9px] text-slate-600 italic flex items-center gap-1 border-t border-cyber-border pt-2">
+        <div className="text-[9px] italic flex items-center gap-1 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)', color: 'var(--color-ds-muted)' }}>
           <Info className="w-2.5 h-2.5" /> {lang === 'uk' ? 'Джерело:' : 'Source:'} {data.source[lang]}
         </div>
       </div>
@@ -72,9 +80,9 @@ const KpiCard: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
 // Top Metric Component
 const TopMetric: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
   const Icon = { Users, Building2, GraduationCap }[data.icon] as any;
-  
+
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.03 }}
@@ -82,7 +90,7 @@ const TopMetric: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
       className="cyber-card p-6 flex items-center gap-5 border-l-4 relative group"
       style={{ borderLeftColor: data.color }}
     >
-      <div className="p-3 rounded-lg bg-cyber-bg border border-cyber-border" style={{ color: data.color }}>
+      <div className="p-3 rounded-lg border" style={{ color: data.color, backgroundColor: 'var(--color-ds-bg)', borderColor: 'var(--color-ds-border)' }}>
         <Icon className="w-6 h-6" />
       </div>
       <div>
@@ -90,8 +98,8 @@ const TopMetric: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
           {data.label}
           {data.tooltip && (
             <div className="relative flex items-center">
-              <Info className="w-3 h-3 text-slate-400 cursor-help" />
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 normal-case tracking-normal font-sans shadow-xl border border-slate-700">
+              <Info className="w-3 h-3 cursor-help" style={{ color: 'var(--color-ds-muted)' }} />
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 normal-case tracking-normal font-sans shadow-xl" style={{ background: '#0a1628', border: '1px solid var(--color-ds-border)' }}>
                 {data.tooltip}
               </div>
             </div>
@@ -100,7 +108,7 @@ const TopMetric: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
         <div className="cyber-number text-4xl font-bold leading-none my-1">
           <FormattedNumber value={data.value} locale={lang} suffix={data.suffix} />
         </div>
-        <div className="text-[10px] text-slate-500 font-mono">{data.sub}</div>
+        <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{data.sub}</div>
       </div>
     </motion.div>
   );
@@ -108,7 +116,13 @@ const TopMetric: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
 
 // Main App
 const App: React.FC = () => {
-  const [lang, setLang] = useState<Language>('uk');
+  const [lang, setLang] = useState<Language>(() => {
+    try { return (localStorage.getItem('mhpss_lang') as Language) || 'uk'; } catch { return 'uk'; }
+  });
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    try { const v = localStorage.getItem('mhpss_dark'); return v === null ? true : v === '1'; } catch { return true; }
+  });
+  const [showAppendix, setShowAppendix] = useState<boolean>(false);
   const [activeSection, setActiveSection] = useState<SectionFilter>('all');
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -116,7 +130,7 @@ const App: React.FC = () => {
   const [dataSources, setDataSources] = useState<DataSourceInfo[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
-  const [roiInvestment, setRoiInvestment] = useState<number>(5); // $M
+  const [roiInvestment, setRoiInvestment] = useState<number>(5);
 
   const roiResults = useMemo(() => {
     const investUsd = roiInvestment * 1_000_000;
@@ -139,6 +153,19 @@ const App: React.FC = () => {
     next.has(id) ? next.delete(id) : next.add(id);
     return next;
   });
+
+  // Canonical Design System: persist theme + apply data-theme attribute
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    try { localStorage.setItem('mhpss_dark', darkMode ? '1' : '0'); } catch {}
+  }, [darkMode]);
+
+  // Persist language selection
+  useEffect(() => {
+    try { localStorage.setItem('mhpss_lang', lang); } catch {}
+  }, [lang]);
+
+  const toggleTheme = () => setDarkMode(d => !d);
 
   const loadLiveData = useCallback(async () => {
     setIsLoadingData(true);
@@ -243,23 +270,43 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cyber-bg text-slate-300 font-sans custom-scrollbar flex">
+    <div className="min-h-screen bg-[--color-ds-bg] text-[--color-ds-text] font-sans custom-scrollbar flex" style={{ backgroundColor: 'var(--color-ds-bg)', color: 'var(--color-ds-text)' }}>
 
-      {/* ── SIDEBAR ──────────────────────────────────────────────────── */}
+      {/* ── SCREEN-BASED L1/L2 ARCHITECTURE ─────────────────────────── */}
+      {!showAppendix && (
+        <ScreenRouter
+          lang={lang}
+          liveHciValue={liveMetrics.worldBankHci?.value}
+          onAppendix={() => setShowAppendix(true)}
+        />
+      )}
+
+      {/* ── APPENDIX TOGGLE (when in appendix mode) ──────────────────── */}
+      {showAppendix && (
+        <button
+          onClick={() => setShowAppendix(false)}
+          className="fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold ds-display transition-all"
+          style={{ background: 'var(--color-ds-gold)', color: '#0a1628', boxShadow: '0 0 20px rgba(200,164,92,0.3)' }}
+        >
+          ← {lang === 'uk' ? 'До огляду' : 'Back to overview'}
+        </button>
+      )}
+      {/* ── SIDEBAR + MAIN (appendix mode only) ─────────────────────── */}
+      {showAppendix && <>
       {/* Mobile backdrop */}
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
       <aside
-        className={`fixed top-0 left-0 h-screen z-40 flex flex-col border-r border-cyber-border bg-[#070e1a] transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} w-56`}
+        className={`fixed top-0 left-0 h-screen z-40 flex flex-col ds-sidebar transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} w-56`}
       >
         {/* Sidebar header */}
-        <div className="px-4 py-4 border-b border-cyber-border flex items-center justify-between flex-shrink-0">
+        <div className="px-4 py-4 flex items-center justify-between flex-shrink-0" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
           <div>
-            <div className="text-[13px] font-bold text-cyber-amber font-mono tracking-tight">FEEL Again</div>
-            <div className="text-[8px] text-slate-600 font-mono uppercase tracking-wider">MHPSS Dashboard</div>
+            <div className="text-[13px] font-bold tracking-tight ds-display" style={{ color: 'var(--color-ds-gold)' }}>FEEL Again</div>
+            <div className="text-[8px] font-mono uppercase tracking-wider" style={{ color: 'var(--color-ds-muted)' }}>MHPSS Dashboard</div>
           </div>
-          <button onClick={() => setSidebarOpen(false)} className="text-slate-600 hover:text-slate-400 lg:hidden">
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden transition-colors" style={{ color: 'var(--color-ds-muted)' }}>
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -268,7 +315,7 @@ const App: React.FC = () => {
           {SIDEBAR_GROUPS.map((group, gi) => (
             <div key={gi} className="mb-1">
               {group.label && (
-                <div className="px-2 pt-3 pb-1 text-[8px] font-mono font-bold uppercase tracking-[0.15em] text-slate-700">{group.label}</div>
+                <div className="cyber-label px-2 pt-3 pb-1 tracking-[0.15em]">{group.label}</div>
               )}
               {group.items.map(item => {
                 const Icon = item.icon;
@@ -276,7 +323,8 @@ const App: React.FC = () => {
                   <button
                     key={item.id}
                     onClick={() => scrollTo(item.target)}
-                    className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-[11px] text-slate-500 hover:text-slate-200 hover:bg-white/5 transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-[11px] hover:bg-white/5 transition-colors text-left ds-body"
+                    style={{ color: 'var(--color-ds-muted)' }}
                   >
                     <Icon className="w-3.5 h-3.5 flex-shrink-0" />
                     <span>{item.label}</span>
@@ -287,14 +335,18 @@ const App: React.FC = () => {
           ))}
         </nav>
         {/* Sidebar footer links */}
-        <div className="px-2 py-3 border-t border-cyber-border space-y-1 flex-shrink-0">
+        <div className="px-2 py-3 space-y-1 flex-shrink-0" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
           <a href="https://feelagain.com.ua" target="_blank" rel="noreferrer"
-            className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-[11px] text-cyber-amber hover:bg-cyber-amber/10 transition-colors">
+            className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-[11px] transition-colors ds-display"
+            style={{ color: 'var(--color-ds-gold)' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-ds-gold-dim)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+          >
             <Globe className="w-3.5 h-3.5" />
             <span>feelagain.com.ua →</span>
           </a>
-          <div className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-[11px] text-slate-600">
-            <div className="text-[8px] font-mono">v2.1 · {new Date().toLocaleDateString()}</div>
+          <div className="px-2 py-1.5 text-[8px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
+            v2.1 · {new Date().toLocaleDateString()}
           </div>
         </div>
       </aside>
@@ -304,73 +356,77 @@ const App: React.FC = () => {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-12" id="hero-top">
         
         {/* Header */}
-        <header className="pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-cyber-border pb-8 mb-8">
+        <header className="pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-8 mb-8" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
           <div className="flex items-center gap-4">
             {/* Sidebar toggle */}
             <button
               onClick={() => setSidebarOpen(o => !o)}
-              className="flex-shrink-0 p-2 rounded-lg border border-cyber-border text-slate-500 hover:text-cyber-amber hover:border-cyber-amber/40 transition-colors"
+              className="flex-shrink-0 p-2 rounded-lg transition-colors"
+              style={{ border: '1px solid var(--color-ds-border)', color: 'var(--color-ds-muted)' }}
               title={sidebarOpen ? 'Close nav' : 'Open nav'}
             >
               {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
           <div className="flex items-center gap-5">
             <img src="/logo.svg" alt="FEEL Again" className="w-24 h-24 rounded-xl" />
-            <div className="w-px h-12 bg-cyber-border" />
+            <div className="w-px h-12" style={{ background: 'var(--color-ds-border)' }} />
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tighter flex items-center gap-3">
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tighter flex items-center gap-3 ds-display" style={{ color: 'var(--color-ds-text)' }}>
                 {TEXTS.header.title[lang]}
-                <span className="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30 font-mono uppercase">
+                <span className="text-[10px] px-2 py-0.5 rounded font-mono uppercase" style={{ background: 'var(--color-ds-gold-dim)', color: 'var(--color-ds-gold)', border: '1px solid var(--color-ds-border)' }}>
                   OPEN DATA
                 </span>
               </h1>
-              <p className="text-slate-500 text-xs md:text-sm font-mono mt-1">{TEXTS.header.subtitle[lang]}</p>
+              <p className="text-xs md:text-sm font-mono mt-1" style={{ color: 'var(--color-ds-muted)' }}>{TEXTS.header.subtitle[lang]}</p>
             </div>
           </div>
           </div>{/* end flex items-center gap-4 */}
 
           <div className="flex flex-col md:items-end gap-3 w-full md:w-auto">
-            <div className="flex bg-cyber-surface border border-cyber-border p-1 rounded-lg">
-              <button
-                onClick={() => setLang('uk')}
-                className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${lang === 'uk' ? 'bg-cyber-amber text-cyber-bg shadow-lg scale-[1.04]' : 'text-slate-500 hover:text-white hover:bg-slate-800'}`}
-              >
-                UA
-              </button>
-              <button
-                onClick={() => setLang('en')}
-                className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${lang === 'en' ? 'bg-cyber-amber text-cyber-bg shadow-lg scale-[1.04]' : 'text-slate-500 hover:text-white hover:bg-slate-800'}`}
-              >
-                EN
+            <div className="flex items-center gap-2">
+              {/* Language switcher */}
+              <div className="flex bg-cyber-surface border border-cyber-border p-1 rounded-lg">
+                <button
+                  onClick={() => setLang('uk')}
+                  className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ds-display ${lang === 'uk' ? 'shadow-lg scale-[1.04]' : 'hover:bg-white/5'}`}
+                  style={lang === 'uk' ? { background: 'var(--color-ds-gold)', color: 'var(--color-ds-bg)' } : { color: 'var(--color-ds-muted)' }}
+                >
+                  UA
+                </button>
+                <button
+                  onClick={() => setLang('en')}
+                  className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ds-display ${lang === 'en' ? 'shadow-lg scale-[1.04]' : 'hover:bg-white/5'}`}
+                  style={lang === 'en' ? { background: 'var(--color-ds-gold)', color: 'var(--color-ds-bg)' } : { color: 'var(--color-ds-muted)' }}
+                >
+                  EN
+                </button>
+              </div>
+              {/* Dark/light toggle */}
+              <button onClick={toggleTheme} className="ds-theme-toggle" title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+                {darkMode ? '☀' : '◑'}
               </button>
             </div>
-            <div className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+            <div className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--color-ds-muted)' }}>
               {TEXTS.header.date[lang]} · {lang === 'uk' ? 'Верифіковано вручну' : 'Manually verified'}
             </div>
           </div>
         </header>
 
         {/* ── INSTITUTIONAL MISSION STATEMENT ─────────────────────────── */}
-        <div className="mb-8 rounded-2xl overflow-hidden border border-slate-700/60" style={{ background: 'linear-gradient(135deg, #0D1B2A 0%, #0A1628 50%, #0D1B2A 100%)' }}>
+        <div className="mb-8 rounded-2xl overflow-hidden ds-hero" style={{ border: '1px solid var(--color-ds-border)' }}>
           {/* Top band */}
-          <div className="flex items-center gap-0 border-b border-slate-700/60">
-            <div className="flex-1 px-6 py-3 bg-blue-900/20 border-r border-slate-700/60 flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0" />
-              <span className="text-[10px] font-mono text-blue-300 uppercase tracking-[0.2em]">
-                {lang === 'uk' ? 'ПРОБЛЕМА' : 'THE PROBLEM'}
-              </span>
+          <div className="flex items-center gap-0" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
+            <div className="flex-1 px-6 py-3 border-r flex items-center gap-3" style={{ borderColor: 'var(--color-ds-border)', background: 'rgba(46,196,182,0.06)' }}>
+              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: 'var(--color-ds-teal)' }} />
+              <span className="cyber-label">{lang === 'uk' ? 'ПРОБЛЕМА' : 'THE PROBLEM'}</span>
             </div>
-            <div className="flex-1 px-6 py-3 bg-amber-900/10 border-r border-slate-700/60 flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-cyber-amber flex-shrink-0" />
-              <span className="text-[10px] font-mono text-cyber-amber uppercase tracking-[0.2em]">
-                {lang === 'uk' ? 'РОЗРИВ' : 'THE GAP'}
-              </span>
+            <div className="flex-1 px-6 py-3 border-r flex items-center gap-3" style={{ borderColor: 'var(--color-ds-border)', background: 'rgba(200,164,92,0.06)' }}>
+              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: 'var(--color-ds-gold)' }} />
+              <span className="cyber-label">{lang === 'uk' ? 'РОЗРИВ' : 'THE GAP'}</span>
             </div>
-            <div className="flex-1 px-6 py-3 bg-emerald-900/10 flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />
-              <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-[0.2em]">
-                {lang === 'uk' ? 'РІШЕННЯ' : 'THE SOLUTION'}
-              </span>
+            <div className="flex-1 px-6 py-3 flex items-center gap-3" style={{ background: 'rgba(46,196,182,0.04)' }}>
+              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: 'var(--color-ds-teal)' }} />
+              <span className="cyber-label">{lang === 'uk' ? 'РІШЕННЯ' : 'THE SOLUTION'}</span>
             </div>
           </div>
           {/* Content */}
@@ -416,15 +472,15 @@ const App: React.FC = () => {
             </div>
           </div>
           {/* Footer citation */}
-          <div className="border-t border-slate-700/60 px-6 py-2 flex items-center justify-between">
-            <span className="text-[9px] font-mono text-slate-600">
+          <div className="px-6 py-2 flex items-center justify-between" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
+            <span className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
               {lang === 'uk'
                 ? 'Джерела: ВООЗ / Lancet 2023 · НСЗУ відкриті дані 2024 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'
                 : 'Sources: WHO / Lancet 2023 · NHSU open data 2024 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'}
             </span>
             <div className="flex items-center gap-3">
               {liveMetrics.worldBankHealth && (
-                <span className="text-[9px] font-mono text-blue-400">
+                <span className="text-[9px] font-mono" style={{ color: 'var(--color-ds-teal)' }}>
                   WB: Ukraine health {liveMetrics.worldBankHealth.healthSpendingPctGdp}% GDP ({liveMetrics.worldBankHealth.year})
                 </span>
               )}
@@ -435,12 +491,10 @@ const App: React.FC = () => {
 
         {/* ── CRISIS HERO BAR ─────────────────────────────────────────── */}
         <div className="mb-1.5 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping flex-shrink-0" />
-          <span className="text-[9px] font-mono text-slate-500 uppercase tracking-widest">
-            {lang === 'uk' ? 'МАСШТАБ КРИЗИ — ЦИФРИ, ЩО НЕ МОЖНА ІГНОРУВАТИ' : 'CRISIS SCALE — NUMBERS THAT CANNOT BE IGNORED'}
-          </span>
+          <span className="w-1.5 h-1.5 rounded-full animate-ping flex-shrink-0" style={{ backgroundColor: 'var(--color-ds-red)' }} />
+          <span className="cyber-label">{lang === 'uk' ? 'МАСШТАБ КРИЗИ — ЦИФРИ, ЩО НЕ МОЖНА ІГНОРУВАТИ' : 'CRISIS SCALE — NUMBERS THAT CANNOT BE IGNORED'}</span>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1.5 mb-6 font-mono">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1.5 mb-6">
           {[
             {
               val: '0.28%',
@@ -515,17 +569,16 @@ const App: React.FC = () => {
                 : 'Calculation: ~35,000 active MHPSS specialists × 20% admin overhead × $30/hr (blended rate) × ~200 hrs/mo / 12 = ~$35M-$60M/yr lost clinical capacity. Monthly: ~$3M–5M. Digital integration can reduce admin from 22% to 7%, freeing ~15% of time = +45K sessions/month. FEEL Again calculation.',
             },
           ].map((m) => (
-            <div key={m.label} className="bg-cyber-surface border border-cyber-border px-4 py-3 rounded-lg relative overflow-hidden group hover:border-cyber-amber/40 transition-colors cursor-help" title={m.tooltip}>
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-900/20" />
+            <div key={m.label} className="cyber-card px-4 py-3 relative overflow-hidden cursor-help" title={m.tooltip}>
               <div className="relative">
-                <div className="text-[28px] md:text-[32px] font-bold tracking-tighter leading-none mb-1" style={{ color: m.color }}>
+                <div className="text-[28px] md:text-[32px] font-bold tracking-tighter leading-none mb-1 ds-display" style={{ color: m.color }}>
                   {m.val}
                 </div>
-                <div className="text-[9px] text-slate-400 uppercase tracking-widest font-mono flex items-center gap-1.5">
+                <div className="cyber-label flex items-center gap-1.5">
                   {m.pulse && <span className="w-1.5 h-1.5 rounded-full animate-ping flex-shrink-0" style={{ backgroundColor: m.color }} />}
                   {m.label}
                 </div>
-                <div className="text-[9px] text-slate-600 mt-0.5 leading-snug">{m.sub}</div>
+                <div className="text-[9px] mt-0.5 leading-snug" style={{ color: 'var(--color-ds-muted)' }}>{m.sub}</div>
               </div>
             </div>
           ))}
@@ -590,21 +643,22 @@ const App: React.FC = () => {
         )}
 
         {/* Filter Bar */}
-        <div className="sticky top-4 z-40 bg-cyber-bg/80 backdrop-blur-xl border border-cyber-border rounded-xl p-3 flex items-center gap-4 flex-wrap mb-10">
+        <div className="sticky top-4 z-40 backdrop-blur-xl rounded-xl p-3 flex items-center gap-4 flex-wrap mb-10" style={{ background: 'color-mix(in srgb, var(--color-ds-bg) 85%, transparent)', border: '1px solid var(--color-ds-border)' }}>
           <label className="cyber-label ml-2">{TEXTS.filters.label[lang]}</label>
           <div className="relative flex-1 md:flex-none">
-            <select 
-              className="appearance-none w-full bg-cyber-surface border border-cyber-border hover:border-cyber-amber text-white text-xs md:text-sm rounded-lg pl-3 pr-10 py-2 focus:outline-none focus:ring-1 focus:ring-cyber-amber transition-all cursor-pointer md:min-w-[240px] font-mono"
+            <select
+              className="appearance-none w-full text-xs md:text-sm rounded-lg pl-3 pr-10 py-2 focus:outline-none transition-all cursor-pointer md:min-w-[240px] font-mono"
+              style={{ background: 'var(--color-ds-surface)', border: '1px solid var(--color-ds-border)', color: 'var(--color-ds-text)' }}
               value={activeSection}
               onChange={(e) => setActiveSection(e.target.value as SectionFilter)}
             >
               {Object.entries(TEXTS.filters.options).map(([key, label]) => (
-                <option key={key} value={key} className="bg-cyber-bg">{label[lang]}</option>
+                <option key={key} value={key}>{label[lang]}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 text-cyber-amber pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 pointer-events-none" style={{ color: 'var(--color-ds-gold)' }} />
           </div>
-          <div className="ml-auto hidden lg:flex items-center gap-4 px-4 border-l border-cyber-border">
+          <div className="ml-auto hidden lg:flex items-center gap-4 px-4" style={{ borderLeft: '1px solid var(--color-ds-border)' }}>
             {isLoadingData ? (
               <DataSourceBadge status="loading" lang={lang} compact />
             ) : (
@@ -624,9 +678,9 @@ const App: React.FC = () => {
         </div>
 
         {/* Executive Thesis */}
-        <div className="mb-8 px-5 py-4 rounded-xl border border-cyber-amber/20 bg-cyber-amber/3 flex items-start gap-4">
-          <div className="w-0.5 h-full bg-cyber-amber/40 self-stretch rounded flex-shrink-0 min-h-[2rem]" />
-          <p className="text-[13px] text-slate-300 leading-relaxed font-mono">
+        <div className="mb-8 px-5 py-4 rounded-xl flex items-start gap-4" style={{ border: '1px solid var(--color-ds-gold-dim)', background: 'var(--color-ds-gold-dim)' }}>
+          <div className="w-0.5 h-full self-stretch rounded flex-shrink-0 min-h-[2rem]" style={{ background: 'var(--color-ds-gold)' }} />
+          <p className="text-[13px] leading-relaxed font-mono" style={{ color: 'var(--color-ds-text)' }}>
             {lang === 'uk'
               ? 'FEEL Again \u2014 цифрова шина між гуманітарними даними (CommCare/Kobo/ActivityInfo) та державною eHealth системою (ESOZ/Trembita). Світовий Банк інвестував $954M через два взаємопов\u2019язані проєкти — HEAL ($500M, IPF) генерує послуги, THRIVE ($454M, PforR) вимірює через ESOZ. \u2764\ufe0f\u200d\ud83d\udd25 Gap: послуги існують, але невидимі для вимірювання.'
               : 'FEEL Again is the digital bus between humanitarian data (CommCare/Kobo/ActivityInfo) and the state eHealth system (ESOZ/Trembita). World Bank invested $954M via two linked instruments — HEAL ($500M, IPF) deploys services; THRIVE ($454M, PforR) measures via ESOZ. \u2764\ufe0f\u200d\ud83d\udd25 Gap: services exist but are invisible to the measurement layer.'}
@@ -2615,6 +2669,7 @@ const App: React.FC = () => {
         </footer>
       </div>{/* end max-w content */}
       </div>{/* end shifted main */}
+      </>}{/* end showAppendix */}
     </div>
   );
 };

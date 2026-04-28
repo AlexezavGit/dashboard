@@ -60,6 +60,10 @@ export interface LiveMetrics {
     year: number;
     trend: Array<{ year: number; value: number }>;
   } | null;
+  worldBankHci?: {
+    value: number;
+    year: number;
+  } | null;
 }
 
 const FETCH_TIMEOUT_MS = 8000;
@@ -190,6 +194,29 @@ async function fetchWorldBankHealthData(): Promise<LiveMetrics['worldBankHealth'
         year: parseInt(e.date),
         value: Math.round(e.value * 10) / 10,
       })),
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * World Bank HCI — Human Capital Index for Ukraine (HD.HCI.OVRL)
+ * Used by governments and IFIs to assess long-term economic potential.
+ */
+async function fetchWorldBankHci(): Promise<LiveMetrics['worldBankHci']> {
+  try {
+    const url =
+      'https://api.worldbank.org/v2/country/UA/indicator/HD.HCI.OVRL?format=json&mrv=1&per_page=1';
+    const res = await fetchWithTimeout(url);
+    if (!res.ok) return null;
+    type WBEntry = { date: string; value: number | null };
+    const json: [unknown, WBEntry[]] = await res.json();
+    const entries = (json[1] ?? []).filter((e) => e.value !== null) as Array<{ date: string; value: number }>;
+    if (!entries.length) return null;
+    return {
+      value: Math.round(entries[0].value * 100) / 100,
+      year: parseInt(entries[0].date),
     };
   } catch {
     return null;
@@ -397,11 +424,12 @@ export async function fetchAllLiveData(): Promise<{
   const hasKoboToken = proxyHealth.kobo === 'configured';
   const hasActivityInfoToken = proxyHealth.activityinfo === 'configured';
 
-  const [hdxFunding, activityInfo, kobo, worldBankHealth] = await Promise.all([
+  const [hdxFunding, activityInfo, kobo, worldBankHealth, worldBankHci] = await Promise.all([
     fetchFtsFunding(),
     fetchActivityInfo(),
     fetchKobo(),
     fetchWorldBankHealthData(),
+    fetchWorldBankHci(),
   ]);
   const hdxPopulation = getUkrainePopulation();
 
@@ -411,6 +439,7 @@ export async function fetchAllLiveData(): Promise<{
     activityInfo,
     kobo,
     worldBankHealth,
+    worldBankHci,
   };
 
   const now = new Date();
