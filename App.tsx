@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot, CalendarDays, Mail, Menu, X, Activity, Calculator, GitMerge } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { ScreenRouter } from './components/screens/ScreenRouter';
 import {
   TEXTS, COLORS, KPI_DATA, SECTIONS_CONFIG, TOP_METRICS,
   PREVALENCE_DATA, RISK_GROUP_DATA, WORKFORCE_DATA, WAR_IMPACT_DATA, SECTOR_DIST_DATA,
@@ -121,6 +122,7 @@ const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     try { const v = localStorage.getItem('mhpss_dark'); return v === null ? true : v === '1'; } catch { return true; }
   });
+  const [showAppendix, setShowAppendix] = useState<boolean>(false);
   const [activeSection, setActiveSection] = useState<SectionFilter>('all');
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -270,7 +272,27 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-[--color-ds-bg] text-[--color-ds-text] font-sans custom-scrollbar flex" style={{ backgroundColor: 'var(--color-ds-bg)', color: 'var(--color-ds-text)' }}>
 
-      {/* ── SIDEBAR ──────────────────────────────────────────────────── */}
+      {/* ── SCREEN-BASED L1/L2 ARCHITECTURE ─────────────────────────── */}
+      {!showAppendix && (
+        <ScreenRouter
+          lang={lang}
+          liveHciValue={liveMetrics.worldBankHci?.value}
+          onAppendix={() => setShowAppendix(true)}
+        />
+      )}
+
+      {/* ── APPENDIX TOGGLE (when in appendix mode) ──────────────────── */}
+      {showAppendix && (
+        <button
+          onClick={() => setShowAppendix(false)}
+          className="fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold ds-display transition-all"
+          style={{ background: 'var(--color-ds-gold)', color: '#0a1628', boxShadow: '0 0 20px rgba(200,164,92,0.3)' }}
+        >
+          ← {lang === 'uk' ? 'До огляду' : 'Back to overview'}
+        </button>
+      )}
+      {/* ── SIDEBAR + MAIN (appendix mode only) ─────────────────────── */}
+      {showAppendix && <>
       {/* Mobile backdrop */}
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
@@ -2647,6 +2669,7 @@ const App: React.FC = () => {
         </footer>
       </div>{/* end max-w content */}
       </div>{/* end shifted main */}
+      </>}{/* end showAppendix */}
     </div>
   );
 };
