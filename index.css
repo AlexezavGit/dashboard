@@ -1,67 +1,231 @@
 @import "tailwindcss";
 
+/* ── Canonical Design System ─────────────────────────────────────────────── */
+/* Fonts */
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  
-  --color-cyber-bg: #050A15;
-  --color-cyber-cyan: #00F5FF;
-  --color-cyber-amber: #F59E0B;
-  --color-cyber-success: #00FF66;
-  --color-cyber-purple: #A855F7;
-  --color-cyber-border: rgba(0, 245, 255, 0.1);
-  --color-cyber-surface: rgba(255, 255, 255, 0.03);
+
+  /* Dark palette (default) — Canonical Design System */
+  --color-ds-bg:        #050d1a;
+  --color-ds-surface:   rgba(255, 255, 255, 0.035);
+  --color-ds-gold:      #c8a45c;
+  --color-ds-gold-dim:  rgba(200, 164, 92, 0.18);
+  --color-ds-teal:      #2ec4b6;
+  --color-ds-red:       #e05c5c;
+  --color-ds-navy:      #050d1a;
+  --color-ds-border:    rgba(200, 164, 92, 0.18);
+  --color-ds-text:      #e2e8f0;
+  --color-ds-muted:     rgba(226, 232, 240, 0.45);
+
+  /* Keep cyber-* aliases so existing class names still resolve */
+  --color-cyber-bg:      #050d1a;
+  --color-cyber-surface: rgba(255, 255, 255, 0.035);
+  --color-cyber-border:  rgba(200, 164, 92, 0.18);
+  --color-cyber-cyan:    #2ec4b6;
+  --color-cyber-amber:   #c8a45c;
+  --color-cyber-success: #2ec4b6;
+  --color-cyber-purple:  #c8a45c;
 }
 
+/* ── Light theme overrides ──────────────────────────────────────────────── */
+:root[data-theme="light"] {
+  --color-ds-bg:        #f5f0e8;
+  --color-ds-surface:   rgba(0, 0, 0, 0.04);
+  --color-ds-gold:      #8b6914;
+  --color-ds-gold-dim:  rgba(139, 105, 20, 0.15);
+  --color-ds-teal:      #1a8a7e;
+  --color-ds-red:       #a01d1d;
+  --color-ds-navy:      #0a1628;
+  --color-ds-border:    rgba(139, 105, 20, 0.22);
+  --color-ds-text:      #1a1a2e;
+  --color-ds-muted:     rgba(26, 26, 46, 0.55);
+
+  --color-cyber-bg:      #f5f0e8;
+  --color-cyber-surface: rgba(0, 0, 0, 0.04);
+  --color-cyber-border:  rgba(139, 105, 20, 0.22);
+  --color-cyber-cyan:    #1a8a7e;
+  --color-cyber-amber:   #8b6914;
+  --color-cyber-success: #1a8a7e;
+  --color-cyber-purple:  #8b6914;
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────── */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-cyber-bg text-slate-300 font-sans selection:bg-cyber-amber/30 selection:text-cyber-amber;
+    background-color: var(--color-ds-bg);
+    color: var(--color-ds-text);
+    font-family: var(--font-sans);
+    transition: background-color 0.25s ease, color 0.25s ease;
+    margin: 0;
+    overflow-x: hidden;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
-    @apply tracking-tight;
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
   }
 }
 
+/* ── Components ─────────────────────────────────────────────────────────── */
 @layer components {
+
+  /* Card */
   .cyber-card {
-    @apply bg-cyber-surface border border-cyber-border rounded-xl backdrop-blur-md transition-all duration-300;
+    background: var(--color-ds-surface);
+    border: 1px solid var(--color-ds-border);
+    border-radius: 0.75rem;
+    backdrop-filter: blur(12px);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
-  
+
   .cyber-card:hover {
-    @apply border-cyber-cyan/30 shadow-[0_0_20px_rgba(0,245,255,0.05)];
+    border-color: var(--color-ds-gold);
+    box-shadow: 0 0 24px var(--color-ds-gold-dim);
   }
-  
+
+  /* Number (metrics) — Space Grotesk */
   .cyber-number {
-    @apply font-mono text-cyber-cyan;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-ds-teal);
   }
-  
+
+  /* Label — Canonical section label spec: 8.5px, 700, 2px tracking, uppercase, gold */
   .cyber-label {
-    @apply text-[10px] uppercase tracking-widest font-bold text-slate-500;
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-ds-gold);
+    font-family: var(--font-display);
   }
 
+  /* Glow helpers */
   .cyber-glow-cyan {
-    @apply shadow-[0_0_15px_rgba(0,245,255,0.2)];
+    box-shadow: 0 0 20px rgba(46, 196, 182, 0.2);
   }
-  
+
   .cyber-glow-amber {
-    @apply shadow-[0_0_15px_rgba(245,158,11,0.2)];
+    box-shadow: 0 0 20px rgba(200, 164, 92, 0.2);
+  }
+
+  /* Hero gradient — Canonical spec */
+  .ds-hero {
+    background:
+      radial-gradient(circle at 25% 50%, rgba(46, 196, 182, 0.10) 0%, transparent 55%),
+      radial-gradient(circle at 75% 50%, rgba(200, 164, 92, 0.07) 0%, transparent 55%),
+      linear-gradient(135deg, #0a1628 0%, #1a0a0a 100%);
+  }
+
+  /* Sidebar surface */
+  .ds-sidebar {
+    background: #060e1c;
+    border-right: 1px solid var(--color-ds-border);
+  }
+
+  :root[data-theme="light"] .ds-sidebar {
+    background: #ece7db;
+    border-right: 1px solid var(--color-ds-border);
+  }
+
+  /* Theme toggle button */
+  .ds-theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-ds-border);
+    background: var(--color-ds-surface);
+    color: var(--color-ds-gold);
+    font-size: 11px;
+    font-weight: 600;
+    font-family: var(--font-display);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    white-space: nowrap;
+  }
+
+  .ds-theme-toggle:hover {
+    border-color: var(--color-ds-gold);
+    background: var(--color-ds-gold-dim);
   }
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
-}
-
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 245, 255, 0.2);
+  background: var(--color-ds-gold-dim);
   border-radius: 10px;
 }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--color-ds-gold); }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 245, 255, 0.4);
+/* ── Typography helpers ─────────────────────────────────────────────────── */
+.ds-display { font-family: var(--font-display); }
+.ds-body    { font-family: var(--font-sans); }
+
+/* Metric numbers use Space Grotesk instead of JetBrains Mono */
+.font-mono.cyber-number,
+.cyber-number.font-mono {
+  font-family: var(--font-display);
 }
+
+/* ── Theme-aware overrides for Tailwind slate utilities ──────────────────
+   These cascade over Tailwind's defaults so existing text-slate-* classes
+   adapt automatically to both dark and light themes without rewriting JSX.
+───────────────────────────────────────────────────────────────────────── */
+
+/* Dark (default) — slate → design-system equivalents */
+.text-slate-300 { color: rgba(226, 232, 240, 0.85) !important; }
+.text-slate-400 { color: rgba(226, 232, 240, 0.60) !important; }
+.text-slate-500 { color: rgba(226, 232, 240, 0.42) !important; }
+.text-slate-600 { color: rgba(226, 232, 240, 0.28) !important; }
+.text-slate-700 { color: rgba(226, 232, 240, 0.18) !important; }
+
+/* Light theme overrides */
+:root[data-theme="light"] .text-slate-300 { color: rgba(26, 26, 46, 0.80) !important; }
+:root[data-theme="light"] .text-slate-400 { color: rgba(26, 26, 46, 0.60) !important; }
+:root[data-theme="light"] .text-slate-500 { color: rgba(26, 26, 46, 0.45) !important; }
+:root[data-theme="light"] .text-slate-600 { color: rgba(26, 26, 46, 0.32) !important; }
+:root[data-theme="light"] .text-slate-700 { color: rgba(26, 26, 46, 0.22) !important; }
+:root[data-theme="light"] .text-white      { color: #0a1628 !important; }
+
+/* Surface/border utilities light overrides */
+:root[data-theme="light"] .bg-cyber-surface { background: rgba(0,0,0,0.04) !important; }
+:root[data-theme="light"] .border-cyber-border { border-color: rgba(139,105,20,0.22) !important; }
+:root[data-theme="light"] .bg-cyber-bg { background: #f5f0e8 !important; }
+
+/* Backdrop on mobile sidebar overlay */
+:root[data-theme="light"] .bg-black\/50 { background: rgba(0,0,0,0.25) !important; }
+
+/* Header border in light mode */
+:root[data-theme="light"] header { border-color: rgba(139,105,20,0.22) !important; }
+
+/* Sticky filter bar light mode */
+:root[data-theme="light"] .bg-cyber-bg\/80 {
+  background: rgba(245,240,232,0.85) !important;
+  backdrop-filter: blur(16px);
+}
+
+/* Select element light */
+:root[data-theme="light"] select {
+  background-color: rgba(0,0,0,0.04);
+  color: #0a1628;
+}
+
+/* Mission statement dividers light */
+:root[data-theme="light"] .divide-slate-700\/60 > * + * { border-color: rgba(139,105,20,0.22) !important; }
+:root[data-theme="light"] .border-slate-700\/60 { border-color: rgba(139,105,20,0.22) !important; }
+
+/* Card hover gold glow applied globally in light */
+:root[data-theme="light"] .cyber-card:hover {
+  box-shadow: 0 0 20px rgba(139,105,20,0.15);
+}
+
