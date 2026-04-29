@@ -47,6 +47,9 @@ export interface LiveMetrics {
   activityInfo?: {
     sessionsCount: number;
     beneficiariesReached: number;
+    databaseName?: string;
+    formName?: string;
+    reportingOrgs?: number;
   } | null;
   kobo?: {
     assessmentsCount: number;
@@ -229,30 +232,117 @@ function getUkrainePopulation(): LiveMetrics['hdxPopulation'] {
 }
 
 /**
- * ActivityInfo — proxied via Cloudflare Worker (/api/activityinfo/*)
- * Token is stored as a Worker Secret, never in the JS bundle.
- * DB/Form IDs can be baked in via VITE_ env vars (non-sensitive).
+ * ActivityInfo — proxied via /api/activityinfo/*  →  api.activityinfo.org
+ * Token stored as Cloudflare Pages env var (ACTIVITYINFO_API_KEY).
+ *
+ * Auto-discovery flow:
+ *  1. GET /resources/databases  → pick first DB that looks like Ukraine/5W/MHPSS
+ *  2. GET /resources/database/{id}  → enumerate forms
+ *  3. POST /resources/query/columns  → count rows + sum beneficiaries
  */
 async function fetchActivityInfo(): Promise<LiveMetrics['activityInfo']> {
   try {
-    // Check if the proxy is configured (health endpoint)
-    const health = await fetchWithTimeout('/api/health').catch(() => null);
-    if (!health?.ok) return null;
-    const healthJson = await health.json().catch(() => ({}));
-    if (healthJson?.activityinfo !== 'configured') return null;
+    // 1. list databases
+    const dbRes = await fetchWithTimeout('/api/activityinfo/resources/databases');
+    if (!dbRes.ok) return null;
+    const dbJson = await dbRes.json().catch(() => null);
+    if (!dbJson) return null;
 
-    const dbId = import.meta.env.VITE_ACTIVITYINFO_DB_ID;
-    const formId = import.meta.env.VITE_ACTIVITYINFO_FORM_ID;
-    if (!dbId || !formId) return null;
+    const databases: any[] = Array.isArray(dbJson) ? dbJson : (dbJson.databases ?? dbJson.data ?? []);
+    if (!databases.length) return null;
 
-    const url = `/api/activityinfo/api/v2/databases/${dbId}/forms/${formId}/records`;
-    const res = await fetchWithTimeout(url);
-    if (!res.ok) return null;
-    const json = await res.json();
-    const records: any[] = json?.results ?? [];
+    // 2. pick the most relevant DB (prefer UA / MHPSS / 5W in name)
+    const scored = databases.map((db: any) => {
+      const name: string = (db.databaseName ?? db.name ?? db.label ?? '').toLowerCase();
+      let score = 0;
+      if (/ukrain/i.test(name)) score += 10;
+      if (/mhpss|mental|psych/i.test(name)) score += 8;
+      if (/5w|cluster|health/i.test(name)) score += 5;
+      if (/humanitarian|hpc|ocha/i.test(name)) score += 3;
+      return { db, score };
+    });
+    scored.sort((a, b) => b.score - a.score);
+    const chosen = scored[0].db;
+    const dbId: string = chosen.databaseId ?? chosen.id ?? chosen._id ?? '';
+    const dbLabel: string = chosen.databaseName ?? chosen.name ?? chosen.label ?? dbId;
+    if (!dbId) return null;
+
+    // 3. get forms in this DB
+    const schemaRes = await fetchWithTimeout(`/api/activityinfo/resources/database/${dbId}`);
+    if (!schemaRes.ok) return null;
+    const schema = await schemaRes.json().catch(() => null);
+    if (!schema) return null;
+
+    const forms: any[] = schema.forms ?? schema.resources ?? [];
+    if (!forms.length) return null;
+
+    // 4. pick the best form (prefer sessions/beneficiary/activity forms)
+    const formScored = forms.map((f: any) => {
+      const lbl: string = (f.label ?? f.name ?? '').toLowerCase();
+      let s = 0;
+      if (/session|sessi/i.test(lbl)) s += 10;
+      if (/beneficiar|reach/i.test(lbl)) s += 8;
+      if (/mhpss|mental|psych/i.test(lbl)) s += 6;
+      if (/activity|activ/i.test(lbl)) s += 4;
+      if (/5w|report/i.test(lbl)) s += 3;
+      return { f, s };
+    });
+    formScored.sort((a, b) => b.s - a.s);
+    const chosenForm = formScored[0].f;
+    const formId: string = chosenForm.id ?? chosenForm.formId ?? '';
+    const formLabel: string = chosenForm.label ?? chosenForm.name ?? formId;
+    if (!formId) return null;
+
+    // 5. query row count + beneficiary sum via column query
+    const queryBody = {
+      fields: ['@id'],
+      filter: '',
+      rowSources: [{ formId }],
+    };
+    const queryRes = await fetchWithTimeout('/api/activityinfo/resources/query/columns', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(queryBody),
+    });
+
+    let sessionsCount = 0;
+    let beneficiariesReached = 0;
+    let reportingOrgs: number | undefined;
+
+    if (queryRes.ok) {
+      const qJson = await queryRes.json().catch(() => null);
+      // columns response: { numRows, columns: { fieldId: { values: [...] } } }
+      sessionsCount = qJson?.numRows ?? 0;
+
+      // try to find a beneficiary column
+      const cols: Record<string, any> = qJson?.columns ?? {};
+      for (const [key, col] of Object.entries(cols)) {
+        if (/beneficiar|reach|total/i.test(key)) {
+          const vals: number[] = (col?.values ?? []).filter((v: any) => typeof v === 'number');
+          beneficiariesReached = vals.reduce((a, b) => a + b, 0);
+          break;
+        }
+      }
+    } else {
+      // fallback: just count records via records endpoint
+      const recRes = await fetchWithTimeout(`/api/activityinfo/resources/form/${formId}/records`);
+      if (recRes.ok) {
+        const recJson = await recRes.json().catch(() => ({}));
+        const records: any[] = recJson?.results ?? recJson?.records ?? [];
+        sessionsCount = records.length;
+        beneficiariesReached = records.reduce(
+          (a: number, r: any) => a + (r.beneficiaries ?? r.beneficiariesReached ?? r.total ?? 0),
+          0
+        );
+      }
+    }
+
     return {
-      sessionsCount: records.length,
-      beneficiariesReached: records.reduce((a: number, r: any) => a + (r.beneficiaries ?? 0), 0),
+      sessionsCount,
+      beneficiariesReached,
+      databaseName: dbLabel,
+      formName: formLabel,
+      reportingOrgs,
     };
   } catch {
     return null;

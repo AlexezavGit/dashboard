@@ -278,19 +278,13 @@ const App: React.FC = () => {
           lang={lang}
           liveHciValue={liveMetrics.worldBankHci?.value}
           onAppendix={() => setShowAppendix(true)}
+          onLangChange={setLang}
+          darkMode={darkMode}
+          onThemeToggle={toggleTheme}
         />
       )}
 
-      {/* ── APPENDIX TOGGLE (when in appendix mode) ──────────────────── */}
-      {showAppendix && (
-        <button
-          onClick={() => setShowAppendix(false)}
-          className="fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold ds-display transition-all"
-          style={{ background: 'var(--color-ds-gold)', color: '#0a1628', boxShadow: '0 0 20px rgba(200,164,92,0.3)' }}
-        >
-          ← {lang === 'uk' ? 'До огляду' : 'Back to overview'}
-        </button>
-      )}
+      {/* Back button is now embedded in the appendix header (left side) */}
       {/* ── SIDEBAR + MAIN (appendix mode only) ─────────────────────── */}
       {showAppendix && <>
       {/* Mobile backdrop */}
@@ -356,8 +350,16 @@ const App: React.FC = () => {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-12" id="hero-top">
         
         {/* Header */}
-        <header className="pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-8 mb-8" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
-          <div className="flex items-center gap-4">
+        <header className="pt-8 md:pt-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-10 mb-10" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
+          <div className="flex items-center gap-3">
+            {/* ← Back to overview (left side, consistent with L2 back buttons) */}
+            <button
+              onClick={() => setShowAppendix(false)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-bold ds-display transition-all flex-shrink-0"
+              style={{ background: 'rgba(200,164,92,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)' }}
+            >
+              ← {lang === 'uk' ? 'До огляду' : 'Overview'}
+            </button>
             {/* Sidebar toggle */}
             <button
               onClick={() => setSidebarOpen(o => !o)}
@@ -413,7 +415,7 @@ const App: React.FC = () => {
         </header>
 
         {/* ── INSTITUTIONAL MISSION STATEMENT ─────────────────────────── */}
-        <div className="mb-8 rounded-2xl overflow-hidden ds-hero" style={{ border: '1px solid var(--color-ds-border)' }}>
+        <div className="mb-10 rounded-2xl overflow-hidden ds-hero" style={{ border: '1px solid var(--color-ds-border)' }}>
           {/* Top band */}
           <div className="flex items-center gap-0" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
             <div className="flex-1 px-6 py-3 border-r flex items-center gap-3" style={{ borderColor: 'var(--color-ds-border)', background: 'rgba(46,196,182,0.06)' }}>
@@ -430,53 +432,53 @@ const App: React.FC = () => {
             </div>
           </div>
           {/* Content */}
-          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-700/60">
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x" style={{ borderColor: 'var(--color-ds-border)' }}>
             {/* Problem */}
-            <div className="px-6 py-5">
-              <p className="text-white text-[14px] font-semibold leading-snug mb-2">
+            <div className="px-7 py-7">
+              <p className="ds-display text-[15px] font-semibold leading-snug mb-3" style={{ color: 'var(--color-ds-text)' }}>
                 {lang === 'uk'
-                  ? '3.9 мільйона людей потребують клінічної допомоги з психічного здоров\'я'
-                  : '3.9 million people need clinical mental health care'}
+                  ? '3.9 млн розладів та потреб у послугах ментального здоров\'я'
+                  : '3.9M mental health disorder-episodes requiring clinical services'}
               </p>
-              <p className="text-slate-400 text-[12px] leading-relaxed">
+              <p className="ds-body text-[12px] leading-relaxed" style={{ color: 'var(--color-ds-muted)' }}>
                 {lang === 'uk'
-                  ? '22% населення України — під клінічно значущим психологічним тиском внаслідок війни. Існуюча система покриває 0.28% від потреби.'
-                  : '22% of Ukraine\'s population is under clinically significant psychological distress due to war. The existing system covers 0.28% of need.'}
+                  ? '22% населення України — під клінічно значущим психологічним тиском (Lancet, 2024). Система НСЗУ 2025 охопила 260K пацієнтів ПМД та 118K у ЦМЗ — це до 8% від розрахункової потреби (верхня межа; реальний показник не вимірюється через відсутність крос-системного обліку).'
+                  : "22% of Ukraine's population is under clinically significant psychological distress (Lancet, 2024). NHSU 2025 reached 260K PMD patients and 118K at MHCs — up to 8% of calculated need (upper bound; real figure is unmeasured due to absent cross-system tracking)."}
               </p>
             </div>
             {/* Gap */}
-            <div className="px-6 py-5">
-              <p className="text-white text-[14px] font-semibold leading-snug mb-2">
+            <div className="px-7 py-7">
+              <p className="ds-display text-[15px] font-semibold leading-snug mb-3" style={{ color: 'var(--color-ds-text)' }}>
                 {lang === 'uk'
-                  ? 'World Bank інвестував $954M — але послуги залишаються невидимими'
-                  : 'World Bank invested $954M — but services remain invisible to measurement'}
+                  ? '$1.87B у системі — $0 верифікованих outcome-виплат'
+                  : '$1.87B in the system — $0 verified outcome-linked payments'}
               </p>
-              <p className="text-slate-400 text-[12px] leading-relaxed">
+              <p className="ds-body text-[12px] leading-relaxed" style={{ color: 'var(--color-ds-muted)' }}>
                 {lang === 'uk'
-                  ? 'HEAL ($500M) та THRIVE ($454M) фінансують послуги, але гуманітарні та державні системи не обмінюються даними. 62.2M сесій/рік — незакрита потреба вартістю $1.87B.'
-                  : 'HEAL ($500M) and THRIVE ($454M) fund services, but humanitarian and state systems don\'t share data. 62.2M sessions/year — unmet need worth $1.87B.'}
+                  ? 'HEAL ($500M) та THRIVE ($454M PforR) фінансують послуги, але 5 систем не обмінюються даними: 4.7M гуманітарних сесій/рік невидимі для ЄСОЗ → 0 DLI-тригерів disbursement.'
+                  : 'HEAL ($500M) and THRIVE ($454M PforR) fund services, but 5 systems share no data: 4.7M humanitarian sessions/yr are invisible to ESOZ → 0 DLI disbursement triggers.'}
               </p>
             </div>
             {/* Solution */}
-            <div className="px-6 py-5">
-              <p className="text-white text-[14px] font-semibold leading-snug mb-2">
+            <div className="px-7 py-7">
+              <p className="ds-display text-[15px] font-semibold leading-snug mb-3" style={{ color: 'var(--color-ds-text)' }}>
                 {lang === 'uk'
-                  ? 'FEEL Again: цифрова шина між гуманітарними даними та державним eHealth'
-                  : 'FEEL Again: digital bus between humanitarian data and state eHealth'}
+                  ? 'FEEL Again: інтеграційний шлюз + сервісна шина між гуманітарними даними та eHealth'
+                  : 'FEEL Again: integration gateway + service bus between humanitarian data and eHealth'}
               </p>
-              <p className="text-slate-400 text-[12px] leading-relaxed">
+              <p className="ds-body text-[12px] leading-relaxed" style={{ color: 'var(--color-ds-muted)' }}>
                 {lang === 'uk'
-                  ? 'Кожна надана сесія стає видимою для DLI-вимірювання THRIVE/ESOZ. Модель: 3.5–7% транзакційна комісія від NHSU-тарифу. Ціль: $25M GMV до кінця 2026.'
-                  : 'Every delivered session becomes visible to THRIVE/ESOZ DLI measurement. Model: 3.5–7% transaction fee on NHSU tariff. Target: $25M GMV by end of 2026.'}
+                  ? 'HL7 FHIR R4 міст до ЄСОЗ (36.5M користувачів). Кожна сесія стає видимою для THRIVE DLI-disbursement. Цільові показники: 10K req/sec · <200мс p95 · 99.95% uptime · 50K одночасних.'
+                  : 'HL7 FHIR R4 bridge to ESOZ (36.5M users). Every session becomes visible for THRIVE DLI disbursement. Targets: 10K req/sec · <200ms p95 · 99.95% uptime · 50K concurrent.'}
               </p>
             </div>
           </div>
           {/* Footer citation */}
-          <div className="px-6 py-2 flex items-center justify-between" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
+          <div className="px-6 py-3 flex items-center justify-between" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
             <span className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
               {lang === 'uk'
-                ? 'Джерела: ВООЗ / Lancet 2023 · НСЗУ відкриті дані 2024 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'
-                : 'Sources: WHO / Lancet 2023 · NHSU open data 2024 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'}
+                ? 'Джерела: Lancet 2024 · НСЗУ відкриті дані 2025 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'
+                : 'Sources: Lancet 2024 · NHSU open data 2025 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'}
             </span>
             <div className="flex items-center gap-3">
               {liveMetrics.worldBankHealth && (

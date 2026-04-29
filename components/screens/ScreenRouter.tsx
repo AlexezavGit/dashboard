@@ -7,15 +7,21 @@ import { L2Coverage } from './L2Coverage';
 import { L2Backlog } from './L2Backlog';
 import { L2Operational } from './L2Operational';
 import { L2Analytical } from './L2Analytical';
+import { LangThemeBar } from './LangThemeBar';
 import { AnimatePresence, motion } from 'motion/react';
 
 interface Props {
   lang: Language;
   liveHciValue?: number | null;
   onAppendix: () => void;
+  onLangChange: (l: Language) => void;
+  darkMode: boolean;
+  onThemeToggle: () => void;
 }
 
-export const ScreenRouter: React.FC<Props> = ({ lang, liveHciValue, onAppendix }) => {
+export const ScreenRouter: React.FC<Props> = ({
+  lang, liveHciValue, onAppendix, onLangChange, darkMode, onThemeToggle,
+}) => {
   const [history, setHistory] = useState<ScreenId[]>(['l1']);
 
   const current = history[history.length - 1];
@@ -48,17 +54,29 @@ export const ScreenRouter: React.FC<Props> = ({ lang, liveHciValue, onAppendix }
   if (current === 'appendix') return null;
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={current}
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 1.01 }}
-        transition={{ duration: 0.25 }}
-        className="fixed inset-0 z-50"
-      >
-        {screens[current as Exclude<ScreenId, 'appendix'>]}
-      </motion.div>
-    </AnimatePresence>
+    <>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.01 }}
+          transition={{ duration: 0.25 }}
+          className="fixed inset-0 z-50"
+        >
+          {screens[current as Exclude<ScreenId, 'appendix'>]}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* ── Persistent lang + theme bar — same position on every L1/L2 screen ── */}
+      <div className="fixed top-3 right-4 z-[60] pointer-events-auto">
+        <LangThemeBar
+          lang={lang}
+          onLangChange={onLangChange}
+          darkMode={darkMode}
+          onThemeToggle={onThemeToggle}
+        />
+      </div>
+    </>
   );
 };
