@@ -2,7 +2,14 @@ import React, { useState, useCallback } from 'react';
 import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
 import { L1Strategic } from './L1Strategic';
+// 6 program layer L2 screens
 import { L2Finance } from './L2Finance';
+import { L2Clinical } from './L2Clinical';
+import { L2Data } from './L2Data';
+import { L2Sustain } from './L2Sustain';
+import { L2Digital } from './L2Digital';
+import { L2Regulatory } from './L2Regulatory';
+// legacy/supporting screens
 import { L2Coverage } from './L2Coverage';
 import { L2Backlog } from './L2Backlog';
 import { L2Operational } from './L2Operational';
@@ -43,12 +50,20 @@ export const ScreenRouter: React.FC<Props> = ({
   const nav: ScreenNav = { current, history, push, back, reset };
 
   const screens: Record<Exclude<ScreenId, 'appendix'>, React.ReactNode> = {
-    'l1':             <L1Strategic lang={lang} nav={nav} liveHciValue={liveHciValue} />,
-    'l2-finance':     <L2Finance lang={lang} nav={nav} />,
-    'l2-coverage':    <L2Coverage lang={lang} nav={nav} />,
-    'l2-backlog':     <L2Backlog lang={lang} nav={nav} />,
-    'l2-operational': <L2Operational lang={lang} nav={nav} />,
-    'l2-analytical':  <L2Analytical lang={lang} nav={nav} />,
+    'l1':               <L1Strategic lang={lang} nav={nav} liveHciValue={liveHciValue} />,
+    // 6 program layer L2 screens
+    'l2-fintech':       <L2Finance lang={lang} nav={nav} />,
+    'l2-clinical':      <L2Clinical lang={lang} nav={nav} />,
+    'l2-data':          <L2Data lang={lang} nav={nav} />,
+    'l2-sustain':       <L2Sustain lang={lang} nav={nav} />,
+    'l2-digital':       <L2Digital lang={lang} nav={nav} />,
+    'l2-regulatory':    <L2Regulatory lang={lang} nav={nav} />,
+    // legacy/supporting screens
+    'l2-finance':       <L2Finance lang={lang} nav={nav} />,
+    'l2-coverage':      <L2Coverage lang={lang} nav={nav} />,
+    'l2-backlog':       <L2Backlog lang={lang} nav={nav} />,
+    'l2-operational':   <L2Operational lang={lang} nav={nav} />,
+    'l2-analytical':    <L2Analytical lang={lang} nav={nav} />,
   };
 
   if (current === 'appendix') return null;
