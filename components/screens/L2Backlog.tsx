@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
 
@@ -9,7 +9,7 @@ interface Props { lang: Language; nav: ScreenNav; }
 const SCENARIOS = [
   {
     label: { uk: 'Поточний стан (без змін)', en: 'Current state (no change)' },
-    years: 12.5,
+    years: 12.4,
     color: '#ff7b6e',
     note: { uk: '62.2M / (4K спец. × 1,250 сес./рік) = 12.4 р.', en: '62.2M / (4K spec. × 1,250 sessions/yr) = 12.4 yrs' },
   },
@@ -44,29 +44,41 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => (
         'linear-gradient(135deg, #080f1c 0%, #0a1628 100%)',
     }}
   >
-    <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, #00d4aa, #2ec4b6 50%, transparent)', boxShadow: '0 0 14px rgba(0,212,170,0.5)' }} />
+    <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #00d4aa, #2ec4b6 50%, transparent)', boxShadow: '0 0 14px rgba(0,212,170,0.5)' }} />
 
-    <div className="flex items-center gap-4 px-6 pt-5 pb-3 flex-shrink-0">
-      <button onClick={nav.back} className="flex items-center gap-1.5 text-[11px] ds-display font-medium" style={{ color: 'var(--color-ds-muted)' }}>
-        <ArrowLeft className="w-4 h-4" /> {lang === 'uk' ? 'Назад' : 'Back'}
+    {/* ── Header ── */}
+    <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0">
+      <button
+        onClick={nav.back}
+        className="flex items-center gap-2 px-4 py-2 rounded-xl ds-display font-bold flex-shrink-0 transition-all"
+        style={{ background: 'rgba(200,164,92,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '12px' }}
+      >
+        <ArrowLeft className="w-4 h-4" />
+        {lang === 'uk' ? 'Назад' : 'Back'}
       </button>
-      <div className="w-px h-4" style={{ background: 'var(--color-ds-border)' }} />
       <div>
-        <div className="text-[18px] font-bold ds-display" style={{ color: '#00d4aa' }}>
-          {lang === 'uk' ? 'Як рахується 12.5 років беклогу?' : 'How is the 12.5-year backlog calculated?'}
+        <div className="text-[17px] font-bold ds-display" style={{ color: '#00d4aa' }}>
+          {lang === 'uk' ? 'Як рахується 12.4 роки беклогу?' : 'How is the 12.4-year backlog calculated?'}
         </div>
-        <div className="text-[11px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>
-          {lang === 'uk' ? 'Чотири сценарії та що змінює FEEL Again' : 'Four scenarios and what FEEL Again changes'}
+        <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
+          {lang === 'uk' ? 'Чотири сценарії — від формули до реалістичних шляхів закриття' : 'Four scenarios — from formula to realistic closure paths'}
         </div>
       </div>
-      <div className="flex-1" />
-      <button onClick={() => nav.push('appendix')} className="text-[11px] ds-display font-medium flex items-center gap-1" style={{ color: 'var(--color-ds-gold)' }}>
-        {lang === 'uk' ? 'ROI Калькулятор →' : 'ROI Calculator →'} <ChevronRight className="w-3.5 h-3.5" />
-      </button>
     </div>
 
-    <div className="flex-1 flex flex-col gap-4 px-6 pb-5 min-h-0">
-      {/* Formula box */}
+    {/* ── Intro context ── */}
+    <div className="px-5 pb-2 flex-shrink-0">
+      <div className="rounded-xl px-4 py-2" style={{ background: 'rgba(0,210,170,0.06)', border: '1px solid rgba(0,210,170,0.18)' }}>
+        <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.82)' }}>
+          {lang === 'uk'
+            ? '12.4 роки — це мінімальний розрахунок при незмінних ресурсах. Ключове обмеження не лише кількість фахівців, а неефективність системи: 22% часу витрачається на дублювання документації, а 19K практиків із тіньового сектору лишаються невидимими для системи. Нижче — чотири сценарії залежно від архітектурних рішень.'
+            : '12.4 years is the minimum estimate with unchanged resources. The key constraint is not only the number of specialists but system inefficiency: 22% of time is spent on documentation duplication, and 19K shadow-sector practitioners remain invisible to the system. Below — four scenarios depending on architectural decisions.'}
+        </p>
+      </div>
+    </div>
+
+    <div className="flex-1 flex flex-col gap-3 px-5 pb-3 min-h-0">
+      {/* ── Formula box ── */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -74,42 +86,51 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => (
         style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--color-ds-border)' }}
       >
         <div className="text-center">
-          <div className="text-[11px] ds-body mb-1" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'Незакрита потреба' : 'Unmet need'}</div>
-          <div className="text-[22px] font-bold ds-display" style={{ color: '#ff7b6e' }}>62.2M</div>
-          <div className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'сесій/рік' : 'sessions/yr'}</div>
+          <div className="text-[10px] ds-body mb-1" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'Незакрита потреба' : 'Unmet need'}</div>
+          <div className="text-[20px] font-bold ds-display" style={{ color: '#ff7b6e' }}>62.2M</div>
+          <div className="text-[8px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'сесій/рік' : 'sessions/yr'}</div>
         </div>
-        <div className="text-[20px] font-bold ds-display" style={{ color: 'var(--color-ds-muted)' }}>÷</div>
+        <div className="text-[18px] font-bold ds-display" style={{ color: 'var(--color-ds-muted)' }}>÷</div>
         <div className="text-center">
-          <div className="text-[11px] ds-body mb-1" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'НСЗУ спеціалісти' : 'NHSU specialists'}</div>
-          <div className="text-[22px] font-bold ds-display" style={{ color: '#e8c97a' }}>4,000</div>
-          <div className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? '× 1,250 сес.' : '× 1,250 sessions'}</div>
+          <div className="text-[10px] ds-body mb-1" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'НСЗУ спеціалісти' : 'NHSU specialists'}</div>
+          <div className="text-[20px] font-bold ds-display" style={{ color: '#e8c97a' }}>4,000</div>
+          <div className="text-[8px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? '× 1,250 сес.' : '× 1,250 sessions'}</div>
         </div>
-        <div className="text-[20px] font-bold ds-display" style={{ color: 'var(--color-ds-muted)' }}>=</div>
+        <div className="text-[18px] font-bold ds-display" style={{ color: 'var(--color-ds-muted)' }}>=</div>
         <div className="text-center">
-          <div className="text-[11px] ds-body mb-1" style={{ color: '#00d4aa' }}>{lang === 'uk' ? 'Беклог' : 'Backlog'}</div>
-          <div className="text-[36px] font-bold ds-display" style={{ color: '#00d4aa', textShadow: '0 0 30px rgba(0,210,170,0.4)' }}>12.4</div>
-          <div className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'років' : 'years'}</div>
+          <div className="text-[10px] ds-body mb-1" style={{ color: '#00d4aa' }}>{lang === 'uk' ? 'Беклог' : 'Backlog'}</div>
+          <div className="text-[32px] font-bold ds-display" style={{ color: '#00d4aa', textShadow: '0 0 30px rgba(0,210,170,0.4)' }}>12.4</div>
+          <div className="text-[8px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'років' : 'years'}</div>
+        </div>
+        <div className="flex-1" />
+        {/* 2025 context */}
+        <div className="text-right">
+          <div className="text-[8px] cyber-label mb-1" style={{ color: 'var(--color-ds-gold)' }}>NHSU 2025</div>
+          <div className="text-[10px] ds-body" style={{ color: 'rgba(200,208,220,0.7)' }}>
+            260K {lang === 'uk' ? 'пацієнтів ПМД' : 'PMD patients'}<br />
+            ₴844 {lang === 'uk' ? 'капітаційна ставка/пац.' : 'capitation rate/pt.'}<br />
+            2,000+ {lang === 'uk' ? 'закладів Пакет 51' : 'facilities Package 51'}
+          </div>
         </div>
       </motion.div>
 
-      {/* Scenario bars */}
-      <div className="cyber-label" style={{ color: 'var(--color-ds-gold)' }}>
+      {/* ── Scenario bars ── */}
+      <div className="cyber-label flex-shrink-0" style={{ color: 'var(--color-ds-gold)' }}>
         {lang === 'uk' ? 'СЦЕНАРНИЙ АНАЛІЗ — СКІЛЬКИ РОКІВ ДО ЗАКРИТТЯ' : 'SCENARIO ANALYSIS — YEARS TO CLOSURE'}
       </div>
-      <div className="flex-1 flex flex-col gap-3 min-h-0">
+      <div className="flex-1 flex flex-col gap-2 min-h-0">
         {SCENARIOS.map((s, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.12 + 0.2 }}
-            className="flex items-center gap-4 p-3 rounded-xl"
+            className="flex items-center gap-4 p-3 rounded-xl flex-1"
             style={{ background: 'rgba(255,255,255,0.025)', border: `1px solid ${s.color}2a` }}
           >
-            <div className="w-32 flex-shrink-0">
-              <div className="text-[11px] ds-body leading-snug" style={{ color: 'rgba(200,208,220,0.85)' }}>{s.label[lang]}</div>
+            <div className="w-36 flex-shrink-0">
+              <div className="text-[10px] ds-body leading-snug" style={{ color: 'rgba(200,208,220,0.85)' }}>{s.label[lang]}</div>
             </div>
-            {/* Bar */}
             <div className="flex-1 h-6 rounded-lg overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)' }}>
               <motion.div
                 initial={{ width: 0 }}
@@ -118,18 +139,33 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => (
                 className="h-full rounded-lg flex items-center pl-2"
                 style={{ background: `linear-gradient(90deg, ${s.color}99, ${s.color}55)`, boxShadow: `0 0 12px ${s.color}44` }}
               >
-                <span className="text-[13px] font-bold ds-display" style={{ color: s.color }}>{s.years}</span>
+                <span className="text-[12px] font-bold ds-display" style={{ color: s.color }}>{s.years}</span>
                 <span className="text-[9px] ds-body ml-1" style={{ color: 'rgba(255,255,255,0.6)' }}>
                   {lang === 'uk' ? 'р.' : 'yrs'}
                 </span>
               </motion.div>
             </div>
-            <div className="w-48 flex-shrink-0 text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
+            <div className="w-44 flex-shrink-0 text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
               {s.note[lang]}
             </div>
           </motion.div>
         ))}
       </div>
+
+      {/* ── Conclusion ── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="flex-shrink-0 rounded-xl px-4 py-2.5"
+        style={{ background: 'rgba(0,210,170,0.06)', border: '1px solid rgba(0,210,170,0.18)' }}
+      >
+        <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.82)' }}>
+          {lang === 'uk'
+            ? 'Беклог — не вирок. Сценарій 3 (тіньовий сектор + FEEL Again) скорочує його до 2.1 р. без додаткових кадрів — лише за рахунок видимості 19K практиків у реєстрі та ліквідації 22% адміністративних втрат. Це відповідь на питання «що дасть FEEL Again завтра»: +45K сесій/місяць вивільненого клінічного часу.'
+            : 'The backlog is not a verdict. Scenario 3 (shadow sector + FEEL Again) reduces it to 2.1 yrs without additional staff — solely by making 19K shadow practitioners visible in the registry and eliminating 22% administrative waste. This answers the question "what will FEEL Again give tomorrow": +45K sessions/month of freed clinical time.'}
+        </p>
+      </motion.div>
     </div>
   </div>
 );

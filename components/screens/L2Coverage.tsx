@@ -27,11 +27,11 @@ const BARS = [
   },
   {
     label: { uk: 'НСЗУ ПМД (публічна система)', en: 'NHSU primary care (public system)' },
-    value: 180_000,
-    display: '180K',
+    value: 260_000,
+    display: '260K',
     color: '#e8c97a',
-    pct: 0.29,
-    note: { uk: 'Психологічні послуги НСЗУ 2024', en: 'NHSU psychological services 2024' },
+    pct: 0.42,
+    note: { uk: 'НСЗУ ПМД 2025 — пацієнти зі встановленим діагнозом', en: 'NHSU PMD 2025 — patients with established diagnosis' },
   },
   {
     label: { uk: 'Гуманітарний сектор (видимий)', en: 'Humanitarian sector (visible)' },
@@ -70,23 +70,37 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
     <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, #ff7b6e, #e8c97a 60%, transparent)', boxShadow: '0 0 14px rgba(255,123,110,0.4)' }} />
 
     {/* Header */}
-    <div className="flex items-center gap-4 px-6 pt-5 pb-3 flex-shrink-0">
-      <button onClick={nav.back} className="flex items-center gap-1.5 text-[11px] ds-display font-medium transition-colors" style={{ color: 'var(--color-ds-muted)' }}>
+    <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0">
+      <button
+        onClick={nav.back}
+        className="flex items-center gap-2 px-4 py-2 rounded-xl ds-display font-bold flex-shrink-0 transition-all"
+        style={{ background: 'rgba(200,164,92,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '12px' }}
+      >
         <ArrowLeft className="w-4 h-4" /> {T.back[lang]}
       </button>
-      <div className="w-px h-4" style={{ background: 'var(--color-ds-border)' }} />
       <div>
-        <div className="text-[18px] font-bold ds-display" style={{ color: '#ff7b6e' }}>{T.title[lang]}</div>
-        <div className="text-[11px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{T.subtitle[lang]}</div>
+        <div className="text-[17px] font-bold ds-display" style={{ color: '#ff7b6e' }}>{T.title[lang]}</div>
+        <div className="text-[10px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{T.subtitle[lang]}</div>
       </div>
       <div className="flex-1" />
-      <button onClick={() => nav.push('appendix')} className="text-[11px] ds-display font-medium flex items-center gap-1" style={{ color: 'var(--color-ds-teal)' }}>
-        {T.toAnalytical[lang]} <ChevronRight className="w-3.5 h-3.5" />
+      <button onClick={() => nav.push('l2-operational')} className="text-[11px] ds-display font-medium flex items-center gap-1" style={{ color: 'var(--color-ds-teal)' }}>
+        {lang === 'uk' ? '9 розривів →' : '9 gaps →'} <ChevronRight className="w-3.5 h-3.5" />
       </button>
     </div>
 
+    {/* Intro context */}
+    <div className="px-5 pb-2 flex-shrink-0">
+      <div className="rounded-xl px-4 py-2.5" style={{ background: 'rgba(255,123,110,0.06)', border: '1px solid rgba(255,123,110,0.18)' }}>
+        <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.82)' }}>
+          {lang === 'uk'
+            ? '0.28% — це не округлення. Ця цифра виходить із співвідношення фактичних доступних сесій до клінічно обґрунтованої потреби. Нижче — декомпозиція за кожним сектором і структурні причини, чому розрив не закривається при збільшенні фінансування без реформи архітектури.'
+            : '0.28% is not a rounding. This figure is derived from the ratio of actually available sessions to clinically justified need. Below is a decomposition by sector and the structural reasons why the gap does not close when funding increases without reforming the architecture.'}
+        </p>
+      </div>
+    </div>
+
     {/* Main content */}
-    <div className="flex-1 grid grid-cols-2 gap-5 px-6 pb-5 min-h-0">
+    <div className="flex-1 grid grid-cols-2 gap-4 px-5 pb-3 min-h-0">
       {/* Left: capacity bars */}
       <div className="flex flex-col gap-3">
         <div className="cyber-label mb-1" style={{ color: '#ff7b6e' }}>
@@ -139,21 +153,21 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
           </motion.div>
         ))}
 
-        {/* Insight box */}
+        {/* Conclusion + FEEL Again */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="mt-auto rounded-2xl p-5"
-          style={{ background: 'rgba(0,210,170,0.08)', border: '1px solid rgba(0,210,170,0.25)' }}
+          className="mt-auto rounded-xl p-4"
+          style={{ background: 'rgba(0,210,170,0.07)', border: '1px solid rgba(0,210,170,0.22)' }}
         >
-          <div className="cyber-label mb-2" style={{ color: '#00d4aa' }}>
-            {lang === 'uk' ? 'РІШЕННЯ FEEL AGAIN' : 'FEEL AGAIN SOLUTION'}
+          <div className="cyber-label mb-1.5" style={{ color: '#00d4aa', fontSize: '8px' }}>
+            {lang === 'uk' ? 'ВИСНОВОК + FEEL AGAIN' : 'CONCLUSION + FEEL AGAIN'}
           </div>
-          <p className="text-[12px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.8)' }}>
+          <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.82)' }}>
             {lang === 'uk'
-              ? 'Digital Bus з\'єднує CommCare / Kobo / ActivityInfo → ЄСОЗ через HL7 FHIR R4. Кожна гуманітарна сесія стає видимою для THRIVE DLI-вимірювання. Ціль: 400K верифікованих сесій у ЄСОЗ для disbursement.'
-              : 'Digital Bus connects CommCare / Kobo / ActivityInfo → ESOZ via HL7 FHIR R4. Every humanitarian session becomes visible for THRIVE DLI measurement. Target: 400K verified sessions in ESOZ for disbursement.'}
+              ? 'Розрив — архітектурний, не фінансовий. 260K НСЗУ-пацієнтів 2025 — це лише ті, хто пройшов через офіційну систему. Ще ~4.7M гуманітарних та ~3M тіньових сесій невидимі для будь-якого зведеного реєстру. FEEL Again Digital Bus (HL7 FHIR R4) → одна інтеграція між кожною системою та ЄСОЗ = усі сесії стають аудитними. Ціль: 400K верифікованих записів для THRIVE disbursement.'
+              : 'The gap is architectural, not financial. 260K NHSU patients 2025 are only those who passed through the official system. Another ~4.7M humanitarian and ~3M shadow sessions are invisible to any consolidated registry. FEEL Again Digital Bus (HL7 FHIR R4) → one integration between each system and ESOZ = all sessions become auditable. Target: 400K verified records for THRIVE disbursement.'}
           </p>
         </motion.div>
       </div>
