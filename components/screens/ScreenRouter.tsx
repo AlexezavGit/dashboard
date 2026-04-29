@@ -2,8 +2,8 @@ import React, { useState, useCallback } from 'react';
 import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
 import { L1Strategic } from './L1Strategic';
+import { L2Finance } from './L2Finance';
 import { L2Coverage } from './L2Coverage';
-import { L2Cost } from './L2Cost';
 import { L2Backlog } from './L2Backlog';
 import { L2Operational } from './L2Operational';
 import { L2Analytical } from './L2Analytical';
@@ -37,12 +37,12 @@ export const ScreenRouter: React.FC<Props> = ({ lang, liveHciValue, onAppendix }
   const nav: ScreenNav = { current, history, push, back, reset };
 
   const screens: Record<Exclude<ScreenId, 'appendix'>, React.ReactNode> = {
-    'l1': <L1Strategic lang={lang} nav={nav} liveHciValue={liveHciValue} />,
-    'l2-coverage': <L2Coverage lang={lang} nav={nav} />,
-    'l2-cost': <L2Cost lang={lang} nav={nav} />,
-    'l2-backlog': <L2Backlog lang={lang} nav={nav} />,
+    'l1':             <L1Strategic lang={lang} nav={nav} liveHciValue={liveHciValue} />,
+    'l2-finance':     <L2Finance lang={lang} nav={nav} />,
+    'l2-coverage':    <L2Coverage lang={lang} nav={nav} />,
+    'l2-backlog':     <L2Backlog lang={lang} nav={nav} />,
     'l2-operational': <L2Operational lang={lang} nav={nav} />,
-    'l2-analytical': <L2Analytical lang={lang} nav={nav} />,
+    'l2-analytical':  <L2Analytical lang={lang} nav={nav} />,
   };
 
   if (current === 'appendix') return null;
