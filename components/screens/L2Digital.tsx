@@ -108,6 +108,8 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
                   <Tooltip
                     formatter={(_v: number, _n: string, p: { payload: { displayValue: string; calc: string } }) => [p.payload.displayValue, p.payload.calc]}
                     contentStyle={{ background: '#1a2035', border: '1px solid rgba(255,153,102,0.3)', borderRadius: 8, fontSize: 10 }}
+                    labelStyle={{ color: '#ff9966' }}
+                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
                   />
                   <ReferenceLine
                     y={1}

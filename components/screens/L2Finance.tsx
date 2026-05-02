@@ -293,7 +293,8 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
-        className="flex-shrink-0 flex gap-3"
+        className="flex gap-3 min-h-0 overflow-hidden"
+        style={{ maxHeight: '160px' }}
       >
         {/* Budget inversion */}
         <BudgetSplit lang={lang} />

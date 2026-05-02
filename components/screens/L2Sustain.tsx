@@ -110,6 +110,8 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                   />
                   <Tooltip
                     contentStyle={{ background: '#1a2035', border: '1px solid rgba(167,139,250,0.3)', borderRadius: 8, fontSize: 11 }}
+                    labelStyle={{ color: '#a78bfa' }}
+                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
                     formatter={(v: number, name: string) => [v.toLocaleString(), name]}
                   />
                   <Bar dataKey="awareness" name={t('Awareness', 'Awareness', lang)} stackId="a" fill="#60a5fa" />
@@ -157,6 +159,8 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                   <YAxis hide />
                   <Tooltip
                     contentStyle={{ background: '#1a2035', border: '1px solid rgba(167,139,250,0.3)', borderRadius: 8, fontSize: 11 }}
+                    labelStyle={{ color: '#a78bfa' }}
+                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
                   />
                   <Bar dataKey="Ukraine" name="Ukraine" fill="#a78bfa" radius={[3, 3, 0, 0]} />
                   <Bar dataKey="EU" name="EU" fill="rgba(167,139,250,0.35)" radius={[3, 3, 0, 0]} />
@@ -198,6 +202,8 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                   <YAxis hide domain={[25, 45]} />
                   <Tooltip
                     contentStyle={{ background: '#1a2035', border: '1px solid rgba(167,139,250,0.3)', borderRadius: 8, fontSize: 11 }}
+                    labelStyle={{ color: '#a78bfa' }}
+                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
                   />
                   <Area type="monotone" dataKey="psych" name={t('Психіатри', 'Psychiatrists', lang)}
                     stroke="#a78bfa" strokeWidth={2} fill="url(#gradPsych2)" dot={{ fill: '#a78bfa', r: 3 }} />

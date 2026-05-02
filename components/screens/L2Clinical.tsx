@@ -82,6 +82,7 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
                     formatter={(v: number) => [`${v}%`, t('Поширеність', 'Prevalence', lang)]}
                     contentStyle={{ background: '#1a2035', border: '1px solid rgba(255,123,110,0.3)', borderRadius: 8, fontSize: 11 }}
                     labelStyle={{ color: '#ff7b6e' }}
+                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
                   />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                     {prevData.map((d, i) => (
@@ -94,15 +95,18 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 min-h-0 overflow-hidden">
 
           {/* Drop-off line chart */}
           <div className="rounded-2xl p-4 flex-shrink-0"
             style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
-            <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
+            <div className="text-[10px] font-mono uppercase tracking-wider mb-1" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Відсів по протоколу (% що продовжують)', 'Protocol drop-off (% continuing)', lang)}
             </div>
-            <div style={{ height: 110 }}>
+            <div className="text-[10px] font-mono mb-2" style={{ color: 'var(--color-ds-muted)' }}>
+              {t('Розрахунок: НСЗУ Пакет 51 ПМД 2024–2025 · mhGAP IG v3 episode ≥6 сесій', 'Calc: NHSU Package 51 PHC 2024–2025 · mhGAP IG v3 episode ≥6 sessions', lang)}
+            </div>
+            <div style={{ height: 100 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={dropData} margin={{ left: 0, right: 48, top: 8, bottom: 4 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -111,12 +115,14 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
                   <Tooltip
                     formatter={(v: number) => [`${v}%`, t('Фактично', 'Actual', lang)]}
                     contentStyle={{ background: '#1a2035', border: '1px solid rgba(255,123,110,0.3)', borderRadius: 8, fontSize: 11 }}
+                    labelStyle={{ color: '#ff7b6e' }}
+                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
                   />
                   <ReferenceLine
                     y={80}
                     stroke="rgba(200,164,92,0.55)"
                     strokeDasharray="4 2"
-                    label={{ value: t('Ціль 80%', 'Target 80%', lang), position: 'right', fill: 'var(--color-ds-gold)', fontSize: 9 }}
+                    label={{ value: t('Ціль 80%', 'Target 80%', lang), position: 'right', fill: 'var(--color-ds-gold)', fontSize: 10 }}
                   />
                   <Line
                     type="monotone"
@@ -132,7 +138,7 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
           </div>
 
           {/* Systemic drivers */}
-          <div className="rounded-2xl p-4"
+          <div className="rounded-2xl p-4 flex-shrink-0"
             style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Системні драйвери відсіву', 'Systemic drop-off drivers', lang)}
