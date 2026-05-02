@@ -44,8 +44,8 @@ const SYSTEMS = [
     color: '#ff7b6e',
   },
   {
-    name: { uk: 'Тіньовий сектор', en: 'Shadow sector' },
-    owner: { uk: 'Неформальний', en: 'Informal' },
+    name: { uk: 'Невидимий у звітності', en: 'Invisible in reporting' },
+    owner: { uk: 'Приватний / позасистемний', en: 'Private / off-system' },
     sessions: '~3M',
     visibility: 3,
     esoz: 0,
@@ -67,7 +67,7 @@ const SYSTEMS = [
 const LEGEND = [
   { color: '#00d4aa', label: { uk: 'Відкрита / гуманітарна', en: 'Open / humanitarian' } },
   { color: '#ff7b6e', label: { uk: 'Закрита / державна', en: 'Closed / government' } },
-  { color: '#a78bfa', label: { uk: 'Невидима / тіньова', en: 'Invisible / shadow' } },
+  { color: '#a78bfa', label: { uk: 'Невидима у звітності', en: 'Invisible in reporting' } },
   { color: '#e8c97a', label: { uk: 'FEEL Again (з\'єднує всіх)', en: 'FEEL Again (connects all)' } },
 ];
 
