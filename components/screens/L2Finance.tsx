@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
+import { BUDGET_SPLIT_DATA, DONOR_DATA } from '../../constants';
 
 interface Props { lang: Language; nav: ScreenNav; }
 
@@ -78,6 +79,70 @@ const WB_PROGRAMS = [
   { name: 'HEAL P180245', total: '$500M', disbursed: '$171M', pct: 34, note: { uk: 'Закриття 23.12.2026', en: 'Closing 23.12.2026' }, color: '#e8c97a' },
   { name: 'THRIVE P505616', total: '$454M', disbursed: '~$320M', pct: 70, note: { uk: 'DLI-тригер = НСЗУ-запис', en: 'DLI trigger = NHSU record' }, color: '#00d4aa' },
 ];
+
+const BudgetSplit: React.FC<{ lang: Language }> = ({ lang }) => {
+  const data = BUDGET_SPLIT_DATA(lang);
+  return (
+    <div className="flex-1 rounded-xl p-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,123,110,0.2)' }}>
+      <div className="ds-display font-bold mb-2" style={{ fontSize: '9px', color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        {lang === 'uk' ? 'Бюджет МЗ — структурна інверсія (МОЗ 2025)' : 'MH budget — structural inversion (MoH 2025)'}
+      </div>
+      <div className="space-y-1.5">
+        {data.map((d) => (
+          <div key={d.name}>
+            <div className="flex justify-between mb-0.5">
+              <span className="ds-body" style={{ fontSize: '9px', color: 'var(--color-ds-muted)' }}>{d.name}</span>
+              <span className="ds-display font-bold" style={{ fontSize: '10px', color: d.fill }}>{d.value}%</span>
+            </div>
+            <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${d.value}%` }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                className="h-full rounded-full"
+                style={{ background: d.fill }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-1.5 ds-body" style={{ fontSize: '8px', color: '#ff7b6e' }}>
+        {lang === 'uk' ? '↑ 5× стаціонар vs реальна клінічна потреба 11%' : '↑ 5× inpatient vs actual clinical need 11%'}
+      </div>
+    </div>
+  );
+};
+
+const DonorBar: React.FC<{ lang: Language }> = ({ lang }) => {
+  const data = DONOR_DATA(lang);
+  const max = Math.max(...data.map(d => d.value));
+  return (
+    <div className="flex-1 rounded-xl p-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(200,164,92,0.2)' }}>
+      <div className="ds-display font-bold mb-2" style={{ fontSize: '9px', color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+        {lang === 'uk' ? 'Донорський портфель (млн USD)' : 'Donor portfolio (M USD)'}
+      </div>
+      <div className="space-y-1.5">
+        {data.map((d) => (
+          <div key={d.name}>
+            <div className="flex justify-between mb-0.5">
+              <span className="ds-body" style={{ fontSize: '9px', color: 'var(--color-ds-muted)' }}>{d.name}</span>
+              <span className="ds-display font-bold" style={{ fontSize: '10px', color: d.fill }}>${d.value}M</span>
+            </div>
+            <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${(d.value / max) * 100}%` }}
+                transition={{ delay: 0.85, duration: 0.6 }}
+                className="h-full rounded-full"
+                style={{ background: d.fill }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
   <div
@@ -223,48 +288,46 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
         </div>
       </div>
 
-      {/* ── WB programme status ── */}
+      {/* ── Bottom: budget structure + WB status ── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
         className="flex-shrink-0 flex gap-3"
       >
-        {WB_PROGRAMS.map((p) => (
-          <div
-            key={p.name}
-            className="flex-1 rounded-xl px-4 py-3 flex items-center gap-4"
-            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.color}33` }}
-          >
-            <div>
-              <div className="ds-display font-bold" style={{ fontSize: '11px', color: p.color }}>{p.name}</div>
-              <div className="ds-body" style={{ fontSize: '9px', color: 'var(--color-ds-muted)', marginTop: '2px' }}>
-                {p.total} {lang === 'uk' ? 'загалом' : 'total'}
+        {/* Budget inversion */}
+        <BudgetSplit lang={lang} />
+
+        {/* Donor structure */}
+        <DonorBar lang={lang} />
+
+        {/* WB programme pills */}
+        <div className="flex flex-col gap-2 flex-shrink-0">
+          {WB_PROGRAMS.map((p) => (
+            <div key={p.name} className="flex-1 rounded-xl px-3 py-2 flex items-center gap-3"
+              style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.color}33` }}>
+              <div>
+                <div className="ds-display font-bold" style={{ fontSize: '10px', color: p.color }}>{p.name}</div>
+                <div className="ds-body" style={{ fontSize: '8px', color: 'var(--color-ds-muted)' }}>{p.total}</div>
+              </div>
+              <div style={{ width: 70 }}>
+                <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.07)' }}>
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${p.pct}%` }}
+                    transition={{ delay: 0.7, duration: 0.8 }}
+                    className="h-full rounded-full"
+                    style={{ background: p.color }}
+                  />
+                </div>
+              </div>
+              <div className="ds-display font-bold" style={{ fontSize: '13px', color: p.color }}>{p.pct}%</div>
+              <div className="ds-body" style={{ fontSize: '8px', color: 'var(--color-ds-muted)', maxWidth: '80px' }}>
+                {p.note[lang]}
               </div>
             </div>
-            <div className="flex-1">
-              <div className="flex justify-between mb-1">
-                <span className="ds-body" style={{ fontSize: '9px', color: 'var(--color-ds-muted)' }}>
-                  {lang === 'uk' ? 'Disbursed' : 'Disbursed'}
-                </span>
-                <span className="ds-display font-bold" style={{ fontSize: '11px', color: p.color }}>{p.disbursed}</span>
-              </div>
-              <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.07)' }}>
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${p.pct}%` }}
-                  transition={{ delay: 0.7, duration: 0.8 }}
-                  className="h-full rounded-full"
-                  style={{ background: p.color }}
-                />
-              </div>
-            </div>
-            <div className="ds-display font-bold" style={{ fontSize: '14px', color: p.color }}>{p.pct}%</div>
-            <div className="ds-body" style={{ fontSize: '8px', color: 'var(--color-ds-muted)', maxWidth: '100px' }}>
-              {p.note[lang]}
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </motion.div>
     </div>
   </div>
