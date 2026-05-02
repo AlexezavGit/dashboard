@@ -58,11 +58,11 @@ const LAYERS: LayerDef[] = [
   },
   {
     id: 'sustain', screenId: 'l2-sustain', weight: 15, current: 35, target: 70,
-    layer: { uk: 'Sustainable Dev', en: 'Sustainable Dev' },
-    indicator: { uk: 'Конверсія навчання', en: 'Training conversion' },
+    layer: { uk: 'Місткість', en: 'Capacity' },
+    indicator: { uk: 'Конверсія навчання → практика', en: 'Training → practice conversion' },
     display: { uk: '~35%', en: '~35%' },
-    unit: { uk: 'mhGAP-сертифік. активних 12 міс.', en: 'mhGAP-certified active at 12 mo.' },
-    formula: { uk: '~10K активних / ~25K сертифік. · ціль ≥70%', en: '~10K active / ~25K certified · target ≥70%' },
+    unit: { uk: '57K awareness → 700 клін · «зникла середина»', en: '57K awareness → 700 clinical · "missing middle"' },
+    formula: { uk: '4,427 НСЗУ / потенціал 49K+ · ціль ≥70%', en: '4,427 NHSU / potential 49K+ · target ≥70%' },
     color: '#a78bfa', glow: 'rgba(167,139,250,0.22)', cardBg: 'rgba(167,139,250,0.07)',
   },
   {
@@ -118,7 +118,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => (
       style={{ background: 'linear-gradient(90deg, transparent 0%, #00d4aa 30%, #2ec4b6 60%, rgba(200,164,92,0.7) 100%)', boxShadow: '0 0 20px rgba(0,212,170,0.55)' }} />
 
     {/* ── Header ── */}
-    <div className="flex items-center justify-between px-6 pt-4 pb-3 flex-shrink-0">
+    <div className="flex items-center justify-between pl-6 pr-32 pt-4 pb-3 flex-shrink-0">
       <div className="flex items-center gap-3">
         <img src="/logo.svg" alt="FEEL Again" className="w-9 h-9 rounded-lg flex-shrink-0" />
         <div>
