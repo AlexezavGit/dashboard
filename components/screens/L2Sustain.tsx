@@ -52,7 +52,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
           <div className="flex gap-2 flex-shrink-0">
             <div className="flex-1 rounded-2xl p-3"
               style={{ background: 'rgba(167,139,250,0.07)', border: '1px solid rgba(167,139,250,0.3)' }}>
-              <div className="text-[9px] font-mono uppercase tracking-wider mb-0.5" style={{ color: '#a78bfa' }}>
+              <div className="text-[10px] font-mono uppercase tracking-wider mb-0.5" style={{ color: '#a78bfa' }}>
                 {t('Awareness-рівень', 'Awareness-level', lang)}
               </div>
               <div className="ds-display font-black leading-none" style={{ fontSize: '36px', color: '#a78bfa', textShadow: '0 0 24px rgba(167,139,250,0.5)' }}>
@@ -67,12 +67,12 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
               <div className="px-3 py-2 rounded-xl"
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(249,115,22,0.4)' }}>
                 <div className="text-[15px] font-black ds-display leading-none" style={{ color: '#f97316' }}>800</div>
-                <div className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{t('психосоціальний', 'psychosocial', lang)}</div>
+                <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{t('психосоціальний', 'psychosocial', lang)}</div>
               </div>
               <div className="px-3 py-2 rounded-xl"
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(167,139,250,0.5)' }}>
                 <div className="text-[15px] font-black ds-display leading-none" style={{ color: '#a78bfa' }}>700</div>
-                <div className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{t('клінічний', 'clinical', lang)}</div>
+                <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{t('клінічний', 'clinical', lang)}</div>
               </div>
             </div>
           </div>
@@ -92,7 +92,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
               ].map((l) => (
                 <div key={l.label} className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-sm" style={{ background: l.color }} />
-                  <span className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{l.label}</span>
+                  <span className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{l.label}</span>
                 </div>
               ))}
             </div>
@@ -172,7 +172,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
               ].map((l) => (
                 <div key={l.label} className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-sm" style={{ background: l.color }} />
-                  <span className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{l.label}</span>
+                  <span className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{l.label}</span>
                 </div>
               ))}
             </div>
@@ -204,7 +204,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-            <div className="text-[9px] font-mono mt-1" style={{ color: '#ff7b6e' }}>
+            <div className="text-[10px] font-mono mt-1" style={{ color: '#ff7b6e' }}>
               {t('↓ 40.0K → 30.9K psychiatrists (−23% with 01.2022)', '↓ 40.0K → 30.9K psychiatrists (−23% since 01.2022)', lang)}
             </div>
           </div>
@@ -232,7 +232,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
               ))}
             </div>
             <div className="mt-3 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
-              <div className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
+              <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
                 {t(`Джерело: UNICEF 2023 · UNESCO MHPSS · NaUKMA · ВООЗ mhGAP 2023 · НСЗУ портал ${NSZU_SNAPSHOT.asOf}`, `Source: UNICEF 2023 · UNESCO MHPSS · NaUKMA · WHO mhGAP 2023 · NHSU portal ${NSZU_SNAPSHOT.asOf}`, lang)}
               </div>
             </div>

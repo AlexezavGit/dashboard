@@ -177,6 +177,11 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
             ? '~4.7M гуманітарних сесій невидимі для ЄСОЗ → не рахуються для THRIVE DLI → не тригерять disbursement. FEEL Again Digital Bus = один інтеграційний шар між кожною системою та ЄСОЗ через HL7 FHIR R4 · 10K req/sec · <200ms p95.'
             : '~4.7M humanitarian sessions invisible to ESOZ → not counted for THRIVE DLIs → do not trigger disbursement. FEEL Again Digital Bus = one integration layer between each system and ESOZ via HL7 FHIR R4 · 10K req/sec · <200ms p95.'}
         </p>
+        <div className="text-[10px] font-mono mt-2 pt-2" style={{ borderTop: '1px solid rgba(232,201,122,0.2)', color: 'var(--color-ds-muted)' }}>
+          {lang === 'uk'
+            ? 'Джерело: НСЗУ відкриті дані 10.04.2026 · CommCare/ActivityInfo 2025 агрегат · ЄСОЗ звіт ВООЗ · OCHA FTS 2025'
+            : 'Source: NHSU open data 10.04.2026 · CommCare/ActivityInfo 2025 aggregate · ESOZ WHO report · OCHA FTS 2025'}
+        </div>
       </motion.div>
     </div>
   </div>

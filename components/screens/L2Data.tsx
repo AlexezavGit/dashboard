@@ -95,7 +95,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
                   style={{ background: `${c.color}0d`, border: `1px solid ${c.color}33` }}>
                   <div>
                     <div className="text-[10px] font-mono" style={{ color: c.color }}>{c.source}</div>
-                    <div className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{c.period} · {c.methodology}</div>
+                    <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{c.period} · {c.methodology}</div>
                   </div>
                   <div className="text-[22px] font-black ds-display" style={{ color: c.color }}>{c.roi}</div>
                 </div>
@@ -113,19 +113,19 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
               {gdpLoss && (
                 <div className="flex-1 p-3 rounded-xl" style={{ background: 'rgba(200,164,92,0.08)', border: '1px solid rgba(200,164,92,0.2)' }}>
                   <div className="text-[20px] font-black ds-display" style={{ color: 'var(--color-ds-gold)' }}>{gdpLoss.value.replace(',000,000,000', 'B').replace('$6,000,000,000', '$6B')}</div>
-                  <div className="text-[9px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{gdpLoss.source} · {gdpLoss.period}</div>
-                  <div className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{gdpLoss.name}</div>
+                  <div className="text-[10px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{gdpLoss.source} · {gdpLoss.period}</div>
+                  <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{gdpLoss.name}</div>
                 </div>
               )}
               {gdpWar && (
                 <div className="flex-1 p-3 rounded-xl" style={{ background: 'rgba(200,164,92,0.08)', border: '1px solid rgba(200,164,92,0.2)' }}>
                   <div className="text-[20px] font-black ds-display" style={{ color: 'var(--color-ds-gold)' }}>{gdpWar.value}</div>
-                  <div className="text-[9px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{gdpWar.source} · {gdpWar.period}</div>
-                  <div className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{gdpWar.units}</div>
+                  <div className="text-[10px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{gdpWar.source} · {gdpWar.period}</div>
+                  <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{gdpWar.units}</div>
                 </div>
               )}
             </div>
-            <div className="mt-2 text-[9px] font-mono" style={{ color: '#ff7b6e' }}>
+            <div className="mt-2 text-[10px] font-mono" style={{ color: '#ff7b6e' }}>
               {t('⟶ €2.5–4.1B ринковий потенціал невидимий без даних → $954M HEAL/THRIVE заблоковано', '⟶ €2.5–4.1B market potential invisible without data → $954M HEAL/THRIVE locked', lang)}
             </div>
           </div>
@@ -153,7 +153,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
               ))}
             </div>
             <div className="mt-3 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
-              <div className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
+              <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
                 {t('Джерело: World Bank 2016 · UNICEF CBA 2023 · WHO GNI · LSE/FHI 360 2023', 'Source: World Bank 2016 · UNICEF CBA 2023 · WHO GNI · LSE/FHI 360 2023', lang)}
               </div>
             </div>

@@ -84,14 +84,14 @@ const BudgetSplit: React.FC<{ lang: Language }> = ({ lang }) => {
   const data = BUDGET_SPLIT_DATA(lang);
   return (
     <div className="flex-1 rounded-xl p-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,123,110,0.2)' }}>
-      <div className="ds-display font-bold mb-2" style={{ fontSize: '9px', color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+      <div className="ds-display font-bold mb-2" style={{ fontSize: '10px', color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
         {lang === 'uk' ? 'Бюджет МЗ — структурна інверсія (МОЗ 2025)' : 'MH budget — structural inversion (MoH 2025)'}
       </div>
       <div className="space-y-1.5">
         {data.map((d) => (
           <div key={d.name}>
             <div className="flex justify-between mb-0.5">
-              <span className="ds-body" style={{ fontSize: '9px', color: 'var(--color-ds-muted)' }}>{d.name}</span>
+              <span className="ds-body" style={{ fontSize: '10px', color: 'var(--color-ds-muted)' }}>{d.name}</span>
               <span className="ds-display font-bold" style={{ fontSize: '10px', color: d.fill }}>{d.value}%</span>
             </div>
             <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
@@ -106,7 +106,7 @@ const BudgetSplit: React.FC<{ lang: Language }> = ({ lang }) => {
           </div>
         ))}
       </div>
-      <div className="mt-1.5 ds-body" style={{ fontSize: '8px', color: '#ff7b6e' }}>
+      <div className="mt-1.5 ds-body" style={{ fontSize: '10px', color: '#ff7b6e' }}>
         {lang === 'uk' ? '↑ 5× стаціонар vs реальна клінічна потреба 11%' : '↑ 5× inpatient vs actual clinical need 11%'}
       </div>
     </div>
@@ -118,14 +118,14 @@ const DonorBar: React.FC<{ lang: Language }> = ({ lang }) => {
   const max = Math.max(...data.map(d => d.value));
   return (
     <div className="flex-1 rounded-xl p-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(200,164,92,0.2)' }}>
-      <div className="ds-display font-bold mb-2" style={{ fontSize: '9px', color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+      <div className="ds-display font-bold mb-2" style={{ fontSize: '10px', color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
         {lang === 'uk' ? 'Донорський портфель (млн USD)' : 'Donor portfolio (M USD)'}
       </div>
       <div className="space-y-1.5">
         {data.map((d) => (
           <div key={d.name}>
             <div className="flex justify-between mb-0.5">
-              <span className="ds-body" style={{ fontSize: '9px', color: 'var(--color-ds-muted)' }}>{d.name}</span>
+              <span className="ds-body" style={{ fontSize: '10px', color: 'var(--color-ds-muted)' }}>{d.name}</span>
               <span className="ds-display font-bold" style={{ fontSize: '10px', color: d.fill }}>${d.value}M</span>
             </div>
             <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
@@ -214,7 +214,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
                     boxShadow: node.id === 'result' ? '0 0 24px rgba(255,123,110,0.15)' : 'none',
                   }}
                 >
-                  <div className="cyber-label mb-1" style={{ color: node.color, fontSize: '8px' }}>{node.label[lang]}</div>
+                  <div className="cyber-label mb-1" style={{ color: node.color, fontSize: '10px' }}>{node.label[lang]}</div>
                   <div className="ds-display font-bold" style={{
                     fontSize: node.id === 'result' ? 'clamp(20px, 2.5vw, 30px)' : 'clamp(14px, 1.8vw, 20px)',
                     color: node.color,
@@ -222,7 +222,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
                   }}>
                     {node.amount}
                   </div>
-                  <div className="ds-body mt-1" style={{ fontSize: '8px', color: 'var(--color-ds-muted)', lineHeight: 1.3 }}>
+                  <div className="ds-body mt-1" style={{ fontSize: '10px', color: 'var(--color-ds-muted)', lineHeight: 1.3 }}>
                     {node.sub[lang]}
                   </div>
                 </motion.div>
@@ -233,7 +233,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
                     {breakAfter ? (
                       <div className="flex flex-col items-center gap-0.5">
                         <AlertTriangle className="w-4 h-4" style={{ color: '#ff7b6e' }} />
-                        <div style={{ fontSize: '7px', color: '#ff7b6e', fontWeight: 700 }} className="ds-display">
+                        <div style={{ fontSize: '10px', color: '#ff7b6e', fontWeight: 700 }} className="ds-display">
                           {breakAfter.label[lang]}
                         </div>
                       </div>
@@ -276,10 +276,10 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
                 {b.desc[lang]}
               </p>
               <div className="mt-3 pt-2" style={{ borderTop: '1px solid rgba(0,212,170,0.18)' }}>
-                <div className="cyber-label mb-1" style={{ color: '#00d4aa', fontSize: '7px' }}>
+                <div className="cyber-label mb-1" style={{ color: '#00d4aa', fontSize: '10px' }}>
                   {lang === 'uk' ? 'FEEL AGAIN FIX' : 'FEEL AGAIN FIX'}
                 </div>
-                <p className="ds-body" style={{ fontSize: '9px', lineHeight: 1.4, color: 'rgba(0,212,170,0.85)' }}>
+                <p className="ds-body" style={{ fontSize: '10px', lineHeight: 1.4, color: 'rgba(0,212,170,0.85)' }}>
                   {b.fix[lang]}
                 </p>
               </div>
@@ -308,7 +308,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
               style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.color}33` }}>
               <div>
                 <div className="ds-display font-bold" style={{ fontSize: '10px', color: p.color }}>{p.name}</div>
-                <div className="ds-body" style={{ fontSize: '8px', color: 'var(--color-ds-muted)' }}>{p.total}</div>
+                <div className="ds-body" style={{ fontSize: '10px', color: 'var(--color-ds-muted)' }}>{p.total}</div>
               </div>
               <div style={{ width: 70 }}>
                 <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.07)' }}>
@@ -322,11 +322,18 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
                 </div>
               </div>
               <div className="ds-display font-bold" style={{ fontSize: '13px', color: p.color }}>{p.pct}%</div>
-              <div className="ds-body" style={{ fontSize: '8px', color: 'var(--color-ds-muted)', maxWidth: '80px' }}>
+              <div className="ds-body" style={{ fontSize: '10px', color: 'var(--color-ds-muted)', maxWidth: '80px' }}>
                 {p.note[lang]}
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Source footer */}
+        <div className="text-[10px] font-mono mt-1" style={{ color: 'var(--color-ds-muted)' }}>
+          {lang === 'uk'
+            ? 'Джерело: OCHA FTS 2025 · WB HEAL P180245 / THRIVE P505616 · МОЗ бюджетна звітність 2024 · НСЗУ тарифи 2025'
+            : 'Source: OCHA FTS 2025 · WB HEAL P180245 / THRIVE P505616 · MoH budget report 2024 · NHSU tariffs 2025'}
         </div>
       </motion.div>
     </div>

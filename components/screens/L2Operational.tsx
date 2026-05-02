@@ -156,7 +156,7 @@ const FlipCard: React.FC<{
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
           <span style={{ fontSize: '15px' }}>{gap.icon}</span>
-          <span className="cyber-label" style={{ color: gap.color, fontSize: '8px' }}>{gap.label[lang]}</span>
+          <span className="cyber-label" style={{ color: gap.color, fontSize: '10px' }}>{gap.label[lang]}</span>
         </div>
         <div className="ds-display font-bold" style={{
           fontSize: 'clamp(16px, 2.2vw, 26px)',
@@ -166,14 +166,14 @@ const FlipCard: React.FC<{
         }}>
           {gap.val}
         </div>
-        <div style={{ fontSize: '8px', color: 'var(--color-ds-muted)', marginTop: '3px', marginBottom: '6px' }}
+        <div style={{ fontSize: '10px', color: 'var(--color-ds-muted)', marginTop: '3px', marginBottom: '6px' }}
           className="ds-body">
           {gap.valLabel[lang]}
         </div>
-        <p className="ds-body" style={{ fontSize: '9px', lineHeight: 1.4, color: 'rgba(200,208,220,0.72)', marginTop: 'auto' }}>
+        <p className="ds-body" style={{ fontSize: '10px', lineHeight: 1.4, color: 'rgba(200,208,220,0.72)', marginTop: 'auto' }}>
           {gap.oneliner[lang]}
         </p>
-        <div style={{ fontSize: '8px', color: `${gap.color}55`, marginTop: '5px' }}>↩ flip</div>
+        <div style={{ fontSize: '10px', color: `${gap.color}55`, marginTop: '5px' }}>↩ flip</div>
       </div>
 
       {/* ── BACK ── */}
@@ -190,27 +190,27 @@ const FlipCard: React.FC<{
         overflow: 'hidden',
       }}>
         <div>
-          <div className="cyber-label" style={{ color: gap.color, fontSize: '7px' }}>SOURCE</div>
-          <p className="ds-body" style={{ fontSize: '8px', marginTop: '2px', color: 'rgba(200,208,220,0.85)' }}>
+          <div className="cyber-label" style={{ color: gap.color, fontSize: '10px' }}>SOURCE</div>
+          <p className="ds-body" style={{ fontSize: '10px', marginTop: '2px', color: 'rgba(200,208,220,0.85)' }}>
             {gap.source[lang]}
           </p>
         </div>
         <div>
-          <div className="cyber-label" style={{ color: gap.color, fontSize: '7px' }}>
+          <div className="cyber-label" style={{ color: gap.color, fontSize: '10px' }}>
             {lang === 'uk' ? 'МЕТОДОЛОГІЯ' : 'METHODOLOGY'}
           </div>
-          <p className="ds-body" style={{ fontSize: '8px', marginTop: '2px', lineHeight: 1.4, color: 'rgba(200,208,220,0.85)' }}>
+          <p className="ds-body" style={{ fontSize: '10px', marginTop: '2px', lineHeight: 1.4, color: 'rgba(200,208,220,0.85)' }}>
             {gap.calc[lang]}
           </p>
         </div>
         <div style={{ marginTop: 'auto' }}>
-          <div className="cyber-label" style={{ color: gap.color, fontSize: '7px' }}>
+          <div className="cyber-label" style={{ color: gap.color, fontSize: '10px' }}>
             {lang === 'uk' ? 'ВПЛИВАЄ НА' : 'CHAINS TO'}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px', marginTop: '3px' }}>
             {gap.chainsTo.map(id => (
               <span key={id} className="ds-display font-semibold" style={{
-                fontSize: '8px', padding: '1px 5px', borderRadius: '4px',
+                fontSize: '10px', padding: '1px 5px', borderRadius: '4px',
                 background: `${gap.color}18`, color: gap.color, border: `1px solid ${gap.color}30`,
               }}>
                 → {labelOf(id)}
@@ -218,7 +218,7 @@ const FlipCard: React.FC<{
             ))}
           </div>
         </div>
-        <div style={{ fontSize: '8px', color: `${gap.color}55` }}>↩ flip back</div>
+        <div style={{ fontSize: '10px', color: `${gap.color}55` }}>↩ flip back</div>
       </div>
     </div>
   </div>
@@ -289,7 +289,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
           >
             {/* Cluster label */}
             <div className="flex items-center gap-2 mb-1.5 flex-shrink-0">
-              <span className="cyber-label" style={{ color: CLUSTER_META[cluster].color, fontSize: '8px' }}>
+              <span className="cyber-label" style={{ color: CLUSTER_META[cluster].color, fontSize: '10px' }}>
                 {CLUSTER_META[cluster][lang]}
               </span>
               <div className="flex-1 h-px" style={{ background: `${CLUSTER_META[cluster].color}28` }} />
@@ -317,7 +317,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
         className="flex-shrink-0 px-5 py-2 flex items-start gap-3 flex-wrap"
         style={{ borderTop: '1px solid var(--color-ds-border)', background: 'rgba(0,0,0,0.2)' }}
       >
-        <div style={{ fontSize: '9px' }} className="ds-body">
+        <div style={{ fontSize: '10px' }} className="ds-body">
           <span style={{ color: '#a78bfa', fontWeight: 700 }}>
             {lang === 'uk' ? '+ Розрив №10 (2025): ' : '+ Gap #10 (2025): '}
           </span>
@@ -333,11 +333,16 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
           {(['data', 'capacity', 'accountability'] as Cluster[]).map(c => (
             <div key={c} className="flex items-center gap-1">
               <div style={{ width: 7, height: 7, borderRadius: '50%', background: CLUSTER_META[c].color }} />
-              <span style={{ fontSize: '8px', color: 'var(--color-ds-muted)' }} className="ds-body">
+              <span style={{ fontSize: '10px', color: 'var(--color-ds-muted)' }} className="ds-body">
                 {CLUSTER_META[c][lang].replace('CLUSTER: ', '').replace('КЛАСТЕР: ', '')}
               </span>
             </div>
           ))}
+        </div>
+        <div className="w-full text-[10px] font-mono mt-1" style={{ color: 'var(--color-ds-muted)' }}>
+          {lang === 'uk'
+            ? 'Джерело: FEEL Again польові інтерв\'ю 2024 · НСЗУ відкриті дані · OCHA Ukraine · WB THRIVE DLI-матриця · Grand Bargain 2016'
+            : 'Source: FEEL Again field interviews 2024 · NHSU open data · OCHA Ukraine · WB THRIVE DLI matrix · Grand Bargain 2016'}
         </div>
       </div>
     </div>

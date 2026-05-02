@@ -129,7 +129,7 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
                 style={{ background: b.color, boxShadow: `0 0 8px ${b.color}88` }}
               />
             </div>
-            <div className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{b.note[lang]}</div>
+            <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{b.note[lang]}</div>
           </motion.div>
         ))}
       </div>
@@ -161,7 +161,7 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
           className="mt-auto rounded-xl p-4"
           style={{ background: 'rgba(0,210,170,0.07)', border: '1px solid rgba(0,210,170,0.22)' }}
         >
-          <div className="cyber-label mb-1.5" style={{ color: '#00d4aa', fontSize: '8px' }}>
+          <div className="cyber-label mb-1.5" style={{ color: '#00d4aa', fontSize: '10px' }}>
             {lang === 'uk' ? 'ВИСНОВОК + FEEL AGAIN' : 'CONCLUSION + FEEL AGAIN'}
           </div>
           <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.82)' }}>
@@ -169,6 +169,11 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
               ? 'Розрив — архітектурний, не фінансовий. 260K НСЗУ-пацієнтів 2025 — це лише ті, хто пройшов через офіційну систему. Ще ~4.7M гуманітарних та ~3M тіньових сесій невидимі для будь-якого зведеного реєстру. FEEL Again Digital Bus (HL7 FHIR R4) → одна інтеграція між кожною системою та ЄСОЗ = усі сесії стають аудитними. Ціль: 400K верифікованих записів для THRIVE disbursement.'
               : 'The gap is architectural, not financial. 260K NHSU patients 2025 are only those who passed through the official system. Another ~4.7M humanitarian and ~3M shadow sessions are invisible to any consolidated registry. FEEL Again Digital Bus (HL7 FHIR R4) → one integration between each system and ESOZ = all sessions become auditable. Target: 400K verified records for THRIVE disbursement.'}
           </p>
+          <div className="text-[10px] font-mono mt-2 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)', color: 'var(--color-ds-muted)' }}>
+            {lang === 'uk'
+              ? 'Джерело: НСЗУ відкриті дані 10.04.2026 · CommCare/ActivityInfo/Kobo агрегат · Lancet 2024 (3.9M PTSD/dep. оцінка) · ВООЗ 16 сес. норма'
+              : 'Source: NHSU open data 10.04.2026 · CommCare/ActivityInfo/Kobo aggregate · Lancet 2024 (3.9M PTSD/dep. estimate) · WHO 16 sessions norm'}
+          </div>
         </motion.div>
       </div>
     </div>

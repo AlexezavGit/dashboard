@@ -157,9 +157,9 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => (
           />
           <div className="relative px-3 py-2 rounded-xl flex flex-col items-center"
             style={{ background: 'rgba(0,0,0,0.4)', border: `1px solid ${BAND_COLOR[currentBand]}55` }}>
-            <div className="text-[9px] font-mono uppercase tracking-wider" style={{ color: 'var(--color-ds-muted)' }}>MHEI</div>
+            <div className="text-[10px] font-mono uppercase tracking-wider" style={{ color: 'var(--color-ds-muted)' }}>MHEI</div>
             <div className="text-[20px] font-black ds-display leading-none" style={{ color: BAND_COLOR[currentBand] }}>{MHEI}</div>
-            <div className="text-[7px] font-mono" style={{ color: BAND_COLOR[currentBand] }}>
+            <div className="text-[9px] font-mono" style={{ color: BAND_COLOR[currentBand] }}>
               {lang === 'uk' ? 'Криза' : 'Crisis'}
             </div>
           </div>
@@ -182,7 +182,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => (
           {/* Layer label + weight */}
           <div className="flex items-center justify-between mb-2">
             <span className="cyber-label" style={{ color: l.color }}>{l.layer[lang]}</span>
-            <span className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>w {l.weight}%</span>
+            <span className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>w {l.weight}%</span>
           </div>
 
           {/* Indicator name */}

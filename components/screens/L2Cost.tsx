@@ -168,6 +168,11 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
               ? 'Інвестиція $1.87B/рік поверне $7.5–11.2B через відновлення продуктивності. FEEL Again знижує транзакційні витрати до 3.5–7% — робить кожен долар ефективнішим.'
               : 'A $1.87B/yr investment returns $7.5–11.2B through restored productivity. FEEL Again reduces transaction costs to 3.5–7% — making every dollar more effective.'}
           </p>
+          <div className="text-[10px] font-mono mt-2 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)', color: 'var(--color-ds-muted)' }}>
+            {lang === 'uk'
+              ? 'Джерело: OCHA FTS 2025 · World Bank 2016 ROI $1→$4 · UNICEF CBA 2023 · WHO GNI-adj. · LSE/FHI 360 2023'
+              : 'Source: OCHA FTS 2025 · World Bank 2016 ROI $1→$4 · UNICEF CBA 2023 · WHO GNI-adj. · LSE/FHI 360 2023'}
+          </div>
         </motion.div>
       </div>
     </div>

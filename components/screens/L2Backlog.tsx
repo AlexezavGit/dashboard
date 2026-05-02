@@ -88,24 +88,24 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => (
         <div className="text-center">
           <div className="text-[10px] ds-body mb-1" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'Незакрита потреба' : 'Unmet need'}</div>
           <div className="text-[20px] font-bold ds-display" style={{ color: '#ff7b6e' }}>62.2M</div>
-          <div className="text-[8px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'сесій/рік' : 'sessions/yr'}</div>
+          <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'сесій/рік' : 'sessions/yr'}</div>
         </div>
         <div className="text-[18px] font-bold ds-display" style={{ color: 'var(--color-ds-muted)' }}>÷</div>
         <div className="text-center">
           <div className="text-[10px] ds-body mb-1" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'НСЗУ спеціалісти' : 'NHSU specialists'}</div>
           <div className="text-[20px] font-bold ds-display" style={{ color: '#e8c97a' }}>4,000</div>
-          <div className="text-[8px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? '× 1,250 сес.' : '× 1,250 sessions'}</div>
+          <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? '× 1,250 сес.' : '× 1,250 sessions'}</div>
         </div>
         <div className="text-[18px] font-bold ds-display" style={{ color: 'var(--color-ds-muted)' }}>=</div>
         <div className="text-center">
           <div className="text-[10px] ds-body mb-1" style={{ color: '#00d4aa' }}>{lang === 'uk' ? 'Беклог' : 'Backlog'}</div>
           <div className="text-[32px] font-bold ds-display" style={{ color: '#00d4aa', textShadow: '0 0 30px rgba(0,210,170,0.4)' }}>12.4</div>
-          <div className="text-[8px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'років' : 'years'}</div>
+          <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'років' : 'years'}</div>
         </div>
         <div className="flex-1" />
         {/* 2025 context */}
         <div className="text-right">
-          <div className="text-[8px] cyber-label mb-1" style={{ color: 'var(--color-ds-gold)' }}>NHSU 2025</div>
+          <div className="text-[10px] cyber-label mb-1" style={{ color: 'var(--color-ds-gold)' }}>NHSU 2025</div>
           <div className="text-[10px] ds-body" style={{ color: 'rgba(200,208,220,0.7)' }}>
             260K {lang === 'uk' ? 'пацієнтів ПМД' : 'PMD patients'}<br />
             ₴844 {lang === 'uk' ? 'капітаційна ставка/пац.' : 'capitation rate/pt.'}<br />
@@ -140,12 +140,12 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => (
                 style={{ background: `linear-gradient(90deg, ${s.color}99, ${s.color}55)`, boxShadow: `0 0 12px ${s.color}44` }}
               >
                 <span className="text-[12px] font-bold ds-display" style={{ color: s.color }}>{s.years}</span>
-                <span className="text-[9px] ds-body ml-1" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                <span className="text-[10px] ds-body ml-1" style={{ color: 'rgba(255,255,255,0.6)' }}>
                   {lang === 'uk' ? 'р.' : 'yrs'}
                 </span>
               </motion.div>
             </div>
-            <div className="w-44 flex-shrink-0 text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
+            <div className="w-44 flex-shrink-0 text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
               {s.note[lang]}
             </div>
           </motion.div>
@@ -165,6 +165,11 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => (
             ? 'Беклог — не вирок. Сценарій 3 (тіньовий сектор + FEEL Again) скорочує його до 2.1 р. без додаткових кадрів — лише за рахунок видимості 19K практиків у реєстрі та ліквідації 22% адміністративних втрат. Це відповідь на питання «що дасть FEEL Again завтра»: +45K сесій/місяць вивільненого клінічного часу.'
             : 'The backlog is not a verdict. Scenario 3 (shadow sector + FEEL Again) reduces it to 2.1 yrs without additional staff — solely by making 19K shadow practitioners visible in the registry and eliminating 22% administrative waste. This answers the question "what will FEEL Again give tomorrow": +45K sessions/month of freed clinical time.'}
         </p>
+        <div className="text-[10px] font-mono mt-2 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)', color: 'var(--color-ds-muted)' }}>
+          {lang === 'uk'
+            ? 'Джерело: НСЗУ відкриті дані 10.04.2026 · ВООЗ mhGAP IG v3 · FEEL Again польові інтерв\'ю 2024 · Lancet 2024 (6.8M оцінка потреби)'
+            : 'Source: NHSU open data 10.04.2026 · WHO mhGAP IG v3 · FEEL Again field interviews 2024 · Lancet 2024 (6.8M need estimate)'}
+        </div>
       </motion.div>
     </div>
   </div>

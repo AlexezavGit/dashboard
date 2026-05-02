@@ -127,8 +127,8 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
               {structData.map((d) => (
                 <div key={d.displayValue} className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-sm" style={{ background: d.fill }} />
-                  <span className="text-[9px] font-bold ds-display" style={{ color: d.fill }}>{d.displayValue}</span>
-                  <span className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{d.name}</span>
+                  <span className="text-[10px] font-bold ds-display" style={{ color: d.fill }}>{d.displayValue}</span>
+                  <span className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{d.name}</span>
                 </div>
               ))}
             </div>
@@ -149,7 +149,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
                 <div key={m.val} className="p-2.5 rounded-xl"
                   style={{ background: 'rgba(255,153,102,0.07)', border: '1px solid rgba(255,153,102,0.2)' }}>
                   <div className="text-[18px] font-black ds-display" style={{ color: '#ff9966' }}>{m.val}</div>
-                  <div className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{m.label[lang]}</div>
+                  <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{m.label[lang]}</div>
                 </div>
               ))}
             </div>
@@ -177,7 +177,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
               ))}
             </div>
             <div className="mt-3 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
-              <div className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
+              <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
                 {t('Джерело: FEEL Again польові інтерв\'ю 2024 · NHSU специфікація звітності', 'Source: FEEL Again field interviews 2024 · NHSU reporting spec', lang)}
               </div>
             </div>

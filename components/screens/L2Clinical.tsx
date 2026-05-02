@@ -173,7 +173,7 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
               ))}
             </div>
             <div className="mt-3 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
-              <div className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
+              <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
                 {t('Джерело: NHSU open data 2025 · Lancet 2024 · mhGAP IG v3', 'Source: NHSU open data 2025 · Lancet 2024 · mhGAP IG v3', lang)}
               </div>
             </div>
