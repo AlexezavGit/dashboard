@@ -1,83 +1,262 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
+import { BUDGET_SPLIT_DATA, DONOR_DATA } from '../../constants';
 
 interface Props { lang: Language; nav: ScreenNav; }
 
-// Five nodes in the money chain
+type BreakItem = {
+  between: [number, number];
+  label: { uk: string; en: string };
+  title: { uk: string; en: string };
+  desc: { uk: string; en: string };
+  fix: { uk: string; en: string };
+};
+
+// 4-node path: Allocation → Provider → Session → Result
 const CHAIN_NODES = [
-  {
-    id: 'donor',
-    label: { uk: 'Донор', en: 'Donor' },
-    amount: '$1.87B',
-    sub: { uk: 'OCHA FTS 2025 · humanitarian + WB', en: 'OCHA FTS 2025 · humanitarian + WB' },
-    color: '#e8c97a',
-  },
   {
     id: 'alloc',
     label: { uk: 'Алокація', en: 'Allocation' },
     amount: '~$420M',
-    sub: { uk: 'MHPSS-специфічні програми', en: 'MHPSS-specific programmes' },
+    sub: { uk: 'OCHA FTS MHPSS-теговані · WB HEAL P180245 + THRIVE P505616', en: 'OCHA FTS MHPSS-tagged · WB HEAL P180245 + THRIVE P505616' },
     color: '#e8c97a',
   },
   {
     id: 'provider',
     label: { uk: 'Провайдер', en: 'Provider' },
     amount: '4,000+',
-    sub: { uk: 'контрагентів НСЗУ + НУО', en: 'NHSU contractors + NGOs' },
+    sub: { uk: 'НСЗУ реєстр MHPSS провайдерів 2025', en: 'NHSU MHPSS provider registry 2025' },
     color: '#e8c97a',
   },
   {
     id: 'session',
     label: { uk: 'Сесія', en: 'Session' },
     amount: '~7M/рік',
-    sub: { uk: 'задокументованих (оцінка)', en: 'documented sessions (estimate)' },
+    sub: { uk: 'CommCare 2.1M + ActivityInfo 1.8M + ЄСОЗ 260K + оцінка', en: 'CommCare 2.1M + ActivityInfo 1.8M + ESOZ 260K + estimate' },
     color: '#e8c97a',
   },
   {
     id: 'result',
-    label: { uk: 'Результат', en: 'Result' },
+    label: { uk: 'До МОЗ / українців', en: 'To MoH / Ukrainians' },
     amount: '$0',
-    sub: { uk: 'верифікованих outcome-виплат', en: 'verified outcome-based payments' },
+    sub: { uk: 'надходжень від Світ. банку на розвиток клін. псих. допомоги', en: 'from World Bank for clinical psychology development' },
     color: '#ff7b6e',
   },
 ];
 
-// Three break points between nodes (between indices 1-2, 2-3, 3-4)
-const BREAKS = [
+// Breaks between 4 nodes: [0,1], [1,2], [2,3]
+const BREAKS: BreakItem[] = [
   {
-    between: [1, 2] as [number, number],
-    label:   { uk: 'Розрив A', en: 'Break A' },
-    title:   { uk: 'Алокація ↛ Провайдер', en: 'Allocation ↛ Provider' },
-    desc:    { uk: 'Гуманітарні гранти НУО не прив\'язані до ЄСОЗ-записів. Провайдери отримують кошти за активність (inputs), а не за підтверджені послуги. Немає єдиного ідентифікатора, що з\'єднує транзакцію з клінічним записом.', en: 'Humanitarian NGO grants are not linked to ESOZ records. Providers receive funding for activity inputs, not verified services. No shared identifier connects the financial transaction to the clinical record.' },
-    fix:     { uk: 'FEEL Again: кожна сесія у ЄСОЗ генерує верифікований токен → автоматичний disbursement-тригер', en: 'FEEL Again: every ESOZ session generates a verified token → automatic disbursement trigger' },
-    color: '#ff7b6e',
+    between: [0, 1],
+    label: { uk: 'Розєднання A', en: 'Disconnect A' },
+    title: { uk: 'Алокація ↛ Провайдер', en: 'Allocation ↛ Provider' },
+    desc: { uk: 'Гуманітарні гранти НУО не прив\'язані до ЄСОЗ-записів. Провайдери отримують кошти за активність (inputs), а не за підтверджені послуги. Немає єдиного ідентифікатора, що з\'єднує транзакцію з клінічним записом.', en: 'Humanitarian NGO grants are not linked to ESOZ records. Providers receive funding for activity inputs, not verified services. No shared identifier connects the financial transaction to the clinical record.' },
+    fix: { uk: 'FEEL Again: кожна сесія у ЄСОЗ генерує верифікований токен → автоматичний disbursement-тригер', en: 'FEEL Again: every ESOZ session generates a verified token → automatic disbursement trigger' },
   },
   {
-    between: [2, 3] as [number, number],
-    label:   { uk: 'Розрив B', en: 'Break B' },
-    title:   { uk: 'Провайдер ↛ Верифікація', en: 'Provider ↛ Verification' },
-    desc:    { uk: '260K НСЗУ-пацієнтів (2025) мають записи, але гуманітарні 4.7M сесій лишаються поза ЄСОЗ. Ручна верифікація MSF/WHO охоплює <5% потоку. Приватні клініки (303 Пакет 51): 1 НСЗУ-сесія → власний прайс → повна невидимість.', en: '260K NHSU patients (2025) have records, but humanitarian 4.7M sessions remain outside ESOZ. Manual MSF/WHO verification covers <5% of flow. Private clinics (303 Package 51): 1 NHSU session → own pricing → complete invisibility.' },
-    fix:     { uk: 'FEEL Again: HL7-FHIR міст CommCare/Kobo ↔ ЄСОЗ → усі 7M+ сесій стають аудитними', en: 'FEEL Again: HL7-FHIR bridge CommCare/Kobo ↔ ESOZ → all 7M+ sessions become auditable' },
-    color: '#ff7b6e',
+    between: [1, 2],
+    label: { uk: 'Розєднання B', en: 'Disconnect B' },
+    title: { uk: 'Провайдер ↛ Верифікація', en: 'Provider ↛ Verification' },
+    desc: { uk: '260K НСЗУ-пацієнтів (2025) мають записи, але гуманітарні 4.7M сесій лишаються поза ЄСОЗ. Ручна верифікація MSF/WHO охоплює <5% потоку. Приватні клініки (303 Пакет 51): 1 НСЗУ-сесія → власний прайс → повна невидимість.', en: '260K NHSU patients (2025) have records, but humanitarian 4.7M sessions remain outside ESOZ. Manual MSF/WHO verification covers <5% of flow. Private clinics (303 Package 51): 1 NHSU session → own pricing → complete invisibility.' },
+    fix: { uk: 'FEEL Again: HL7-FHIR міст CommCare/Kobo ↔ ЄСОЗ → усі 7M+ сесій стають аудитними', en: 'FEEL Again: HL7-FHIR bridge CommCare/Kobo ↔ ESOZ → all 7M+ sessions become auditable' },
   },
   {
-    between: [3, 4] as [number, number],
-    label:   { uk: 'Розрив C', en: 'Break C' },
-    title:   { uk: 'Сесія ↛ Disbursement', en: 'Session ↛ Disbursement' },
-    desc:    { uk: 'WB THRIVE P505616 (PforR $454M): DLI-тригер = запис НСЗУ. Без верифікованих outcome-метрик (PCL-5, PHQ-9, GAD-7) наступний disbursement транш заблокований. Поточний стан: ~$320M disbursed (70%), решта ~$134M потребує outcome-звітності.', en: 'WB THRIVE P505616 (PforR $454M): DLI trigger = NHSU record. Without verified outcome metrics (PCL-5, PHQ-9, GAD-7) the next disbursement tranche is blocked. Current: ~$320M disbursed (70%), remaining ~$134M requires outcome reporting.' },
-    fix:     { uk: 'FEEL Again: автоматичний PHQ-9/PCL-5 follow-up → DLI-звіт без ручної агрегації', en: 'FEEL Again: automated PHQ-9/PCL-5 follow-up → DLI report without manual aggregation' },
-    color: '#ff7b6e',
+    between: [2, 3],
+    label: { uk: 'Розєднання C', en: 'Disconnect C' },
+    title: { uk: 'Сесія ↛ Disbursement', en: 'Session ↛ Disbursement' },
+    desc: { uk: 'WB THRIVE P505616 (PforR $454M): DLI-тригер = запис НСЗУ. Без верифікованих outcome-метрик (PCL-5, PHQ-9, GAD-7) наступний disbursement транш заблокований. Поточний стан: ~$320M disbursed (70%), решта ~$134M потребує outcome-звітності.', en: 'WB THRIVE P505616 (PforR $454M): DLI trigger = NHSU record. Without verified outcome metrics (PCL-5, PHQ-9, GAD-7) the next disbursement tranche is blocked. Current: ~$320M disbursed (70%), remaining ~$134M requires outcome reporting.' },
+    fix: { uk: 'FEEL Again: автоматичний PHQ-9/PCL-5 follow-up → DLI-звіт без ручної агрегації', en: 'FEEL Again: automated PHQ-9/PCL-5 follow-up → DLI report without manual aggregation' },
   },
 ];
 
-// WB programme context
 const WB_PROGRAMS = [
-  { name: 'HEAL P180245', total: '$500M', disbursed: '$171M', pct: 34, note: { uk: 'Закриття 23.12.2026', en: 'Closing 23.12.2026' }, color: '#e8c97a' },
-  { name: 'THRIVE P505616', total: '$454M', disbursed: '~$320M', pct: 70, note: { uk: 'DLI-тригер = НСЗУ-запис', en: 'DLI trigger = NHSU record' }, color: '#00d4aa' },
+  { name: 'HEAL P180245', total: '$500M', disbursed: '$171M', pct: 34, color: '#e8c97a' },
+  { name: 'THRIVE P505616', total: '$454M', disbursed: '~$320M', pct: 70, color: '#00d4aa' },
 ];
+
+const FlipCard: React.FC<{ b: BreakItem; lang: Language; index: number }> = ({ b, lang, index }) => {
+  const [flipped, setFlipped] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 + index * 0.1 }}
+      style={{ perspective: '1200px', cursor: 'pointer', height: '100%' }}
+      onClick={() => setFlipped(f => !f)}
+    >
+      <motion.div
+        animate={{ rotateY: flipped ? 180 : 0 }}
+        transition={{ duration: 0.45, ease: 'easeInOut' }}
+        style={{ transformStyle: 'preserve-3d', position: 'relative', height: '100%', width: '100%' }}
+      >
+        {/* Front */}
+        <div style={{
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+          position: 'absolute',
+          inset: 0,
+          borderRadius: 12,
+          background: 'rgba(255,123,110,0.05)',
+          border: '1px solid rgba(255,123,110,0.25)',
+          padding: 16,
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+            <AlertTriangle style={{ width: 14, height: 14, flexShrink: 0, color: '#ff7b6e' }} />
+            <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12, color: '#ff7b6e', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              {b.label[lang]}
+            </span>
+          </div>
+          <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 16, color: 'var(--color-ds-text)', lineHeight: 1.3 }}>
+            {b.title[lang]}
+          </div>
+          <div style={{ flex: 1 }} />
+          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'rgba(200,208,220,0.35)', textAlign: 'center' }}>
+            {lang === 'uk' ? '↕ натисніть для деталей' : '↕ click for details'}
+          </div>
+        </div>
+
+        {/* Back */}
+        <div style={{
+          backfaceVisibility: 'hidden',
+          WebkitBackfaceVisibility: 'hidden',
+          transform: 'rotateY(180deg)',
+          position: 'absolute',
+          inset: 0,
+          borderRadius: 12,
+          background: 'rgba(255,123,110,0.08)',
+          border: '1px solid rgba(255,123,110,0.4)',
+          padding: 14,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+          overflow: 'hidden',
+        }}>
+          <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: '#ff7b6e', flexShrink: 0 }}>
+            {b.title[lang]}
+          </div>
+          <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 11, lineHeight: 1.5, color: 'rgba(200,208,220,0.85)', flex: 1, margin: 0, overflow: 'hidden' }}>
+            {b.desc[lang]}
+          </p>
+          <div style={{ borderTop: '1px solid rgba(0,212,170,0.2)', paddingTop: 8, flexShrink: 0 }}>
+            <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 9, fontWeight: 700, color: '#00d4aa', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
+              FEEL AGAIN FIX
+            </div>
+            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 11, lineHeight: 1.4, color: 'rgba(0,212,170,0.85)', margin: 0 }}>
+              {b.fix[lang]}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const DonorChart: React.FC<{ lang: Language }> = ({ lang }) => {
+  const data = DONOR_DATA(lang);
+  const max = Math.max(...data.map(d => d.value));
+  return (
+    <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(200,164,92,0.2)' }}>
+      <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
+        {lang === 'uk' ? 'Донорський портфель (млн USD)' : 'Donor portfolio (M USD)'}
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 10 }}>
+        {data.map((d) => (
+          <div key={d.name}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, color: 'var(--color-ds-muted)' }}>{d.name}</span>
+              <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: d.fill }}>${d.value}M</span>
+            </div>
+            <div style={{ height: 9, borderRadius: 999, background: 'rgba(255,255,255,0.06)' }}>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${(d.value / max) * 100}%` }}
+                transition={{ delay: 0.85, duration: 0.6 }}
+                style={{ height: '100%', borderRadius: 999, background: d.fill }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 8 }}>
+        {lang === 'uk' ? 'Джерело: OCHA FTS 2025' : 'Source: OCHA FTS 2025'}
+      </div>
+    </div>
+  );
+};
+
+const BudgetChart: React.FC<{ lang: Language }> = ({ lang }) => {
+  const data = BUDGET_SPLIT_DATA(lang);
+  return (
+    <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,123,110,0.2)' }}>
+      <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
+        {lang === 'uk' ? 'Бюджет МЗ — структурна інверсія (2025)' : 'MH budget — structural inversion (2025)'}
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 10 }}>
+        {data.map((d) => (
+          <div key={d.name}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, color: 'var(--color-ds-muted)' }}>{d.name}</span>
+              <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: d.fill }}>{d.value}%</span>
+            </div>
+            <div style={{ height: 9, borderRadius: 999, background: 'rgba(255,255,255,0.06)' }}>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${d.value}%` }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                style={{ height: '100%', borderRadius: 999, background: d.fill }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: '#ff7b6e', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 8, marginBottom: 8 }}>
+        {lang === 'uk' ? '↑ 5× стаціонар vs реальна потреба 11%' : '↑ 5× inpatient vs actual need 11%'}
+      </div>
+      <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)' }}>
+        {lang === 'uk' ? 'Джерело: МОЗ бюджет 2024' : 'Source: MoH budget 2024'}
+      </div>
+    </div>
+  );
+};
+
+const OutcomesChart: React.FC<{ lang: Language }> = ({ lang }) => {
+  return (
+    <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(200,164,92,0.2)' }}>
+      <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
+        {lang === 'uk' ? 'Міжнародна допомога в обмін на результат' : 'Intl. aid in exchange for results'}
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 10 }}>
+        {WB_PROGRAMS.map((p) => (
+          <div key={p.name}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, color: 'var(--color-ds-muted)' }}>{p.name}</span>
+              <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: p.color }}>{p.pct}%</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <div style={{ flex: 1, height: 9, borderRadius: 999, background: 'rgba(255,255,255,0.06)' }}>
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${p.pct}%` }}
+                  transition={{ delay: 0.7, duration: 0.8 }}
+                  style={{ height: '100%', borderRadius: 999, background: p.color }}
+                />
+              </div>
+              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)', minWidth: 60 }}>{p.total}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 8 }}>
+        {lang === 'uk' ? 'Джерело: WB HEAL P180245 / THRIVE P505616' : 'Source: WB HEAL P180245 / THRIVE P505616'}
+      </div>
+    </div>
+  );
+};
 
 export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
   <div
@@ -94,7 +273,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
       boxShadow: '0 0 14px rgba(200,164,92,0.45)',
     }} />
 
-    {/* ── Header ── */}
+    {/* Header */}
     <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0">
       <button
         onClick={nav.back}
@@ -111,33 +290,32 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
       </button>
       <div>
         <div className="text-[17px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>
-          {lang === 'uk' ? 'Як влаштований грошовий потік?' : 'How is the money flow structured?'}
+          {lang === 'uk' ? 'Куди ресурси ідуть і куди вони не доходять' : "Where resources go and where they don't reach"}
         </div>
-        <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
+        <div className="text-[11px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
           {lang === 'uk'
-            ? '$1.87B у системі — де саме ланцюг розривається і чому результат $0 верифікованих виплат'
-            : '$1.87B in the system — exactly where the chain breaks and why the result is $0 verified payments'}
+            ? '$1.87B у системі — 3 розєднання, чому $0 надходить МОЗ від Світового банку українцям'
+            : '$1.87B in the system — 3 disconnects, why $0 reaches MoH from World Bank for Ukrainians'}
         </div>
       </div>
     </div>
 
-    <div className="flex-1 flex flex-col gap-3 px-5 pb-3 min-h-0">
+    <div className="flex-1 flex flex-col gap-4 px-5 pb-4 min-h-0">
 
-      {/* ── Money chain ── */}
+      {/* Resource path chain — 4 nodes */}
       <motion.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex-shrink-0"
       >
-        <div className="cyber-label mb-2" style={{ color: 'var(--color-ds-gold)' }}>
-          {lang === 'uk' ? 'ЛАНЦЮГ ФІНАНСУВАННЯ — 5 ЛАНОК' : 'FUNDING CHAIN — 5 LINKS'}
+        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: 'var(--color-ds-gold)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 3 }}>
+          {lang === 'uk' ? 'ШЛЯХ РЕСУРСІВ — 4 ЛАНКИ' : 'RESOURCE PATH — 4 LINKS'}
         </div>
         <div className="flex items-stretch gap-0">
           {CHAIN_NODES.map((node, i) => {
             const breakAfter = BREAKS.find(b => b.between[0] === i);
             return (
               <React.Fragment key={node.id}>
-                {/* Node */}
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -149,7 +327,9 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
                     boxShadow: node.id === 'result' ? '0 0 24px rgba(255,123,110,0.15)' : 'none',
                   }}
                 >
-                  <div className="cyber-label mb-1" style={{ color: node.color, fontSize: '8px' }}>{node.label[lang]}</div>
+                  <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10, color: node.color, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+                    {node.label[lang]}
+                  </div>
                   <div className="ds-display font-bold" style={{
                     fontSize: node.id === 'result' ? 'clamp(20px, 2.5vw, 30px)' : 'clamp(14px, 1.8vw, 20px)',
                     color: node.color,
@@ -157,18 +337,17 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
                   }}>
                     {node.amount}
                   </div>
-                  <div className="ds-body mt-1" style={{ fontSize: '8px', color: 'var(--color-ds-muted)', lineHeight: 1.3 }}>
+                  <div className="ds-body mt-1" style={{ fontSize: '10px', color: 'var(--color-ds-muted)', lineHeight: 1.4 }}>
                     {node.sub[lang]}
                   </div>
                 </motion.div>
 
-                {/* Arrow or break indicator */}
                 {i < CHAIN_NODES.length - 1 && (
                   <div className="flex items-center flex-shrink-0 px-1" style={{ minWidth: '28px' }}>
                     {breakAfter ? (
                       <div className="flex flex-col items-center gap-0.5">
                         <AlertTriangle className="w-4 h-4" style={{ color: '#ff7b6e' }} />
-                        <div style={{ fontSize: '7px', color: '#ff7b6e', fontWeight: 700 }} className="ds-display">
+                        <div style={{ fontSize: '10px', color: '#ff7b6e', fontWeight: 700 }} className="ds-display">
                           {breakAfter.label[lang]}
                         </div>
                       </div>
@@ -183,88 +362,31 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => (
         </div>
       </motion.div>
 
-      {/* ── Three break points ── */}
-      <div className="flex-1 flex flex-col gap-2 min-h-0">
-        <div className="cyber-label flex-shrink-0" style={{ color: '#ff7b6e' }}>
-          {lang === 'uk' ? 'ТРИ ТОЧКИ РОЗРИВУ' : 'THREE BREAK POINTS'}
+      {/* Flip cards — break points */}
+      <div className="flex flex-col gap-2 min-h-0 flex-1" style={{ minHeight: 140 }}>
+        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: '#ff7b6e', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          {lang === 'uk' ? 'ТОЧКИ РОЗЄДНАННЯ' : 'DISCONNECT POINTS'}
         </div>
-        <div className="flex-1 grid grid-cols-3 gap-3 min-h-0">
+        <div
+          className="flex-1 grid grid-cols-3 gap-4 min-h-0"
+          style={{ gridTemplateRows: '1fr' }}
+        >
           {BREAKS.map((b, i) => (
-            <motion.div
-              key={b.label.en}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + i * 0.1 }}
-              className="rounded-xl p-4 flex flex-col"
-              style={{
-                background: 'rgba(255,123,110,0.05)',
-                border: '1px solid rgba(255,123,110,0.25)',
-              }}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#ff7b6e' }} />
-                <span className="ds-display font-bold" style={{ fontSize: '12px', color: '#ff7b6e' }}>
-                  {b.title[lang]}
-                </span>
-              </div>
-              <p className="ds-body flex-1" style={{ fontSize: '10px', lineHeight: 1.5, color: 'rgba(200,208,220,0.80)' }}>
-                {b.desc[lang]}
-              </p>
-              <div className="mt-3 pt-2" style={{ borderTop: '1px solid rgba(0,212,170,0.18)' }}>
-                <div className="cyber-label mb-1" style={{ color: '#00d4aa', fontSize: '7px' }}>
-                  {lang === 'uk' ? 'FEEL AGAIN FIX' : 'FEEL AGAIN FIX'}
-                </div>
-                <p className="ds-body" style={{ fontSize: '9px', lineHeight: 1.4, color: 'rgba(0,212,170,0.85)' }}>
-                  {b.fix[lang]}
-                </p>
-              </div>
-            </motion.div>
+            <FlipCard key={b.label.en} b={b} lang={lang} index={i} />
           ))}
         </div>
       </div>
 
-      {/* ── WB programme status ── */}
+      {/* Bottom: 3 equal-width charts */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
-        className="flex-shrink-0 flex gap-3"
+        className="flex-shrink-0 flex gap-4"
       >
-        {WB_PROGRAMS.map((p) => (
-          <div
-            key={p.name}
-            className="flex-1 rounded-xl px-4 py-3 flex items-center gap-4"
-            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.color}33` }}
-          >
-            <div>
-              <div className="ds-display font-bold" style={{ fontSize: '11px', color: p.color }}>{p.name}</div>
-              <div className="ds-body" style={{ fontSize: '9px', color: 'var(--color-ds-muted)', marginTop: '2px' }}>
-                {p.total} {lang === 'uk' ? 'загалом' : 'total'}
-              </div>
-            </div>
-            <div className="flex-1">
-              <div className="flex justify-between mb-1">
-                <span className="ds-body" style={{ fontSize: '9px', color: 'var(--color-ds-muted)' }}>
-                  {lang === 'uk' ? 'Disbursed' : 'Disbursed'}
-                </span>
-                <span className="ds-display font-bold" style={{ fontSize: '11px', color: p.color }}>{p.disbursed}</span>
-              </div>
-              <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.07)' }}>
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${p.pct}%` }}
-                  transition={{ delay: 0.7, duration: 0.8 }}
-                  className="h-full rounded-full"
-                  style={{ background: p.color }}
-                />
-              </div>
-            </div>
-            <div className="ds-display font-bold" style={{ fontSize: '14px', color: p.color }}>{p.pct}%</div>
-            <div className="ds-body" style={{ fontSize: '8px', color: 'var(--color-ds-muted)', maxWidth: '100px' }}>
-              {p.note[lang]}
-            </div>
-          </div>
-        ))}
+        <DonorChart lang={lang} />
+        <BudgetChart lang={lang} />
+        <OutcomesChart lang={lang} />
       </motion.div>
     </div>
   </div>
