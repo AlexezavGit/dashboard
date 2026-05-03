@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, AlertTriangle, Link2, Zap } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Zap } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
 import { BUDGET_SPLIT_DATA, DONOR_DATA } from '../../constants';
@@ -151,7 +151,7 @@ const StateBudgetChart: React.FC<{ lang: Language }> = ({ lang }) => {
   return (
     <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,123,110,0.2)' }}>
       <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12, color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
-        {lang === 'uk' ? 'Держбюджет МОЗ + Ветерани' : 'State Budget MoH + Veterans'}
+        {lang === 'uk' ? 'Держбюджет + Ветерани' : 'State Budget + Veterans'}
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 8 }}>
         {data.map((d) => (
@@ -257,6 +257,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
   const [b3Flipped, setB3Flipped] = useState(false);
   // phase 'locked' → 'revealing' (auto-flip back after 2.5s) → 'solved'
   const [b4Phase, setB4Phase] = useState<'locked' | 'revealing' | 'solved'>('locked');
+  const [topicsOpen, setTopicsOpen] = useState(false);
 
   useEffect(() => {
     if (b4Phase === 'revealing') {
@@ -265,9 +266,17 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
     }
   }, [b4Phase]);
 
-  // Pipe states
-  const pipe12: FlowState = b1Flipped ? 'flowing' : 'dead';
-  const pipe23: FlowState = 'flowing'; // always alive — services are already happening
+  // Block 4 auto-flips when Block 3 (Digital Bus) is flipped — wave travel delay
+  useEffect(() => {
+    if (b3Flipped && b4Phase === 'locked') {
+      const t = setTimeout(() => setB4Phase('revealing'), 1800);
+      return () => clearTimeout(t);
+    }
+  }, [b3Flipped, b4Phase]);
+
+  // Pipe states — pipe12 blocked (red) by default, flows when B1 flipped
+  const pipe12: FlowState = b1Flipped ? 'flowing' : 'blocked';
+  const pipe23: FlowState = 'flowing';
   const pipe34: FlowState = b3Flipped ? 'flowing' : 'blocked';
 
   const uk = lang === 'uk';
@@ -331,60 +340,65 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
             bgColor={solved ? 'rgba(0,212,170,0.06)' : 'rgba(200,164,92,0.06)'}
             front={
               <>
-                <div style={TAG('#e8c97a')}>{uk ? 'Заблоковані ресурси Світ. банку' : 'Blocked World Bank Resources'}</div>
+                <div style={TAG('#ff7b6e')}>{uk ? 'Нерозподілені ресурси СБ' : 'WB Undisbursed Resources'}</div>
                 <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)', marginBottom: 10, marginTop: 2 }}>
-                  {uk ? 'на фінансування MHPSS для українців' : 'for MHPSS financing for Ukrainians'}
+                  {uk ? 'на MHPSS для українців · заблоковано' : 'for MHPSS for Ukrainians · blocked'}
                 </div>
                 <AnimatePresence mode="wait">
                   {solved ? (
                     <motion.div key="solved" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                      <div style={{ ...AMOUNT('#00d4aa', true) }}>$820M</div>
+                      <div style={{ ...AMOUNT('#00d4aa', true) }}>$134M+</div>
                       <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: '#00d4aa', marginTop: 4 }}>
-                        {uk ? '→ $134M+ disbursed до НСЗУ ✓' : '→ $134M+ disbursed to NHSU ✓'}
+                        {uk ? '→ disbursed до НСЗУ ✓' : '→ disbursed to NHSU ✓'}
                       </div>
                     </motion.div>
                   ) : (
                     <motion.div key="locked" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                      <div style={{ ...AMOUNT('#e8c97a', true) }}>$954M</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div>
+                          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)', marginBottom: 3 }}>HEAL P180245</div>
+                          <div style={{ ...AMOUNT('#ff7b6e') }}>$329M</div>
+                          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'rgba(255,123,110,0.6)', marginTop: 2 }}>
+                            {uk ? 'не виплачено (з $500M)' : 'undisbursed (of $500M)'}
+                          </div>
+                        </div>
+                        <div>
+                          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)', marginBottom: 3 }}>THRIVE P505616</div>
+                          <div style={{ ...AMOUNT('#ff7b6e') }}>$134M</div>
+                          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'rgba(255,123,110,0.6)', marginTop: 2 }}>
+                            {uk ? 'DLI-транш заблоковано' : 'DLI tranche locked'}
+                          </div>
+                        </div>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
                 <div style={{ flex: 1 }} />
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
-                  {['HEAL $500M', 'THRIVE $454M'].map(t => (
-                    <span key={t} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: '#e8c97a', background: 'rgba(200,164,92,0.1)', border: '1px solid rgba(200,164,92,0.2)', borderRadius: 4, padding: '2px 6px' }}>{t}</span>
-                  ))}
-                </div>
-                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'rgba(200,208,220,0.35)', textAlign: 'center', marginTop: 10 }}>
-                  {uk ? '↕ фліп — метрики проектів' : '↕ flip — project metrics'}
-                </div>
               </>
             }
             back={
               <>
-                <div style={TAG('#e8c97a')}>{uk ? 'Метрики проектів' : 'Project Metrics'}</div>
-                <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 10, marginTop: 10 }}>
+                <div style={TAG('#e8c97a')}>{uk ? 'План / Факт' : 'Plan / Actual'}</div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14, marginTop: 14, justifyContent: 'center' }}>
                   {[
-                    { name: 'HEAL P180245', mech: 'IPF+PBC', total: '$500M', dis: '$171M (34%)', close: 'Dec 2026', color: '#e8c97a' },
-                    { name: 'THRIVE P505616', mech: 'PforR', total: '$454M', dis: '~$320M (70%)', close: 'Dec 2027', color: '#00d4aa' },
+                    { name: 'HEAL P180245', plan: '$500M', fact: '$171M', pct: 34, color: '#e8c97a' },
+                    { name: 'THRIVE P505616', plan: '$454M', fact: '~$320M', pct: 70, color: '#00d4aa' },
                   ].map(p => (
-                    <div key={p.name} style={{ borderRadius: 8, background: 'rgba(255,255,255,0.03)', border: `1px solid ${p.color}22`, padding: 10 }}>
-                      <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12, color: p.color, marginBottom: 4 }}>{p.name}</div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px 8px' }}>
-                        {[
-                          [uk ? 'Механізм' : 'Mechanism', p.mech],
-                          [uk ? 'Загалом' : 'Total', p.total],
-                          [uk ? 'Виплачено' : 'Disbursed', p.dis],
-                          [uk ? 'Закриття' : 'Closing', p.close],
-                        ].map(([label, val]) => (
-                          <React.Fragment key={label as string}>
-                            <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)' }}>{label}</span>
-                            <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 10, fontWeight: 700, color: 'var(--color-ds-text)' }}>{val}</span>
-                          </React.Fragment>
-                        ))}
+                    <div key={p.name}>
+                      <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11, color: p.color, marginBottom: 6 }}>{p.name}</div>
+                      <div style={{ height: 12, borderRadius: 6, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${p.pct}%` }} transition={{ delay: 0.3, duration: 1 }}
+                          style={{ height: '100%', background: p.color, borderRadius: 6 }} />
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+                        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)' }}>{uk ? 'План' : 'Plan'}: {p.plan}</span>
+                        <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10, color: p.color }}>{uk ? 'Факт' : 'Actual'}: {p.fact}</span>
                       </div>
                     </div>
                   ))}
+                </div>
+                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6, marginTop: 8 }}>
+                  {uk ? 'Джерело: WB HEAL ISR#6 · THRIVE ISR' : 'Source: WB HEAL ISR#6 · THRIVE ISR'}
                 </div>
               </>
             }
@@ -419,9 +433,6 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                       </div>
                     </div>
                   ))}
-                </div>
-                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'rgba(200,208,220,0.35)', textAlign: 'center', marginTop: 10 }}>
-                  {uk ? '↕ фліп — мобільні бригади' : '↕ flip — mobile brigades'}
                 </div>
               </>
             }
@@ -459,58 +470,26 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
             bgColor={b3Flipped ? 'rgba(0,212,170,0.06)' : 'rgba(255,123,110,0.06)'}
             front={
               <>
-                <div style={TAG(b3Flipped ? '#00d4aa' : '#ff7b6e')}>
-                  {b3Flipped
-                    ? (uk ? 'FEEL Again Digital Bus' : 'FEEL Again Digital Bus')
-                    : (uk ? 'Звітність KoboToolbox' : 'KoboToolbox Reporting')}
+                <div style={TAG('#ff7b6e')}>{uk ? 'Звітність KoboToolbox' : 'KoboToolbox Reporting'}</div>
+                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)', marginTop: 2, marginBottom: 10 }}>
+                  {uk ? 'без доступу до e-health · шлях до ЄСОЗ заблоковано' : 'no e-health access · path to ESOZ blocked'}
                 </div>
-                {b3Flipped ? (
-                  <>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-                      <Zap style={{ width: 20, height: 20, color: '#00d4aa' }} />
-                      <span style={{ ...AMOUNT('#00d4aa'), fontSize: 16 }}>HL7 FHIR R4</span>
+                {[
+                  { name: 'CommCare', val: '2.1M' },
+                  { name: 'KoboToolbox', val: '0.8M' },
+                  { name: 'ActivityInfo', val: '1.8M' },
+                ].map(s => (
+                  <div key={s.name} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 11, color: 'var(--color-ds-muted)' }}>{s.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11, color: '#ff7b6e' }}>{s.val}</span>
+                      <AlertTriangle style={{ width: 10, height: 10, color: '#ff7b6e' }} />
                     </div>
-                    <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: '#00d4aa', marginTop: 6 }}>
-                      10K req/sec · &lt;200ms p95 · Zero CAPEX
-                    </div>
-                    <div style={{ flex: 1 }} />
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                      {['CommCare', 'KoboToolbox', 'ActivityInfo'].map(s => (
-                        <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <Link2 style={{ width: 10, height: 10, color: '#00d4aa' }} />
-                          <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: '#00d4aa' }}>{s} → ЄСОЗ</span>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)', marginTop: 2, marginBottom: 10 }}>
-                      {uk ? 'без доступу до e-health · шлях до ЄСОЗ заблоковано' : 'no e-health access · path to ESOZ blocked'}
-                    </div>
-                    {[
-                      { name: 'CommCare', val: '2.1M' },
-                      { name: 'KoboToolbox', val: '0.8M' },
-                      { name: 'ActivityInfo', val: '1.8M' },
-                    ].map(s => (
-                      <div key={s.name} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 11, color: 'var(--color-ds-muted)' }}>{s.name}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11, color: '#ff7b6e' }}>{s.val}</span>
-                          <AlertTriangle style={{ width: 10, height: 10, color: '#ff7b6e' }} />
-                        </div>
-                      </div>
-                    ))}
-                    <div style={{ flex: 1 }} />
-                    <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 10, fontWeight: 700, color: '#ff7b6e', textAlign: 'center', padding: '6px 0', borderRadius: 6, background: 'rgba(255,123,110,0.1)', border: '1px solid rgba(255,123,110,0.2)' }}>
-                      {uk ? '4.7M сесій поза ЄСОЗ' : '4.7M sessions outside ESOZ'}
-                    </div>
-                  </>
-                )}
-                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'rgba(200,208,220,0.35)', textAlign: 'center', marginTop: 10 }}>
-                  {b3Flipped
-                    ? (uk ? '↕ фліп — повернутись до проблеми' : '↕ flip — back to problem')
-                    : (uk ? '↕ фліп — рішення Digital Bus' : '↕ flip — Digital Bus solution')}
+                  </div>
+                ))}
+                <div style={{ flex: 1 }} />
+                <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 10, fontWeight: 700, color: '#ff7b6e', textAlign: 'center', padding: '6px 0', borderRadius: 6, background: 'rgba(255,123,110,0.1)', border: '1px solid rgba(255,123,110,0.2)' }}>
+                  {uk ? '4.7M сесій поза ЄСОЗ' : '4.7M sessions outside ESOZ'}
                 </div>
               </>
             }
@@ -542,7 +521,6 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
           {/* ── Block 4: НСЗУ Payments ───────────────────────────────────────── */}
           <FlipShell
             flipped={b4Phase === 'revealing'}
-            onClick={b4Phase === 'locked' ? () => setB4Phase('revealing') : undefined}
             borderColor={solved ? 'rgba(0,212,170,0.45)' : b4Phase === 'revealing' ? 'rgba(0,212,170,0.35)' : 'rgba(255,123,110,0.35)'}
             bgColor={solved ? 'rgba(0,212,170,0.08)' : b4Phase === 'revealing' ? 'rgba(0,212,170,0.06)' : 'rgba(255,123,110,0.06)'}
             front={
@@ -572,11 +550,6 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                   )}
                 </AnimatePresence>
                 <div style={{ flex: 1 }} />
-                {!solved && (
-                  <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'rgba(200,208,220,0.35)', textAlign: 'center', marginTop: 10 }}>
-                    {uk ? '↕ натисніть щоб з\'єднати' : '↕ click to connect'}
-                  </div>
-                )}
               </>
             }
             back={
@@ -606,34 +579,53 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
         {/* L3 transition footer */}
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
-          className="flex-shrink-0 flex items-center gap-3"
+          className="flex-shrink-0"
           style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 8 }}
         >
-          <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 10, fontWeight: 700, color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 5 }}>
-              {uk ? 'Аналітичний звіт · 6 блоків · рівень L3' : 'Analytical Report · 6 blocks · L3 level'}
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 6px' }}>
-              {[
-                { uk: 'FEEL AGAIN позиція', en: 'FEEL AGAIN position' },
-                { uk: '6-шарова архітектура', en: '6-layer architecture' },
-                { uk: 'HEAL ISR#6 KPI', en: 'HEAL ISR#6 KPIs' },
-                { uk: 'Data Flow Architecture', en: 'Data Flow Architecture' },
-                { uk: 'THRIVE P505616', en: 'THRIVE P505616' },
-                { uk: 'HEAL C4 Procurement', en: 'HEAL C4 Procurement' },
-              ].map(t => (
-                <span key={t.en} style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'rgba(200,208,220,0.45)', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 5, padding: '2px 8px' }}>
-                  {t[lang]}
-                </span>
-              ))}
-            </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setTopicsOpen(o => !o)}
+              style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'rgba(200,208,220,0.45)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: 4 }}
+            >
+              {uk ? 'розділи звіту' : 'report sections'} {topicsOpen ? '↑' : '↓'}
+            </button>
+            <div style={{ flex: 1 }} />
+            <button
+              onClick={() => nav.push('appendix')}
+              style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12, color: '#00d4aa', background: 'rgba(0,212,170,0.1)', border: '1px solid rgba(0,212,170,0.3)', borderRadius: 10, padding: '8px 16px', cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
+            >
+              {uk ? '→ Аналітичний звіт' : '→ Analytical Report'}
+            </button>
           </div>
-          <button
-            onClick={() => nav.push('appendix')}
-            style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12, color: '#00d4aa', background: 'rgba(0,212,170,0.1)', border: '1px solid rgba(0,212,170,0.3)', borderRadius: 10, padding: '8px 16px', cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
-          >
-            {uk ? '→ Аналітичний огляд' : '→ Analytical Overview'}
-          </button>
+          <AnimatePresence>
+            {topicsOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                style={{ overflow: 'hidden' }}
+              >
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 6px', paddingTop: 8 }}>
+                  {[
+                    { uk: 'FEEL AGAIN позиція', en: 'FEEL AGAIN position' },
+                    { uk: '6-шарова архітектура', en: '6-layer architecture' },
+                    { uk: 'HEAL ISR#6 KPI', en: 'HEAL ISR#6 KPIs' },
+                    { uk: 'Data Flow Architecture', en: 'Data Flow Architecture' },
+                    { uk: 'THRIVE P505616', en: 'THRIVE P505616' },
+                    { uk: 'HEAL C4 Procurement', en: 'HEAL C4 Procurement' },
+                  ].map(t => (
+                    <button
+                      key={t.en}
+                      onClick={() => nav.push('appendix')}
+                      style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: '#00d4aa', background: 'rgba(0,212,170,0.06)', border: '1px solid rgba(0,212,170,0.2)', borderRadius: 5, padding: '2px 8px', cursor: 'pointer' }}
+                    >
+                      {t[lang]}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </div>
