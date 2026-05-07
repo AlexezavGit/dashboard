@@ -100,7 +100,7 @@ const WBChart: React.FC<{ lang: Language; solved: boolean }> = ({ lang, solved }
             animate={{ opacity: 1, y: 0 }}
             style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 10, fontWeight: 700, color: '#00d4aa', marginBottom: 6 }}
           >
-            ✓ {lang === 'uk' ? '$134M+ disbursed → рахунки НСЗУ' : '$134M+ disbursed → NHSU payments'}
+            ✓ {lang === 'uk' ? '$463M розблоковано → HEAL + THRIVE' : '$463M unlocked → HEAL + THRIVE'}
           </motion.div>
         )}
       </AnimatePresence>
@@ -350,9 +350,9 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                 <AnimatePresence mode="wait">
                   {solved ? (
                     <motion.div key="solved" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                      <div style={{ ...AMOUNT('#00d4aa', true) }}>$134M+</div>
+                      <div style={{ ...AMOUNT('#00d4aa', true) }}>$463M</div>
                       <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: '#00d4aa', marginTop: 4 }}>
-                        {uk ? '→ disbursed до НСЗУ ✓' : '→ disbursed to NHSU ✓'}
+                        {uk ? '→ розблоковано · HEAL + THRIVE ✓' : '→ unlocked · HEAL + THRIVE ✓'}
                       </div>
                     </motion.div>
                   ) : (
@@ -543,9 +543,9 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                 <AnimatePresence mode="wait">
                   {solved ? (
                     <motion.div key="solved" initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6, type: 'spring' }}>
-                      <div style={{ ...AMOUNT('#00d4aa', true) }}>$134M+</div>
+                      <div style={{ ...AMOUNT('#00d4aa', true) }}>$463M</div>
                       <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: '#00d4aa', marginTop: 6 }}>
-                        {uk ? 'THRIVE DLI розблоковано ✓' : 'THRIVE DLI unlocked ✓'}
+                        {uk ? 'HEAL $329M + THRIVE $134M ✓' : 'HEAL $329M + THRIVE $134M ✓'}
                       </div>
                     </motion.div>
                   ) : (
