@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'motion/react';
 import { ChevronRight } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
@@ -155,17 +155,26 @@ const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () =>
 
 // ── Gauge component ─────────────────────────────────────────────────────────
 const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () => void }> = ({ lang, expanded, onToggle }) => {
-  const cx = 140, cy = 118, R = 95;
+  const cx = 140, cy = 113, R = 95;
   const bandColor = BAND_COLOR[currentBand];
-  const needleAngleFinal = valToAngle(INDEX_SCORE);
-  // Needle rotates from 0° (pointing left = 180° math) to final position
-  const needleRotation = -(INDEX_SCORE / 100) * 180;
+
+  // Animate needle by driving score 0→INDEX_SCORE and computing endpoint via polar()
+  // This avoids SVG CSS-rotation direction ambiguity entirely.
+  const scoreProgress = useMotionValue(0);
+  useEffect(() => {
+    const controls = animate(scoreProgress, INDEX_SCORE, {
+      type: 'spring', stiffness: 42, damping: 13, delay: 0.45,
+    });
+    return controls.stop;
+  }, []);
+  const needleX2 = useTransform(scoreProgress, v => polar(valToAngle(v), R * 0.77, cx, cy).x);
+  const needleY2 = useTransform(scoreProgress, v => polar(valToAngle(v), R * 0.77, cx, cy).y);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
       {/* Gauge SVG */}
       <div onClick={onToggle} style={{ cursor: 'pointer', width: '100%' }}>
-        <svg viewBox="0 0 280 150" width="100%" style={{ overflow: 'visible', display: 'block' }}>
+        <svg viewBox="0 0 280 160" width="100%" style={{ overflow: 'visible', display: 'block' }}>
 
           {/* Track background */}
           <path d={gaugePath(R, 180, 0, cx, cy)} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="16" />
@@ -176,7 +185,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
           <path d={gaugePath(R, 60, 0, cx, cy)}   fill="none" stroke="#00d4aa" strokeWidth="13" opacity="0.40" />
 
           {/* Filled progress arc */}
-          <path d={gaugePath(R, 180, needleAngleFinal, cx, cy)} fill="none" stroke={bandColor} strokeWidth="13" opacity="0.88" strokeLinecap="round" />
+          <path d={gaugePath(R, 180, valToAngle(INDEX_SCORE), cx, cy)} fill="none" stroke={bandColor} strokeWidth="13" opacity="0.88" strokeLinecap="round" />
 
           {/* Layer score tick marks */}
           {LAYERS.map(l => {
@@ -201,20 +210,13 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
             return <line key={v} x1={i.x.toFixed(2)} y1={i.y.toFixed(2)} x2={o.x.toFixed(2)} y2={o.y.toFixed(2)} stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />;
           })}
 
-          {/* Animated needle — rotates from left (0) to final value */}
-          <motion.g
-            style={{ transformOrigin: `${cx}px ${cy}px` } as React.CSSProperties}
-            initial={{ rotate: 0 }}
-            animate={{ rotate: needleRotation }}
-            transition={{ type: 'spring', stiffness: 42, damping: 13, delay: 0.45 }}
-          >
-            <line
-              x1={cx} y1={cy}
-              x2={cx - R * 0.77} y2={cy}
-              stroke={bandColor} strokeWidth="2.5" strokeLinecap="round"
-              style={{ filter: `drop-shadow(0 0 5px ${bandColor}99)` }}
-            />
-          </motion.g>
+          {/* Animated needle — endpoint computed via polar(), correct in all browsers */}
+          <motion.line
+            x1={cx} y1={cy}
+            x2={needleX2 as any} y2={needleY2 as any}
+            stroke={bandColor} strokeWidth="2.5" strokeLinecap="round"
+            style={{ filter: `drop-shadow(0 0 5px ${bandColor}99)` } as React.CSSProperties}
+          />
 
           {/* Needle base */}
           <circle cx={cx} cy={cy} r="7" fill={bandColor}
@@ -231,11 +233,11 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
           </text>
 
           {/* Central value */}
-          <text x={cx} y={cy + 25} textAnchor="middle" fill={bandColor}
+          <text x={cx} y={cy + 28} textAnchor="middle" fill={bandColor}
             style={{ fontSize: 36, fontFamily: 'Space Grotesk, sans-serif', fontWeight: 900 } as React.CSSProperties}>
             {INDEX_SCORE}
           </text>
-          <text x={cx} y={cy + 40} textAnchor="middle" fill="rgba(200,208,220,0.45)"
+          <text x={cx} y={cy + 43} textAnchor="middle" fill="rgba(200,208,220,0.45)"
             style={{ fontSize: 8, fontFamily: 'DM Sans, sans-serif' } as React.CSSProperties}>
             {lang === 'uk' ? 'з 100' : 'out of 100'}
           </text>
