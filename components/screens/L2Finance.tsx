@@ -53,8 +53,8 @@ const FlowPipe: React.FC<{ state: FlowState }> = ({ state }) => {
 // ─── Chart: World Bank Financing ───────────────────────────────────────────────
 const WBChart: React.FC<{ lang: Language; solved: boolean }> = ({ lang, solved }) => {
   const programs = [
-    { name: 'HEAL P180245', total: '$500M', disbursed: '$171M', pct: 34, color: '#e8c97a' },
-    { name: 'THRIVE P505616', total: '$454M', disbursed: '~$320M', pct: 70, color: '#00d4aa' },
+    { name: 'HEAL P180245', mech: 'IPF+PBC', total: '$500M', disbursed: '$171M', pct: 34, color: '#e8c97a' },
+    { name: 'THRIVE P505616', mech: 'PforR', total: '$454M', disbursed: '~$320M', pct: 70, color: '#00d4aa' },
   ];
   return (
     <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(0,212,170,0.25)', position: 'relative', overflow: 'hidden' }}>
@@ -73,7 +73,10 @@ const WBChart: React.FC<{ lang: Language; solved: boolean }> = ({ lang, solved }
         {programs.map((p) => (
           <div key={p.name}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, color: 'var(--color-ds-muted)' }}>{p.name}</span>
+              <div>
+                <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 12, color: 'var(--color-ds-muted)' }}>{p.name}</span>
+                <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: p.color, marginLeft: 5, opacity: 0.7 }}>{p.mech}</span>
+              </div>
               <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: p.color }}>{p.pct}%</span>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
@@ -397,7 +400,15 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                     </div>
                   ))}
                 </div>
-                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6, marginTop: 8 }}>
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6, marginTop: 6 }}>
+                  <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9, color: '#e8c97a' }}>
+                    {uk ? 'Компонент 4 (HEAL): $41M незадіяно' : 'Component 4 (HEAL): $41M unallocated'}
+                  </div>
+                  <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'rgba(200,164,92,0.55)', marginTop: 2 }}>
+                    {uk ? '→ вікно для FEEL Again middleware' : '→ window for FEEL Again middleware'}
+                  </div>
+                </div>
+                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6, marginTop: 6 }}>
                   {uk ? 'Джерело: WB HEAL ISR#6 · THRIVE ISR' : 'Source: WB HEAL ISR#6 · THRIVE ISR'}
                 </div>
               </>

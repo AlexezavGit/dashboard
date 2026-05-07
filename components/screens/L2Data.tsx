@@ -36,7 +36,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
         nav={nav}
         accentColor="#00d4aa"
         title={{ uk: 'Інтероперабельність', en: 'Interoperability' }}
-        subtitle={{ uk: 'Data & Coord · MHEI w20% · ціль ≥60%', en: 'Data & Coord · MHEI w20% · target ≥60%' }}
+        subtitle={{ uk: 'Data & Coord · ціль ≥60%', en: 'Data & Coord · target ≥60%' }}
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
 

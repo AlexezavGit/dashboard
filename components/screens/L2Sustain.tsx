@@ -39,7 +39,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
         nav={nav}
         accentColor="#a78bfa"
         title={{ uk: 'Місткість кадрів — рівень навчання', en: 'Workforce Capacity — Training Level' }}
-        subtitle={{ uk: `Місткість · MHEI w15% · НСЗУ верифіковано ${NSZU_SNAPSHOT.asOf}`, en: `Capacity · MHEI w15% · NHSU verified ${NSZU_SNAPSHOT.asOf}` }}
+        subtitle={{ uk: `Місткість · НСЗУ верифіковано ${NSZU_SNAPSHOT.asOf}`, en: `Capacity · NHSU verified ${NSZU_SNAPSHOT.asOf}` }}
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
 

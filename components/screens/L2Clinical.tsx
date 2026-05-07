@@ -39,7 +39,7 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
         nav={nav}
         accentColor="#ff7b6e"
         title={{ uk: 'Завершуваність реабілітації', en: 'Rehabilitation completion' }}
-        subtitle={{ uk: 'Clinical · MHEI w25% · ціль ≥80%', en: 'Clinical · MHEI w25% · target ≥80%' }}
+        subtitle={{ uk: 'Clinical · ціль ≥80%', en: 'Clinical · target ≥80%' }}
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
 

@@ -39,7 +39,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
         nav={nav}
         accentColor="#ff9966"
         title={{ uk: 'Ерозія від адмін-дублювання', en: 'Erosion from admin duplication' }}
-        subtitle={{ uk: 'Digitalization · MHEI w10% · ціль <5% overhead', en: 'Digitalization · MHEI w10% · target <5% overhead' }}
+        subtitle={{ uk: 'Digitalization · ціль <5% overhead', en: 'Digitalization · target <5% overhead' }}
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
 

@@ -34,7 +34,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
       nav={nav}
       accentColor="#c084fc"
       title={{ uk: 'Локалізація гум. ресурсів', en: 'Humanitarian localization' }}
-      subtitle={{ uk: 'Regulatory · MHEI w5% · ціль ≥25%', en: 'Regulatory · MHEI w5% · target ≥25%' }}
+      subtitle={{ uk: 'Regulatory · ціль ≥25%', en: 'Regulatory · target ≥25%' }}
       crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
     />
 
