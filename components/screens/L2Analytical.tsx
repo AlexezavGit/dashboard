@@ -3,13 +3,14 @@ import { motion } from 'motion/react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
 import { NavBar } from './NavBar';
+import { L3Footer } from './L3Footer';
 
 interface Props { lang: Language; nav: ScreenNav; }
 
 const SYSTEMS = [
   {
     name: 'CommCare',
-    owner: { uk: 'Гуманітарний', en: 'Humanitarian' },
+    owner: { uk: 'Гуманітарний · HEAL', en: 'Humanitarian · HEAL' },
     sessions: '2.1M',
     visibility: 85,
     esoz: 0,
@@ -18,7 +19,7 @@ const SYSTEMS = [
   },
   {
     name: 'KoBo Toolbox',
-    owner: { uk: 'Гуманітарний', en: 'Humanitarian' },
+    owner: { uk: 'Гуманітарний · HEAL', en: 'Humanitarian · HEAL' },
     sessions: '0.8M',
     visibility: 70,
     esoz: 0,
@@ -27,7 +28,7 @@ const SYSTEMS = [
   },
   {
     name: 'ActivityInfo',
-    owner: { uk: 'Гуманітарний', en: 'Humanitarian' },
+    owner: { uk: 'Гуманітарний · OCHA', en: 'Humanitarian · OCHA' },
     sessions: '1.8M',
     visibility: 75,
     esoz: 0,
@@ -36,8 +37,8 @@ const SYSTEMS = [
   },
   {
     name: 'ЄСОЗ / eHealth',
-    owner: { uk: 'Держава', en: 'Government' },
-    sessions: '260K', // NHSU 2025: 260K MH patients (was 180K in 2024)
+    owner: { uk: 'Держава · НСЗУ', en: 'Government · NHSU' },
+    sessions: '260K',
     visibility: 5,
     esoz: 100,
     open: false,
@@ -53,9 +54,19 @@ const SYSTEMS = [
     color: '#a78bfa',
   },
   {
+    name: 'Trembita / X-Road',
+    owner: { uk: 'Держ. шина даних · МЦТД', en: 'State data bus · MDTS' },
+    sessions: { uk: 'транзит', en: 'transit' },
+    visibility: 0,
+    esoz: 100,
+    open: false,
+    color: '#94a3b8',
+    isBus: false,
+  },
+  {
     name: 'FEEL Again Bus',
-    owner: { uk: 'Інфраструктура', en: 'Infrastructure' },
-    sessions: '→',
+    owner: { uk: 'Міст гум. → ЄСОЗ (через Trembita)', en: 'Humanitarian → ESOZ bridge (via Trembita)' },
+    sessions: '→ 624K+',
     visibility: 100,
     esoz: 100,
     open: true,

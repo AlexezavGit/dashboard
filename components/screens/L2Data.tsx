@@ -2,6 +2,7 @@ import React from 'react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
 import { NavBar } from './NavBar';
+import { L3Footer } from './L3Footer';
 import { ROI_CARDS, ECONOMIC_BURDEN_INDICATORS } from '../../constants';
 
 interface Props { lang: Language; nav: ScreenNav; }
@@ -160,6 +161,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
           </div>
         </div>
       </div>
+      <L3Footer lang={lang} nav={nav} />
     </div>
   );
 };

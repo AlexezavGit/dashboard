@@ -158,10 +158,6 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
   const cx = 140, cy = 138, R = 110;
   const bandColor = BAND_COLOR[currentBand];
 
-  // Needle: animate x2/y2 directly via polar() — no CSS rotation involved
-  const startTip = polar(180, R * 0.80, cx, cy);
-  const endTip   = polar(valToAngle(INDEX_SCORE), R * 0.80, cx, cy);
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {/* ── Half-circle gauge SVG ── */}
@@ -197,15 +193,19 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
             return <line key={v} x1={i.x.toFixed(1)} y1={i.y.toFixed(1)} x2={o.x.toFixed(1)} y2={o.y.toFixed(1)} stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" />;
           })}
 
-          {/* Animated needle: initial=left (score 0) → animate to score 29 */}
-          <motion.line
-            x1={cx} y1={cy}
-            initial={{ x2: startTip.x, y2: startTip.y }}
-            animate={{ x2: endTip.x, y2: endTip.y }}
+          {/* Animated needle — transformTemplate uses SVG rotate(angle,cx,cy), bypasses CSS transform-origin */}
+          <motion.g
+            initial={{ rotate: 0 }}
+            animate={{ rotate: -(INDEX_SCORE / 100) * 180 }}
             transition={{ type: 'spring', stiffness: 38, damping: 12, delay: 0.5 }}
-            stroke={bandColor} strokeWidth="3" strokeLinecap="round"
-            style={{ filter: `drop-shadow(0 0 7px ${bandColor}cc)` } as React.CSSProperties}
-          />
+            transformTemplate={({ rotate }) => `rotate(${rotate ?? 0}, ${cx}, ${cy})`}
+          >
+            <line
+              x1={cx} y1={cy} x2={cx - R * 0.80} y2={cy}
+              stroke={bandColor} strokeWidth="3" strokeLinecap="round"
+              style={{ filter: `drop-shadow(0 0 7px ${bandColor}cc)` } as React.CSSProperties}
+            />
+          </motion.g>
 
           {/* Needle base */}
           <circle cx={cx} cy={cy} r="9" fill={bandColor}

@@ -575,7 +575,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                   FEEL AGAIN
                 </div>
                 <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 11, color: 'rgba(0,212,170,0.8)', textAlign: 'center', lineHeight: 1.5 }}>
-                  {uk ? 'Digital Bus підключається…\nсесії потрапляють до ЄСОЗ…\nDLI-тригери спрацьовують…' : 'Digital Bus connecting…\nsessions entering ESOZ…\nDLI triggers firing…'}
+                  {uk ? 'Digital Bus підключається…\n624K сесій → ЄСОЗ…\nTHRIVE PforR DLI розблоковується…' : 'Digital Bus connecting…\n624K sessions → ESOZ…\nTHRIVE PforR DLI unlocking…'}
                 </div>
                 <motion.div
                   animate={{ width: ['0%', '100%'] }}

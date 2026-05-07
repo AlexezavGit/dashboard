@@ -2,6 +2,7 @@ import React from 'react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
 import { NavBar } from './NavBar';
+import { L3Footer } from './L3Footer';
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, ReferenceLine,
 } from 'recharts';
@@ -186,6 +187,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
           </div>
         </div>
       </div>
+      <L3Footer lang={lang} nav={nav} />
     </div>
   );
 };

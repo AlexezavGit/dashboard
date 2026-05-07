@@ -2,6 +2,7 @@ import React from 'react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
 import { NavBar } from './NavBar';
+import { L3Footer } from './L3Footer';
 
 interface Props { lang: Language; nav: ScreenNav; }
 
@@ -135,6 +136,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
           </div>
         </div>
       </div>
+      <L3Footer lang={lang} nav={nav} />
     </div>
   </div>
 );

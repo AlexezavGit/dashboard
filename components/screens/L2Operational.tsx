@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
+import { L3Footer } from './L3Footer';
 
 interface Props { lang: Language; nav: ScreenNav; }
 
@@ -345,6 +346,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
             : 'Source: FEEL Again field interviews 2024 · NHSU open data · OCHA Ukraine · WB THRIVE DLI matrix · Grand Bargain 2016'}
         </div>
       </div>
+      <L3Footer lang={lang} nav={nav} />
     </div>
   );
 };
