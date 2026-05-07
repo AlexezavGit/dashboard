@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, animate } from 'motion/react';
 import { ChevronRight } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
@@ -101,21 +101,27 @@ const SOURCES = [
 ];
 
 // ── Speedometer geometry helpers ──────────────────────────────────────────────
+// Arc spans 260° from lower-left (220°) to lower-right (−40°) going over the top
+const A_START = 220, A_END = -40, A_SPAN = 260;
+
 const polar = (deg: number, r: number, cx: number, cy: number) => ({
   x: cx + r * Math.cos((deg * Math.PI) / 180),
   y: cy - r * Math.sin((deg * Math.PI) / 180),
 });
 
-// SVG arc from angle A to B (math convention: counterclockwise, y-flipped for SVG → sweep=0)
+// Arc from math angle A to B going CCW (decreasing angle, over the top — sweep=0 in SVG)
 const gaugePath = (r: number, A: number, B: number, cx: number, cy: number) => {
   const s = polar(A, r, cx, cy);
   const e = polar(B, r, cx, cy);
-  const large = Math.abs(A - B) > 180 ? 1 : 0;
+  const span = ((A - B) + 360) % 360;
+  const large = span > 180 ? 1 : 0;
   return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r} ${r} 0 ${large} 0 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
 };
 
-// Map value 0–100 → angle 180°–0° (left to right across the gauge)
-const valToAngle = (v: number) => 180 - (v / 100) * 180;
+// Map value 0–100 → math angle A_START → A_END
+const valToAngle = (v: number) => A_START - (v / 100) * A_SPAN;
+// SVG rotate angle so left-pointing needle aligns with math angle A: θ = 180° − A
+const needleRotation = (v: number) => 180 - valToAngle(v); // = −40 + (v/100)·260
 
 // ── Compact layer card ─────────────────────────────────────────────────────────
 const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () => void }> = ({ l, i, lang, onNav }) => (
@@ -155,25 +161,43 @@ const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () =>
 
 // ── Gauge component ─────────────────────────────────────────────────────────
 const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () => void }> = ({ lang, expanded, onToggle }) => {
-  const cx = 140, cy = 138, R = 110;
+  const cx = 140, cy = 108, R = 100;
   const bandColor = BAND_COLOR[currentBand];
+  const needleRef = useRef<SVGGElement>(null);
+
+  // Animate needle via direct SVG attribute — CSS rotate(a,cx,cy) is invalid, only SVG attr works
+  useEffect(() => {
+    const from = needleRotation(0);
+    const to = needleRotation(INDEX_SCORE);
+    const ctrl = animate(from, to, {
+      duration: 1.4, delay: 0.5,
+      ease: [0.34, 1.56, 0.64, 1],
+      onUpdate: (v: number) =>
+        needleRef.current?.setAttribute('transform', `rotate(${v.toFixed(3)}, ${cx}, ${cy})`),
+    });
+    return () => ctrl.stop();
+  }, []);
+
+  // Endpoint label positions in SVG
+  const labelL = polar(A_START, R + 18, cx, cy);
+  const labelR = polar(A_END,   R + 18, cx, cy);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      {/* ── Half-circle gauge SVG ── */}
+      {/* ── Gauge SVG ── */}
       <div onClick={onToggle} style={{ cursor: 'pointer', width: '100%' }}>
-        <svg viewBox="0 0 280 150" width="100%" style={{ display: 'block', overflow: 'visible' }}>
+        <svg viewBox="0 0 280 195" width="100%" style={{ display: 'block', overflow: 'visible' }}>
 
           {/* Track */}
-          <path d={gaugePath(R, 180, 0, cx, cy)} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="22" />
+          <path d={gaugePath(R, A_START, A_END, cx, cy)} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="22" />
 
-          {/* Zone bands — thick, elevator-indicator style */}
-          <path d={gaugePath(R, 180, 120, cx, cy)} fill="none" stroke="#ff7b6e" strokeWidth="20" opacity="0.50" />
-          <path d={gaugePath(R, 120,  60, cx, cy)} fill="none" stroke="#e8c97a" strokeWidth="20" opacity="0.50" />
-          <path d={gaugePath(R,  60,   0, cx, cy)} fill="none" stroke="#00d4aa" strokeWidth="20" opacity="0.50" />
+          {/* Zone bands */}
+          <path d={gaugePath(R, 220, 133, cx, cy)} fill="none" stroke="#ff7b6e" strokeWidth="20" opacity="0.50" />
+          <path d={gaugePath(R, 133,  47, cx, cy)} fill="none" stroke="#e8c97a" strokeWidth="20" opacity="0.50" />
+          <path d={gaugePath(R,  47, -40, cx, cy)} fill="none" stroke="#00d4aa" strokeWidth="20" opacity="0.50" />
 
           {/* Filled progress arc */}
-          <path d={gaugePath(R, 180, valToAngle(INDEX_SCORE), cx, cy)}
+          <path d={gaugePath(R, A_START, valToAngle(INDEX_SCORE), cx, cy)}
             fill="none" stroke={bandColor} strokeWidth="20" opacity="0.92" strokeLinecap="round" />
 
           {/* Layer score tick marks */}
@@ -185,7 +209,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
             return <line key={l.id} x1={inn.x.toFixed(1)} y1={inn.y.toFixed(1)} x2={out.x.toFixed(1)} y2={out.y.toFixed(1)} stroke={l.color} strokeWidth="2" opacity="0.95" />;
           })}
 
-          {/* Major ticks at 0 / 25 / 50 / 75 / 100 */}
+          {/* Major ticks */}
           {[0, 25, 50, 75, 100].map(v => {
             const ang = valToAngle(v);
             const i = polar(ang, R - 7, cx, cy);
@@ -193,34 +217,29 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
             return <line key={v} x1={i.x.toFixed(1)} y1={i.y.toFixed(1)} x2={o.x.toFixed(1)} y2={o.y.toFixed(1)} stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" />;
           })}
 
-          {/* Animated needle — transformTemplate uses SVG rotate(angle,cx,cy), bypasses CSS transform-origin */}
-          <motion.g
-            initial={{ rotate: 0 }}
-            animate={{ rotate: -(INDEX_SCORE / 100) * 180 }}
-            transition={{ type: 'spring', stiffness: 38, damping: 12, delay: 0.5 }}
-            transformTemplate={({ rotate }) => `rotate(${rotate ?? 0}, ${cx}, ${cy})`}
-          >
+          {/* Needle — SVG transform attr directly (CSS rotate(a,cx,cy) is not valid CSS) */}
+          <g ref={needleRef}>
             <line
-              x1={cx} y1={cy} x2={cx - R * 0.80} y2={cy}
+              x1={cx} y1={cy} x2={cx - R * 0.82} y2={cy}
               stroke={bandColor} strokeWidth="3" strokeLinecap="round"
               style={{ filter: `drop-shadow(0 0 7px ${bandColor}cc)` } as React.CSSProperties}
             />
-          </motion.g>
+          </g>
 
           {/* Needle base */}
           <circle cx={cx} cy={cy} r="9" fill={bandColor}
             style={{ filter: `drop-shadow(0 0 16px ${bandColor}bb)` }} />
-        </svg>
-      </div>
 
-      {/* ── Zone endpoint hints ── */}
-      <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', marginTop: -6, paddingLeft: 20, paddingRight: 20 }}>
-        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'rgba(255,123,110,0.55)' }}>
-          {lang === 'uk' ? 'Стагн.' : 'Stag.'}
-        </span>
-        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'rgba(0,212,170,0.55)' }}>
-          {lang === 'uk' ? 'Відн.' : 'Rec.'}
-        </span>
+          {/* Endpoint labels */}
+          <text x={labelL.x.toFixed(1)} y={labelL.y.toFixed(1)} textAnchor="middle"
+            style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '8px', fill: 'rgba(255,123,110,0.55)' }}>
+            {lang === 'uk' ? 'Стагн.' : 'Stag.'}
+          </text>
+          <text x={labelR.x.toFixed(1)} y={labelR.y.toFixed(1)} textAnchor="middle"
+            style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '8px', fill: 'rgba(0,212,170,0.55)' }}>
+            {lang === 'uk' ? 'Відн.' : 'Rec.'}
+          </text>
+        </svg>
       </div>
 
       {/* ── Score + band label ── */}
