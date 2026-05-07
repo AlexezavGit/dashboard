@@ -120,8 +120,8 @@ const gaugePath = (r: number, A: number, B: number, cx: number, cy: number) => {
 
 // Map value 0–100 → math angle A_START → A_END
 const valToAngle = (v: number) => A_START - (v / 100) * A_SPAN;
-// SVG rotate angle so left-pointing needle aligns with math angle A: θ = 180° − A
-const needleRotation = (v: number) => 180 - valToAngle(v); // = −40 + (v/100)·260
+// SVG rotate angle so left-pointing needle aligns with math angle A: θ = A − 180°
+const needleRotation = (v: number) => valToAngle(v) - 180; // = 40 − (v/100)·260
 
 // ── Compact layer card ─────────────────────────────────────────────────────────
 const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () => void }> = ({ l, i, lang, onNav }) => (
