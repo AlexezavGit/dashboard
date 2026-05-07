@@ -44,7 +44,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
 
-      <div className="flex-1 grid grid-cols-2 gap-5 px-6 pb-4 pt-3 min-h-0">
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 px-6 pb-4 pt-3 min-h-0">
         <div className="flex flex-col gap-4">
           <div className="rounded-2xl p-5 flex-shrink-0"
             style={{ background: 'rgba(255,153,102,0.07)', border: '1px solid rgba(255,153,102,0.3)' }}>
@@ -142,7 +142,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
             <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Відновлюваний потенціал', 'Recoverable potential', lang)}
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {[
                 { val: '+45K', label: { uk: 'сесій/міс при усуненні дублювання', en: 'sessions/mo if duplication removed' } },
                 { val: '~$30M', label: { uk: '/рік витрачається на дублювання', en: '/yr spent on duplication' } },

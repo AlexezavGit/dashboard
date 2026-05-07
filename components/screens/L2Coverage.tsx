@@ -101,7 +101,7 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
     </div>
 
     {/* Main content */}
-    <div className="flex-1 grid grid-cols-2 gap-4 px-5 pb-3 min-h-0">
+    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 px-5 pb-3 min-h-0">
       {/* Left: capacity bars */}
       <div className="flex flex-col gap-3">
         <div className="cyber-label mb-1" style={{ color: '#ff7b6e' }}>

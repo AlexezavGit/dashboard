@@ -71,7 +71,7 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
     </div>
 
     {/* Pie-like decomposition */}
-    <div className="flex-1 grid grid-cols-2 gap-4 px-6 pb-5 min-h-0">
+    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 px-6 pb-5 min-h-0">
       {/* Left: horizontal stacked bar + legend */}
       <div className="flex flex-col gap-4">
         <div className="cyber-label" style={{ color: '#e8c97a' }}>

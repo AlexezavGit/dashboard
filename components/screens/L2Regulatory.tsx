@@ -39,7 +39,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
       crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
     />
 
-    <div className="flex-1 grid grid-cols-2 gap-5 px-6 pb-4 pt-3 min-h-0">
+    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 px-6 pb-4 pt-3 min-h-0">
       <div className="flex flex-col gap-4">
         <div className="rounded-2xl p-5 flex-shrink-0"
           style={{ background: 'rgba(192,132,252,0.07)', border: '1px solid rgba(192,132,252,0.3)' }}>

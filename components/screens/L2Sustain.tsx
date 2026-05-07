@@ -44,7 +44,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
 
-      <div className="flex-1 grid grid-cols-2 gap-4 px-6 pb-4 pt-3 min-h-0">
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 px-6 pb-4 pt-3 min-h-0">
 
         {/* ── Left: Training reality ── */}
         <div className="flex flex-col gap-3">

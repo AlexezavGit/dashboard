@@ -41,7 +41,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
 
-      <div className="flex-1 grid grid-cols-2 gap-5 px-6 pb-4 pt-3 min-h-0">
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 px-6 pb-4 pt-3 min-h-0">
 
         {/* ── LEFT: gap + 5 systems ── */}
         <div className="flex flex-col gap-4">
