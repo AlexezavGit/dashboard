@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
@@ -155,151 +155,130 @@ const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () =>
 
 // ── Gauge component ─────────────────────────────────────────────────────────
 const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () => void }> = ({ lang, expanded, onToggle }) => {
-  const cx = 140, cy = 113, R = 95;
+  const cx = 140, cy = 138, R = 110;
   const bandColor = BAND_COLOR[currentBand];
 
-  // Animate needle by driving score 0→INDEX_SCORE and computing endpoint via polar()
-  // This avoids SVG CSS-rotation direction ambiguity entirely.
-  const scoreProgress = useMotionValue(0);
-  useEffect(() => {
-    const controls = animate(scoreProgress, INDEX_SCORE, {
-      type: 'spring', stiffness: 42, damping: 13, delay: 0.45,
-    });
-    return controls.stop;
-  }, []);
-  const needleX2 = useTransform(scoreProgress, v => polar(valToAngle(v), R * 0.77, cx, cy).x);
-  const needleY2 = useTransform(scoreProgress, v => polar(valToAngle(v), R * 0.77, cx, cy).y);
+  // Needle: animate x2/y2 directly via polar() — no CSS rotation involved
+  const startTip = polar(180, R * 0.80, cx, cy);
+  const endTip   = polar(valToAngle(INDEX_SCORE), R * 0.80, cx, cy);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
-      {/* Gauge SVG */}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      {/* ── Half-circle gauge SVG ── */}
       <div onClick={onToggle} style={{ cursor: 'pointer', width: '100%' }}>
-        <svg viewBox="0 0 280 160" width="100%" style={{ overflow: 'visible', display: 'block' }}>
+        <svg viewBox="0 0 280 150" width="100%" style={{ display: 'block', overflow: 'visible' }}>
 
-          {/* Track background */}
-          <path d={gaugePath(R, 180, 0, cx, cy)} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="16" />
+          {/* Track */}
+          <path d={gaugePath(R, 180, 0, cx, cy)} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="22" />
 
-          {/* Zone arcs: Crisis / Warning / Recovery */}
-          <path d={gaugePath(R, 180, 120, cx, cy)} fill="none" stroke="#ff7b6e" strokeWidth="13" opacity="0.40" />
-          <path d={gaugePath(R, 120, 60, cx, cy)}  fill="none" stroke="#e8c97a" strokeWidth="13" opacity="0.40" />
-          <path d={gaugePath(R, 60, 0, cx, cy)}   fill="none" stroke="#00d4aa" strokeWidth="13" opacity="0.40" />
+          {/* Zone bands — thick, elevator-indicator style */}
+          <path d={gaugePath(R, 180, 120, cx, cy)} fill="none" stroke="#ff7b6e" strokeWidth="20" opacity="0.50" />
+          <path d={gaugePath(R, 120,  60, cx, cy)} fill="none" stroke="#e8c97a" strokeWidth="20" opacity="0.50" />
+          <path d={gaugePath(R,  60,   0, cx, cy)} fill="none" stroke="#00d4aa" strokeWidth="20" opacity="0.50" />
 
           {/* Filled progress arc */}
-          <path d={gaugePath(R, 180, valToAngle(INDEX_SCORE), cx, cy)} fill="none" stroke={bandColor} strokeWidth="13" opacity="0.88" strokeLinecap="round" />
+          <path d={gaugePath(R, 180, valToAngle(INDEX_SCORE), cx, cy)}
+            fill="none" stroke={bandColor} strokeWidth="20" opacity="0.92" strokeLinecap="round" />
 
           {/* Layer score tick marks */}
           {LAYERS.map(l => {
             const pct = Math.min(100, (l.current / l.target) * 100);
             const ang = valToAngle(pct);
-            const inner = polar(ang, R - 10, cx, cy);
-            const outer = polar(ang, R + 10, cx, cy);
-            return (
-              <line key={l.id}
-                x1={inner.x.toFixed(2)} y1={inner.y.toFixed(2)}
-                x2={outer.x.toFixed(2)} y2={outer.y.toFixed(2)}
-                stroke={l.color} strokeWidth="2.5" opacity="0.9"
-              />
-            );
+            const inn = polar(ang, R - 13, cx, cy);
+            const out = polar(ang, R + 13, cx, cy);
+            return <line key={l.id} x1={inn.x.toFixed(1)} y1={inn.y.toFixed(1)} x2={out.x.toFixed(1)} y2={out.y.toFixed(1)} stroke={l.color} strokeWidth="2" opacity="0.95" />;
           })}
 
-          {/* Major tick marks at 0, 25, 50, 75, 100 */}
+          {/* Major ticks at 0 / 25 / 50 / 75 / 100 */}
           {[0, 25, 50, 75, 100].map(v => {
             const ang = valToAngle(v);
-            const i = polar(ang, R - 5, cx, cy);
-            const o = polar(ang, R + 5, cx, cy);
-            return <line key={v} x1={i.x.toFixed(2)} y1={i.y.toFixed(2)} x2={o.x.toFixed(2)} y2={o.y.toFixed(2)} stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" />;
+            const i = polar(ang, R - 7, cx, cy);
+            const o = polar(ang, R + 7, cx, cy);
+            return <line key={v} x1={i.x.toFixed(1)} y1={i.y.toFixed(1)} x2={o.x.toFixed(1)} y2={o.y.toFixed(1)} stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" />;
           })}
 
-          {/* Animated needle — endpoint computed via polar(), correct in all browsers */}
+          {/* Animated needle: initial=left (score 0) → animate to score 29 */}
           <motion.line
             x1={cx} y1={cy}
-            x2={needleX2 as any} y2={needleY2 as any}
-            stroke={bandColor} strokeWidth="2.5" strokeLinecap="round"
-            style={{ filter: `drop-shadow(0 0 5px ${bandColor}99)` } as React.CSSProperties}
+            initial={{ x2: startTip.x, y2: startTip.y }}
+            animate={{ x2: endTip.x, y2: endTip.y }}
+            transition={{ type: 'spring', stiffness: 38, damping: 12, delay: 0.5 }}
+            stroke={bandColor} strokeWidth="3" strokeLinecap="round"
+            style={{ filter: `drop-shadow(0 0 7px ${bandColor}cc)` } as React.CSSProperties}
           />
 
           {/* Needle base */}
-          <circle cx={cx} cy={cy} r="7" fill={bandColor}
-            style={{ filter: `drop-shadow(0 0 12px ${bandColor}aa)` }} />
-
-          {/* Zone endpoint labels */}
-          <text x="14" y={cy + 5} textAnchor="middle" fill="rgba(255,123,110,0.6)"
-            style={{ fontSize: 8, fontFamily: 'DM Sans, sans-serif' } as React.CSSProperties}>
-            {lang === 'uk' ? 'Стагн.' : 'Stag.'}
-          </text>
-          <text x="266" y={cy + 5} textAnchor="middle" fill="rgba(0,212,170,0.6)"
-            style={{ fontSize: 8, fontFamily: 'DM Sans, sans-serif' } as React.CSSProperties}>
-            {lang === 'uk' ? 'Відн.' : 'Rec.'}
-          </text>
-
-          {/* Central value */}
-          <text x={cx} y={cy + 28} textAnchor="middle" fill={bandColor}
-            style={{ fontSize: 36, fontFamily: 'Space Grotesk, sans-serif', fontWeight: 900 } as React.CSSProperties}>
-            {INDEX_SCORE}
-          </text>
-          <text x={cx} y={cy + 43} textAnchor="middle" fill="rgba(200,208,220,0.45)"
-            style={{ fontSize: 8, fontFamily: 'DM Sans, sans-serif' } as React.CSSProperties}>
-            {lang === 'uk' ? 'з 100' : 'out of 100'}
-          </text>
+          <circle cx={cx} cy={cy} r="9" fill={bandColor}
+            style={{ filter: `drop-shadow(0 0 16px ${bandColor}bb)` }} />
         </svg>
       </div>
 
-      {/* Band label */}
-      <div style={{ textAlign: 'center', marginTop: -4 }}>
-        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: bandColor }}>
+      {/* ── Zone endpoint hints ── */}
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', marginTop: -6, paddingLeft: 20, paddingRight: 20 }}>
+        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'rgba(255,123,110,0.55)' }}>
+          {lang === 'uk' ? 'Стагн.' : 'Stag.'}
+        </span>
+        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'rgba(0,212,170,0.55)' }}>
+          {lang === 'uk' ? 'Відн.' : 'Rec.'}
+        </span>
+      </div>
+
+      {/* ── Score + band label ── */}
+      <div style={{ textAlign: 'center', marginTop: 4 }}>
+        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 900, fontSize: 46, color: bandColor, lineHeight: 1,
+          textShadow: `0 0 32px ${bandColor}77` }}>
+          {INDEX_SCORE}
+        </div>
+        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: bandColor, marginTop: 4 }}>
           {BAND_LABEL[currentBand][lang]}
         </div>
         <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)', marginTop: 3, lineHeight: 1.4 }}>
-          {lang === 'uk'
-            ? 'темп відновлення при завершенні бойових дій'
-            : 'recovery pace when hostilities end'}
+          {lang === 'uk' ? 'темп відновлення при завершенні бойових дій' : 'recovery pace when hostilities end'}
         </div>
       </div>
 
-      {/* Expand toggle */}
+      {/* ── Expand toggle ── */}
       <button
         onClick={onToggle}
-        style={{
-          marginTop: 6,
-          fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+        style={{ marginTop: 8, fontFamily: 'DM Sans, sans-serif', fontSize: 9,
           color: bandColor, background: 'none',
           border: `1px solid ${bandColor}44`, borderRadius: 6,
-          padding: '3px 12px', cursor: 'pointer',
-        }}
+          padding: '3px 14px', cursor: 'pointer' }}
       >
         {expanded
           ? (lang === 'uk' ? '↑ згорнути' : '↑ collapse')
           : (lang === 'uk' ? '↓ розклад індексу' : '↓ index breakdown')}
       </button>
 
-      {/* Expandable layer breakdown */}
+      {/* ── Expandable breakdown — uses all available space ── */}
       <AnimatePresence>
         {expanded && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            style={{ overflow: 'hidden', width: '100%', paddingTop: 8 }}
+            style={{ overflow: 'hidden', width: '100%', paddingTop: 12 }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {LAYERS.map((l, i) => {
                 const pct = Math.min(100, (l.current / l.target) * 100);
                 return (
                   <div key={l.id}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-                      <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9, color: l.color }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                      <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10, color: l.color }}>
                         {l.layer[lang]}
                       </span>
-                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)' }}>
+                      <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, color: 'var(--color-ds-muted)' }}>
                         {Math.round(pct)}% · w{l.weight}%
                       </span>
                     </div>
-                    <div style={{ height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.05)' }}>
+                    <div style={{ height: 7, borderRadius: 4, background: 'rgba(255,255,255,0.06)' }}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
-                        transition={{ delay: i * 0.07, duration: 0.55 }}
-                        style={{ height: '100%', borderRadius: 2, background: l.color }}
+                        transition={{ delay: 0.05 + i * 0.07, duration: 0.55 }}
+                        style={{ height: '100%', borderRadius: 4, background: l.color,
+                          boxShadow: `0 0 8px ${l.color}55` }}
                       />
                     </div>
                   </div>
