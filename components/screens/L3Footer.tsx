@@ -6,11 +6,12 @@ import { ScreenId, ScreenNav } from './types';
 interface Props { lang: Language; nav: ScreenNav; }
 
 const TOPICS: { uk: string; en: string; screen: ScreenId }[] = [
-  { uk: '9 розривів системи',    en: '9 System Gaps',         screen: 'l2-operational' },
-  { uk: 'Ландшафт MHPSS',        en: 'MHPSS Landscape',       screen: 'l1'             },
-  { uk: 'Карта видимості даних',  en: 'Data Visibility Map',   screen: 'l2-analytical'  },
-  { uk: 'Покриття 0.28%',         en: 'Coverage 0.28%',        screen: 'l2-coverage'    },
-  { uk: 'Системний беклог',       en: 'System Backlog',        screen: 'l2-backlog'     },
+  // 6 program layer screens
+  { uk: 'Завершуваність',         en: 'Clinical Completion',   screen: 'l2-clinical'    },
+  { uk: 'Інтероперабельність',    en: 'Data Interop',          screen: 'l2-data'        },
+  { uk: 'Адмін-дублювання',       en: 'Digital Erosion',       screen: 'l2-digital'     },
+  { uk: 'Місткість кадрів',       en: 'Workforce Capacity',    screen: 'l2-sustain'     },
+  { uk: 'Верифіковані виходи',    en: 'Verified Outcomes',     screen: 'l2-fintech'     },
   { uk: 'Локалізація ресурсів',   en: 'Resource Localization', screen: 'l2-regulatory'  },
 ];
 
