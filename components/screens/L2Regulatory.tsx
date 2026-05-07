@@ -24,7 +24,7 @@ const MILESTONES = [
 
 export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
   <div
-    className="fixed inset-0 flex flex-col overflow-hidden"
+    className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
     style={{ background: 'linear-gradient(135deg, #0a1628 0%, #0f0a1a 100%)' }}
   >
     <div className="h-[2px] w-full flex-shrink-0"

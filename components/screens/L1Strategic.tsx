@@ -317,7 +317,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
 
   return (
     <div
-      className="fixed inset-0 flex flex-col overflow-hidden"
+      className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
       style={{
         background:
           'radial-gradient(ellipse 80% 60% at 20% 60%, rgba(0,210,170,0.10) 0%, transparent 55%), ' +

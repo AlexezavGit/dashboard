@@ -239,7 +239,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
 
   return (
     <div
-      className="fixed inset-0 flex flex-col overflow-hidden"
+      className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
       style={{
         background:
           'radial-gradient(ellipse 60% 50% at 50% 20%, rgba(46,196,182,0.09) 0%, transparent 55%), ' +

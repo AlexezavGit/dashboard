@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
+import { L3Footer } from './L3Footer';
 
 interface Props { lang: Language; nav: ScreenNav; }
 
@@ -39,7 +40,7 @@ const COMPONENTS = [
 
 export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
   <div
-    className="fixed inset-0 flex flex-col overflow-hidden"
+    className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
     style={{
       background:
         'radial-gradient(ellipse 60% 50% at 80% 50%, rgba(200,164,92,0.14) 0%, transparent 55%), ' +
@@ -176,5 +177,6 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
         </motion.div>
       </div>
     </div>
+    <L3Footer lang={lang} nav={nav} />
   </div>
 );

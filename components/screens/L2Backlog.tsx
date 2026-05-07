@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
+import { L3Footer } from './L3Footer';
 
 interface Props { lang: Language; nav: ScreenNav; }
 
@@ -37,7 +38,7 @@ const MAX_YEARS = 13;
 
 export const L2Backlog: React.FC<Props> = ({ lang, nav }) => (
   <div
-    className="fixed inset-0 flex flex-col overflow-hidden"
+    className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
     style={{
       background:
         'radial-gradient(ellipse 50% 60% at 30% 50%, rgba(0,210,170,0.15) 0%, transparent 55%), ' +
@@ -172,5 +173,6 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => (
         </div>
       </motion.div>
     </div>
+    <L3Footer lang={lang} nav={nav} />
   </div>
 );

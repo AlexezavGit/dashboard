@@ -202,6 +202,23 @@
 :root[data-theme="light"] .border-cyber-border { border-color: rgba(139,105,20,0.22) !important; }
 :root[data-theme="light"] .bg-cyber-bg { background: #f5f0e8 !important; }
 
+/* Screen containers — override hardcoded dark inline gradients */
+:root[data-theme="light"] .ds-screen {
+  background: linear-gradient(135deg, #f0ebe1 0%, #e8e1d6 100%) !important;
+}
+
+/* Accent top line in light mode: mute the neon glow */
+:root[data-theme="light"] .ds-screen > .h-\[2px\] {
+  opacity: 0.35;
+  box-shadow: none !important;
+}
+
+/* Card surfaces in screens need readable contrast in light */
+:root[data-theme="light"] .ds-screen [style*="background: rgba(0,0,0,0.3)"],
+:root[data-theme="light"] .ds-screen [style*="background: rgba(255,255,255,0.03)"] {
+  background: rgba(0,0,0,0.06) !important;
+}
+
 /* Backdrop on mobile sidebar overlay */
 :root[data-theme="light"] .bg-black\/50 { background: rgba(0,0,0,0.25) !important; }
 

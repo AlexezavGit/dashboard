@@ -29,7 +29,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
 
   return (
     <div
-      className="fixed inset-0 flex flex-col overflow-hidden"
+      className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
       style={{ background: 'linear-gradient(135deg, #0a1628 0%, #120a1a 100%)' }}
     >
       <div className="h-[2px] w-full flex-shrink-0"

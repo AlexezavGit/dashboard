@@ -84,7 +84,7 @@ const LEGEND = [
 
 export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
   <div
-    className="fixed inset-0 flex flex-col overflow-hidden"
+    className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
     style={{
       background:
         'radial-gradient(ellipse 60% 50% at 70% 30%, rgba(167,139,250,0.10) 0%, transparent 55%), ' +
@@ -195,5 +195,6 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
         </div>
       </motion.div>
     </div>
+    <L3Footer lang={lang} nav={nav} />
   </div>
 );

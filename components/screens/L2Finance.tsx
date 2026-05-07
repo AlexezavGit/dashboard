@@ -287,7 +287,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
 
   return (
     <div
-      className="fixed inset-0 flex flex-col overflow-hidden"
+      className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
       style={{
         background:
           'radial-gradient(ellipse 60% 50% at 25% 65%, rgba(0,212,170,0.07) 0%, transparent 55%), ' +
