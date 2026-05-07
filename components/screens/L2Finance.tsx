@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, AlertTriangle, Zap } from 'lucide-react';
 import { Language } from '../../types';
-import { ScreenNav } from './types';
+import { ScreenId, ScreenNav } from './types';
 import { BUDGET_SPLIT_DATA, DONOR_DATA } from '../../constants';
 
 interface Props { lang: Language; nav: ScreenNav; }
@@ -336,8 +336,8 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
           <FlipShell
             flipped={b1Flipped}
             onClick={() => setB1Flipped(f => !f)}
-            borderColor={solved ? 'rgba(0,212,170,0.4)' : 'rgba(200,164,92,0.4)'}
-            bgColor={solved ? 'rgba(0,212,170,0.06)' : 'rgba(200,164,92,0.06)'}
+            borderColor={solved ? 'rgba(0,212,170,0.4)' : 'rgba(255,123,110,0.4)'}
+            bgColor={solved ? 'rgba(0,212,170,0.06)' : 'rgba(255,123,110,0.06)'}
             front={
               <>
                 <div style={TAG('#ff7b6e')}>{uk ? 'Нерозподілені ресурси СБ' : 'WB Undisbursed Resources'}</div>
@@ -606,17 +606,17 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                 style={{ overflow: 'hidden' }}
               >
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 6px', paddingTop: 8 }}>
-                  {[
-                    { uk: 'FEEL AGAIN позиція', en: 'FEEL AGAIN position' },
-                    { uk: '6-шарова архітектура', en: '6-layer architecture' },
-                    { uk: 'HEAL ISR#6 KPI', en: 'HEAL ISR#6 KPIs' },
-                    { uk: 'Data Flow Architecture', en: 'Data Flow Architecture' },
-                    { uk: 'THRIVE P505616', en: 'THRIVE P505616' },
-                    { uk: 'HEAL C4 Procurement', en: 'HEAL C4 Procurement' },
-                  ].map(t => (
+                  {([
+                    { uk: '9 розривів системи', en: '9 System Gaps', screen: 'l2-operational' as ScreenId },
+                    { uk: 'Ландшафт MHPSS', en: 'MHPSS Landscape', screen: 'l1' as ScreenId },
+                    { uk: 'Карта видимості даних', en: 'Data Visibility Map', screen: 'l2-analytical' as ScreenId },
+                    { uk: 'Покриття 0.28%', en: 'Coverage 0.28%', screen: 'l2-coverage' as ScreenId },
+                    { uk: 'Системний беклог', en: 'System Backlog', screen: 'l2-backlog' as ScreenId },
+                    { uk: 'Локалізація ресурсів', en: 'Resource Localization', screen: 'l2-regulatory' as ScreenId },
+                  ]).map(t => (
                     <button
                       key={t.en}
-                      onClick={() => nav.push('appendix')}
+                      onClick={() => nav.push(t.screen)}
                       style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: '#00d4aa', background: 'rgba(0,212,170,0.06)', border: '1px solid rgba(0,212,170,0.2)', borderRadius: 5, padding: '2px 8px', cursor: 'pointer' }}
                     >
                       {t[lang]}

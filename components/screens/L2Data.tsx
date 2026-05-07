@@ -12,7 +12,7 @@ const SYSTEMS = [
   { name: 'NHSU / НСЗУ', desc: { uk: '260K MH-пацієнтів 2025, капітаційні виплати', en: '260K MH patients 2025, capitation payments' } },
   { name: 'ESOZ', desc: { uk: '36.5M users, ВПО + реінтеграція', en: '36.5M users, IDPs + reintegration' } },
   { name: 'HELSI', desc: { uk: 'ЕМК для первинної ланки', en: 'EHR for primary care' } },
-  { name: 'Reint. Portal', desc: { uk: 'Портал ветеранів МВС / МОЗ', en: 'Veterans portal MoI / MoH' } },
+  { name: 'Reint. Portal', desc: { uk: 'Портал реінтеграції ветеранів', en: 'Veterans reintegration portal' } },
   { name: 'Private EHRs', desc: { uk: '303 приватні клініки, власний облік', en: '303 private clinics, own records' } },
 ];
 
@@ -141,7 +141,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
                 { uk: 'Integration Gateway — єдина точка входу для 5 систем', en: 'Integration Gateway — single entry point for 5 systems' },
                 { uk: 'HL7 FHIR R4 service bus: NHSU ↔ ESOZ ↔ HELSI', en: 'HL7 FHIR R4 service bus: NHSU ↔ ESOZ ↔ HELSI' },
                 { uk: '10K req/sec · <200ms p95 · 99.95% uptime', en: '10K req/sec · <200ms p95 · 99.95% uptime' },
-                { uk: 'Анонімізований аналітичний шар → NBU / МОЗ звіти', en: 'Anonymised analytics layer → NBU / MoH reports' },
+                { uk: 'Анонімізований аналітичний шар → NBU / держ. звіти', en: 'Anonymised analytics layer → NBU / regulatory reports' },
               ].map((item, i) => (
                 <div key={i} className="flex gap-2 items-start">
                   <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold mt-0.5"

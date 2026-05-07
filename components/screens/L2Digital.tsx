@@ -166,7 +166,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
               {[
                 { uk: 'Єдина цифрова форма: 1 введення → 5 систем автоматично', en: 'Single digital form: 1 entry → 5 systems automatically' },
                 { uk: 'Авто-заповнення з реєстрів пацієнтів (NHSU/ESOZ lookup)', en: 'Auto-fill from patient registries (NHSU/ESOZ lookup)' },
-                { uk: 'Пакетний експорт звіту МОЗ/НСЗУ — 1 клік замість 5', en: 'Batch MoH/NHSU report export — 1 click instead of 5' },
+                { uk: 'Пакетний експорт звіту НСЗУ — 1 клік замість 5', en: 'Batch NHSU report export — 1 click instead of 5' },
                 { uk: 'Аудит: час витрачений ↔ час оплачений → верифікація', en: 'Audit: time spent ↔ time billed → verification' },
               ].map((item, i) => (
                 <div key={i} className="flex gap-2 items-start">

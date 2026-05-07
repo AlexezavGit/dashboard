@@ -173,7 +173,7 @@ const FlipCard: React.FC<{
         <p className="ds-body" style={{ fontSize: '10px', lineHeight: 1.4, color: 'rgba(200,208,220,0.72)', marginTop: 'auto' }}>
           {gap.oneliner[lang]}
         </p>
-        <div style={{ fontSize: '10px', color: `${gap.color}55`, marginTop: '5px' }}>↩ flip</div>
+        <div style={{ fontSize: '10px', color: `${gap.color}40`, marginTop: '5px' }}>↻</div>
       </div>
 
       {/* ── BACK ── */}
@@ -218,7 +218,7 @@ const FlipCard: React.FC<{
             ))}
           </div>
         </div>
-        <div style={{ fontSize: '10px', color: `${gap.color}55` }}>↩ flip back</div>
+        <div style={{ fontSize: '10px', color: `${gap.color}40`, marginTop: 'auto' }}>↻</div>
       </div>
     </div>
   </div>
@@ -271,8 +271,8 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
           </div>
           <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
             {lang === 'uk'
-              ? 'Три кластери блокують масштабування MHPSS. Натисніть картку — побачите джерело та методологію.'
-              : 'Three clusters block MHPSS scale-up. Click a card to see source & methodology.'}
+              ? 'Три кластери блокують масштабування MHPSS'
+              : 'Three clusters block MHPSS scale-up'}
           </div>
         </div>
       </div>
