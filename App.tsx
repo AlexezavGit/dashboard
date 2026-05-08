@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { LayoutDashboard, Globe, ChevronDown, ChevronUp, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot, CalendarDays, Mail, Menu, X, Activity, Calculator, GitMerge } from 'lucide-react';
+import { LayoutDashboard, Globe, ChevronDown, ChevronUp, ChevronRight, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot, CalendarDays, Mail, Menu, X, Activity, Calculator, GitMerge, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ScreenRouter } from './components/screens/ScreenRouter';
 import {
@@ -16,8 +16,8 @@ import {
   THRIVE_PROJECT, HEAL_C4_PROCUREMENT, COUNTERARGUMENTS, ARCH_FLOW,
   STAKEHOLDER_MATRIX, FORMALIZATION_COST_V3, DUAL_PROJECT_NARRATIVE, MISSING_MIDDLE,
   PERFECT_STORM_SCALE, STRUCTURAL_DISP_DATA,
-  KEY_CONCLUSIONS, ALL_CONCLUSIONS_GRID, MISSING_DATA,
-  NSZU_SNAPSHOT, KILLER_QUOTES, GRAND_BARGAIN_3,
+  KEY_CONCLUSIONS, MISSING_DATA,
+  NSZU_SNAPSHOT, GRAND_BARGAIN_3,
   DATA_INTELLIGENCE, FEEL_AGAIN_4_FUNCTIONS, ROI_PARAMS,
 } from './constants';
 import { Language, SectionFilter } from './types';
@@ -189,10 +189,19 @@ const App: React.FC = () => {
     }
   }, [activeSection]);
 
+  // L3 anchor scrolling — reads target set by L3Footer topic buttons
+  useEffect(() => {
+    if (!showAppendix) return;
+    const target = sessionStorage.getItem('l3-scroll');
+    if (!target) return;
+    sessionStorage.removeItem('l3-scroll');
+    requestAnimationFrame(() => {
+      document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [showAppendix]);
+
   // Email subscribe state
-  const [emailTop, setEmailTop] = React.useState('');
   const [emailBottom, setEmailBottom] = React.useState('');
-  const [submittedTop, setSubmittedTop] = React.useState(false);
   const [submittedBottom, setSubmittedBottom] = React.useState(false);
 
   const filteredSections = activeSection === 'all'
@@ -349,16 +358,19 @@ const App: React.FC = () => {
       <div className={`flex-1 min-h-screen transition-all duration-300 ${sidebarOpen ? 'lg:ml-56' : 'ml-0'}`}>
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-12" id="hero-top">
         
-        {/* Header */}
-        <header className="pt-8 md:pt-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pb-10 mb-10" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
+        {/* ── L3 HEADER — NavBar-style, consistent with L1/L2 ───────── */}
+        <div className="flex-shrink-0 pt-4 pb-3 mb-6" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
           <div className="flex items-center gap-3">
-            {/* ← Back to overview (left side, consistent with L2 back buttons) */}
+            {/* Back button */}
             <button
               onClick={() => setShowAppendix(false)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-bold ds-display transition-all flex-shrink-0"
-              style={{ background: 'rgba(200,164,92,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)' }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold ds-display transition-all flex-shrink-0"
+              style={{ background: 'rgba(200,164,92,0.18)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '13px', minWidth: '90px' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.32)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.18)'; }}
             >
-              ← {lang === 'uk' ? 'До огляду' : 'Overview'}
+              <ArrowLeft className="w-4 h-4" />
+              {lang === 'uk' ? 'Назад' : 'Back'}
             </button>
             {/* Sidebar toggle */}
             <button
@@ -369,125 +381,45 @@ const App: React.FC = () => {
             >
               {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
-          <div className="flex items-center gap-5">
-            <img src="/logo.svg" alt="FEEL Again" className="w-24 h-24 rounded-xl" />
-            <div className="w-px h-12" style={{ background: 'var(--color-ds-border)' }} />
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tighter flex items-center gap-3 ds-display" style={{ color: 'var(--color-ds-text)' }}>
-                {TEXTS.header.title[lang]}
-                <span className="text-[10px] px-2 py-0.5 rounded font-mono uppercase" style={{ background: 'var(--color-ds-gold-dim)', color: 'var(--color-ds-gold)', border: '1px solid var(--color-ds-border)' }}>
-                  OPEN DATA
-                </span>
-              </h1>
-              <p className="text-xs md:text-sm font-mono mt-1" style={{ color: 'var(--color-ds-muted)' }}>{TEXTS.header.subtitle[lang]}</p>
+            {/* Breadcrumbs */}
+            <div className="hidden sm:flex items-center gap-1.5 text-[11px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
+              <span>{lang === 'uk' ? 'Огляд' : 'Overview'}</span>
+              <ChevronRight className="w-3 h-3 flex-shrink-0" />
+              <span style={{ color: 'var(--color-ds-teal)' }}>
+                {lang === 'uk' ? 'Аналітичний звіт' : 'Analytical Report'}
+              </span>
             </div>
+            <div className="flex-1" />
+            {/* Language switcher */}
+            <div className="flex p-0.5 rounded-lg" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid var(--color-ds-border)' }}>
+              <button
+                onClick={() => setLang('uk')}
+                className="px-2.5 py-1 rounded-md text-[10px] font-bold ds-display transition-all"
+                style={lang === 'uk' ? { background: 'var(--color-ds-gold)', color: '#0a1628' } : { color: 'var(--color-ds-muted)' }}
+              >UA</button>
+              <button
+                onClick={() => setLang('en')}
+                className="px-2.5 py-1 rounded-md text-[10px] font-bold ds-display transition-all"
+                style={lang === 'en' ? { background: 'var(--color-ds-gold)', color: '#0a1628' } : { color: 'var(--color-ds-muted)' }}
+              >EN</button>
+            </div>
+            {/* Theme toggle */}
+            <button
+              onClick={toggleTheme}
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-[13px] transition-all"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid var(--color-ds-border)', color: 'var(--color-ds-muted)' }}
+              title={darkMode ? 'Light mode' : 'Dark mode'}
+            >
+              {darkMode ? '☀' : '◑'}
+            </button>
           </div>
-          </div>{/* end flex items-center gap-4 */}
-
-          <div className="flex flex-col md:items-end gap-3 w-full md:w-auto">
-            <div className="flex items-center gap-2">
-              {/* Language switcher */}
-              <div className="flex bg-cyber-surface border border-cyber-border p-1 rounded-lg">
-                <button
-                  onClick={() => setLang('uk')}
-                  className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ds-display ${lang === 'uk' ? 'shadow-lg scale-[1.04]' : 'hover:bg-white/5'}`}
-                  style={lang === 'uk' ? { background: 'var(--color-ds-gold)', color: 'var(--color-ds-bg)' } : { color: 'var(--color-ds-muted)' }}
-                >
-                  UA
-                </button>
-                <button
-                  onClick={() => setLang('en')}
-                  className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ds-display ${lang === 'en' ? 'shadow-lg scale-[1.04]' : 'hover:bg-white/5'}`}
-                  style={lang === 'en' ? { background: 'var(--color-ds-gold)', color: 'var(--color-ds-bg)' } : { color: 'var(--color-ds-muted)' }}
-                >
-                  EN
-                </button>
-              </div>
-              {/* Dark/light toggle */}
-              <button onClick={toggleTheme} className="ds-theme-toggle" title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
-                {darkMode ? '☀' : '◑'}
-              </button>
-            </div>
-            <div className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--color-ds-muted)' }}>
-              {TEXTS.header.date[lang]} · {lang === 'uk' ? 'Верифіковано вручну' : 'Manually verified'}
-            </div>
-          </div>
-        </header>
-
-        {/* ── INSTITUTIONAL MISSION STATEMENT ─────────────────────────── */}
-        <div className="mb-10 rounded-2xl overflow-hidden ds-hero" style={{ border: '1px solid var(--color-ds-border)' }}>
-          {/* Top band */}
-          <div className="flex items-center gap-0" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
-            <div className="flex-1 px-6 py-3 border-r flex items-center gap-3" style={{ borderColor: 'var(--color-ds-border)', background: 'rgba(46,196,182,0.06)' }}>
-              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: 'var(--color-ds-teal)' }} />
-              <span className="cyber-label">{lang === 'uk' ? 'ПРОБЛЕМА' : 'THE PROBLEM'}</span>
-            </div>
-            <div className="flex-1 px-6 py-3 border-r flex items-center gap-3" style={{ borderColor: 'var(--color-ds-border)', background: 'rgba(200,164,92,0.06)' }}>
-              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: 'var(--color-ds-gold)' }} />
-              <span className="cyber-label">{lang === 'uk' ? 'РОЗРИВ' : 'THE GAP'}</span>
-            </div>
-            <div className="flex-1 px-6 py-3 flex items-center gap-3" style={{ background: 'rgba(46,196,182,0.04)' }}>
-              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: 'var(--color-ds-teal)' }} />
-              <span className="cyber-label">{lang === 'uk' ? 'РІШЕННЯ' : 'THE SOLUTION'}</span>
-            </div>
-          </div>
-          {/* Content */}
-          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x" style={{ borderColor: 'var(--color-ds-border)' }}>
-            {/* Problem */}
-            <div className="px-7 py-7">
-              <p className="ds-display text-[15px] font-semibold leading-snug mb-3" style={{ color: 'var(--color-ds-text)' }}>
-                {lang === 'uk'
-                  ? '3.9 млн розладів та потреб у послугах ментального здоров\'я'
-                  : '3.9M mental health disorder-episodes requiring clinical services'}
-              </p>
-              <p className="ds-body text-[12px] leading-relaxed" style={{ color: 'var(--color-ds-muted)' }}>
-                {lang === 'uk'
-                  ? '22% населення України — під клінічно значущим психологічним тиском (Lancet, 2024). Система НСЗУ 2025 охопила 260K пацієнтів ПМД та 118K у ЦМЗ — це до 8% від розрахункової потреби (верхня межа; реальний показник не вимірюється через відсутність крос-системного обліку).'
-                  : "22% of Ukraine's population is under clinically significant psychological distress (Lancet, 2024). NHSU 2025 reached 260K PMD patients and 118K at MHCs — up to 8% of calculated need (upper bound; real figure is unmeasured due to absent cross-system tracking)."}
-              </p>
-            </div>
-            {/* Gap */}
-            <div className="px-7 py-7">
-              <p className="ds-display text-[15px] font-semibold leading-snug mb-3" style={{ color: 'var(--color-ds-text)' }}>
-                {lang === 'uk'
-                  ? '$1.87B у системі — $0 верифікованих outcome-виплат'
-                  : '$1.87B in the system — $0 verified outcome-linked payments'}
-              </p>
-              <p className="ds-body text-[12px] leading-relaxed" style={{ color: 'var(--color-ds-muted)' }}>
-                {lang === 'uk'
-                  ? 'HEAL ($500M) та THRIVE ($454M PforR) фінансують послуги, але 5 систем не обмінюються даними: 4.7M гуманітарних сесій/рік невидимі для ЄСОЗ → 0 DLI-тригерів disbursement.'
-                  : 'HEAL ($500M) and THRIVE ($454M PforR) fund services, but 5 systems share no data: 4.7M humanitarian sessions/yr are invisible to ESOZ → 0 DLI disbursement triggers.'}
-              </p>
-            </div>
-            {/* Solution */}
-            <div className="px-7 py-7">
-              <p className="ds-display text-[15px] font-semibold leading-snug mb-3" style={{ color: 'var(--color-ds-text)' }}>
-                {lang === 'uk'
-                  ? 'FEEL Again: інтеграційний шлюз + сервісна шина між гуманітарними даними та eHealth'
-                  : 'FEEL Again: integration gateway + service bus between humanitarian data and eHealth'}
-              </p>
-              <p className="ds-body text-[12px] leading-relaxed" style={{ color: 'var(--color-ds-muted)' }}>
-                {lang === 'uk'
-                  ? 'HL7 FHIR R4 міст до ЄСОЗ (36.5M користувачів). Кожна сесія стає видимою для THRIVE DLI-disbursement. Цільові показники: 10K req/sec · <200мс p95 · 99.95% uptime · 50K одночасних.'
-                  : 'HL7 FHIR R4 bridge to ESOZ (36.5M users). Every session becomes visible for THRIVE DLI disbursement. Targets: 10K req/sec · <200ms p95 · 99.95% uptime · 50K concurrent.'}
-              </p>
-            </div>
-          </div>
-          {/* Footer citation */}
-          <div className="px-6 py-3 flex items-center justify-between" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
-            <span className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
-              {lang === 'uk'
-                ? 'Джерела: Lancet 2024 · НСЗУ відкриті дані 2025 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'
-                : 'Sources: Lancet 2024 · NHSU open data 2025 · World Bank HEAL P180245 / THRIVE P505616 · FEEL Again analysis'}
-            </span>
-            <div className="flex items-center gap-3">
-              {liveMetrics.worldBankHealth && (
-                <span className="text-[9px] font-mono" style={{ color: 'var(--color-ds-teal)' }}>
-                  WB: Ukraine health {liveMetrics.worldBankHealth.healthSpendingPctGdp}% GDP ({liveMetrics.worldBankHealth.year})
-                </span>
-              )}
-              <DataSourceBadge status="live" lang={lang} compact />
-            </div>
+          <div className="mt-3 ml-1">
+            <h2 className="text-[22px] font-bold ds-display leading-tight" style={{ color: 'var(--color-ds-teal)' }}>
+              {lang === 'uk' ? 'Аналітичний звіт' : 'Analytical Report'}
+            </h2>
+            <p className="text-[12px] ds-body mt-1" style={{ color: 'var(--color-ds-muted)' }}>
+              {lang === 'uk' ? 'МЗПСП Україна — поглиблений аналіз 2024–2025' : 'MHPSS Ukraine — deep analysis 2024–2025'}
+            </p>
           </div>
         </div>
 
@@ -689,18 +621,6 @@ const App: React.FC = () => {
           </p>
         </div>
 
-        {/* Killer Quotes Strip */}
-        <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {KILLER_QUOTES(lang).slice(0, 4).map((q, i) => (
-            <div key={q.id} className="cyber-card rounded-xl p-4 border-l-2 flex flex-col gap-2" style={{ borderLeftColor: q.color }}>
-              <p className="text-[11px] font-mono font-bold leading-snug" style={{ color: q.color }}>
-                &ldquo;{lang === 'uk' ? q.uk : q.en}&rdquo;
-              </p>
-              <p className="text-[8px] text-slate-600 font-mono mt-auto">{q.source}</p>
-            </div>
-          ))}
-        </div>
-
         {/* Key Conclusions — 4 primary thesis cards */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
@@ -732,39 +652,6 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Email CTA #1 — Get Report */}
-        <div className="mb-8 rounded-xl border border-cyber-amber/30 bg-cyber-amber/5 p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="flex-1">
-            <div className="text-[11px] font-mono font-bold text-cyber-amber uppercase tracking-widest mb-1">
-              {lang === 'uk' ? 'ОТРИМАТИ ЗВІТ НА ПОШТУ' : 'GET REPORT BY EMAIL'}
-            </div>
-            <p className="text-[11px] text-slate-400">
-              {lang === 'uk'
-                ? 'Надішлемо зведений PDF-звіт з усіма висновками та оновленнями даних'
-                : 'We\'ll send a summarised PDF report with all findings and data updates'}
-            </p>
-          </div>
-          {submittedTop ? (
-            <div className="flex items-center gap-2 text-cyber-success text-[11px] font-mono font-bold">
-              <Check className="w-4 h-4" /> {lang === 'uk' ? 'Дякуємо!' : 'Thank you!'}
-            </div>
-          ) : (
-            <form className="flex gap-2 w-full sm:w-auto" onSubmit={e => { e.preventDefault(); if (emailTop) setSubmittedTop(true); }}>
-              <input
-                type="email"
-                required
-                value={emailTop}
-                onChange={e => setEmailTop(e.target.value)}
-                placeholder={lang === 'uk' ? 'your@email.com' : 'your@email.com'}
-                className="flex-1 sm:w-56 bg-cyber-surface border border-cyber-border rounded-lg px-3 py-2 text-[11px] font-mono text-white placeholder-slate-600 focus:outline-none focus:border-cyber-amber/60 transition-colors"
-              />
-              <button type="submit" className="bg-cyber-amber text-cyber-bg px-4 py-2 rounded-lg text-[11px] font-mono font-bold hover:bg-white transition-colors uppercase tracking-wider flex-shrink-0">
-                {lang === 'uk' ? 'Надіслати' : 'Send'}
-              </button>
-            </form>
-          )}
-        </div>
-
         {/* KPIs Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-4">
           {KPI_DATA.map((kpi, idx) => (
@@ -787,27 +674,6 @@ const App: React.FC = () => {
                 <div className="text-[22px] font-bold tracking-tighter leading-none mb-1" style={{ color: m.color }}>{m.val}</div>
                 <div className="text-[9px] text-slate-400 uppercase tracking-widest">{m.label}</div>
                 <div className="text-[9px] text-slate-600 mt-0.5 leading-tight">{m.sub}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* All Conclusions Summary Grid — 8-cell cross-section digest */}
-        <div className="mb-12">
-          <div className="flex items-center gap-3 mb-4 px-1">
-            <div className="h-px flex-1 bg-gradient-to-r from-slate-700/60 to-transparent" />
-            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-[0.2em] px-2">
-              {lang === 'uk' ? 'ВСІ КЛЮЧОВІ ВИСНОВКИ — ЗВЕДЕНИЙ ОГЛЯД' : 'ALL KEY CONCLUSIONS — SUMMARY VIEW'}
-            </span>
-            <div className="h-px flex-1 bg-gradient-to-l from-slate-700/60 to-transparent" />
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-            {ALL_CONCLUSIONS_GRID(lang).map((c, i) => (
-              <div key={i} className="bg-cyber-surface border border-cyber-border/50 rounded-lg p-3 flex flex-col gap-1.5 hover:border-cyber-border transition-colors">
-                <div className="text-[9px] font-mono font-bold uppercase tracking-widest" style={{ color: c.color }}>
-                  {c.section}
-                </div>
-                <p className="text-[10px] text-slate-400 leading-relaxed">{c.text}</p>
               </div>
             ))}
           </div>
