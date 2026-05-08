@@ -61,7 +61,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
 
       <div className="flex-1 overflow-y-auto px-6 pt-4 pb-4 space-y-6" style={{ scrollbarWidth: 'thin', scrollbarColor: '#00d4aa22 transparent' }}>
 
-        {/* ── INTEROP HEADLINE ── */}
+        {/* INTEROP HEADLINE */}
         <div className="rounded-2xl p-5 flex items-center gap-6"
           style={{ background: 'rgba(0,210,170,0.07)', border: '1px solid rgba(0,210,170,0.3)' }}>
           <div>
@@ -91,7 +91,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
           </div>
         </div>
 
-        {/* ── СТАТУС ДЖЕРЕЛ ДАНИХ ── */}
+        {/* DATA SOURCE STATUS */}
         <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(0,210,170,0.2)' }}>
           <div style={{ background: 'rgba(0,210,170,0.08)', borderBottom: '1px solid rgba(0,210,170,0.2)', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -124,8 +124,8 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: i < sources.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: STATUS_COLORS[src.status] ?? '#a0a0b0', flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: '12px', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif', color: '#c8d0dc' }}>{src.name}</div>
-                    {src.description && <div style={{ fontSize: '10px', fontFamily: 'DM Sans, sans-serif', color: 'rgba(200,208,220,0.45)', marginTop: 1 }}>{src.description}</div>}
+                    <div style={{ fontSize: '12px', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif', color: '#c8d0dc' }}>{src.name[lang]}</div>
+                    <div style={{ fontSize: '10px', fontFamily: 'DM Sans, sans-serif', color: 'rgba(200,208,220,0.45)', marginTop: 1 }}>{src.dataType[lang]}</div>
                   </div>
                   <span style={{ fontSize: '9px', fontFamily: 'DM Mono, monospace', fontWeight: 700, color: STATUS_COLORS[src.status] ?? '#a0a0b0', border: `1px solid ${STATUS_COLORS[src.status] ?? '#a0a0b0'}44`, borderRadius: 4, padding: '1px 6px', flexShrink: 0 }}>
                     {STATUS_LABELS[src.status]?.[lang] ?? src.status.toUpperCase()}
@@ -136,7 +136,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
           )}
         </div>
 
-        {/* ── ДАНІ ЯК ДІАГНОСТИКА СИСТЕМИ ── */}
+        {/* DATA INTELLIGENCE */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(59,130,246,0.4), transparent)' }} />
