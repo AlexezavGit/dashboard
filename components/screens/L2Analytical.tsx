@@ -148,7 +148,7 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
               </div>
               <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{s.owner[lang]}</div>
             </div>
-            <div className="text-center text-[14px] font-bold ds-display" style={{ color: s.color }}>{s.sessions}</div>
+            <div className="text-center text-[14px] font-bold ds-display" style={{ color: s.color }}>{typeof s.sessions === 'string' ? s.sessions : s.sessions[lang]}</div>
             <div className="flex items-center gap-2">
               <div className="flex-1 h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <motion.div
@@ -185,7 +185,7 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
       >
         <p className="text-[13px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.85)' }}>
           {lang === 'uk'
-            ? '~4.7M гуманітарних сесій невидимі для ЄСОЗ → не рахуються для THRIVE DLI → не тригерять disbursement. FEEL Again Digital Bus = один інтеграційний шар між кожною системою та ЄСОЗ через HL7 FHIR R4 · 10K req/sec · <200ms p95.'
+            ? '~4.7M гуманітарних сесій невидимі для ЄСОЗ → не рахуються для THRIVE DLI → не тригеряють disbursement. FEEL Again Digital Bus = один інтеграційний шар між кожною системою та ЄСОЗ через HL7 FHIR R4 · 10K req/sec · <200ms p95.'
             : '~4.7M humanitarian sessions invisible to ESOZ → not counted for THRIVE DLIs → do not trigger disbursement. FEEL Again Digital Bus = one integration layer between each system and ESOZ via HL7 FHIR R4 · 10K req/sec · <200ms p95.'}
         </p>
         <div className="text-[10px] font-mono mt-2 pt-2" style={{ borderTop: '1px solid rgba(232,201,122,0.2)', color: 'var(--color-ds-muted)' }}>
