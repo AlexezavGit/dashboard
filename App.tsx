@@ -584,18 +584,6 @@ const App: React.FC = () => {
           </motion.div>
         )}
 
-        {/* Data Sources Status Panel */}
-        {dataSources.length > 0 && (
-          <div className="mb-8">
-            <DataSourcesPanel
-              sources={dataSources}
-              lang={lang}
-              isLoading={isLoadingData}
-              onRefresh={loadLiveData}
-            />
-          </div>
-        )}
-
         {/* Filter Bar */}
         <div className="sticky top-4 z-40 backdrop-blur-xl rounded-xl p-3 flex items-center gap-4 flex-wrap mb-10" style={{ background: 'color-mix(in srgb, var(--color-ds-bg) 85%, transparent)', border: '1px solid var(--color-ds-border)' }}>
           <label className="cyber-label ml-2">{TEXTS.filters.label[lang]}</label>
@@ -696,76 +684,6 @@ const App: React.FC = () => {
                 <div className="text-[9px] text-slate-600 mt-0.5 leading-tight">{m.sub}</div>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* ── DATA INTELLIGENCE: NOW vs CANONICAL ────────────────────── */}
-        <div className="mb-12" id="data-intelligence">
-          <div className="flex items-center gap-3 mb-4 px-1">
-            <div className="h-px flex-1 bg-gradient-to-r from-blue-500/40 to-transparent" />
-            <span className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.2em] px-2">
-              {DATA_INTELLIGENCE(lang).sectionTitle}
-            </span>
-            <div className="h-px flex-1 bg-gradient-to-l from-blue-500/40 to-transparent" />
-          </div>
-          <p className="text-[11px] text-slate-500 mb-4 font-mono text-center leading-relaxed">
-            {DATA_INTELLIGENCE(lang).sectionSub}
-          </p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* NOW — what's available */}
-            <div className="border border-blue-500/20 rounded-xl overflow-hidden">
-              <div className="bg-blue-500/5 px-4 py-2.5 border-b border-blue-500/20 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                <span className="text-[10px] font-mono font-bold text-blue-300 uppercase tracking-wider">
-                  {lang === 'uk' ? 'ЩО МАЄМОзАРАЗ' : 'WHAT WE HAVE NOW'}
-                </span>
-              </div>
-              <div className="divide-y divide-slate-800/60">
-                {DATA_INTELLIGENCE(lang).now.map((row, i) => (
-                  <div key={i} className="px-4 py-3 flex items-start gap-3">
-                    <span className={`mt-0.5 flex-shrink-0 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${row.status === 'live' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-slate-700/60 text-slate-400'}`}>
-                      {row.status === 'live' ? 'LIVE' : 'STATIC'}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[11px] text-white font-medium">{row.name}</div>
-                      <div className="text-[10px] text-slate-500 leading-snug">{row.what}</div>
-                      <div className="text-[9px] text-slate-700 font-mono mt-0.5">{row.tech}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* CANONICAL — what WB/WHO use */}
-            <div className="border border-amber-500/20 rounded-xl overflow-hidden">
-              <div className="bg-amber-500/5 px-4 py-2.5 border-b border-amber-500/20 flex items-center gap-2">
-                <AlertTriangle className="w-3 h-3 text-amber-400 flex-shrink-0" />
-                <span className="text-[10px] font-mono font-bold text-amber-300 uppercase tracking-wider">
-                  {lang === 'uk' ? 'КАНОНІЧНИЙ НАБІР WB / WHO' : 'CANONICAL WB / WHO DATASET'}
-                </span>
-              </div>
-              <div className="divide-y divide-slate-800/60">
-                {DATA_INTELLIGENCE(lang).canonical.map((row, i) => (
-                  <div key={i} className="px-4 py-3 flex items-start gap-3">
-                    <span className={`mt-0.5 flex-shrink-0 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${row.status === 'locked' ? 'bg-rose-500/15 text-rose-400' : 'bg-amber-500/15 text-amber-400'}`}>
-                      {row.status === 'locked' ? 'LOCKED' : 'AUTH'}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[11px] text-white font-medium flex items-center gap-1.5">
-                        {row.name}
-                        {row.feelbridges && <span className="text-[8px] bg-emerald-500/15 text-emerald-400 px-1 py-0.5 rounded font-mono">FEEL bridges</span>}
-                      </div>
-                      <div className="text-[10px] text-slate-500 leading-snug">{row.what}</div>
-                      <div className="text-[9px] text-amber-600/80 font-mono mt-0.5">{lang === 'uk' ? 'Бар\'єр:' : 'Barrier:'} {row.barrier}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          {/* Gap statement */}
-          <div className="mt-4 px-5 py-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
-            <GitMerge className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-            <p className="text-[11px] text-emerald-300 font-mono leading-relaxed">{DATA_INTELLIGENCE(lang).gapStatement}</p>
           </div>
         </div>
 
