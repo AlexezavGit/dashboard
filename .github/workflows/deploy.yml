@@ -2,7 +2,7 @@ name: Deploy to Cloudflare Workers
 
 on:
   push:
-    branches: [main]
+    branches: [main, claude/connect-dashboard-data-la0qV]
 
 jobs:
   deploy:
