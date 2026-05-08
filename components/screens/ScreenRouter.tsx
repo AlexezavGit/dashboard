@@ -54,7 +54,7 @@ export const ScreenRouter: React.FC<Props> = ({
 
   const nav: ScreenNav = { current, history, push, back, reset };
 
-  const screens: Record<Exclude<ScreenId, 'appendix'>, React.ReactNode> = {
+  const screens: Record<Exclude<ScreenId, 'appendix' | 'l4'>, React.ReactNode> = {
     'l1':               <L1Strategic lang={lang} nav={nav} liveHciValue={liveHciValue} />,
     // 6 program layer L2 screens
     'l2-fintech':       <L2Finance lang={lang} nav={nav} />,

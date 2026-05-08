@@ -35,7 +35,7 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
   const stakeholders = STAKEHOLDER_MATRIX(lang);
   const risks = COUNTERARGUMENTS(lang);
   const roi = ROI_CARDS(lang);
-  const sources = SOURCES(lang);
+  const sources = [...SOURCES.primary, ...SOURCES.secondary];
 
   return (
     <div className="fixed inset-0 z-[150] overflow-hidden flex flex-col" style={{ background: 'var(--color-ds-bg)', color: 'var(--color-ds-text)' }}>
