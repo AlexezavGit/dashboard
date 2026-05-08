@@ -147,8 +147,8 @@ const App: React.FC = () => {
     return { sessions, beneficiaries, directRoi, dalys, dalyValue, totalReturn, roiRatio, fmt };
   }, [roiInvestment]);
   // Collapsible sections — GAP open by default as it's the core thesis
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['gap']));
-  const toggleSection = (id: string) => setExpandedSections(prev => {
+  const [expandedSections_UNUSED, setExpandedSections_UNUSED] = useState<Set<string>>(new Set());
+  const toggleSection = (id: string) => setExpandedSections_UNUSED(prev => {
     const next = new Set(prev);
     next.has(id) ? next.delete(id) : next.add(id);
     return next;
@@ -182,12 +182,6 @@ const App: React.FC = () => {
     loadLiveData();
   }, [loadLiveData]);
 
-  // Auto-expand section when a specific filter is selected
-  useEffect(() => {
-    if (activeSection !== 'all') {
-      setExpandedSections(new Set([activeSection]));
-    }
-  }, [activeSection]);
 
   // L3 anchor scrolling — reads target set by L3Footer topic buttons
   useEffect(() => {
@@ -867,52 +861,34 @@ const App: React.FC = () => {
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 25 }}
               >
-                {/* Section header — clickable to expand/collapse */}
-                <button
-                  onClick={() => toggleSection(section.id)}
-                  className="w-full flex items-center gap-4 mb-0 border-b border-cyber-border pb-4 hover:border-cyber-amber/40 transition-colors group text-left"
+                {/* Section header */}
+                <div
+                  className="w-full flex items-center gap-4 mb-8 border-b pb-4 text-left"
+                  style={{ borderColor: 'var(--color-ds-border)' }}
                 >
-                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-cyber-surface border border-cyber-cyan/30 rounded-lg group-hover:border-cyber-amber/50 transition-colors">
-                    <span className="text-[11px] font-bold text-cyber-cyan font-mono">
+                  <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg" style={{ background: 'var(--color-ds-surface)', border: '1px solid var(--color-ds-teal)' }}>
+                    <span className="text-[11px] font-bold font-mono" style={{ color: 'var(--color-ds-teal)' }}>
                       {String(sectionIdx + 1).padStart(2, '0')}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h2 className="text-xl font-bold text-white tracking-tight uppercase group-hover:text-cyber-amber transition-colors">{section.title[lang]}</h2>
+                    <h2 className="text-xl font-bold tracking-tight uppercase ds-display" style={{ color: 'var(--color-ds-text)' }}>{section.title[lang]}</h2>
                     <div className="flex items-center gap-3 mt-1">
-                      <div className="h-0.5 w-16 bg-gradient-to-r from-cyber-cyan to-transparent" />
-                      <span className="text-[11px] font-mono text-slate-400 uppercase tracking-widest">
+                      <div className="h-0.5 w-16" style={{ background: 'linear-gradient(to right, var(--color-ds-teal), transparent)' }} />
+                      <span className="text-[11px] font-mono uppercase tracking-widest" style={{ color: 'var(--color-ds-muted)' }}>
                         {section.id === 'prevalence' && (lang === 'uk' ? '9.6M під впливом · 22% населення' : '9.6M affected · 22% of population')}
                         {section.id === 'workforce' && (lang === 'uk' ? '1.3 психолога / 100K · потрібно 5×' : '1.3 psychologists / 100K · needs 5×')}
-                        {section.id === 'budget' && (lang === 'uk' ? '2.5% бюджету МЗ · ~5.55 млрд ₴ · ВООЗ ≥5%' : '2.5% MH budget · ~₴5.55B · WHO ≥5%')}
+                        {section.id === 'budget' && (lang === 'uk' ? '2.5% бюджету МЗ · ВООЗ ≥5%' : '2.5% MH budget · WHO ≥5%')}
                         {section.id === 'gap' && (lang === 'uk' ? '0.28% покриття · беклог 7.8 років' : '0.28% coverage · 7.8 yr backlog')}
-                        {section.id === 'shadow' && (lang === 'uk' ? '110× приватний > гуманітарний · штраф формалізації 65% доходу (ФОП3 5%+ЄСВ+бухг.+200 год адмін)' : '110× private > humanitarian · 65% income formalization penalty (FOP3 5%+SSC+accounting+200h admin)')}
+                        {section.id === 'shadow' && (lang === 'uk' ? '110× приватний > гуманітарний' : '110× private > humanitarian')}
                         {section.id === 'economic' && (lang === 'uk' ? '$1→$4 ROI · $1.2B+ втрати ВВП' : '$1→$4 ROI · $1.2B+ GDP loss')}
                         {section.id === 'children' && (lang === 'uk' ? '1.5M дітей у групі ризику ПТСР' : '1.5M children at PTSD risk')}
                         {section.id === 'inputs' && (lang === 'uk' ? '150K сертифікатів → 0% даних про результат' : '150K certificates → 0% outcome data')}
                       </span>
                     </div>
                   </div>
-                  <div className="flex-shrink-0 flex items-center gap-2">
-                    <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest hidden md:block">
-                      {expandedSections.has(section.id) ? (lang === 'uk' ? 'ЗГОРНУТИ' : 'COLLAPSE') : (lang === 'uk' ? 'РОЗГОРНУТИ' : 'EXPAND')}
-                    </span>
-                    {expandedSections.has(section.id)
-                      ? <ChevronUp className="w-4 h-4 text-cyber-amber" />
-                      : <ChevronDown className="w-4 h-4 text-slate-500 group-hover:text-cyber-amber transition-colors" />}
-                  </div>
-                </button>
-                <AnimatePresence initial={false}>
-                {expandedSections.has(section.id) && (
-                <motion.div
-                  key={section.id + '-content'}
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.25, ease: 'easeInOut' }}
-                  className="overflow-hidden"
-                >
-                <div className="mt-8">
+                </div>
+                <div className="mt-0">
 
               {/* Content Switcher based on Section ID */}
               
@@ -1890,10 +1866,7 @@ const App: React.FC = () => {
                  </div>
               )}
 
-                </div>{/* end mt-8 */}
-                </motion.div>
-                )}
-                </AnimatePresence>
+                </div>{/* end section content */}
 
             </motion.div>
           ))}
