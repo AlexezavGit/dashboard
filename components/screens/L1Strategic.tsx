@@ -434,7 +434,14 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
           style={{ color: 'var(--color-ds-muted)' }}
         >
           <ChevronRight className="w-3.5 h-3.5" />
-          {lang === 'uk' ? 'Бриф (повний) ↓' : 'Brief (full) ↓'}
+          {lang === 'uk' ? 'Аналітичний звіт' : 'Analytical Report'}
+        </button>
+        <button
+          onClick={() => nav.push('l4')}
+          className="flex items-center gap-1.5 text-[11px] ds-display font-bold px-3 py-1.5 rounded-lg"
+          style={{ background: 'color-mix(in srgb, var(--color-ds-teal) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--color-ds-teal) 35%, transparent)', color: 'var(--color-ds-teal)' }}
+        >
+          {lang === 'uk' ? '→ Повний звіт' : '→ Full Report'}
         </button>
       </div>
     </div>

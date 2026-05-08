@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { LayoutDashboard, Globe, ChevronDown, ChevronUp, ChevronRight, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot, CalendarDays, Mail, Menu, X, Activity, Calculator, GitMerge, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ScreenRouter } from './components/screens/ScreenRouter';
+import { L4Report } from './components/screens/L4Report';
 import {
   TEXTS, COLORS, KPI_DATA, SECTIONS_CONFIG, TOP_METRICS,
   PREVALENCE_DATA, RISK_GROUP_DATA, WORKFORCE_DATA, WAR_IMPACT_DATA, SECTOR_DIST_DATA,
@@ -123,6 +124,8 @@ const App: React.FC = () => {
     try { const v = localStorage.getItem('mhpss_dark'); return v === null ? true : v === '1'; } catch { return true; }
   });
   const [showAppendix, setShowAppendix] = useState<boolean>(false);
+  const [showL4, setShowL4] = useState<boolean>(false);
+  const [l4From, setL4From] = useState<'l1' | 'l3'>('l3');
   const [activeSection, setActiveSection] = useState<SectionFilter>('all');
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -275,12 +278,24 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-[--color-ds-bg] text-[--color-ds-text] font-sans custom-scrollbar flex" style={{ backgroundColor: 'var(--color-ds-bg)', color: 'var(--color-ds-text)' }}>
 
+      {/* ── L4 FULL ANALYTICAL REPORT ────────────────────────────────── */}
+      {showL4 && (
+        <L4Report
+          lang={lang}
+          onBack={() => {
+            setShowL4(false);
+            if (l4From === 'l3') setShowAppendix(true);
+          }}
+        />
+      )}
+
       {/* ── SCREEN-BASED L1/L2 ARCHITECTURE ─────────────────────────── */}
-      {!showAppendix && (
+      {!showAppendix && !showL4 && (
         <ScreenRouter
           lang={lang}
           liveHciValue={liveMetrics.worldBankHci?.value}
           onAppendix={() => setShowAppendix(true)}
+          onL4={() => { setL4From('l1'); setShowL4(true); }}
           onLangChange={setLang}
           darkMode={darkMode}
           onThemeToggle={toggleTheme}
@@ -289,7 +304,7 @@ const App: React.FC = () => {
 
       {/* Back button is now embedded in the appendix header (left side) */}
       {/* ── SIDEBAR + MAIN (appendix mode only) ─────────────────────── */}
-      {showAppendix && <>
+      {showAppendix && !showL4 && <>
       {/* Mobile backdrop */}
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
@@ -384,6 +399,17 @@ const App: React.FC = () => {
               </span>
             </div>
             <div className="flex-1" />
+            {/* L4 full report button */}
+            <button
+              onClick={() => { setL4From('l3'); setShowL4(true); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold ds-display flex-shrink-0 transition-all"
+              style={{ background: 'color-mix(in srgb, var(--color-ds-teal) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--color-ds-teal) 35%, transparent)', color: 'var(--color-ds-teal)' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, var(--color-ds-teal) 22%, transparent)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, var(--color-ds-teal) 12%, transparent)'; }}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              {lang === 'uk' ? 'Повний звіт' : 'Full Report'}
+            </button>
             {/* Language switcher */}
             <div className="flex p-0.5 rounded-lg" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid var(--color-ds-border)' }}>
               <button

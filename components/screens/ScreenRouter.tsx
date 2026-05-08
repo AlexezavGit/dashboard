@@ -21,13 +21,14 @@ interface Props {
   lang: Language;
   liveHciValue?: number | null;
   onAppendix: () => void;
+  onL4: () => void;
   onLangChange: (l: Language) => void;
   darkMode: boolean;
   onThemeToggle: () => void;
 }
 
 export const ScreenRouter: React.FC<Props> = ({
-  lang, liveHciValue, onAppendix, onLangChange, darkMode, onThemeToggle,
+  lang, liveHciValue, onAppendix, onL4, onLangChange, darkMode, onThemeToggle,
 }) => {
   const [history, setHistory] = useState<ScreenId[]>(['l1']);
 
@@ -38,8 +39,12 @@ export const ScreenRouter: React.FC<Props> = ({
       onAppendix();
       return;
     }
+    if (id === 'l4') {
+      onL4();
+      return;
+    }
     setHistory((h) => [...h, id]);
-  }, [onAppendix]);
+  }, [onAppendix, onL4]);
 
   const back = useCallback(() => {
     setHistory((h) => (h.length > 1 ? h.slice(0, -1) : h));
