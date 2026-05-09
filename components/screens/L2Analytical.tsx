@@ -103,9 +103,9 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
       crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
     />
 
-    <div className="flex-1 flex flex-col gap-3 px-6 pb-5 pt-3 min-h-0">
+    <div className="flex-1 overflow-y-auto px-6 pb-5 pt-3 flex flex-col gap-3" style={{ scrollbarWidth: 'thin', scrollbarColor: '#a78bfa22 transparent' }}>
       {/* Legend */}
-      <div className="flex items-center gap-6 flex-shrink-0 flex-wrap">
+      <div className="flex items-center gap-6 flex-wrap">
         {LEGEND.map((l) => (
           <div key={l.color} className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full" style={{ background: l.color }} />
@@ -115,7 +115,7 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
       </div>
 
       {/* Matrix */}
-      <div className="flex-1 flex flex-col gap-2 min-h-0">
+      <div className="flex flex-col gap-2">
         {/* Header */}
         <div className="grid gap-3 px-4" style={{ gridTemplateColumns: '1fr 90px 110px 80px 90px' }}>
           {[
@@ -180,7 +180,7 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6 }}
-        className="p-4 rounded-xl flex-shrink-0"
+        className="p-4 rounded-xl"
         style={{ background: 'rgba(232,201,122,0.07)', border: '1px solid rgba(232,201,122,0.25)' }}
       >
         <p className="text-[13px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.85)' }}>
