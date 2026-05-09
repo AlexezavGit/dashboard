@@ -100,28 +100,54 @@ const SOURCES = [
   { val: '260K', label: { uk: 'НСЗУ пацієнтів 2025', en: 'NHSU patients 2025' } },
 ];
 
-// ── Speedometer geometry helpers ──────────────────────────────────────────────
-// Arc spans 260° from lower-left (220°) to lower-right (−40°) going over the top
-const A_START = 220, A_END = -40, A_SPAN = 260;
+// ── Elevator gauge geometry ────────────────────────────────────────────────────
+// Score 0 = left (B / Crisis), Score 100 = right (R / Recovery)
+// Semicircle from left (180°) over the top to right (0°) in SVG screen space.
+const EL_CX = 140, EL_CY = 135, EL_R = 100;
 
-const polar = (deg: number, r: number, cx: number, cy: number) => ({
-  x: cx + r * Math.cos((deg * Math.PI) / 180),
-  y: cy - r * Math.sin((deg * Math.PI) / 180),
-});
-
-// Arc from math angle A to B going CCW (decreasing angle, over the top — sweep=0 in SVG)
-const gaugePath = (r: number, A: number, B: number, cx: number, cy: number) => {
-  const s = polar(A, r, cx, cy);
-  const e = polar(B, r, cx, cy);
-  const span = ((A - B) + 360) % 360;
-  const large = span > 180 ? 1 : 0;
-  return `M ${s.x.toFixed(2)} ${s.y.toFixed(2)} A ${r} ${r} 0 ${large} 0 ${e.x.toFixed(2)} ${e.y.toFixed(2)}`;
+// Convert score 0-100 → {x,y} on a circle of radius r centred at (EL_CX, EL_CY)
+const ePt = (s: number, r: number) => {
+  const a = Math.PI * (1 - s / 100); // π (left) → 0 (right)
+  return { x: EL_CX + r * Math.cos(a), y: EL_CY - r * Math.sin(a) };
 };
 
-// Map value 0–100 → math angle A_START → A_END
-const valToAngle = (v: number) => A_START - (v / 100) * A_SPAN;
-// SVG rotate angle so left-pointing needle aligns with math angle A: θ = A − 180°
-const needleRotation = (v: number) => valToAngle(v) - 180; // = 40 − (v/100)·260
+// SVG arc path from score s0 → s1 at radius r, clockwise (= over the top)
+const eArc = (r: number, s0: number, s1: number) => {
+  const p0 = ePt(s0, r), p1 = ePt(s1, r);
+  const deg = Math.abs(s1 - s0) * 1.8;
+  return `M ${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${deg >= 180 ? 1 : 0} 1 ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`;
+};
+
+// SVG rotation for animated needle: 180° at score=0 (left), 0° at score=100 (right)
+const eNeedleAngle = (s: number) => 180 - s * 1.8;
+
+// ── Elevator "floors" ─────────────────────────────────────────────────────────
+const FLOORS = [
+  { label: 'B', score: 0   },
+  { label: '1', score: 12  },
+  { label: '2', score: 25  },
+  { label: '3', score: 37  },
+  { label: '4', score: 50  },
+  { label: '5', score: 62  },
+  { label: '6', score: 75  },
+  { label: '7', score: 87  },
+  { label: 'R', score: 100 },
+] as const;
+
+// Fan zones: each LAYER occupies a slice of the arc proportional to its weight
+let _cur = 0;
+const LAYER_ZONES = LAYERS.map(l => {
+  const z = { layer: l, start: _cur, end: _cur + l.weight };
+  _cur += l.weight;
+  return z;
+});
+
+// GDP impact formula: −3.5 % at score=0, +5.5 % at score=100
+// (WHO/WB: 1 % GDP in MH → 2–4 % GDP return; untreated disorders cost 3–5 % GDP/yr)
+const gdpImpact = (score: number) => {
+  const v = (score / 100) * 9.0 - 3.5;
+  return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
+};
 
 // ── Compact layer card ─────────────────────────────────────────────────────────
 const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () => void }> = ({ l, i, lang, onNav }) => (
@@ -159,99 +185,136 @@ const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () =>
   </motion.div>
 );
 
-// ── Gauge component ─────────────────────────────────────────────────────────
+// ── Elevator Gauge component ──────────────────────────────────────────────────
 const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () => void }> = ({ lang, expanded, onToggle }) => {
-  const cx = 140, cy = 108, R = 100;
+  const CX = EL_CX, CY = EL_CY, R = EL_R;
   const bandColor = BAND_COLOR[currentBand];
   const needleRef = useRef<SVGGElement>(null);
 
-  // Animate needle via direct SVG attribute — CSS rotate(a,cx,cy) is invalid, only SVG attr works
+  // Animate needle via SVG transform attr (CSS rotate(a,cx,cy) is invalid CSS)
   useEffect(() => {
-    const from = needleRotation(0);
-    const to = needleRotation(INDEX_SCORE);
-    const ctrl = animate(from, to, {
-      duration: 1.4, delay: 0.5,
+    const ctrl = animate(eNeedleAngle(0), eNeedleAngle(INDEX_SCORE), {
+      duration: 1.8, delay: 0.4,
       ease: [0.34, 1.56, 0.64, 1],
-      onUpdate: (v: number) =>
-        needleRef.current?.setAttribute('transform', `rotate(${v.toFixed(3)}, ${cx}, ${cy})`),
+      onUpdate: v => needleRef.current?.setAttribute('transform', `rotate(${v.toFixed(3)},${CX},${CY})`),
     });
     return () => ctrl.stop();
   }, []);
 
-  // Endpoint label positions in SVG
-  const labelL = polar(A_START, R + 18, cx, cy);
-  const labelR = polar(A_END,   R + 18, cx, cy);
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      {/* ── Gauge SVG ── */}
+      {/* ── Elevator SVG dial ── */}
       <div onClick={onToggle} style={{ cursor: 'pointer', width: '100%' }}>
-        <svg viewBox="0 0 280 195" width="100%" style={{ display: 'block', overflow: 'visible' }}>
+        <svg viewBox="0 0 280 158" width="100%" style={{ display: 'block', overflow: 'visible' }}>
+          <defs>
+            <linearGradient id="mhei-brass" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stopColor="#7a5218" />
+              <stop offset="30%"  stopColor="#e8c97a" />
+              <stop offset="65%"  stopColor="#c8a44c" />
+              <stop offset="100%" stopColor="#5a3a08" />
+            </linearGradient>
+          </defs>
 
-          {/* Track */}
-          <path d={gaugePath(R, A_START, A_END, cx, cy)} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="22" />
+          {/* Dark semicircle dial face */}
+          <path d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY} Z`}
+            fill="rgba(6,4,2,0.93)" />
 
-          {/* Zone bands */}
-          <path d={gaugePath(R, 220, 133, cx, cy)} fill="none" stroke="#ff7b6e" strokeWidth="20" opacity="0.50" />
-          <path d={gaugePath(R, 133,  47, cx, cy)} fill="none" stroke="#e8c97a" strokeWidth="20" opacity="0.50" />
-          <path d={gaugePath(R,  47, -40, cx, cy)} fill="none" stroke="#00d4aa" strokeWidth="20" opacity="0.50" />
+          {/* Zone background tints: Crisis / Transition / Recovery */}
+          <path d={eArc(R - 16, 0,  33)}  fill="none" stroke="#ff7b6e" strokeWidth="28" opacity="0.18" />
+          <path d={eArc(R - 16, 33, 67)}  fill="none" stroke="#e8c97a" strokeWidth="28" opacity="0.18" />
+          <path d={eArc(R - 16, 67, 100)} fill="none" stroke="#00d4aa" strokeWidth="28" opacity="0.18" />
 
-          {/* Filled progress arc */}
-          <path d={gaugePath(R, A_START, valToAngle(INDEX_SCORE), cx, cy)}
-            fill="none" stroke={bandColor} strokeWidth="20" opacity="0.92" strokeLinecap="round" />
-
-          {/* Layer score tick marks */}
-          {LAYERS.map(l => {
-            const pct = Math.min(100, (l.current / l.target) * 100);
-            const ang = valToAngle(pct);
-            const inn = polar(ang, R - 13, cx, cy);
-            const out = polar(ang, R + 13, cx, cy);
-            return <line key={l.id} x1={inn.x.toFixed(1)} y1={inn.y.toFixed(1)} x2={out.x.toFixed(1)} y2={out.y.toFixed(1)} stroke={l.color} strokeWidth="2" opacity="0.95" />;
+          {/* Fan lines from pivot — one group per layer, width proportional to weight */}
+          {LAYER_ZONES.map(({ layer: l, start, end }) => {
+            const count = Math.max(2, Math.round((end - start) / 4.5));
+            return Array.from({ length: count }, (_, k) => {
+              const s = start + ((k + 0.5) / count) * (end - start);
+              const tip = ePt(s, R - 28);
+              return (
+                <line key={`fan-${l.id}-${k}`}
+                  x1={CX} y1={CY} x2={tip.x.toFixed(2)} y2={tip.y.toFixed(2)}
+                  stroke={l.color} strokeWidth="1.2" opacity="0.28"
+                />
+              );
+            });
           })}
 
-          {/* Major ticks */}
-          {[0, 25, 50, 75, 100].map(v => {
-            const ang = valToAngle(v);
-            const i = polar(ang, R - 7, cx, cy);
-            const o = polar(ang, R + 7, cx, cy);
-            return <line key={v} x1={i.x.toFixed(1)} y1={i.y.toFixed(1)} x2={o.x.toFixed(1)} y2={o.y.toFixed(1)} stroke="rgba(255,255,255,0.22)" strokeWidth="1.5" />;
+          {/* Progress arc filled to current score */}
+          <path d={eArc(R - 16, 0, INDEX_SCORE)} fill="none"
+            stroke={bandColor} strokeWidth="28" opacity="0.88" strokeLinecap="round" />
+
+          {/* Inner ornamental ring */}
+          <path d={eArc(R - 30, 0, 100)} fill="none" stroke="rgba(200,164,92,0.18)" strokeWidth="1" />
+
+          {/* Outer brass frame arc + base line */}
+          <path d={eArc(R + 5, 0, 100)} fill="none" stroke="url(#mhei-brass)" strokeWidth="7" />
+          <line x1={CX - R - 7} y1={CY} x2={CX + R + 7} y2={CY}
+            stroke="url(#mhei-brass)" strokeWidth="3.5" />
+
+          {/* Floor tick marks + labels */}
+          {FLOORS.map(({ label, score }) => {
+            const isEnd = label === 'B' || label === 'R';
+            const lit   = score <= INDEX_SCORE;
+            const outer = ePt(score, R + 3);
+            const inner = ePt(score, R - 10);
+            const lp    = ePt(score, R + 18);
+            return (
+              <g key={label}>
+                <line
+                  x1={outer.x.toFixed(1)} y1={outer.y.toFixed(1)}
+                  x2={inner.x.toFixed(1)} y2={inner.y.toFixed(1)}
+                  stroke={lit ? '#e8c97a' : 'rgba(200,164,92,0.25)'}
+                  strokeWidth={isEnd ? 2.5 : 1.5}
+                />
+                <text x={lp.x.toFixed(1)} y={(lp.y + 4).toFixed(1)}
+                  textAnchor="middle" dominantBaseline="central"
+                  style={{
+                    fontFamily: 'Space Grotesk, sans-serif',
+                    fontSize: isEnd ? '10px' : '8px',
+                    fontWeight: '700',
+                    fill: lit ? '#e8c97a' : 'rgba(200,164,92,0.28)',
+                  }}>
+                  {label}
+                </text>
+              </g>
+            );
           })}
 
-          {/* Needle — SVG transform attr directly (CSS rotate(a,cx,cy) is not valid CSS) */}
+          {/* Needle (animated, points from pivot to current score position) */}
           <g ref={needleRef}>
-            <line
-              x1={cx} y1={cy} x2={cx - R * 0.82} y2={cy}
-              stroke={bandColor} strokeWidth="3" strokeLinecap="round"
-              style={{ filter: `drop-shadow(0 0 7px ${bandColor}cc)` } as React.CSSProperties}
+            <line x1={CX} y1={CY} x2={CX + R - 5} y2={CY}
+              stroke={bandColor} strokeWidth="2.5" strokeLinecap="round"
+              style={{ filter: `drop-shadow(0 0 6px ${bandColor}cc)` } as React.CSSProperties}
+            />
+            {/* Counterweight */}
+            <line x1={CX} y1={CY} x2={CX - 18} y2={CY}
+              stroke={bandColor} strokeWidth="5.5" strokeLinecap="round" opacity="0.45"
             />
           </g>
 
-          {/* Needle base */}
-          <circle cx={cx} cy={cy} r="9" fill={bandColor}
-            style={{ filter: `drop-shadow(0 0 16px ${bandColor}bb)` }} />
-
-          {/* Endpoint labels */}
-          <text x={labelL.x.toFixed(1)} y={labelL.y.toFixed(1)} textAnchor="middle"
-            style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '8px', fill: 'rgba(255,123,110,0.55)' }}>
-            {lang === 'uk' ? 'Стагн.' : 'Stag.'}
-          </text>
-          <text x={labelR.x.toFixed(1)} y={labelR.y.toFixed(1)} textAnchor="middle"
-            style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '8px', fill: 'rgba(0,212,170,0.55)' }}>
-            {lang === 'uk' ? 'Відн.' : 'Rec.'}
-          </text>
+          {/* Centre pivot — ornamental brass ring + glow dot */}
+          <circle cx={CX} cy={CY} r="14" fill="#0f0803" stroke="url(#mhei-brass)" strokeWidth="2.5" />
+          <circle cx={CX} cy={CY} r="5" fill={bandColor}
+            style={{ filter: `drop-shadow(0 0 12px ${bandColor}cc)` }} />
         </svg>
       </div>
 
-      {/* ── Score + band label ── */}
+      {/* ── Score + band + GDP ── */}
       <div style={{ textAlign: 'center', marginTop: 4 }}>
-        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 900, fontSize: 46, color: bandColor, lineHeight: 1,
-          textShadow: `0 0 32px ${bandColor}77` }}>
+        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 900, fontSize: 46,
+          color: bandColor, lineHeight: 1, textShadow: `0 0 32px ${bandColor}77` }}>
           {INDEX_SCORE}
         </div>
-        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: bandColor, marginTop: 4 }}>
+        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
+          color: bandColor, marginTop: 4 }}>
           {BAND_LABEL[currentBand][lang]}
         </div>
-        <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)', marginTop: 3, lineHeight: 1.4 }}>
+        <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, color: '#e8c97a',
+          opacity: 0.75, marginTop: 3, letterSpacing: '0.06em' }}>
+          {gdpImpact(INDEX_SCORE)} {lang === 'uk' ? 'ВВП' : 'GDP'}
+        </div>
+        <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+          color: 'var(--color-ds-muted)', marginTop: 2, lineHeight: 1.4 }}>
           {lang === 'uk' ? 'темп відновлення при завершенні бойових дій' : 'recovery pace when hostilities end'}
         </div>
       </div>
@@ -269,7 +332,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
           : (lang === 'uk' ? '↓ розклад індексу' : '↓ index breakdown')}
       </button>
 
-      {/* ── Expandable breakdown — uses all available space ── */}
+      {/* ── Expandable breakdown ── */}
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -284,10 +347,12 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
                 return (
                   <div key={l.id}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                      <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10, color: l.color }}>
+                      <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
+                        fontSize: 10, color: l.color }}>
                         {l.layer[lang]}
                       </span>
-                      <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, color: 'var(--color-ds-muted)' }}>
+                      <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 10,
+                        color: 'var(--color-ds-muted)' }}>
                         {Math.round(pct)}% · w{l.weight}%
                       </span>
                     </div>
