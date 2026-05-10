@@ -121,7 +121,7 @@ const App: React.FC = () => {
     try { return (localStorage.getItem('mhpss_lang') as Language) || 'uk'; } catch { return 'uk'; }
   });
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    try { const v = localStorage.getItem('mhpss_dark'); return v === null ? true : v === '1'; } catch { return true; }
+    try { const v = localStorage.getItem('mhpss_dark'); return v === null ? false : v === '1'; } catch { return false; }
   });
   const [showAppendix, setShowAppendix] = useState<boolean>(false);
   const [showL4, setShowL4] = useState<boolean>(false);

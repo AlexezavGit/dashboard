@@ -8,47 +8,47 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* Dark palette (default) — Canonical Design System */
-  --color-ds-bg:        #050d1a;
-  --color-ds-surface:   rgba(255, 255, 255, 0.035);
-  --color-ds-gold:      #c8a45c;
-  --color-ds-gold-dim:  rgba(200, 164, 92, 0.18);
-  --color-ds-teal:      #2ec4b6;
-  --color-ds-red:       #e05c5c;
-  --color-ds-navy:      #050d1a;
-  --color-ds-border:    rgba(200, 164, 92, 0.18);
-  --color-ds-text:      #e2e8f0;
-  --color-ds-muted:     rgba(226, 232, 240, 0.45);
+  --color-ds-bg:        #3A3530;
+  --color-ds-surface:   rgba(255, 255, 255, 0.06);
+  --color-ds-gold:      #D4A574;
+  --color-ds-gold-dim:  rgba(212, 165, 116, 0.18);
+  --color-ds-teal:      #9ECDD9;
+  --color-ds-red:       #D89898;
+  --color-ds-navy:      #3A3530;
+  --color-ds-border:    rgba(107, 99, 90, 0.55);
+  --color-ds-text:      #F5F2ED;
+  --color-ds-muted:     rgba(245, 242, 237, 0.50);
 
   /* Keep cyber-* aliases so existing class names still resolve */
-  --color-cyber-bg:      #050d1a;
-  --color-cyber-surface: rgba(255, 255, 255, 0.035);
-  --color-cyber-border:  rgba(200, 164, 92, 0.18);
-  --color-cyber-cyan:    #2ec4b6;
-  --color-cyber-amber:   #c8a45c;
-  --color-cyber-success: #2ec4b6;
-  --color-cyber-purple:  #c8a45c;
+  --color-cyber-bg:      #3A3530;
+  --color-cyber-surface: rgba(255, 255, 255, 0.06);
+  --color-cyber-border:  rgba(107, 99, 90, 0.55);
+  --color-cyber-cyan:    #9ECDD9;
+  --color-cyber-amber:   #D4A574;
+  --color-cyber-success: #A8C8A8;
+  --color-cyber-purple:  #B5A8D4;
 }
 
 /* ── Light theme overrides ──────────────────────────────────────────────── */
 :root[data-theme="light"] {
-  --color-ds-bg:        #f5f0e8;
-  --color-ds-surface:   rgba(0, 0, 0, 0.04);
-  --color-ds-gold:      #8b6914;
-  --color-ds-gold-dim:  rgba(139, 105, 20, 0.15);
-  --color-ds-teal:      #1a8a7e;
-  --color-ds-red:       #a01d1d;
-  --color-ds-navy:      #0a1628;
-  --color-ds-border:    rgba(139, 105, 20, 0.22);
-  --color-ds-text:      #1a1a2e;
-  --color-ds-muted:     rgba(26, 26, 46, 0.55);
+  --color-ds-bg:        #F7F6F3;
+  --color-ds-surface:   rgba(58, 53, 48, 0.05);
+  --color-ds-gold:      #D4A574;
+  --color-ds-gold-dim:  rgba(212, 165, 116, 0.14);
+  --color-ds-teal:      #5B9BAA;
+  --color-ds-red:       #C97070;
+  --color-ds-navy:      #3A3530;
+  --color-ds-border:    #DDD5CB;
+  --color-ds-text:      #5A4F47;
+  --color-ds-muted:     rgba(90, 79, 71, 0.55);
 
-  --color-cyber-bg:      #f5f0e8;
-  --color-cyber-surface: rgba(0, 0, 0, 0.04);
-  --color-cyber-border:  rgba(139, 105, 20, 0.22);
-  --color-cyber-cyan:    #1a8a7e;
-  --color-cyber-amber:   #8b6914;
-  --color-cyber-success: #1a8a7e;
-  --color-cyber-purple:  #8b6914;
+  --color-cyber-bg:      #F7F6F3;
+  --color-cyber-surface: rgba(58, 53, 48, 0.05);
+  --color-cyber-border:  #DDD5CB;
+  --color-cyber-cyan:    #5B9BAA;
+  --color-cyber-amber:   #D4A574;
+  --color-cyber-success: #A8C8A8;
+  --color-cyber-purple:  #B5A8D4;
 }
 
 /* ── Base ───────────────────────────────────────────────────────────────── */
@@ -190,12 +190,12 @@
 .text-slate-700 { color: rgba(226, 232, 240, 0.18) !important; }
 
 /* Light theme overrides */
-:root[data-theme="light"] .text-slate-300 { color: rgba(26, 26, 46, 0.80) !important; }
-:root[data-theme="light"] .text-slate-400 { color: rgba(26, 26, 46, 0.60) !important; }
-:root[data-theme="light"] .text-slate-500 { color: rgba(26, 26, 46, 0.45) !important; }
-:root[data-theme="light"] .text-slate-600 { color: rgba(26, 26, 46, 0.32) !important; }
-:root[data-theme="light"] .text-slate-700 { color: rgba(26, 26, 46, 0.22) !important; }
-:root[data-theme="light"] .text-white      { color: #0a1628 !important; }
+:root[data-theme="light"] .text-slate-300 { color: rgba(90, 79, 71, 0.80) !important; }
+:root[data-theme="light"] .text-slate-400 { color: rgba(90, 79, 71, 0.65) !important; }
+:root[data-theme="light"] .text-slate-500 { color: rgba(90, 79, 71, 0.50) !important; }
+:root[data-theme="light"] .text-slate-600 { color: rgba(90, 79, 71, 0.38) !important; }
+:root[data-theme="light"] .text-slate-700 { color: rgba(90, 79, 71, 0.25) !important; }
+:root[data-theme="light"] .text-white      { color: #3A3530 !important; }
 
 /* Surface/border utilities light overrides */
 :root[data-theme="light"] .bg-cyber-surface { background: rgba(0,0,0,0.04) !important; }
