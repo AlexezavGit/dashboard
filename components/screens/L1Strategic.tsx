@@ -167,7 +167,7 @@ const gdpImpact = (score: number) => {
 };
 
 // ── Compact layer card ─────────────────────────────────────────────────────────
-const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () => void }> = ({ l, i, lang, onNav }) => (
+const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () => void; darkMode: boolean }> = ({ l, i, lang, onNav, darkMode }) => (
   <motion.div
     initial={{ opacity: 0, x: i < 3 ? -10 : 10 }}
     animate={{ opacity: 1, x: 0 }}
@@ -442,7 +442,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
         {/* Left: FinTech, Clinical, Data */}
         <div className="flex flex-col gap-2.5 min-h-0">
           {LAYERS.slice(0, 3).map((l, i) => (
-            <LayerCard key={l.id} l={l} i={i} lang={lang} onNav={() => nav.push(l.screenId)} />
+            <LayerCard key={l.id} l={l} i={i} lang={lang} onNav={() => nav.push(l.screenId)} darkMode={darkMode} />
           ))}
         </div>
 
@@ -508,7 +508,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
                     {item.val}
                   </span>
                   <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
-                    color: 'rgba(200,208,220,0.75)', lineHeight: 1.3 }}>
+                    color: 'var(--color-ds-muted)', lineHeight: 1.3 }}>
                     {item.label[lang]}
                   </span>
                 </button>
@@ -520,7 +520,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
         {/* Right: Capacity, Digital, Regulatory */}
         <div className="flex flex-col gap-2.5 min-h-0">
           {LAYERS.slice(3).map((l, i) => (
-            <LayerCard key={l.id} l={l} i={i + 3} lang={lang} onNav={() => nav.push(l.screenId)} />
+            <LayerCard key={l.id} l={l} i={i + 3} lang={lang} onNav={() => nav.push(l.screenId)} darkMode={darkMode} />
           ))}
         </div>
       </div>
