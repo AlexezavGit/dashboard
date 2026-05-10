@@ -111,7 +111,7 @@ const INACTION_COSTS: InactionItem[] = [
   { val: '$0',      label: { uk: 'верифікованих WB-виплат', en: 'verified WB payments' }, anchor: 'section-budget',   color: '#ff7b6e' },
   { val: '54%',     label: { uk: 'відсів з лікування',      en: 'treatment dropout' },     anchor: 'section-gap',     color: '#ff7b6e' },
   { val: '4.7M',    label: { uk: 'невидимих сесій',         en: 'invisible sessions' },     anchor: null,              color: '#00d4aa' },
-  { val: '22 роки', label: { uk: 'до ліквідації черги',     en: 'to clear backlog' },       anchor: 'section-gap',     color: '#e8c97a' },
+  { val: '7.8–12р.', label: { uk: 'беклог при 4K практиків (стійкий темп)', en: 'backlog at 4K practitioners (sustainable)' }, anchor: 'section-workforce', color: '#e8c97a' },
   { val: '$8B/рік', label: { uk: 'втрати ВВП від кризи MH', en: 'GDP loss from MH crisis' }, anchor: 'section-economic', color: '#e8c97a' },
   { val: '6.4M год',label: { uk: 'адмін-витрат/рік',        en: 'admin hrs/yr' },           anchor: 'section-inputs',  color: '#a78bfa' },
 ];
@@ -427,22 +427,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <button
-            onClick={() => nav.push('l2-operational')}
-            className="text-[11px] px-3 py-1.5 rounded-lg ds-display font-semibold"
-            style={{ color: 'var(--color-ds-teal)', border: '1px solid rgba(46,196,182,0.3)' }}
-          >
-            {lang === 'uk' ? '9 розривів →' : '9 gaps →'}
-          </button>
-          <button
-            onClick={() => nav.push('l2-analytical')}
-            className="text-[11px] px-3 py-1.5 rounded-lg ds-display font-semibold"
-            style={{ color: 'var(--color-ds-gold)', border: '1px solid var(--color-ds-border)' }}
-          >
-            {lang === 'uk' ? 'Дані →' : 'Data →'}
-          </button>
-        </div>
+
       </div>
 
       {/* ── 3-column body: cards | gauge | cards ── */}
