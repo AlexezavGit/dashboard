@@ -3,190 +3,191 @@ import { Language } from '../../types';
 import { ScreenNav } from './types';
 import { NavBar } from './NavBar';
 import { L3Footer } from './L3Footer';
+import { PREVALENCE_DATA } from '../../constants';
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell,
-  LineChart, Line, CartesianGrid, ReferenceLine,
 } from 'recharts';
-import { PREVALENCE_DATA } from '../../constants';
 
 interface Props { lang: Language; nav: ScreenNav; }
-
 const t = (uk: string, en: string, lang: Language) => lang === 'uk' ? uk : en;
 
-const DRIVERS = [
-  { icon: '⟶', val: { uk: '5 систем, 0 синхронізацій', en: '5 systems, 0 syncs' }, desc: { uk: 'NHSU / ESOZ / HELSI / Reint. Portal / приватні ЕМК', en: 'NHSU / ESOZ / HELSI / Reint. Portal / private EHRs' } },
-  { icon: '⊘', val: { uk: 'Немає авто-нагадувань', en: 'No auto-reminders' }, desc: { uk: 'Пацієнт зникає — системи не сповіщають', en: 'Patient disappears — no system alert' } },
-  { icon: '⊜', val: { uk: '260K НСЗУ пацієнтів 2025', en: '260K NHSU patients 2025' }, desc: { uk: 'тільки первинна ланка видима НСЗУ', en: 'only primary care visible to NHSU' } },
+// Verified МОЗ/НСЗУ/WHO 2025 data
+// Sources:
+//   МОЗ: https://moz.gov.ua/uk/rozbudova-sistemi-pidtrimki-psihichnogo-zdorov-ya-v-ukrayini-pidsumki-2025-roku
+//   WHO April 2025: https://www.ecoi.net/en/file/local/2131858/WHO-EURO-2025-6904-46670-80597-eng.pdf
+//   МОД: https://mod.gov.ua/en/news/over-33-000-service-members-underwent-rehabilitation
+//   PHQ-9/GAD-7: МОЗ Centres of Excellence pilot report 2025
+
+const KPI_CARDS = [
+  {
+    val: '20%',
+    label: { uk: 'звертаються за допомогою', en: 'seek help' },
+    sub:  { uk: 'із тих, хто має симптоми (WHO, квітень 2025)', en: 'of those with symptoms (WHO, April 2025)' },
+    color: '#ff7b6e',
+    bg: 'rgba(255,123,110,0.08)',
+    border: 'rgba(255,123,110,0.3)',
+    note: { uk: '⚠ Вхідний бар\'єр > ризик dropout', en: '⚠ Entry barrier > dropout risk' },
+  },
+  {
+    val: '550K+',
+    label: { uk: 'звернень до первинної ланки', en: 'primary care contacts' },
+    sub:  { uk: 'сімейні лікарі / mhGAP 2025 (МОЗ)', en: 'family doctors / mhGAP 2025 (МОЗ)' },
+    color: '#00d4aa',
+    bg: 'rgba(0,212,170,0.07)',
+    border: 'rgba(0,212,170,0.25)',
+    note: { uk: '+10% до 2024, ×4 до 2023', en: '+10% vs 2024, ×4 vs 2023' },
+  },
+  {
+    val: '118K+',
+    label: { uk: 'спеціалізована допомога', en: 'specialized care' },
+    sub:  { uk: '152 Центри ментального здоров\'я (МОЗ 2025)', en: '152 Mental Health Centres (МОЗ 2025)' },
+    color: '#c8a45c',
+    bg: 'rgba(200,164,92,0.07)',
+    border: 'rgba(200,164,92,0.25)',
+    note: { uk: '21% — діти', en: '21% — children' },
+  },
+  {
+    val: '82–85%',
+    label: { uk: 'позитивна динаміка (PHQ-9/GAD-7)', en: 'positive dynamics (PHQ-9/GAD-7)' },
+    sub:  { uk: 'Центри досконалості, після 1-го циклу', en: 'Centres of Excellence, after 1st cycle' },
+    color: '#a78bfa',
+    bg: 'rgba(167,139,250,0.07)',
+    border: 'rgba(167,139,250,0.25)',
+    note: { uk: 'цикл = 14+ днів, до 8 циклів/рік', en: 'cycle = 14+ days, up to 8/yr' },
+  },
+];
+
+// Funnel: від потреби до верифікованого покриття
+const FUNNEL = (lang: Language) => [
+  { name: t('Клінічна потреба', 'Clinical need', lang), value: 3900000, color: '#ff4444', pct: 100 },
+  { name: t('Звертаються (20%)', 'Seek help (20%)', lang), value: 780000, color: '#ff7b6e', pct: 20 },
+  { name: t('Первинна ланка', 'Primary care', lang), value: 550000, color: '#00d4aa', pct: 14.1 },
+  { name: t('Спеціалізована', 'Specialized', lang), value: 118000, color: '#c8a45c', pct: 3.0 },
+];
+
+const MILITARY = [
+  { label: { uk: 'Завершили реабілітацію (МоД 2025)', en: 'Completed rehab (MoD 2025)' }, val: '33K+', color: '#00d4aa' },
+  { label: { uk: 'Довгострокова (після-гострий)', en: 'Long-term (post-acute)' }, val: '70%', color: '#c8a45c' },
 ];
 
 export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
-  const prevData = PREVALENCE_DATA(lang);
-  const dropData = [
-    { session: t('Сесія 1', 'Session 1', lang), actual: 85 },
-    { session: t('Сесія 3', 'Session 3', lang), actual: 55 },
-    { session: t('Сесія 6', 'Session 6', lang), actual: 40 },
-  ];
+  const funnelData = FUNNEL(lang);
 
   return (
     <div
       className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
-      style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1a0808 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1a0a0a 100%)' }}
     >
       <div className="h-[2px] w-full flex-shrink-0"
-        style={{ background: 'linear-gradient(90deg, transparent, #ff7b6e, #ff4444, rgba(200,164,92,0.4))', boxShadow: '0 0 18px rgba(255,123,110,0.5)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent, #ff7b6e, #00d4aa, rgba(200,164,92,0.4))', boxShadow: '0 0 16px rgba(255,123,110,0.4)' }} />
 
       <NavBar
         lang={lang}
         nav={nav}
-        accentColor="#ff7b6e"
-        title={{ uk: 'Завершуваність реабілітації', en: 'Rehabilitation completion' }}
-        subtitle={{ uk: 'Clinical · ціль ≥80%', en: 'Clinical · target ≥80%' }}
+        accentColor="#00d4aa"
+        title={{ uk: 'Клінічне охоплення та результати 2025', en: 'Clinical coverage & outcomes 2025' }}
+        subtitle={{ uk: 'МОЗ · НСЗУ · WHO — верифіковані дані', en: 'МОЗ · НСЗУ · WHO — verified data' }}
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 px-6 pb-4 pt-3 min-h-0">
-        <div className="flex flex-col gap-4">
+      {/* Body: 2-column layout */}
+      <div className="flex-1 grid min-h-0 px-5 pb-3 pt-3 gap-4"
+        style={{ gridTemplateColumns: '1fr 1fr' }}>
 
-          {/* KPI */}
-          <div className="rounded-2xl p-5 flex-shrink-0"
-            style={{ background: 'rgba(224,85,69,0.08)', border: '1px solid rgba(255,123,110,0.3)' }}>
-            <div className="ds-display font-black leading-none" style={{ fontSize: '72px', color: '#ff7b6e', textShadow: '0 0 40px rgba(255,123,110,0.5)' }}>
-              ~40%
-            </div>
-            <div className="text-[15px] font-semibold ds-body mt-2" style={{ color: 'rgba(200,208,220,0.9)' }}>
-              {t('епізодів завершено / розпочато', 'episodes completed / initiated', lang)}
-            </div>
-            <div className="text-[11px] font-mono mt-1" style={{ color: 'var(--color-ds-muted)' }}>
-              {t('Епізод = ≥6 сесій / ≥3 міс. (mhGAP)', 'Episode = ≥6 sessions / ≥3 mo. (mhGAP)', lang)}
-            </div>
-          </div>
-
-          {/* PREVALENCE bar chart */}
-          <div className="flex-1 rounded-2xl p-4 min-h-0"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
-            <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
-              {t('Поширеність розладів (Lancet 2023, % обстежених)', 'Disorder prevalence (Lancet 2023, % of surveyed)', lang)}
-            </div>
-            <div className="h-[calc(100%-28px)]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={prevData} layout="vertical" margin={{ left: 8, right: 50, top: 4, bottom: 4 }}>
-                  <XAxis type="number" hide domain={[0, 50]} />
-                  <YAxis
-                    type="category"
-                    dataKey="name"
-                    width={130}
-                    tick={{ fill: 'var(--color-ds-muted)', fontSize: 10, fontFamily: 'DM Sans' }}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <Tooltip
-                    formatter={(v: number) => [`${v}%`, t('Поширеність', 'Prevalence', lang)]}
-                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(255,123,110,0.3)', borderRadius: 8, fontSize: 11 }}
-                    labelStyle={{ color: '#ff7b6e' }}
-                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
-                  />
-                  <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-                    {prevData.map((d, i) => (
-                      <Cell key={i} fill={d.fill} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-4 min-h-0 overflow-hidden">
-
-          {/* Drop-off line chart */}
-          <div className="rounded-2xl p-4 flex-shrink-0"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
-            <div className="text-[10px] font-mono uppercase tracking-wider mb-1" style={{ color: 'var(--color-ds-muted)' }}>
-              {t('Відсів по протоколу (% що продовжують)', 'Protocol drop-off (% continuing)', lang)}
-            </div>
-            <div className="text-[10px] font-mono mb-2" style={{ color: 'var(--color-ds-muted)' }}>
-              {t('Розрахунок: НСЗУ Пакет 51 ПМД 2024–2025 · mhGAP IG v3 episode ≥6 сесій', 'Calc: NHSU Package 51 PHC 2024–2025 · mhGAP IG v3 episode ≥6 sessions', lang)}
-            </div>
-            <div style={{ height: 100 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={dropData} margin={{ left: 0, right: 48, top: 8, bottom: 4 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                  <XAxis dataKey="session" tick={{ fill: 'var(--color-ds-muted)', fontSize: 10 }} tickLine={false} axisLine={false} />
-                  <YAxis hide domain={[0, 100]} />
-                  <Tooltip
-                    formatter={(v: number) => [`${v}%`, t('Фактично', 'Actual', lang)]}
-                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(255,123,110,0.3)', borderRadius: 8, fontSize: 11 }}
-                    labelStyle={{ color: '#ff7b6e' }}
-                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
-                  />
-                  <ReferenceLine
-                    y={80}
-                    stroke="rgba(200,164,92,0.55)"
-                    strokeDasharray="4 2"
-                    label={{ value: t('Ціль 80%', 'Target 80%', lang), position: 'right', fill: 'var(--color-ds-gold)', fontSize: 10 }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="actual"
-                    name={t('Фактично', 'Actual', lang)}
-                    stroke="#ff7b6e"
-                    strokeWidth={2}
-                    dot={{ fill: '#ff7b6e', r: 4, strokeWidth: 0 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* Systemic drivers */}
-          <div className="rounded-2xl p-4 flex-shrink-0"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
-            <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
-              {t('Системні драйвери відсіву', 'Systemic drop-off drivers', lang)}
-            </div>
-            <div className="space-y-2.5">
-              {DRIVERS.map((d, i) => (
-                <div key={i} className="flex gap-3 items-start">
-                  <div className="text-[18px] leading-none mt-0.5" style={{ color: '#ff7b6e' }}>{d.icon}</div>
-                  <div>
-                    <div className="text-[13px] font-bold ds-display" style={{ color: 'var(--color-ds-text)' }}>{d.val[lang]}</div>
-                    <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{d.desc[lang]}</div>
-                  </div>
+        {/* LEFT — 4 KPI cards in 2×2 */}
+        <div className="grid min-h-0 gap-2.5" style={{ gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr' }}>
+          {KPI_CARDS.map((k, i) => (
+            <div key={i} className="rounded-xl p-3.5 flex flex-col justify-between"
+              style={{ background: k.bg, border: `1px solid ${k.border}` }}>
+              <div>
+                <div className="font-black ds-display leading-none" style={{ fontSize: '32px', color: k.color }}>
+                  {k.val}
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* FEEL Again pathway */}
-          <div className="flex-1 rounded-2xl p-4 min-h-0"
-            style={{ background: 'rgba(200,164,92,0.06)', border: '1px solid rgba(200,164,92,0.3)' }}>
-            <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-gold)' }}>
-              {t('FEEL Again · Шлях до 80%', 'FEEL Again · Pathway to 80%', lang)}
-            </div>
-            <div className="space-y-2">
-              {[
-                { uk: 'Єдиний episode tracker — одна картка, 5 систем', en: 'Unified episode tracker — one record, 5 systems' },
-                { uk: 'Авто-нагадування + ескалація при відсіві після сесії 2', en: 'Auto-reminders + escalation on drop-off after session 2' },
-                { uk: 'FHIR R4 bridge: NHSU ↔ ESOZ → видимість по всьому епізоду', en: 'FHIR R4 bridge: NHSU ↔ ESOZ → full episode visibility' },
-                { uk: 'HL7 CDA export → страховий виплат при завершенні', en: 'HL7 CDA export → insurance disbursement on completion' },
-              ].map((item, i) => (
-                <div key={i} className="flex gap-2 items-start">
-                  <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold mt-0.5"
-                    style={{ background: 'rgba(200,164,92,0.2)', color: 'var(--color-ds-gold)', border: '1px solid rgba(200,164,92,0.4)' }}>
-                    {i + 1}
-                  </div>
-                  <div className="text-[11px] ds-body" style={{ color: 'var(--color-ds-text)' }}>{item[lang]}</div>
+                <div className="text-[12px] font-semibold ds-body mt-1.5 leading-tight" style={{ color: 'rgba(200,208,220,0.9)' }}>
+                  {k.label[lang]}
                 </div>
-              ))}
-            </div>
-            <div className="mt-3 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
-              <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
-                {t('Джерело: NHSU open data 2025 · Lancet 2024 · mhGAP IG v3', 'Source: NHSU open data 2025 · Lancet 2024 · mhGAP IG v3', lang)}
+                <div className="text-[10px] font-mono mt-1 leading-tight" style={{ color: 'var(--color-ds-muted)' }}>
+                  {k.sub[lang]}
+                </div>
+              </div>
+              <div className="text-[10px] font-semibold mt-2 px-2 py-1 rounded-md"
+                style={{ background: `${k.color}18`, color: k.color }}>
+                {k.note[lang]}
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* RIGHT — funnel + military */}
+        <div className="flex flex-col gap-3 min-h-0">
+
+          {/* Coverage funnel */}
+          <div className="flex-1 rounded-xl p-4 min-h-0"
+            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+            <div className="text-[10px] font-mono uppercase tracking-wider mb-3"
+              style={{ color: 'var(--color-ds-muted)' }}>
+              {t('Воронка охоплення: від потреби до системи (2025)', 'Coverage funnel: from need to system (2025)', lang)}
+            </div>
+            <div className="flex flex-col gap-2 h-[calc(100%-36px)] justify-around">
+              {funnelData.map((row, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="text-[11px] font-mono w-[130px] flex-shrink-0" style={{ color: 'var(--color-ds-muted)' }}>
+                    {row.name}
+                  </div>
+                  <div className="flex-1 relative h-6 rounded-md overflow-hidden"
+                    style={{ background: 'rgba(255,255,255,0.04)' }}>
+                    <div className="absolute inset-y-0 left-0 rounded-md flex items-center px-2"
+                      style={{
+                        width: `${Math.max(row.pct, 3)}%`,
+                        background: `${row.color}30`,
+                        borderRight: `2px solid ${row.color}`,
+                        transition: 'width 0.6s ease',
+                      }}>
+                    </div>
+                  </div>
+                  <div className="text-[12px] font-bold ds-display w-[58px] text-right flex-shrink-0"
+                    style={{ color: row.color }}>
+                    {row.value >= 1000000
+                      ? `${(row.value / 1000000).toFixed(1)}M`
+                      : row.value >= 1000
+                      ? `${(row.value / 1000).toFixed(0)}K`
+                      : row.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Military rehab */}
+          <div className="rounded-xl p-4 flex-shrink-0"
+            style={{ background: 'rgba(0,212,170,0.05)', border: '1px solid rgba(0,212,170,0.2)' }}>
+            <div className="text-[10px] font-mono uppercase tracking-wider mb-2.5"
+              style={{ color: 'var(--color-ds-muted)' }}>
+              {t('Ветерани — МоД 2025', 'Veterans — MoD 2025', lang)}
+            </div>
+            <div className="flex gap-4">
+              {MILITARY.map((m, i) => (
+                <div key={i} className="flex-1">
+                  <div className="text-[24px] font-black ds-display" style={{ color: m.color }}>{m.val}</div>
+                  <div className="text-[10px] ds-body mt-1 leading-tight" style={{ color: 'var(--color-ds-muted)' }}>
+                    {m.label[lang]}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Source note */}
+          <div className="text-[9px] font-mono flex-shrink-0" style={{ color: 'rgba(100,120,140,0.6)' }}>
+            {t(
+              'Джерела: МОЗ 2025 (moz.gov.ua/uk/rozbudova-sistemi), WHO EURO April 2025 (ecoi.net), МоД Jan 2026 (mod.gov.ua). Completion rate не публікується — реабілітація перейшла на цикловий облік (ПМГ-2025).',
+              'Sources: МОЗ 2025, WHO EURO April 2025, МоД Jan 2026. Completion rate not published — rehab converted to cycle-based tracking (PMG-2025).',
+              lang
+            )}
           </div>
         </div>
       </div>
+
       <L3Footer lang={lang} nav={nav} />
     </div>
   );
