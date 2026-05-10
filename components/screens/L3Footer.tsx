@@ -61,7 +61,7 @@ export const L3Footer: React.FC<Props> = ({ lang, nav }) => {
   return (
     <div
       className="flex-shrink-0 px-5 pb-2"
-      style={{ borderTop: '2px solid rgba(245,166,35,0.35)', background: 'rgba(245,166,35,0.04)', paddingTop: 8 }}
+      style={{ borderTop: '2px solid rgba(212,165,116,0.4)', background: 'rgba(212,165,116,0.05)', paddingTop: 8 }}
     >
       <div className="flex items-center gap-3 flex-wrap">
         {/* Report sections toggle */}

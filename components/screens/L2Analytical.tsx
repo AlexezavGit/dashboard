@@ -65,7 +65,7 @@ const SYSTEMS = [
   },
   {
     name: 'FEEL Again Bus',
-    owner: { uk: 'Міст гум. → ЄСОЗ (через Trembita)', en: 'Humanitarian → ESOZ bridge (via Trembita)' },
+    owner: { uk: 'Міст гуманітарний → ЄСОЗ (через Trembita)', en: 'Humanitarian → ESOZ bridge (via Trembita)' },
     sessions: '→ 624K+',
     visibility: 100,
     esoz: 100,

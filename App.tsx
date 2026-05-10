@@ -297,69 +297,9 @@ const App: React.FC = () => {
         />
       )}
 
-      {/* Back button is now embedded in the appendix header (left side) */}
-      {/* ── SIDEBAR + MAIN (appendix mode only) ─────────────────────── */}
+      {/* ── L3 APPENDIX (accordion nav, no sidebar) ─────────────────── */}
       {showAppendix && !showL4 && <>
-      {/* Mobile backdrop */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
-      <aside
-        className={`fixed top-0 left-0 h-screen z-40 flex flex-col ds-sidebar transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} w-56`}
-      >
-        {/* Sidebar header */}
-        <div className="px-4 py-4 flex items-center justify-between flex-shrink-0" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
-          <div>
-            <div className="text-[13px] font-bold tracking-tight ds-display" style={{ color: 'var(--color-ds-gold)' }}>FEEL Again</div>
-            <div className="text-[8px] font-mono uppercase tracking-wider" style={{ color: 'var(--color-ds-muted)' }}>MHPSS Dashboard</div>
-          </div>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden transition-colors" style={{ color: 'var(--color-ds-muted)' }}>
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-        {/* Nav items */}
-        <nav className="flex-1 overflow-y-auto py-3 space-y-0.5 px-2">
-          {SIDEBAR_GROUPS.map((group, gi) => (
-            <div key={gi} className="mb-1">
-              {group.label && (
-                <div className="cyber-label px-2 pt-3 pb-1 tracking-[0.15em]">{group.label}</div>
-              )}
-              {group.items.map(item => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => scrollTo(item.target)}
-                    className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-[11px] hover:bg-white/5 transition-colors text-left ds-body"
-                    style={{ color: 'var(--color-ds-muted)' }}
-                  >
-                    <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span>{item.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
-        {/* Sidebar footer links */}
-        <div className="px-2 py-3 space-y-1 flex-shrink-0" style={{ borderTop: '1px solid var(--color-ds-border)' }}>
-          <a href="https://feelagain.com.ua" target="_blank" rel="noreferrer"
-            className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg text-[11px] transition-colors ds-display"
-            style={{ color: 'var(--color-ds-gold)' }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'var(--color-ds-gold-dim)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span>feelagain.com.ua →</span>
-          </a>
-          <div className="px-2 py-1.5 text-[8px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
-            v2.1 · {new Date().toLocaleDateString()}
-          </div>
-        </div>
-      </aside>
-
-      {/* ── MAIN CONTENT (shifts right when sidebar open on lg+) ─────── */}
-      <div className={`flex-1 min-h-screen transition-all duration-300 ${sidebarOpen ? 'lg:ml-56' : 'ml-0'}`}>
+      <div className="flex-1 min-h-screen">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-12" id="hero-top">
         
         {/* ── L3 HEADER — NavBar-style, consistent with L1/L2 ───────── */}
@@ -375,15 +315,6 @@ const App: React.FC = () => {
             >
               <ArrowLeft className="w-4 h-4" />
               {lang === 'uk' ? 'Назад' : 'Back'}
-            </button>
-            {/* Sidebar toggle */}
-            <button
-              onClick={() => setSidebarOpen(o => !o)}
-              className="flex-shrink-0 p-2 rounded-lg transition-colors"
-              style={{ border: '1px solid var(--color-ds-border)', color: 'var(--color-ds-muted)' }}
-              title={sidebarOpen ? 'Close nav' : 'Open nav'}
-            >
-              {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
             {/* Breadcrumbs */}
             <div className="hidden sm:flex items-center gap-1.5 text-[11px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
@@ -603,23 +534,57 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Filter Bar */}
-        <div className="sticky top-4 z-40 backdrop-blur-xl rounded-xl p-3 flex items-center gap-4 flex-wrap mb-10" style={{ background: 'color-mix(in srgb, var(--color-ds-bg) 85%, transparent)', border: '1px solid var(--color-ds-border)' }}>
-          <label className="cyber-label ml-2">{TEXTS.filters.label[lang]}</label>
-          <div className="relative flex-1 md:flex-none">
-            <select
-              className="appearance-none w-full text-xs md:text-sm rounded-lg pl-3 pr-10 py-2 focus:outline-none transition-all cursor-pointer md:min-w-[240px] font-mono"
-              style={{ background: 'var(--color-ds-surface)', border: '1px solid var(--color-ds-border)', color: 'var(--color-ds-text)' }}
-              value={activeSection}
-              onChange={(e) => setActiveSection(e.target.value as SectionFilter)}
+        {/* ── ACCORDION TOC — horizontal pill navigation ─────────────── */}
+        <div className="sticky top-0 z-40 backdrop-blur-xl mb-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-2.5" style={{ background: 'color-mix(in srgb, var(--color-ds-bg) 90%, transparent)', borderBottom: '1px solid var(--color-ds-border)' }}>
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: 'none' }}>
+            {/* All sections pill */}
+            <button
+              onClick={() => setActiveSection('all')}
+              className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold ds-display transition-all"
+              style={activeSection === 'all'
+                ? { background: 'var(--color-ds-gold)', color: '#0a1628', border: '1px solid var(--color-ds-gold)' }
+                : { background: 'transparent', color: 'var(--color-ds-muted)', border: '1px solid var(--color-ds-border)' }}
             >
-              {Object.entries(TEXTS.filters.options).map(([key, label]) => (
-                <option key={key} value={key}>{label[lang]}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-2.5 w-4 h-4 pointer-events-none" style={{ color: 'var(--color-ds-gold)' }} />
+              {lang === 'uk' ? 'Усі' : 'All'}
+            </button>
+            {/* Section pills */}
+            {SECTIONS_CONFIG.map((sec, idx) => {
+              const SHORT_LABELS: Record<string, { uk: string; en: string }> = {
+                gap:        { uk: '01 · Розрив',       en: '01 · Gap' },
+                workforce:  { uk: '02 · Кадри',         en: '02 · Workforce' },
+                budget:     { uk: '03 · Фінансування',  en: '03 · Funding' },
+                shadow:     { uk: '04 · Тіньовий',      en: '04 · Shadow' },
+                prevalence: { uk: '05 · Поширеність',   en: '05 · Prevalence' },
+                economic:   { uk: '06 · ROI',            en: '06 · ROI' },
+                children:   { uk: '07 · Діти',           en: '07 · Children' },
+                inputs:     { uk: '08 · Результати',    en: '08 · Inputs' },
+              };
+              const isActive = activeSection === sec.id;
+              return (
+                <button
+                  key={sec.id}
+                  onClick={() => {
+                    setActiveSection(sec.id as SectionFilter);
+                    setTimeout(() => {
+                      document.getElementById(`section-${sec.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 80);
+                  }}
+                  className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold ds-display transition-all"
+                  style={isActive
+                    ? { background: 'rgba(200,164,92,0.18)', color: 'var(--color-ds-gold)', border: '1px solid rgba(200,164,92,0.5)' }
+                    : { background: 'transparent', color: 'var(--color-ds-muted)', border: '1px solid var(--color-ds-border)' }}
+                  onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = 'var(--color-ds-text)'; }}
+                  onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = 'var(--color-ds-muted)'; }}
+                >
+                  {(SHORT_LABELS[sec.id] ?? { uk: sec.id, en: sec.id })[lang]}
+                </button>
+              );
+            })}
           </div>
-          <div className="ml-auto hidden lg:flex items-center gap-4 px-4" style={{ borderLeft: '1px solid var(--color-ds-border)' }}>
+        </div>
+        {/* Data source live status badges */}
+        <div className="mb-6 hidden lg:flex items-center justify-end gap-4">
+          <div className="flex items-center gap-4 px-4" style={{ borderLeft: '1px solid var(--color-ds-border)' }}>
             {isLoadingData ? (
               <DataSourceBadge status="loading" lang={lang} compact />
             ) : (

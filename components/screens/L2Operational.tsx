@@ -54,9 +54,9 @@ const GAPS: Gap[] = [
     id: 'admin', cluster: 'data', color: '#2ec4b6', icon: '📋',
     label:    { uk: 'Адміністративний', en: 'Administrative' },
     val: '22%', valLabel: { uk: 'часу — подвійна робота', en: 'time on duplication' },
-    oneliner: { uk: '3.5 год/тиж × 35K фахівців = 6.4M годин/рік витрачено даремно', en: '3.5 hrs/wk × 35K specialists = 6.4M hrs/yr wasted' },
-    source:   { uk: 'MSF Operational Survey 2024 (n=312 спеціалісти)', en: 'MSF Operational Survey 2024 (n=312 specialists)' },
-    calc:     { uk: '3.5 год × 35,000 × 52 тижні = 6.37M год → ~$5.6M/рік (по $0.88/год) → ціль FEEL Again: 22%→7% = +45K сесій/міс', en: '3.5 hrs × 35,000 × 52 wks = 6.37M hrs → ~$5.6M/yr (at $0.88/hr) → FEEL Again target: 22%→7% = +45K sessions/mo' },
+    oneliner: { uk: '3.5 год/тиж × 12K (4K НСЗУ + 8K UNICEF) = 2.18M годин/рік витрачено даремно', en: '3.5 hrs/wk × 12K (4K NHSU + 8K UNICEF) = 2.18M hrs/yr wasted' },
+    source:   { uk: 'MSF Operational Survey 2024 (n=312) — ставка 3.5год/тиж; кількість: МЗ портал (4K) + UNICEF TWG (8K)', en: 'MSF Operational Survey 2024 (n=312) — 3.5 hrs/wk rate; headcount: MOH portal (4K) + UNICEF TWG (8K)' },
+    calc:     { uk: '3.5 год × 12,000 × 52 тижні = 2.18M год/рік | ⚠️ ASSUMPTION: 4K НСЗУ-верифіковані (портал МЗ 10.04.2026) + 8K UNICEF-верифіковані гуманітарні; джерело MSF Survey 2024 (n=312) для 3.5год/тиж', en: '3.5 hrs × 12,000 × 52 wks = 2.18M hrs/yr | ⚠️ ASSUMPTION: 4K NHSU-verified (MOH portal 10.04.2026) + 8K UNICEF-verified humanitarian; MSF Survey 2024 (n=312) for 3.5 hrs/wk rate' },
     chainsTo: ['cap', 'path'],
   },
   // ── CAPACITY cluster ──────────────────────────────────────────────────────

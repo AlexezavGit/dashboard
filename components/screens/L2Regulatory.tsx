@@ -34,7 +34,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
       lang={lang}
       nav={nav}
       accentColor="#c084fc"
-      title={{ uk: 'Локалізація гум. ресурсів', en: 'Humanitarian localization' }}
+      title={{ uk: 'Локалізація гуманітарних ресурсів', en: 'Humanitarian localization' }}
       subtitle={{ uk: 'Regulatory · ціль ≥25%', en: 'Regulatory · target ≥25%' }}
       crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
     />
@@ -47,7 +47,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
             ~1%
           </div>
           <div className="text-[15px] font-semibold ds-body mt-2" style={{ color: 'rgba(200,208,220,0.9)' }}>
-            {t('гум. MH фінансування через укр. організації', 'humanitarian MH funding via Ukrainian organisations', lang)}
+            {t('гуманітарного MH фінансування через укр. організації', 'humanitarian MH funding via Ukrainian organisations', lang)}
           </div>
           <div className="text-[11px] font-mono mt-1" style={{ color: 'var(--color-ds-muted)' }}>
             {t('Grand Bargain commitment: ≥25% до 2025 — не виконано', 'Grand Bargain commitment: ≥25% by 2025 — unmet', lang)}
@@ -57,7 +57,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
         <div className="flex-1 rounded-2xl p-5 min-h-0"
           style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
           <div className="text-[11px] font-mono uppercase tracking-wider mb-3" style={{ color: 'var(--color-ds-muted)' }}>
-            {t('Розподіл гум. фінансування', 'Humanitarian fund flow', lang)}
+            {t('Розподіл гуманітарного фінансування', 'Humanitarian fund flow', lang)}
           </div>
           <div className="space-y-3">
             {FLOW.map((f) => (

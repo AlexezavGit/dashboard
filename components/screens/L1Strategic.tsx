@@ -71,9 +71,9 @@ const LAYERS: LayerDef[] = [
   {
     id: 'regulatory', screenId: 'l2-regulatory', weight: 5, current: 1, target: 25,
     layer: { uk: 'Regulatory', en: 'Regulatory' },
-    indicator: { uk: 'Локалізація гум. ресурсів', en: 'Humanitarian localization' },
+    indicator: { uk: 'Локалізація гуманітарних ресурсів', en: 'Humanitarian localization' },
     display: { uk: '~1%', en: '~1%' },
-    unit: { uk: 'гум. фінансування через укр. організ.', en: 'humanitarian funding via Ukrainian orgs' },
+    unit: { uk: 'гуманітарного фінансування через укр. організації', en: 'humanitarian funding via Ukrainian orgs' },
     color: '#c084fc', glow: 'rgba(192,132,252,0.22)', cardBg: 'rgba(192,132,252,0.07)',
   },
 ];
