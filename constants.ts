@@ -122,14 +122,15 @@ export const KPI_DATA: KpiData[] = [
 ];
 
 export const SECTIONS_CONFIG: SectionData[] = [
-  { id: 'prevalence', title: { uk: 'Поширеність психічних розладів (через рік після повномасштабного вторгнення)', en: 'Mental Health Disorder Prevalence (1 year post-invasion)' }, icon: 'BarChart2' },
-  { id: 'workforce', title: { uk: 'Кадровий потенціал та людський капітал', en: 'Workforce & Human Capital' }, icon: 'Users' },
-  { id: 'budget', title: { uk: 'Бюджети та фінансування сектору', en: 'Sector Budgets & Funding' }, icon: 'Coins' },
-  { id: 'gap', title: { uk: 'Розрив у доступі до допомоги', en: 'Treatment Access Gap' }, icon: 'AlertCircle' },
-  { id: 'shadow', title: { uk: 'Тіньовий сектор та формалізація практики', en: 'Shadow Economy & Practice Formalization' }, icon: 'EyeOff' },
-  { id: 'economic', title: { uk: "Економічний тягар та ROI для інвесторів", en: 'Economic Burden & Investor ROI' }, icon: 'TrendingUp' },
-  { id: 'children', title: { uk: "Ментальне здоров'я дітей", en: "Children's Mental Health" }, icon: 'Smile' },
-  { id: 'inputs', title: { uk: 'Що зроблено — і чого це вартує в масштабі країни', en: 'What Was Achieved — And What It Means at National Scale' }, icon: 'Scale' },
+  // NBU Brief canonical order: gaps & decision justifications first, then context
+  { id: 'gap',        title: { uk: 'Розрив у доступі до допомоги',                              en: 'Treatment Access Gap' },                          icon: 'AlertCircle' },
+  { id: 'workforce',  title: { uk: 'Кадровий потенціал та людський капітал',                    en: 'Workforce & Human Capital' },                     icon: 'Users'       },
+  { id: 'budget',     title: { uk: 'Бюджети та фінансування сектору',                           en: 'Sector Budgets & Funding' },                      icon: 'Coins'       },
+  { id: 'shadow',     title: { uk: 'Тіньовий сектор та формалізація практики',                  en: 'Shadow Economy & Practice Formalization' },       icon: 'EyeOff'      },
+  { id: 'prevalence', title: { uk: 'Поширеність психічних розладів (через рік після вторгнення)', en: 'Mental Health Disorder Prevalence (1 yr post-invasion)' }, icon: 'BarChart2' },
+  { id: 'economic',   title: { uk: 'Економічний тягар та ROI для інвесторів',                   en: 'Economic Burden & Investor ROI' },                icon: 'TrendingUp'  },
+  { id: 'children',   title: { uk: "Ментальне здоров'я дітей",                                  en: "Children's Mental Health" },                      icon: 'Smile'       },
+  { id: 'inputs',     title: { uk: 'Що зроблено — і чого це вартує в масштабі країни',          en: 'What Was Achieved — And What It Means at National Scale' }, icon: 'Scale' },
 ];
 
 // --- Chart Data ---

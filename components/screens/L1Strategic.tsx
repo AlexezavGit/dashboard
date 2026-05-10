@@ -45,7 +45,7 @@ const LAYERS: LayerDef[] = [
     color: '#ff7b6e', glow: 'rgba(224,85,69,0.22)', cardBg: 'rgba(224,85,69,0.07)',
   },
   {
-    id: 'data', screenId: 'l2-data', weight: 20, current: 5, target: 60,
+    id: 'data', screenId: 'l2-analytical', weight: 20, current: 5, target: 60,
     layer: { uk: 'Data & Coord', en: 'Data & Coord' },
     indicator: { uk: 'Інтероперабельність', en: 'Interoperability' },
     display: { uk: '<5%', en: '<5%' },
@@ -95,9 +95,25 @@ const currentBand = scoreToBand(INDEX_SCORE);
 
 const SOURCES = [
   { val: '$1.87B', label: { uk: 'WB+EU портфель MH', en: 'WB+EU MH portfolio' } },
-  { val: '6.8M', label: { uk: 'PTSD/depr. потреба', en: 'PTSD/depr. need' } },
   { val: '€2.5–4.1B', label: { uk: 'непокрита вартість сесій', en: 'unmet session value' } },
   { val: '260K', label: { uk: 'НСЗУ пацієнтів 2025', en: 'NHSU patients 2025' } },
+];
+
+
+// ── "Ціна бездіяльності" — inaction cost items linking to L3 sections ──────
+interface InactionItem {
+  val: string;
+  label: { uk: string; en: string };
+  anchor: string | null;   // null → navigate to l2-analytical instead
+  color: string;
+}
+const INACTION_COSTS: InactionItem[] = [
+  { val: '$0',      label: { uk: 'верифікованих WB-виплат', en: 'verified WB payments' }, anchor: 'section-budget',   color: '#ff7b6e' },
+  { val: '54%',     label: { uk: 'відсів з лікування',      en: 'treatment dropout' },     anchor: 'section-gap',     color: '#ff7b6e' },
+  { val: '4.7M',    label: { uk: 'невидимих сесій',         en: 'invisible sessions' },     anchor: null,              color: '#00d4aa' },
+  { val: '22 роки', label: { uk: 'до ліквідації черги',     en: 'to clear backlog' },       anchor: 'section-gap',     color: '#e8c97a' },
+  { val: '$8B/рік', label: { uk: 'втрати ВВП від кризи MH', en: 'GDP loss from MH crisis' }, anchor: 'section-economic', color: '#e8c97a' },
+  { val: '6.4M год',label: { uk: 'адмін-витрат/рік',        en: 'admin hrs/yr' },           anchor: 'section-inputs',  color: '#a78bfa' },
 ];
 
 // ── Elevator gauge geometry ────────────────────────────────────────────────────
@@ -467,6 +483,48 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
                 </span>
               </div>
             ))}
+          </div>
+
+          {/* ── Ціна бездіяльності ── */}
+          <div style={{ marginTop: 12, borderTop: '1px solid rgba(200,164,92,0.15)', paddingTop: 8 }}>
+            <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 8,
+              color: 'var(--color-ds-gold)', textTransform: 'uppercase', letterSpacing: '0.12em',
+              textAlign: 'center', marginBottom: 6 }}>
+              {lang === 'uk' ? 'Ціна бездіяльності' : 'Cost of Inaction'}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {INACTION_COSTS.map(item => (
+                <button
+                  key={item.val}
+                  onClick={() => {
+                    if (item.anchor === null) {
+                      nav.push('l2-analytical');
+                    } else {
+                      sessionStorage.setItem('l3-scroll', item.anchor);
+                      nav.push('appendix');
+                    }
+                  }}
+                  style={{
+                    display: 'flex', alignItems: 'baseline', gap: 6, background: 'none',
+                    border: 'none', padding: '3px 4px', borderRadius: 5, cursor: 'pointer',
+                    textAlign: 'left', width: '100%',
+                    transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+                >
+                  <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800,
+                    fontSize: 12, color: item.color, lineHeight: 1, minWidth: 52,
+                    textShadow: `0 0 10px ${item.color}55` }}>
+                    {item.val}
+                  </span>
+                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+                    color: 'rgba(200,208,220,0.75)', lineHeight: 1.3 }}>
+                    {item.label[lang]}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

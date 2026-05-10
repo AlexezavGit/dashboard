@@ -260,13 +260,8 @@ const App: React.FC = () => {
         { id: 'roi', label: lang === 'uk' ? 'ROI Калькулятор' : 'ROI Calculator', icon: Calculator, target: 'roi-calc' },
       ],
     },
-    {
-      label: lang === 'uk' ? 'Інфраструктура' : 'Infrastructure',
-      items: [
-        { id: 'data-intel', label: lang === 'uk' ? '8 систем: статус API' : '8 Systems: API Status', icon: GitMerge, target: 'data-intelligence' },
-        { id: 'functions', label: lang === 'uk' ? '4 функції FEEL Again' : '4 Core Functions', icon: Zap, target: 'feel-functions' },
-      ],
-    },
+    // Infrastructure sidebar entries removed — data-intelligence deleted from L3 (decision #7),
+    // feel-functions moved to feelagain.pages.dev (decision #8)
   ];
 
   const scrollTo = (id: string) => {
@@ -410,6 +405,18 @@ const App: React.FC = () => {
               <BookOpen className="w-3.5 h-3.5" />
               {lang === 'uk' ? 'Повний звіт' : 'Full Report'}
             </button>
+            {/* FEEL Again program site link */}
+            <a
+              href="https://feelagain.pages.dev"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold ds-display flex-shrink-0 transition-all"
+              style={{ background: 'rgba(200,164,92,0.10)', border: '1px solid rgba(200,164,92,0.30)', color: 'var(--color-ds-gold)', textDecoration: 'none' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.20)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.10)'; }}
+            >
+              {lang === 'uk' ? 'FEEL Again ↗' : 'FEEL Again ↗'}
+            </a>
             {/* Language switcher */}
             <div className="flex p-0.5 rounded-lg" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid var(--color-ds-border)' }}>
               <button
