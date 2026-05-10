@@ -44,11 +44,11 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 px-6 pb-4 pt-3 min-h-0">
-        <div className="flex flex-col gap-4">
-          <div className="rounded-2xl p-5 flex-shrink-0"
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 px-6 pb-0 pt-2 min-h-0 overflow-hidden">
+        <div className="flex flex-col gap-3">
+          <div className="rounded-2xl p-4 flex-shrink-0"
             style={{ background: 'rgba(255,153,102,0.07)', border: '1px solid rgba(255,153,102,0.3)' }}>
-            <div className="ds-display font-black leading-none" style={{ fontSize: '72px', color: '#ff9966', textShadow: '0 0 40px rgba(255,153,102,0.5)' }}>
+            <div className="ds-display font-black leading-none" style={{ fontSize: '56px', color: '#ff9966', textShadow: '0 0 40px rgba(255,153,102,0.5)' }}>
               −{lostPct}%
             </div>
             <div className="text-[15px] font-semibold ds-body mt-2" style={{ color: 'rgba(200,208,220,0.9)' }}>
@@ -88,15 +88,15 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
 
           {/* Structural disproportions: admin burden + inpatient mismatch */}
-          <div className="rounded-2xl p-4 flex-shrink-0"
+          <div className="rounded-2xl p-3 flex-shrink-0"
             style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
-            <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
+            <div className="text-[10px] font-mono uppercase tracking-wider mb-1" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Структурні диспропорції (× WHO норма = 1.0)', 'Structural disproportions (× WHO norm = 1.0)', lang)}
             </div>
-            <div style={{ height: 110 }}>
+            <div style={{ height: 90 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={structData} margin={{ left: 0, right: 8, top: 8, bottom: 4 }}>
                   <XAxis
@@ -137,9 +137,9 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
             </div>
           </div>
 
-          <div className="rounded-2xl p-4"
+          <div className="rounded-2xl p-3"
             style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
-            <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
+            <div className="text-[10px] font-mono uppercase tracking-wider mb-1.5" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Відновлюваний потенціал', 'Recoverable potential', lang)}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
