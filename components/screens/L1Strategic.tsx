@@ -8,6 +8,7 @@ interface Props {
   lang: Language;
   nav: ScreenNav;
   liveHciValue?: number | null;
+  darkMode?: boolean;
 }
 
 type LayerId = 'fintech' | 'clinical' | 'data' | 'sustain' | 'digital' | 'regulatory';
@@ -172,7 +173,9 @@ const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () =>
     animate={{ opacity: 1, x: 0 }}
     transition={{ delay: i * 0.05, duration: 0.28 }}
     className="flex-1 rounded-2xl px-4 py-3 cursor-pointer group relative overflow-hidden min-h-0"
-    style={{ background: l.cardBg, border: `1px solid ${l.color}40`, boxShadow: `0 0 20px ${l.glow}` }}
+    style={darkMode
+      ? { background: l.cardBg, border: `1px solid ${l.color}40`, boxShadow: `0 0 20px ${l.glow}` }
+      : { background: '#FFFFFF', border: `1px solid #DDD5CB`, borderLeft: `3px solid ${l.color}`, boxShadow: '8px 8px 24px rgba(58,53,48,0.09), -2px -2px 10px rgba(255,255,255,0.85)' }}
     onClick={onNav}
   >
     <div className="flex items-center justify-between mb-1">
@@ -182,7 +185,7 @@ const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () =>
     <div style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.6rem)', fontWeight: 900, fontFamily: 'Space Grotesk, sans-serif', color: l.color, lineHeight: 1 }}>
       {l.display[lang]}
     </div>
-    <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: 'rgba(200,208,220,0.85)', marginTop: 3 }}>
+    <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: 'var(--color-ds-muted)', marginTop: 3 }}>
       {l.indicator[lang]}
     </div>
     <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '9px', color: 'var(--color-ds-muted)', marginTop: 2 }}>
@@ -393,17 +396,18 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 };
 
 // ── Main screen ────────────────────────────────────────────────────────────────
-export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
+export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode = true }) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
     <div
       className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
       style={{
-        background:
-          'radial-gradient(ellipse 80% 60% at 20% 60%, rgba(0,210,170,0.10) 0%, transparent 55%), ' +
-          'radial-gradient(ellipse 60% 50% at 80% 40%, rgba(0,180,200,0.07) 0%, transparent 50%), ' +
-          'linear-gradient(135deg, #0a1628 0%, #1a0a0a 100%)',
+        background: darkMode
+          ? 'radial-gradient(ellipse 80% 60% at 20% 60%, rgba(0,210,170,0.10) 0%, transparent 55%), ' +
+            'radial-gradient(ellipse 60% 50% at 80% 40%, rgba(0,180,200,0.07) 0%, transparent 50%), ' +
+            'linear-gradient(135deg, #0a1628 0%, #1a0a0a 100%)'
+          : 'var(--color-ds-bg)',
       }}
     >
       {/* Top accent line */}

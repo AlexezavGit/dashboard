@@ -31,7 +31,7 @@
 
 /* ── Light theme overrides ──────────────────────────────────────────────── */
 :root[data-theme="light"] {
-  --color-ds-bg:        #F7F6F3;
+  --color-ds-bg:        #F7F5F1;
   --color-ds-surface:   rgba(58, 53, 48, 0.05);
   --color-ds-gold:      #D4A574;
   --color-ds-gold-dim:  rgba(212, 165, 116, 0.14);
@@ -199,7 +199,7 @@
 
 /* Surface/border utilities light overrides */
 :root[data-theme="light"] .bg-cyber-surface { background: rgba(0,0,0,0.04) !important; }
-:root[data-theme="light"] .border-cyber-border { border-color: rgba(139,105,20,0.22) !important; }
+:root[data-theme="light"] .border-cyber-border { border-color: #DDD5CB !important; }
 :root[data-theme="light"] .bg-cyber-bg { background: #f5f0e8 !important; }
 
 /* Screen containers — override hardcoded dark inline gradients */
@@ -223,7 +223,7 @@
 :root[data-theme="light"] .bg-black\/50 { background: rgba(0,0,0,0.25) !important; }
 
 /* Header border in light mode */
-:root[data-theme="light"] header { border-color: rgba(139,105,20,0.22) !important; }
+:root[data-theme="light"] header { border-color: #DDD5CB !important; }
 
 /* Sticky filter bar light mode */
 :root[data-theme="light"] .bg-cyber-bg\/80 {
@@ -238,11 +238,41 @@
 }
 
 /* Mission statement dividers light */
-:root[data-theme="light"] .divide-slate-700\/60 > * + * { border-color: rgba(139,105,20,0.22) !important; }
-:root[data-theme="light"] .border-slate-700\/60 { border-color: rgba(139,105,20,0.22) !important; }
+:root[data-theme="light"] .divide-slate-700\/60 > * + * { border-color: #DDD5CB !important; }
+:root[data-theme="light"] .border-slate-700\/60 { border-color: #DDD5CB !important; }
 
 /* Card hover gold glow applied globally in light */
-:root[data-theme="light"] .cyber-card:hover {
-  box-shadow: 0 0 20px rgba(139,105,20,0.15);
+:root[data-theme="light"] .cyber-card {
+  background: #FFFFFF !important;
+  border: 1px solid #DDD5CB !important;
+  box-shadow: 8px 8px 24px rgba(58,53,48,0.09), -2px -2px 10px rgba(255,255,255,0.85) !important;
+  backdrop-filter: none !important;
 }
+
+:root[data-theme="light"] .cyber-card:hover {
+  border-color: #D4A574 !important;
+  box-shadow: 10px 10px 32px rgba(58,53,48,0.13), -2px -2px 12px rgba(255,255,255,0.9) !important;
+}
+
+/* Strip colored semi-transparent backgrounds on L1 line cards in light mode */
+:root[data-theme="light"] [style*="rgba("] {
+  /* handled per-component via CSS variable override */
+}
+
+/* L1 screen background in light mode: brand bg */
+:root[data-theme="light"] .ds-screen {
+  background: #F7F5F1 !important;
+}
+
+/* NavBar in light mode */
+:root[data-theme="light"] nav,
+:root[data-theme="light"] [class*="navbar"],
+:root[data-theme="light"] .ds-navbar {
+  background: rgba(247,245,241,0.92) !important;
+  border-bottom-color: #DDD5CB !important;
+}
+
+/* Dividers in light mode */
+:root[data-theme="light"] .divide-slate-700\/60 > * + * { border-color: #DDD5CB !important; }
+:root[data-theme="light"] .border-slate-700\/60 { border-color: #DDD5CB !important; }
 
