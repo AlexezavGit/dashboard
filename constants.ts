@@ -122,11 +122,12 @@ export const KPI_DATA: KpiData[] = [
 ];
 
 export const SECTIONS_CONFIG: SectionData[] = [
-  // NBU Brief canonical order: gaps & decision justifications first, then context
+  // CLUSTER 1 — РОЗРИВИ (Gaps): what is broken
   { id: 'gap',        title: { uk: 'Розрив у доступі до допомоги',                              en: 'Treatment Access Gap' },                          icon: 'AlertCircle' },
   { id: 'workforce',  title: { uk: 'Кадровий потенціал та людський капітал',                    en: 'Workforce & Human Capital' },                     icon: 'Users'       },
-  { id: 'budget',     title: { uk: 'Бюджети та фінансування сектору',                           en: 'Sector Budgets & Funding' },                      icon: 'Coins'       },
   { id: 'shadow',     title: { uk: 'Тіньовий сектор та формалізація практики',                  en: 'Shadow Economy & Practice Formalization' },       icon: 'EyeOff'      },
+  { id: 'budget',     title: { uk: 'Бюджети та фінансування сектору',                           en: 'Sector Budgets & Funding' },                      icon: 'Coins'       },
+  // CLUSTER 2 — ДОКАЗИ (Evidence): explains the scale
   { id: 'prevalence', title: { uk: 'Поширеність психічних розладів (через рік після вторгнення)', en: 'Mental Health Disorder Prevalence (1 yr post-invasion)' }, icon: 'BarChart2' },
   { id: 'economic',   title: { uk: 'Економічний тягар та ROI для інвесторів',                   en: 'Economic Burden & Investor ROI' },                icon: 'TrendingUp'  },
   { id: 'children',   title: { uk: "Ментальне здоров'я дітей",                                  en: "Children's Mental Health" },                      icon: 'Smile'       },
@@ -307,11 +308,11 @@ export const TIMELINE_ITEMS = (l: LocalizedString) => [
 ];
 
 export const ADMIN_BURDEN = (l: Language) => [
-    { title: l === 'uk' ? 'Застарілі системи документообігу' : 'Outdated documentation systems', desc: l === 'uk' ? "ВООЗ фіксує обмежену інтеграцію з електронним здоров'ям та паперовий документообіг" : "WHO documents limited eHealth integration and paper-based recordkeeping", severity: l === 'uk' ? 'Високий' : 'High', color: 'red', source: 'WHO SIMH 2024' },
-    { title: l === 'uk' ? 'Нові вимоги сертифікації (2024+)' : 'New certification requirements (2024+)', desc: l === 'uk' ? 'Вища освіта + теоретичний курс + підтвердження підвищення кваліфікації + подання до Національної комісії або СРО' : 'Higher education + theoretical course + CPD certificates + submission to National Commission or SRO', severity: l === 'uk' ? 'Середній' : 'Medium', color: 'orange', source: 'МОЗ України' },
-    { title: l === 'uk' ? 'Навантаження на фахівця' : 'Caseload per specialist', desc: l === 'uk' ? '1 психолог на 400-500 військовослужбовців (ЗСУ). У цивільному секторі — дані не збираються.' : '1 psychologist per 400-500 military personnel (AFU). Civilian sector — data not collected.', severity: l === 'uk' ? 'Критичний' : 'Critical', color: 'red', source: 'ЗСУ / Відкриті дані' },
+    { title: l === 'uk' ? 'Звітування у 5+ систем' : 'Reporting into 5+ systems', desc: l === 'uk' ? "Дублювання даних у ActivityInfo, KoBo, внутрішні НГО-реєстри та паперові журнали." : "Data duplication across ActivityInfo, KoBo, internal NGO registries, and paper logs.", severity: l === 'uk' ? 'Високий' : 'High', color: 'red', source: 'FEEL Again Analysis' },
+    { title: l === 'uk' ? 'Ерозія клінічного часу' : 'Clinical time erosion', desc: l === 'uk' ? '3,500 клінічних психологів втрачають 25% часу. Результат: 1.4 млн втрачених сесій на рік.' : '3,500 clinical psychologists lose 25% of their time. Result: 1.4 million lost sessions per year.', severity: l === 'uk' ? 'Критичний' : 'Critical', color: 'red', source: 'FEEL Again / NBU Briefing' },
+    { title: l === 'uk' ? 'Навантаження на фахівця' : 'Caseload per specialist', desc: l === 'uk' ? '1 психолог на 400-500 військовослужбовців (ЗСУ). У цивільному секторі — дані не збираються.' : '1 psychologist per 400-500 military personnel (AFU). Civilian sector — data not collected.', severity: l === 'uk' ? 'Високий' : 'High', color: 'orange', source: 'ЗСУ / Відкриті дані' },
     { title: l === 'uk' ? 'Відсутність клерикальної підтримки' : 'Lack of clerical support', desc: l === 'uk' ? 'Lancet Commission: психіатри та психологи «перевантажені та недоплачені», без допоміжного адмінперсоналу' : 'Lancet Commission: psychiatrists and psychologists "overworked and underpaid", without admin support staff', severity: l === 'uk' ? 'Високий' : 'High', color: 'red', source: 'Lancet 2023' },
-    { title: l === 'uk' ? 'Кількість годин на адмінроботу' : 'Admin hours per week', desc: l === 'uk' ? 'ДАНІ ВІДСУТНІ. Конкретна кількість годин на адміністративну роботу не фіксується в жодному відомому дослідженні.' : 'DATA NOT AVAILABLE. Specific admin hours are not quantified in any known study.', severity: l === 'uk' ? 'Дефіцит даних' : 'Data gap', color: 'gray', source: 'Аналіз літератури' },
+    { title: l === 'uk' ? 'Автоматизація (FEEL Again)' : 'Automation (FEEL Again)', desc: l === 'uk' ? 'Погодинна тарифікація + вимірювання за шкалами = автоматична генерація звітності.' : 'Hourly tariffs + scale measurements = automated reporting generation.', severity: l === 'uk' ? 'Рішення' : 'Solution', color: 'green', source: 'Program Logic' },
 ];
 
 export const COORD_ITEMS = (l: Language) => [

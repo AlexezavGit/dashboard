@@ -13,12 +13,12 @@ interface Props { lang: Language; nav: ScreenNav; }
 const t = (uk: string, en: string, lang: Language) => lang === 'uk' ? uk : en;
 
 const TIME_BREAKDOWN = [
-  { label: { uk: 'Дублювання звітів (5 форм/візит)', en: 'Report duplication (5 forms/visit)' }, hrs: 3.5, clinical: false },
-  { label: { uk: 'Ручний перенос між системами', en: 'Manual re-entry between systems' }, hrs: 1.2, clinical: false },
-  { label: { uk: 'Пошук пацієнта (різні реєстри)', en: 'Patient search (different registries)' }, hrs: 0.8, clinical: false },
-  { label: { uk: 'Безпосередньо клінічний час', en: 'Direct clinical time' }, hrs: 14.5, clinical: true },
+  { label: { uk: 'Звітування у 5+ систем (ActivityInfo/KoBo)', en: 'Reporting into 5+ systems (ActivityInfo/KoBo)' }, hrs: 4.0, clinical: false },
+  { label: { uk: 'Паперові журнали та дублювання в ЕСОЗ', en: 'Paper logs & manual re-entry to ESOZ' }, hrs: 1.0, clinical: false },
+  { label: { uk: 'Ручна звірка бенефіціарів (UID lookup)', en: 'Manual beneficiary verification (UID lookup)' }, hrs: 1.0, clinical: false },
+  { label: { uk: 'Клінічна робота (Пряма допомога)', en: 'Clinical work (Direct assistance)' }, hrs: 14.0, clinical: true },
 ];
-const TOTAL = 20;
+const TOTAL = 20; // assumed avg. weekly clinical capacity per specialist
 
 export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
   const lostHrs = TIME_BREAKDOWN.filter(s => !s.clinical).reduce((a, s) => a + s.hrs, 0);
@@ -55,7 +55,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
               {t('клінічного часу втрачено на дублювання', 'clinical time lost to duplicate reporting', lang)}
             </div>
             <div className="text-[11px] font-mono mt-1" style={{ color: 'var(--color-ds-muted)' }}>
-              {t(`${lostHrs.toFixed(1)} год/тиж × 4000+ фахівців`, `${lostHrs.toFixed(1)} h/wk × 4000+ specialists`, lang)}
+              {t('3,500 клін. психологів × 400 год/рік (25% ерозії)', '3,500 clinical psych. × 400 hrs/yr (25% erosion)', lang)}
             </div>
           </div>
 
@@ -144,10 +144,10 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {[
-                { val: '+45K', label: { uk: 'сесій/міс при усуненні дублювання', en: 'sessions/mo if duplication removed' } },
-                { val: '~$30M', label: { uk: '/рік витрачається на дублювання', en: '/yr spent on duplication' } },
-                { val: '5 форм', label: { uk: 'на 1 візит пацієнта', en: 'per single patient visit' } },
-                { val: '19K', label: { uk: 'фахівців невидимі у реєстрі НСЗУ', en: 'specialists invisible in NHSU registry' } },
+                { val: '1.4M', label: { uk: 'втрачених сесій клін. психологів / рік', en: 'lost clinical sessions per year' } },
+                { val: '87.5K', label: { uk: 'втрачених циклів лікування (WHO)', en: 'lost treatment cycles (WHO standard)' } },
+                { val: '$42M', label: { uk: 'вартість втраченої ємності (тариф $30)', en: 'value of lost capacity ($30 tariff)' } },
+                { val: '3,500', label: { uk: 'клін. психологів у дефіциті часу', en: 'clinical psych. in time deficit' } },
               ].map((m) => (
                 <div key={m.val} className="p-2.5 rounded-xl"
                   style={{ background: 'rgba(255,153,102,0.07)', border: '1px solid rgba(255,153,102,0.2)' }}>
@@ -158,8 +158,8 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
             </div>
           </div>
 
-          <div className="flex-1 rounded-2xl p-4"
-            style={{ background: 'rgba(200,164,92,0.06)', border: '1px solid rgba(200,164,92,0.3)' }}>
+          <div className="flex-1 rounded-2xl p-4 overflow-y-auto pb-4"
+            style={{ background: 'rgba(200,164,92,0.06)', border: '1px solid rgba(200,164,92,0.3)', scrollbarWidth: 'none' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-gold)' }}>
               {t('FEEL Again · Шлях до <5% overhead', 'FEEL Again · Pathway to <5% overhead', lang)}
             </div>

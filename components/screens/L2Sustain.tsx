@@ -49,38 +49,57 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
         {/* ── Left: Training reality ── */}
         <div className="flex flex-col gap-3">
 
-          {/* KPI strip */}
-          <div className="flex gap-2 flex-shrink-0">
-            <div className="flex-1 rounded-2xl p-3"
-              style={{ background: 'rgba(167,139,250,0.07)', border: '1px solid rgba(167,139,250,0.3)' }}>
-              <div className="text-[10px] font-mono uppercase tracking-wider mb-0.5" style={{ color: '#a78bfa' }}>
-                {t('Awareness-рівень', 'Awareness-level', lang)}
-              </div>
-              <div className="ds-display font-black leading-none" style={{ fontSize: '36px', color: '#a78bfa', textShadow: '0 0 24px rgba(167,139,250,0.5)' }}>
-                ~{Math.round(totalAwareness / 1000)}K
-              </div>
-              <div className="text-[10px] ds-body mt-0.5" style={{ color: 'rgba(200,208,220,0.7)' }}>
-                {t('навчених (ПМД + вчителі + НГО)', 'trained (PFA + teachers + NGO)', lang)}
-              </div>
+          {/* 3-layer workforce model */}
+          <div className="flex-shrink-0 rounded-2xl p-3"
+            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+            <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
+              {t('3 шари кадрового ландшафту', '3-layer workforce landscape', lang)}
             </div>
-
-            <div className="flex flex-col gap-2 flex-shrink-0">
-              <div className="px-3 py-2 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(249,115,22,0.4)' }}>
-                <div className="text-[15px] font-black ds-display leading-none" style={{ color: '#f97316' }}>800</div>
-                <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{t('психосоціальний', 'psychosocial', lang)}</div>
-              </div>
-              <div className="px-3 py-2 rounded-xl"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(167,139,250,0.5)' }}>
-                <div className="text-[15px] font-black ds-display leading-none" style={{ color: '#a78bfa' }}>700</div>
-                <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{t('клінічний', 'clinical', lang)}</div>
-              </div>
+            <div className="flex flex-col gap-1.5">
+              {([
+                {
+                  layer: 'А',
+                  label: { uk: 'WHO Atlas (1.3/100K)', en: 'WHO Atlas (1.3/100K)' },
+                  val: '~4,300',
+                  sub: { uk: 'реєстровані психіатри + психологи', en: 'registered psychiatrists + psychologists' },
+                  color: '#60a5fa',
+                  barPct: 66,
+                },
+                {
+                  layer: 'Б',
+                  label: { uk: 'НСЗУ верифіковано', en: 'NHSU verified' },
+                  val: '943',
+                  sub: { uk: '0.28% — активні контракти → видимі системі', en: '0.28% — active contracts → system-visible' },
+                  color: '#a78bfa',
+                  barPct: 22,
+                },
+                {
+                  layer: 'В',
+                  label: { uk: 'Тіньовий сектор', en: 'Shadow sector' },
+                  val: '~6,500',
+                  sub: { uk: 'практикують поза НСЗУ (НГО / приватно)', en: 'practising outside NHSU (NGO / private)' },
+                  color: '#f97316',
+                  barPct: 100,
+                },
+              ] as const).map((row) => (
+                <div key={row.layer}>
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[9px] font-bold w-4 text-center rounded" style={{ color: row.color, background: `${row.color}22` }}>{row.layer}</span>
+                    <span className="text-[10px] font-mono" style={{ color: row.color }}>{row.label[lang]}</span>
+                    <span className="ml-auto text-[14px] font-black ds-display leading-none" style={{ color: row.color }}>{row.val}</span>
+                  </div>
+                  <div className="h-1.5 rounded-full mb-0.5" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    <div className="h-full rounded-full" style={{ width: `${row.barPct}%`, background: row.color, opacity: 0.75 }} />
+                  </div>
+                  <div className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{row.sub[lang]}</div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* TRAINED_REALITY stacked bar */}
-          <div className="flex-1 rounded-2xl p-4 min-h-0"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+          <div className="flex-1 rounded-2xl p-4 min-h-0 overflow-hidden"
+            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)', maxHeight: '280px' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-1" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Рівень навчання за програмою', 'Training level by program', lang)}
             </div>

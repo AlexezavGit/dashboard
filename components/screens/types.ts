@@ -1,5 +1,6 @@
 export type ScreenId =
   | 'l1'                // Strategic entry — full viewport, no scroll, MHEI + 6 layer KPIs
+  | 'l2-mhei'           // MHEI drill-down: interactive delta dashboard + backlog slider
   // — 6 program layer L2 screens —
   | 'l2-fintech'        // FinTech: verified outcome-linked payment rate
   | 'l2-clinical'       // Clinical: rehabilitation completion rate

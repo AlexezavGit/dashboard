@@ -17,9 +17,9 @@ const FLOW = [
 
 const MILESTONES = [
   { year: '2016', event: { uk: 'Grand Bargain: ≥25% до локальних акторів', en: 'Grand Bargain: ≥25% to local actors' }, achieved: false },
-  { year: '2022', event: { uk: 'Ukraine MH відповідь: >$400M — <1% локалізовано', en: 'Ukraine MH response: >$400M — <1% localized' }, achieved: false },
-  { year: '2025', event: { uk: 'Grand Bargain дедлайн: Ukraine ~1% (не виконано)', en: 'Grand Bargain deadline: Ukraine ~1% (unmet)' }, achieved: false },
-  { year: '2026+', event: { uk: 'FEEL Again: реєстраційний фреймворк → 25% ціль', en: 'FEEL Again: registration framework → 25% target' }, achieved: true },
+  { year: '2024', event: { uk: 'Grand Bargain 3.0: акцент на цифровій підзвітності', en: 'Grand Bargain 3.0: focus on digital accountability' }, achieved: true },
+  { year: '2025', event: { uk: 'Ukraine MH відповідь: >$400M — <1% локалізовано', en: 'Ukraine MH response: >$400M — <1% localized' }, achieved: false },
+  { year: '2026+', event: { uk: 'Humanitarian Reset: перехід до національних систем', en: 'Humanitarian Reset: transition to national systems' }, achieved: true },
 ];
 
 export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
@@ -108,17 +108,16 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
           </div>
         </div>
 
-        <div className="flex-1 rounded-2xl p-5"
-          style={{ background: 'rgba(200,164,92,0.06)', border: '1px solid rgba(200,164,92,0.3)' }}>
+        <div className="flex-1 rounded-2xl p-5 overflow-y-auto" style={{ maxHeight: '320px', background: 'rgba(200,164,92,0.06)', border: '1px solid rgba(200,164,92,0.3)' }}>
           <div className="text-[11px] font-mono uppercase tracking-wider mb-3" style={{ color: 'var(--color-ds-gold)' }}>
-            {t('FEEL Again · Шлях до 25%', 'FEEL Again · Pathway to 25%', lang)}
+            {t('Виконати humanitarian reset (Tom Fletcher)', 'Execute humanitarian reset (Tom Fletcher)', lang)}
           </div>
           <div className="space-y-3">
             {[
+              { uk: 'Сягнути показників Grand Bargain 3.0 через цифрову прозорість', en: 'Meet Grand Bargain 3.0 metrics via digital transparency' },
               { uk: 'Реєстраційний фреймворк: акредитація місцевих MH-НГО', en: 'Registration framework: accreditation for local MH NGOs' },
-              { uk: 'OCHA/IATI compliance standard для укр. організацій', en: 'OCHA/IATI compliance standard for Ukrainian organisations' },
-              { uk: 'Pass-through механізм: INGO → верифіковані укр. субпідрядники', en: 'Pass-through mechanism: INGO → verified Ukrainian subcontractors' },
-              { uk: 'KPI звіт: % локалізації → Grand Bargain tracking', en: 'KPI report: % localization → Grand Bargain tracking' },
+              { uk: 'Pass-through механізм: пряме фінансування верифікованих акторів', en: 'Pass-through mechanism: direct funding for verified actors' },
+              { uk: 'Reporting Bus: автоматична звітність у державні реєстри', en: 'Reporting Bus: automated reporting into state registries' },
             ].map((item, i) => (
               <div key={i} className="flex gap-2 items-start">
                 <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold mt-0.5"

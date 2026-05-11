@@ -19,6 +19,7 @@ const CHAPTERS = [
   { id: 'arch',         uk: 'Архітектура рішення',      en: 'Solution Architecture' },
   { id: 'stakeholders', uk: 'Стейкхолдери',             en: 'Stakeholders' },
   { id: 'risks',        uk: 'Ризики та контраргументи', en: 'Risks & Counter-arguments' },
+  { id: 'conclusions',  uk: 'Аналітичні висновки',       en: 'Analytical Conclusions' },
   { id: 'sources',      uk: 'Джерела',                  en: 'Sources' },
 ];
 
@@ -253,6 +254,53 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
               ))}
             </div>
           </Section>
+        )}
+        {chapter === 'conclusions' && (
+          <div className="space-y-10">
+            <Section title={t('Висновок 1: Скидання адміністративної ерозії', 'Conclusion 1: Resetting Administrative Erosion')} color="var(--color-ds-teal)">
+              <div className="ds-body text-[13px] leading-relaxed space-y-4" style={{ color: 'var(--color-ds-muted)' }}>
+                <p>
+                  {t(
+                    'Поточна модель звітування в гуманітарному секторі призводить до втрати 25% робочого часу 3,500 клінічних психологів. Це еквівалентно 1.4 млн втрачених клінічних сесій на рік.',
+                    'Current reporting models in the humanitarian sector lead to a 25% loss of working time for 3,500 clinical psychologists. This is equivalent to 1.4M lost clinical sessions per year.'
+                  )}
+                </p>
+                <div className="bg-cyber-success/5 border border-cyber-success/30 rounded-xl p-6">
+                  <div className="text-[10px] font-mono font-bold uppercase mb-2" style={{ color: 'var(--color-ds-teal)' }}>
+                    {t('Економічний ефект автоматизації', 'Economic Effect of Automation')}
+                  </div>
+                  <div className="text-[28px] font-bold ds-display" style={{ color: 'var(--color-ds-text)' }}>
+                    {t('+$60 млн / рік', '+$60M / year')}
+                  </div>
+                  <p className="text-[11px] mt-1 opacity-70">
+                    {t('Повернена клінічна ємність без залучення нових кадрів.', 'Recovered clinical capacity without new staff recruitment.')}
+                  </p>
+                </div>
+              </div>
+            </Section>
+
+            <Section title={t('Висновок 2: Відповідність Grand Bargain 3.0', 'Conclusion 2: Grand Bargain 3.0 Compliance')} color="var(--color-ds-gold)">
+              <div className="ds-body text-[13px] leading-relaxed space-y-4" style={{ color: 'var(--color-ds-muted)' }}>
+                <p>
+                  {t(
+                    'Перехід від паралельних систем до єдиного middleware (FEEL Again) напряму реалізує цілі Grand Bargain 3.0 щодо локалізації та посилення національних систем.',
+                    'The transition from parallel systems to a unified middleware (FEEL Again) directly implements Grand Bargain 3.0 goals regarding localization and strengthening national systems.'
+                  )}
+                </p>
+                <ul className="space-y-3">
+                  {[
+                    { l: t('Локалізація', 'Localization'), d: t('Пряме фінансування через НСЗУ замість посередників.', 'Direct funding via NSZU instead of intermediaries.') },
+                    { l: t('Прозорість', 'Transparency'), d: t('Простежуваність кожної гривні до конкретного пацієнта в ЕСОЗ.', 'Traceability of every Hryvnia to a specific patient in ESOZ.') },
+                  ].map(item => (
+                    <li key={item.l} className="flex gap-3 text-[12px]">
+                      <span className="font-bold flex-shrink-0" style={{ color: 'var(--color-ds-gold)' }}>[✓]</span>
+                      <span><strong style={{ color: 'var(--color-ds-text)' }}>{item.l}</strong> — {item.d}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Section>
+          </div>
         )}
 
         {chapter === 'sources' && (

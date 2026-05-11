@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
 import { L1Strategic } from './L1Strategic';
+import { L2MHEI } from './L2MHEI';
 // 6 program layer L2 screens
 import { L2Finance } from './L2Finance';
 import { L2Clinical } from './L2Clinical';
@@ -56,6 +57,7 @@ export const ScreenRouter: React.FC<Props> = ({
 
   const screens: Record<Exclude<ScreenId, 'appendix' | 'l4'>, React.ReactNode> = {
     'l1':               <L1Strategic lang={lang} nav={nav} liveHciValue={liveHciValue} darkMode={darkMode} />,
+    'l2-mhei':          <L2MHEI lang={lang} nav={nav} />,
     // 6 program layer L2 screens
     'l2-fintech':       <L2Finance lang={lang} nav={nav} />,
     'l2-clinical':      <L2Clinical lang={lang} nav={nav} />,

@@ -127,6 +127,7 @@ const App: React.FC = () => {
   const [showL4, setShowL4] = useState<boolean>(false);
   const [l4From, setL4From] = useState<'l1' | 'l3'>('l3');
   const [activeSection, setActiveSection] = useState<SectionFilter>('all');
+  const [c2Open, setC2Open] = useState(false);
   const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [liveMetrics, setLiveMetrics] = useState<LiveMetrics>({});
@@ -202,8 +203,13 @@ const App: React.FC = () => {
   const [submittedBottom, setSubmittedBottom] = React.useState(false);
 
   const filteredSections = activeSection === 'all'
-    ? SECTIONS_CONFIG 
+    ? SECTIONS_CONFIG
     : SECTIONS_CONFIG.filter(s => s.id === activeSection);
+
+  const CLUSTER2_IDS = new Set(['prevalence', 'economic', 'children', 'inputs']);
+  const displayedSections = activeSection === 'all' && !c2Open
+    ? filteredSections.filter(s => !CLUSTER2_IDS.has(s.id))
+    : filteredSections;
 
   const handleSort = (key: string) => {
     let direction: 'asc' | 'desc' = 'asc';
@@ -671,77 +677,14 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* ── DATA INTELLIGENCE: NOW vs CANONICAL ────────────────────── */}
-        <div className="mb-12" id="data-intelligence">
-          <div className="flex items-center gap-3 mb-4 px-1">
-            <div className="h-px flex-1 bg-gradient-to-r from-blue-500/40 to-transparent" />
-            <span className="text-[10px] font-mono text-blue-400 uppercase tracking-[0.2em] px-2">
-              {DATA_INTELLIGENCE(lang).sectionTitle}
-            </span>
-            <div className="h-px flex-1 bg-gradient-to-l from-blue-500/40 to-transparent" />
-          </div>
-          <p className="text-[11px] text-slate-500 mb-4 font-mono text-center leading-relaxed">
-            {DATA_INTELLIGENCE(lang).sectionSub}
-          </p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* NOW — what's available */}
-            <div className="border border-blue-500/20 rounded-xl overflow-hidden">
-              <div className="bg-blue-500/5 px-4 py-2.5 border-b border-blue-500/20 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
-                <span className="text-[10px] font-mono font-bold text-blue-300 uppercase tracking-wider">
-                  {lang === 'uk' ? 'ЩО МАЄМОзАРАЗ' : 'WHAT WE HAVE NOW'}
-                </span>
-              </div>
-              <div className="divide-y divide-slate-800/60">
-                {DATA_INTELLIGENCE(lang).now.map((row, i) => (
-                  <div key={i} className="px-4 py-3 flex items-start gap-3">
-                    <span className={`mt-0.5 flex-shrink-0 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${row.status === 'live' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-slate-700/60 text-slate-400'}`}>
-                      {row.status === 'live' ? 'LIVE' : 'STATIC'}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[11px] text-white font-medium">{row.name}</div>
-                      <div className="text-[10px] text-slate-500 leading-snug">{row.what}</div>
-                      <div className="text-[9px] text-slate-700 font-mono mt-0.5">{row.tech}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            {/* CANONICAL — what WB/WHO use */}
-            <div className="border border-amber-500/20 rounded-xl overflow-hidden">
-              <div className="bg-amber-500/5 px-4 py-2.5 border-b border-amber-500/20 flex items-center gap-2">
-                <AlertTriangle className="w-3 h-3 text-amber-400 flex-shrink-0" />
-                <span className="text-[10px] font-mono font-bold text-amber-300 uppercase tracking-wider">
-                  {lang === 'uk' ? 'КАНОНІЧНИЙ НАБІР WB / WHO' : 'CANONICAL WB / WHO DATASET'}
-                </span>
-              </div>
-              <div className="divide-y divide-slate-800/60">
-                {DATA_INTELLIGENCE(lang).canonical.map((row, i) => (
-                  <div key={i} className="px-4 py-3 flex items-start gap-3">
-                    <span className={`mt-0.5 flex-shrink-0 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${row.status === 'locked' ? 'bg-rose-500/15 text-rose-400' : 'bg-amber-500/15 text-amber-400'}`}>
-                      {row.status === 'locked' ? 'LOCKED' : 'AUTH'}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-[11px] text-white font-medium flex items-center gap-1.5">
-                        {row.name}
-                        {row.feelbridges && <span className="text-[8px] bg-emerald-500/15 text-emerald-400 px-1 py-0.5 rounded font-mono">FEEL bridges</span>}
-                      </div>
-                      <div className="text-[10px] text-slate-500 leading-snug">{row.what}</div>
-                      <div className="text-[9px] text-amber-600/80 font-mono mt-0.5">{lang === 'uk' ? 'Бар\'єр:' : 'Barrier:'} {row.barrier}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          {/* Gap statement */}
-          <div className="mt-4 px-5 py-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
-            <GitMerge className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-            <p className="text-[11px] text-emerald-300 font-mono leading-relaxed">{DATA_INTELLIGENCE(lang).gapStatement}</p>
-          </div>
+        {/* data-intelligence moved to L2Analytical (l2-analytical screen) */}
+
+        {/* ── CLUSTER 3 — РІШЕННЯ (посилання) ──────────────────────────── */}
+        <div className="ds-cluster-header mb-6 mt-4">
+          {lang === 'uk' ? 'КЛАСТЕР 3 — РІШЕННЯ · Функції FEEL Again' : 'CLUSTER 3 — SOLUTIONS · FEEL Again Functions'}
         </div>
 
-        {/* ── FEEL AGAIN 4 CORE FUNCTIONS ─────────────────────────────── */}
+        {/* ── FEEL AGAIN 4 CORE FUNCTIONS (charts only) ─────────────────── */}
         <div className="mb-12" id="feel-functions">
           <div className="flex items-center gap-3 mb-6 px-1">
             <div className="h-px flex-1 bg-gradient-to-r from-cyber-amber/40 to-transparent" />
@@ -847,10 +790,10 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Sections */}
+        {/* Sections — 2 clusters with dividers */}
         <div className="space-y-16">
           <AnimatePresence>
-            {filteredSections.map((section, sectionIdx) => (
+            {displayedSections.map((section, sectionIdx) => (
               <motion.div
                 key={section.id}
                 id={`section-${section.id}`}
@@ -858,7 +801,14 @@ const App: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+                className={sectionIdx % 2 === 0 ? 'ds-section-odd' : 'ds-section-even'}
               >
+                {/* Cluster 1 header — before 'gap' (first section) */}
+                {section.id === 'gap' && activeSection === 'all' && (
+                  <div className="ds-cluster-header mb-6">
+                    {lang === 'uk' ? 'КЛАСТЕР 1 — РОЗРИВИ · Що зламано' : 'CLUSTER 1 — GAPS · What is broken'}
+                  </div>
+                )}
                 {/* Section header */}
                 <div
                   className="w-full flex items-center gap-4 mb-8 border-b pb-4 text-left"
@@ -1869,6 +1819,21 @@ const App: React.FC = () => {
             </motion.div>
           ))}
         </AnimatePresence>
+
+        {/* Cluster 2 accordion toggle — visible only when showing all sections */}
+        {activeSection === 'all' && (
+          <div className="mt-8">
+            <button
+              onClick={() => setC2Open(o => !o)}
+              className="ds-cluster-header w-full text-left cursor-pointer select-none flex items-center justify-between"
+              style={{ borderRadius: 12, padding: '10px 16px', background: 'rgba(200,164,92,0.07)', border: '1px solid rgba(200,164,92,0.3)' }}
+            >
+              <span>{lang === 'uk' ? 'КЛАСТЕР 2 — ДОКАЗИ · Пояснює масштаб' : 'CLUSTER 2 — EVIDENCE · Explains the scale'}</span>
+              <span style={{ fontSize: 12, marginLeft: 8, color: 'rgba(200,164,92,0.7)' }}>{c2Open ? '▲' : '▼'}</span>
+            </button>
+          </div>
+        )}
+
         </div>
 
         {/* ── BANKER CTA ─────────────────────────────────────── */}
@@ -1987,339 +1952,7 @@ const App: React.FC = () => {
 
         {/* Footer */}
         <footer className="mt-12 border-t border-cyber-border pt-12 pb-16">
-           {/* Feel Again Solution — IS / IS NOT */}
-           <div className="mb-12 cyber-card border border-cyber-cyan/30 rounded-2xl overflow-hidden">
-             <div className="bg-cyber-cyan/5 px-6 py-4 border-b border-cyber-cyan/20 flex items-center gap-4">
-               <CircleDot className="w-4 h-4 text-cyber-cyan" />
-               <span className="cyber-label text-[11px] text-cyber-cyan">
-                 {lang === 'uk' ? 'FEEL AGAIN — ЦИФРОВА ІНФРАСТРУКТУРА ДЛЯ MHPSS' : 'FEEL AGAIN — DIGITAL INFRASTRUCTURE FOR MHPSS'}
-               </span>
-               <span className="ml-auto text-[9px] font-mono text-slate-600 border border-slate-700 px-2 py-0.5 rounded">FA-2026-UA</span>
-             </div>
-             <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-               <div className="space-y-3">
-                 <div className="text-[10px] text-cyber-cyan uppercase tracking-wider font-mono border-b border-cyber-cyan/20 pb-2">
-                   {lang === 'uk' ? 'ЦЕ Є:' : 'THIS IS:'}
-                 </div>
-                 <p className="text-[12px] text-slate-300 leading-relaxed">{FEEL_AGAIN_POSITION(lang).is}</p>
-               </div>
-               <div className="space-y-3">
-                 <div className="text-[10px] text-rose-400 uppercase tracking-wider font-mono border-b border-rose-500/20 pb-2">
-                   {lang === 'uk' ? 'ЦЕ НЕ Є:' : 'THIS IS NOT:'}
-                 </div>
-                 <p className="text-[12px] text-slate-400 leading-relaxed italic">{FEEL_AGAIN_POSITION(lang).isNot}</p>
-               </div>
-               <div className="space-y-3">
-                 <div className="bg-cyber-success/5 border border-cyber-success/20 rounded-xl p-4 text-center">
-                   <div className="text-[9px] text-cyber-success uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Вартість для держави' : 'Cost to state'}</div>
-                   <div className="text-4xl font-bold text-cyber-success font-mono">{FEEL_AGAIN_POSITION(lang).costToState}</div>
-                   <div className="text-[9px] text-slate-500 mt-1">{FEEL_AGAIN_POSITION(lang).costNote}</div>
-                 </div>
-                 <div className="grid grid-cols-2 gap-2">
-                   <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-3 text-center">
-                     <div className="text-[8px] text-rose-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Втрати ВВП' : 'GDP loss'}</div>
-                     <div className="text-base font-bold text-rose-400 font-mono">{FEEL_AGAIN_POSITION(lang).gdpLoss}</div>
-                     <div className="text-[8px] text-slate-600">{lang === 'uk' ? 'щорічно' : 'annually'}</div>
-                   </div>
-                   <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3 text-center">
-                     <div className="text-[8px] text-amber-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Заблоковано' : 'Locked'}</div>
-                     <div className="text-base font-bold text-amber-400 font-mono">{FEEL_AGAIN_POSITION(lang).lockedFunds}</div>
-                     <div className="text-[8px] text-slate-600">HEAL/THRIVE</div>
-                   </div>
-                 </div>
-               </div>
-             </div>
-
-             {/* 6-layer architecture + HEAL Ukraine entry point */}
-             <div className="border-t border-cyber-cyan/10 px-6 pb-6 pt-5 grid grid-cols-1 lg:grid-cols-2 gap-6">
-               {/* 6-layer architecture: reverse waterfall */}
-               <div>
-                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-1">
-                   {lang === 'uk' ? '6 ШАРІВ ІНФРАСТРУКТУРИ' : '6 INFRASTRUCTURE LAYERS'}
-                 </div>
-                 <div className="text-[9px] text-slate-600 font-mono mb-3">6 {lang === 'uk' ? 'розривів' : 'gaps'} → 6 {lang === 'uk' ? 'шарів' : 'layers'}</div>
-                 <div className="space-y-1">
-                   {FEEL_AGAIN_ARCHITECTURE(lang).map((layer, i) => (
-                     <div
-                       key={layer.num}
-                       className="flex items-center gap-3 rounded-lg px-3 py-2.5 border border-slate-700/30 transition-all"
-                       style={{
-                         marginLeft: `${i * 6}px`,
-                         backgroundColor: `rgba(245,158,11,${0.03 + i * 0.01})`,
-                         borderLeftColor: `rgba(245,158,11,${1 - i * 0.12})`,
-                         borderLeftWidth: '3px',
-                       }}
-                     >
-                       <span className="text-[10px] font-bold font-mono flex-shrink-0" style={{ color: `rgba(245,158,11,${1 - i * 0.12})` }}>#{layer.num}</span>
-                       <span className="text-[11px] text-white font-semibold flex-1">{layer.flow}</span>
-                       <span className="text-[9px] text-slate-400 font-mono text-right flex-shrink-0">{layer.tool}</span>
-                     </div>
-                   ))}
-                 </div>
-                 <div className="mt-3 bg-slate-800/30 border border-slate-700/20 rounded-lg p-3">
-                   <p className="text-[9px] text-slate-400 leading-relaxed">
-                     <strong className="text-cyber-amber">
-                       {lang === 'uk' ? 'Вимір ВВП:' : 'GDP measure:'}
-                     </strong>{' '}
-                     {lang === 'uk'
-                       ? 'Кожен шар генерує дані для оцінки впливу на людський капітал (~$8B/рік втрат, OECD). НБУ/НСЗУ індекс ментального добробуту.'
-                       : 'Each layer generates data for human capital impact assessment (~$8B/yr losses, OECD). NBU/NHSU mental wellbeing index.'}
-                   </p>
-                 </div>
-               </div>
-               {/* HEAL ISR #6 full KPI table */}
-               <div>
-                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-1">
-                   {lang === 'uk' ? 'HEAL P180245 — ISR #6 (WB, 25.03.2026)' : 'HEAL P180245 — ISR #6 (WB, 25.03.2026)'}
-                 </div>
-                 <div className="text-[9px] text-slate-600 font-mono mb-3">{lang === 'uk' ? 'Конверт: $160M PBC + $340M інвестиції' : 'Envelope: $160M PBC + $340M investment'}</div>
-                 <div className="space-y-1">
-                   {HEAL_UKRAINE(lang).kpis.map((kpi, i) => (
-                     <div key={i} className={`flex items-center justify-between rounded-lg px-3 py-2 border text-[10px] ${kpi.status === 'critical' ? 'bg-rose-500/5 border-rose-500/30' : 'bg-slate-800/30 border-slate-700/20'}`}>
-                       <span className={`flex-1 mr-2 ${kpi.status === 'critical' ? 'text-rose-400 font-bold' : 'text-slate-400'}`}>{kpi.name}</span>
-                       <div className="flex items-center gap-2 text-right flex-shrink-0">
-                         <span className="font-mono font-bold text-[11px]" style={{ color: kpi.status === 'critical' ? '#FF4444' : kpi.pct >= 100 ? '#00FF66' : '#F59E0B' }}>
-                           {kpi.actual.toLocaleString()}
-                         </span>
-                         <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded min-w-[36px] text-center ${kpi.status === 'critical' ? 'bg-rose-500/20 text-rose-400' : 'bg-cyber-success/10 text-cyber-success'}`}>
-                           {kpi.pct}%
-                         </span>
-                       </div>
-                     </div>
-                   ))}
-                 </div>
-                 <div className="mt-2 bg-rose-500/5 border border-rose-500/20 rounded-lg p-2.5">
-                   <p className="text-[9px] text-rose-300 leading-relaxed font-mono">⚠ 0/400 {lang === 'uk' ? 'заклади переоблаштовано (0%)' : 'facilities reconfigured (0%)'} — {lang === 'uk' ? 'критичний індикатор. Дані 624K МЗ-сесій зібрані поза ЕСОЗ.' : 'critical indicator. 624K MH sessions collected outside ESOZ.'}</p>
-                 </div>
-                 <div className="mt-2 bg-slate-800/30 rounded-lg p-2.5 border border-slate-700/20">
-                   <p className="text-[9px] text-slate-500 leading-relaxed">{HEAL_UKRAINE(lang).restructuring}</p>
-                 </div>
-               </div>
-             </div>
-           </div>
-
-           {/* Architectural Flow: CommCare → FEEL Again → ESOZ */}
-           <div className="mb-12 cyber-card border border-cyber-cyan/30 rounded-2xl overflow-hidden">
-             <div className="bg-cyber-cyan/5 px-6 py-4 border-b border-cyber-cyan/20 flex items-center gap-4">
-               <Zap className="w-4 h-4 text-cyber-cyan" />
-               <span className="cyber-label text-[11px] text-cyber-cyan">
-                 {lang === 'uk' ? 'АРХІТЕКТУРНИЙ ПОТІК: CommCare \u2192 FEEL Again \u2192 ЕСОЗ' : 'ARCHITECTURE FLOW: CommCare \u2192 FEEL Again \u2192 ESOZ'}
-               </span>
-             </div>
-             <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-               {/* Humanitarian Zone */}
-               <div className="border border-rose-500/30 rounded-xl p-4 bg-rose-500/5">
-                 <div className="text-[9px] font-mono text-rose-400 uppercase tracking-wider mb-3 border-b border-rose-500/20 pb-2">
-                   {ARCH_FLOW(lang).humanitarian.label}
-                 </div>
-                 <div className="space-y-1.5 mb-3">
-                   {ARCH_FLOW(lang).humanitarian.sources.map((src) => (
-                     <div key={src} className="text-[11px] text-slate-300 bg-slate-800/60 rounded-lg px-3 py-1.5 border border-slate-700/40">{src}</div>
-                   ))}
-                 </div>
-                 <div className="space-y-1">
-                   {ARCH_FLOW(lang).humanitarian.highlights.map((h) => (
-                     <div key={h} className="text-[10px] text-rose-300 border border-rose-500/30 rounded-lg px-3 py-1.5 bg-rose-500/10 font-mono">{h}</div>
-                   ))}
-                 </div>
-               </div>
-               {/* FEEL Again Middleware */}
-               <div className="border-2 border-cyber-amber/50 rounded-xl p-4 bg-cyber-amber/5 flex flex-col">
-                 <div className="text-[11px] font-bold text-cyber-amber text-center mb-1">FEEL Again</div>
-                 <div className="text-[9px] text-cyber-amber/60 text-center uppercase tracking-wider mb-3">MIDDLEWARE</div>
-                 <div className="text-[9px] text-slate-500 text-center uppercase tracking-wider mb-3 border-b border-cyber-amber/20 pb-2">Universal Adapter</div>
-                 <div className="space-y-1.5 flex-1">
-                   {ARCH_FLOW(lang).middleware.components.map((c) => (
-                     <div key={c} className="text-[10px] text-slate-300 bg-slate-800/60 rounded px-2.5 py-1.5 border border-slate-700/40">{c}</div>
-                   ))}
-                 </div>
-               </div>
-               {/* State Zone */}
-               <div className="border border-cyber-success/30 rounded-xl p-4 bg-cyber-success/5">
-                 <div className="text-[9px] font-mono text-cyber-success uppercase tracking-wider mb-3 border-b border-cyber-success/20 pb-2">
-                   {ARCH_FLOW(lang).state.label}
-                 </div>
-                 <div className="space-y-2">
-                   {ARCH_FLOW(lang).state.systems.map((sys) => (
-                     <div key={sys.name} className="rounded-lg px-3 py-2 border border-slate-700/40 bg-slate-800/40 flex items-center justify-between">
-                       <span className="text-[11px] font-bold" style={{ color: sys.color }}>{sys.name}</span>
-                       {sys.sub && <span className="text-[9px] text-slate-500 font-mono">{sys.sub}</span>}
-                     </div>
-                   ))}
-                 </div>
-               </div>
-             </div>
-           </div>
-
-           {/* THRIVE + Component 4 Procurement */}
-           <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-6">
-             {/* THRIVE PforR */}
-             <div className="cyber-card border border-amber-500/30 rounded-2xl overflow-hidden">
-               <div className="bg-amber-500/5 px-6 py-4 border-b border-amber-500/20 flex items-center gap-4">
-                 <Lock className="w-4 h-4 text-cyber-amber" />
-                 <span className="cyber-label text-[11px] text-cyber-amber">THRIVE (P505616) — PforR $454M</span>
-                 <span className="ml-auto text-[9px] font-mono text-slate-600 border border-slate-700 px-2 py-0.5 rounded">DLI-based</span>
-               </div>
-               <div className="p-5 space-y-4">
-                 <div className="grid grid-cols-3 gap-3">
-                   <div className="bg-cyber-success/5 border border-cyber-success/20 rounded-lg p-3 text-center">
-                     <div className="text-[8px] text-cyber-success uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Дисбурсовано' : 'Disbursed'}</div>
-                     <div className="text-lg font-bold text-cyber-success font-mono">{THRIVE_PROJECT(lang).disbursed}</div>
-                     <div className="text-[8px] text-slate-600">{THRIVE_PROJECT(lang).disbursedPct}%</div>
-                   </div>
-                   <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
-                     <div className="text-[8px] text-slate-500 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Загалом' : 'Total'}</div>
-                     <div className="text-lg font-bold text-cyber-amber font-mono">{THRIVE_PROJECT(lang).total}</div>
-                   </div>
-                   <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
-                     <div className="text-[8px] text-slate-500 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Підписано' : 'Signed'}</div>
-                     <div className="text-sm font-bold text-slate-300 font-mono">{THRIVE_PROJECT(lang).signed}</div>
-                   </div>
-                 </div>
-                 <div className="bg-slate-800/30 rounded-lg p-3">
-                   <p className="text-[11px] text-slate-400 leading-relaxed">{THRIVE_PROJECT(lang).detail}</p>
-                 </div>
-                 <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-3">
-                   <div className="text-[8px] text-rose-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'КРИТИЧНА ДЕТАЛЬ' : 'CRITICAL DETAIL'}</div>
-                   <p className="text-[11px] text-rose-300 leading-relaxed">{THRIVE_PROJECT(lang).critical}</p>
-                 </div>
-                 <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
-                   <div className="text-[8px] text-amber-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'АВАНСОВІ ВИПЛАТИ' : 'ADVANCE DISBURSEMENT'}</div>
-                   <p className="text-[10px] text-amber-300/80 leading-relaxed">{THRIVE_PROJECT(lang).advance}</p>
-                 </div>
-               </div>
-             </div>
-             {/* HEAL Component 4 Procurement Gap */}
-             <div className="cyber-card border border-cyber-success/30 rounded-2xl overflow-hidden">
-               <div className="bg-cyber-success/5 px-6 py-4 border-b border-cyber-success/20 flex items-center gap-4">
-                 <Database className="w-4 h-4 text-cyber-success" />
-                 <span className="cyber-label text-[11px] text-cyber-success">HEAL Component 4 — $50M Procurement</span>
-               </div>
-               <div className="p-5 space-y-4">
-                 <div className="grid grid-cols-2 gap-3 mb-2">
-                   <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
-                     <div className="text-[8px] text-slate-500 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Закуплено' : 'Procured'}</div>
-                     <div className="text-lg font-bold text-cyber-amber font-mono">{HEAL_C4_PROCUREMENT(lang).procured}</div>
-                   </div>
-                   <div className="bg-cyber-success/5 border border-cyber-success/30 rounded-lg p-3 text-center">
-                     <div className="text-[8px] text-cyber-success uppercase tracking-wider font-mono mb-1">AVAILABLE BUDGET SPACE</div>
-                     <div className="text-lg font-bold text-cyber-success font-mono">{HEAL_C4_PROCUREMENT(lang).unallocated}</div>
-                   </div>
-                 </div>
-                 <div className="space-y-1">
-                   {HEAL_C4_PROCUREMENT(lang).categories.map((cat) => (
-                     <div key={cat.name} className="flex items-center justify-between text-[10px] px-2.5 py-1.5 rounded-lg bg-slate-800/30 border border-slate-700/20">
-                       <span className="text-slate-400 flex-1 mr-2">{cat.name}</span>
-                       <span className="text-slate-300 font-mono flex-shrink-0">${cat.amountK}K</span>
-                     </div>
-                   ))}
-                 </div>
-                 <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
-                   <p className="text-[10px] text-amber-400/80 leading-relaxed">{HEAL_C4_PROCUREMENT(lang).note}</p>
-                 </div>
-                 <div className="bg-slate-800/30 rounded-lg p-3">
-                   <div className="text-[8px] text-slate-500 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'МЕХАНІЗМ ДОСТУПУ' : 'ACCESS MECHANISM'}</div>
-                   <p className="text-[10px] text-slate-300 leading-relaxed">{HEAL_C4_PROCUREMENT(lang).accessMechanism}</p>
-                 </div>
-               </div>
-             </div>
-           </div>
-
-           {/* Risks & Counter-arguments */}
-           <div className="mb-12 cyber-card border border-slate-700/50 rounded-2xl overflow-hidden">
-             <div className="bg-slate-800/40 px-6 py-4 border-b border-slate-700/30 flex items-center gap-4">
-               <AlertTriangle className="w-4 h-4 text-cyber-amber" />
-               <span className="cyber-label text-[11px] text-cyber-amber">
-                 {lang === 'uk' ? 'РИЗИКИ ТА КОНТРАРГУМЕНТИ' : 'RISKS & COUNTER-ARGUMENTS'}
-               </span>
-             </div>
-             <div className="overflow-x-auto">
-               <table className="w-full">
-                 <thead>
-                   <tr className="border-b border-slate-700/30">
-                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider w-1/3">{lang === 'uk' ? 'Контраргумент' : 'Objection'}</th>
-                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider">{lang === 'uk' ? 'Відповідь' : 'Response'}</th>
-                     <th className="text-right px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider w-20">Risk</th>
-                   </tr>
-                 </thead>
-                 <tbody>
-                   {COUNTERARGUMENTS(lang).map((row, i) => (
-                     <tr key={i} className="border-b border-slate-700/20 hover:bg-slate-800/30 transition-colors">
-                       <td className="px-5 py-3 text-[11px] text-slate-300 italic">{row.objection}</td>
-                       <td className="px-5 py-3 text-[11px] text-slate-400 leading-relaxed">{row.response}</td>
-                       <td className="px-5 py-3 text-right">
-                         <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${row.risk === 'High' ? 'text-rose-400 bg-rose-500/10' : row.risk === 'Medium' ? 'text-amber-400 bg-amber-500/10' : 'text-cyber-success bg-cyber-success/10'}`}>
-                           {row.risk}
-                         </span>
-                       </td>
-                     </tr>
-                   ))}
-                 </tbody>
-               </table>
-             </div>
-           </div>
-
-           {/* Dual-Project Narrative: Corrected HEAL × THRIVE */}
-           <div className="mb-12 border border-cyber-amber/30 rounded-2xl overflow-hidden bg-cyber-amber/3">
-             <div className="bg-cyber-amber/8 px-6 py-4 border-b border-cyber-amber/20 flex items-center gap-4">
-               <TrendingUp className="w-4 h-4 text-cyber-amber" />
-               <span className="cyber-label text-[11px] text-cyber-amber">
-                 {lang === 'uk' ? 'СКОРИГОВАНИЙ НАРАТИВ: HEAL \u00d7 THRIVE — ДВОПРОЄКТНА СИНЕРГІЯ' : 'CORRECTED NARRATIVE: HEAL \u00d7 THRIVE — DUAL-PROJECT SYNERGY'}
-               </span>
-             </div>
-             <div className="p-6">
-               <p className="text-[13px] text-slate-300 leading-relaxed mb-4">{DUAL_PROJECT_NARRATIVE(lang)}</p>
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                 <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
-                   <div className="text-[8px] text-rose-400 uppercase font-mono mb-1">HEAL (P180245) IPF</div>
-                   <div className="text-sm font-bold text-rose-400 font-mono">$500M</div>
-                   <div className="text-[9px] text-slate-500 mt-1">{lang === 'uk' ? 'Генерує послуги' : 'Deploys services'}</div>
-                 </div>
-                 <div className="bg-cyber-amber/5 border border-cyber-amber/30 rounded-lg p-3 text-center flex flex-col items-center justify-center">
-                   <div className="text-[9px] text-cyber-amber font-bold font-mono">FEEL Again</div>
-                   <div className="text-[8px] text-cyber-amber/60 uppercase mt-0.5">MIDDLEWARE BRIDGE</div>
-                   <div className="text-[9px] text-slate-500 mt-1">CommCare \u2192 FHIR R4 \u2192 ESOZ</div>
-                 </div>
-                 <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
-                   <div className="text-[8px] text-cyber-success uppercase font-mono mb-1">THRIVE (P505616) PforR</div>
-                   <div className="text-sm font-bold text-cyber-success font-mono">$454M</div>
-                   <div className="text-[9px] text-slate-500 mt-1">{lang === 'uk' ? 'Вимірює через ЕСОЗ' : 'Measures via ESOZ'}</div>
-                 </div>
-               </div>
-             </div>
-           </div>
-
-           {/* Stakeholder Interest Matrix */}
-           <div className="mb-12 cyber-card border border-cyber-cyan/20 rounded-2xl overflow-hidden">
-             <div className="bg-cyber-cyan/5 px-6 py-4 border-b border-cyber-cyan/20 flex items-center gap-4">
-               <Users className="w-4 h-4 text-cyber-cyan" />
-               <span className="cyber-label text-[11px] text-cyber-cyan">
-                 {lang === 'uk' ? 'МАТРИЦЯ ІНТЕРЕСІВ: ЧОМУ MIDDLEWARE ПОТРІБНИЙ ВСІМ' : 'INTEREST MATRIX: WHY MIDDLEWARE SERVES ALL STAKEHOLDERS'}
-               </span>
-             </div>
-             <div className="overflow-x-auto">
-               <table className="w-full">
-                 <thead>
-                   <tr className="border-b border-slate-700/30">
-                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider w-1/5">{lang === 'uk' ? 'Стейкхолдер' : 'Stakeholder'}</th>
-                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider w-2/5">{lang === 'uk' ? 'Біль' : 'Pain'}</th>
-                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider">{lang === 'uk' ? 'Що дає middleware' : 'What middleware delivers'}</th>
-                   </tr>
-                 </thead>
-                 <tbody>
-                   {STAKEHOLDER_MATRIX(lang).map((row, i) => (
-                     <tr key={i} className="border-b border-slate-700/20 hover:bg-slate-800/30 transition-colors">
-                       <td className="px-5 py-3 text-[11px] font-bold text-cyber-cyan">{row.stakeholder}</td>
-                       <td className="px-5 py-3 text-[11px] text-slate-400 leading-relaxed">{row.pain}</td>
-                       <td className="px-5 py-3 text-[11px] text-cyber-success leading-relaxed">{row.gain}</td>
-                     </tr>
-                   ))}
-                 </tbody>
-               </table>
-             </div>
-           </div>
-
-           {/* Formalization Cost Model v3 */}
+{/* Formalization Cost Model v3 */}
            <div className="mb-12 cyber-card border border-rose-500/20 rounded-2xl overflow-hidden">
              <div className="bg-rose-500/5 px-6 py-4 border-b border-rose-500/20 flex items-center gap-4">
                <AlertOctagon className="w-4 h-4 text-rose-400" />
@@ -2384,7 +2017,244 @@ const App: React.FC = () => {
              </div>
            </div>
 
-           {/* Feel Again Website Section */}
+           {/* Architectural Flow: CommCare → FEEL Again → ESOZ */}
+           <div className="mb-12 cyber-card border border-cyber-cyan/30 rounded-2xl overflow-hidden">
+             <div className="bg-cyber-cyan/5 px-6 py-4 border-b border-cyber-cyan/20 flex items-center gap-4">
+               <Zap className="w-4 h-4 text-cyber-cyan" />
+               <span className="cyber-label text-[11px] text-cyber-cyan">
+                 {lang === 'uk' ? 'АРХІТЕКТУРНИЙ ПОТІК: CommCare \u2192 FEEL Again \u2192 ЕСОЗ' : 'ARCHITECTURE FLOW: CommCare \u2192 FEEL Again \u2192 ESOZ'}
+               </span>
+             </div>
+             <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+               {/* 6-layer architecture: reverse waterfall */}
+               <div>
+                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-1">
+                   {lang === 'uk' ? '6 ШАРІВ ІНФРАСТРУКТУРИ' : '6 INFRASTRUCTURE LAYERS'}
+                 </div>
+                 <div className="text-[9px] text-slate-600 font-mono mb-3">6 {lang === 'uk' ? 'розривів' : 'gaps'} → 6 {lang === 'uk' ? 'шарів' : 'layers'}</div>
+                 <div className="space-y-1">
+                   {FEEL_AGAIN_ARCHITECTURE(lang).map((layer, i) => (
+                     <div
+                       key={layer.num}
+                       className="flex items-center gap-3 rounded-lg px-3 py-2.5 border border-slate-700/30 transition-all"
+                       style={{
+                         marginLeft: `${i * 6}px`,
+                         backgroundColor: `rgba(245,158,11,${0.03 + i * 0.01})`,
+                         borderLeftColor: `rgba(245,158,11,${1 - i * 0.12})`,
+                         borderLeftWidth: '3px',
+                       }}
+                     >
+                       <span className="text-[10px] font-bold font-mono flex-shrink-0" style={{ color: `rgba(245,158,11,${1 - i * 0.12})` }}>#{layer.num}</span>
+                       <span className="text-[11px] text-white font-semibold flex-1">{layer.flow}</span>
+                       <span className="text-[9px] text-slate-400 font-mono text-right flex-shrink-0">{layer.tool}</span>
+                     </div>
+                   ))}
+                 </div>
+                 <div className="mt-3 bg-slate-800/30 border border-slate-700/20 rounded-lg p-3">
+                   <p className="text-[9px] text-slate-400 leading-relaxed">
+                     <strong className="text-cyber-amber">
+                       {lang === 'uk' ? 'Вимір ВВП:' : 'GDP measure:'}
+                     </strong>{' '}
+                     {lang === 'uk'
+                       ? 'Кожен шар генерує дані для оцінки впливу на людський капітал (~$8B/рік втрат, OECD). НБУ/НСЗУ індекс ментального добробуту.'
+                       : 'Each layer generates data for human capital impact assessment (~$8B/yr losses, OECD). NBU/NHSU mental wellbeing index.'}
+                   </p>
+                 </div>
+               </div>
+             </div>
+           </div>
+               {/* Dual-Project Narrative: Corrected HEAL × THRIVE */}
+           <div className="mb-12 border border-cyber-amber/30 rounded-2xl overflow-hidden bg-cyber-amber/3">
+             <div className="bg-cyber-amber/8 px-6 py-4 border-b border-cyber-amber/20 flex items-center gap-4">
+               <TrendingUp className="w-4 h-4 text-cyber-amber" />
+               <span className="cyber-label text-[11px] text-cyber-amber">
+                 {lang === 'uk' ? 'СКОРИГОВАНИЙ НАРАТИВ: HEAL \u00d7 THRIVE — ДВОПРОЄКТНА СИНЕРГІЯ' : 'CORRECTED NARRATIVE: HEAL \u00d7 THRIVE — DUAL-PROJECT SYNERGY'}
+               </span>
+             </div>
+             <div className="p-6">
+               <p className="text-[13px] text-slate-300 leading-relaxed mb-4">{DUAL_PROJECT_NARRATIVE(lang)}</p>
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                 <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
+                   <div className="text-[8px] text-rose-400 uppercase font-mono mb-1">HEAL (P180245) IPF</div>
+                   <div className="text-sm font-bold text-rose-400 font-mono">$500M</div>
+                   <div className="text-[9px] text-slate-500 mt-1">{lang === 'uk' ? 'Генерує послуги' : 'Deploys services'}</div>
+                 </div>
+                 <div className="bg-cyber-amber/5 border border-cyber-amber/30 rounded-lg p-3 text-center flex flex-col items-center justify-center">
+                   <div className="text-[9px] text-cyber-amber font-bold font-mono">FEEL Again</div>
+                   <div className="text-[8px] text-cyber-amber/60 uppercase mt-0.5">MIDDLEWARE BRIDGE</div>
+                   <div className="text-[9px] text-slate-500 mt-1">CommCare \u2192 FHIR R4 \u2192 ESOZ</div>
+                 </div>
+                 <div className="bg-slate-800/40 border border-slate-700/30 rounded-lg p-3 text-center">
+                   <div className="text-[8px] text-cyber-success uppercase font-mono mb-1">THRIVE (P505616) PforR</div>
+                   <div className="text-sm font-bold text-cyber-success font-mono">$454M</div>
+                   <div className="text-[9px] text-slate-500 mt-1">{lang === 'uk' ? 'Вимірює через ЕСОЗ' : 'Measures via ESOZ'}</div>
+                 </div>
+               </div>
+             </div>
+           </div>
+
+           {/* Feel Again Solution — IS / IS NOT */}
+           <div className="mb-12 cyber-card border border-cyber-cyan/30 rounded-2xl overflow-hidden">
+             <div className="bg-cyber-cyan/5 px-6 py-4 border-b border-cyber-cyan/20 flex items-center gap-4">
+               <CircleDot className="w-4 h-4 text-cyber-cyan" />
+               <span className="cyber-label text-[11px] text-cyber-cyan">
+                 {lang === 'uk' ? 'FEEL AGAIN — ЦИФРОВА ІНФРАСТРУКТУРА ДЛЯ MHPSS' : 'FEEL AGAIN — DIGITAL INFRASTRUCTURE FOR MHPSS'}
+               </span>
+               <span className="ml-auto text-[9px] font-mono text-slate-600 border border-slate-700 px-2 py-0.5 rounded">FA-2026-UA</span>
+             </div>
+             <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+               <div className="space-y-3">
+                 <div className="text-[10px] text-cyber-cyan uppercase tracking-wider font-mono border-b border-cyber-cyan/20 pb-2">
+                   {lang === 'uk' ? 'ЦЕ Є:' : 'THIS IS:'}
+                 </div>
+                 <p className="text-[12px] text-slate-300 leading-relaxed">{FEEL_AGAIN_POSITION(lang).is}</p>
+               </div>
+               <div className="space-y-3">
+                 <div className="text-[10px] text-rose-400 uppercase tracking-wider font-mono border-b border-rose-500/20 pb-2">
+                   {lang === 'uk' ? 'ЦЕ НЕ Є:' : 'THIS IS NOT:'}
+                 </div>
+                 <p className="text-[12px] text-slate-400 leading-relaxed italic">{FEEL_AGAIN_POSITION(lang).isNot}</p>
+               </div>
+               <div className="space-y-3">
+                 <div className="bg-cyber-success/5 border border-cyber-success/20 rounded-xl p-4 text-center">
+                   <div className="text-[9px] text-cyber-success uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Вартість для держави' : 'Cost to state'}</div>
+                   <div className="text-4xl font-bold text-cyber-success font-mono">{FEEL_AGAIN_POSITION(lang).costToState}</div>
+                   <div className="text-[9px] text-slate-500 mt-1">{FEEL_AGAIN_POSITION(lang).costNote}</div>
+                 </div>
+                 <div className="grid grid-cols-2 gap-2">
+                   <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-rose-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Втрати ВВП' : 'GDP loss'}</div>
+                     <div className="text-base font-bold text-rose-400 font-mono">{FEEL_AGAIN_POSITION(lang).gdpLoss}</div>
+                     <div className="text-[8px] text-slate-600">{lang === 'uk' ? 'щорічно' : 'annually'}</div>
+                   </div>
+                   <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3 text-center">
+                     <div className="text-[8px] text-amber-400 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Заблоковано' : 'Locked'}</div>
+                     <div className="text-base font-bold text-amber-400 font-mono">{FEEL_AGAIN_POSITION(lang).lockedFunds}</div>
+                     <div className="text-[8px] text-slate-600">HEAL/THRIVE</div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+
+           {/* THRIVE + Component 4 Procurement */}
+           <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-6">
+             {/* Stakeholder Interest Matrix */}
+           <div className="mb-12 cyber-card border border-cyber-cyan/20 rounded-2xl overflow-hidden">
+             <div className="bg-cyber-cyan/5 px-6 py-4 border-b border-cyber-cyan/20 flex items-center gap-4">
+               <Users className="w-4 h-4 text-cyber-cyan" />
+               <span className="cyber-label text-[11px] text-cyber-cyan">
+                 {lang === 'uk' ? 'МАТРИЦЯ ІНТЕРЕСІВ: ЧОМУ MIDDLEWARE ПОТРІБНИЙ ВСІМ' : 'INTEREST MATRIX: WHY MIDDLEWARE SERVES ALL STAKEHOLDERS'}
+               </span>
+             </div>
+             <div className="overflow-x-auto">
+               <table className="w-full">
+                 <thead>
+                   <tr className="border-b border-slate-700/30">
+                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider w-1/5">{lang === 'uk' ? 'Стейкхолдер' : 'Stakeholder'}</th>
+                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider w-2/5">{lang === 'uk' ? 'Біль' : 'Pain'}</th>
+                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider">{lang === 'uk' ? 'Що дає middleware' : 'What middleware delivers'}</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   {STAKEHOLDER_MATRIX(lang).map((row, i) => (
+                     <tr key={i} className="border-b border-slate-700/20 hover:bg-slate-800/30 transition-colors">
+                       <td className="px-5 py-3 text-[11px] font-bold text-cyber-cyan">{row.stakeholder}</td>
+                       <td className="px-5 py-3 text-[11px] text-slate-400 leading-relaxed">{row.pain}</td>
+                       <td className="px-5 py-3 text-[11px] text-cyber-success leading-relaxed">{row.gain}</td>
+                     </tr>
+                   ))}
+                 </tbody>
+               </table>
+             </div>
+           </div>
+           </div>
+
+           {/* Risks & Counter-arguments */}
+           <div className="mb-12 cyber-card border border-slate-700/50 rounded-2xl overflow-hidden">
+             <div className="bg-slate-800/40 px-6 py-4 border-b border-slate-700/30 flex items-center gap-4">
+               <AlertTriangle className="w-4 h-4 text-cyber-amber" />
+               <span className="cyber-label text-[11px] text-cyber-amber">
+                 {lang === 'uk' ? 'РИЗИКИ ТА КОНТРАРГУМЕНТИ' : 'RISKS & COUNTER-ARGUMENTS'}
+               </span>
+             </div>
+             <div className="overflow-x-auto">
+               <table className="w-full">
+                 <thead>
+                   <tr className="border-b border-slate-700/30">
+                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider w-1/3">{lang === 'uk' ? 'Контраргумент' : 'Objection'}</th>
+                     <th className="text-left px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider">{lang === 'uk' ? 'Відповідь' : 'Response'}</th>
+                     <th className="text-right px-5 py-3 text-[10px] font-mono text-cyber-amber uppercase tracking-wider w-20">Risk</th>
+                   </tr>
+                 </thead>
+                 <tbody>
+                   {COUNTERARGUMENTS(lang).map((row, i) => (
+                     <tr key={i} className="border-b border-slate-700/20 hover:bg-slate-800/30 transition-colors">
+                       <td className="px-5 py-3 text-[11px] text-slate-300 italic">{row.objection}</td>
+                       <td className="px-5 py-3 text-[11px] text-slate-400 leading-relaxed">{row.response}</td>
+                       <td className="px-5 py-3 text-right">
+                         <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${row.risk === 'High' ? 'text-rose-400 bg-rose-500/10' : row.risk === 'Medium' ? 'text-amber-400 bg-amber-500/10' : 'text-cyber-success bg-cyber-success/10'}`}>
+                           {row.risk}
+                         </span>
+                       </td>
+                     </tr>
+                   ))}
+                 </tbody>
+               </table>
+             </div>
+           </div>
+
+                      {/* 7. Data Infrastructure Gap: Why live data is structurally impossible */}
+           <div className="mb-12 border border-slate-800 rounded-xl overflow-hidden">
+             <div className="bg-slate-900/60 px-5 py-3 border-b border-slate-800 flex items-center gap-3">
+               <span className="w-2 h-2 rounded-full bg-amber-500/70 flex-shrink-0" />
+               <span className="cyber-label text-[10px] text-amber-500/80">
+                 {lang === 'uk' ? 'ЧОМУ LIVE-ДАНІ СТРУКТУРНО НЕДОСЯЖНІ' : 'WHY LIVE DATA IS STRUCTURALLY UNAVAILABLE'}
+               </span>
+             </div>
+             <div className="px-5 py-4 space-y-4">
+               <p className="text-[11px] text-slate-400 leading-relaxed">
+                 {lang === 'uk'
+                   ? "Цифрова фрагментація замінила паперову. При 4,200 клінічних психологах 20% адмін-навантаження = 1.26 млн втрачених сесій щорічно. В гуманітарному секторі (~31,000 фахівців) через 40% фрикцію (фрагментована звітність) втрачається понад 18 млн потенційних сесій. Автоматизація через FEEL AGAIN — єдиний шлях до відновлення цієї ємності."
+                   : "Digital fragmentation replaced paper fragmentation. For 4,200 clinical psychologists, a 20% admin burden = 1.26M lost sessions annually. In the humanitarian sector (~31,000 staff), a 40% friction (fragmented reporting) results in 18M+ lost potential sessions. Automation via FEEL AGAIN is the only path to recovering this capacity."}
+               </p>
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                 {[
+                   { sys: 'ЕСОЗ / НСЗУ', what: lang === 'uk' ? 'Медичні епізоди, рецепти, пакети' : 'Medical episodes, prescriptions, packages', status: lang === 'uk' ? 'Закрито — МОЗ ліцензія' : 'Closed — MoH licence required' },
+                   { sys: 'ActivityInfo (OCHA)', what: lang === 'uk' ? 'Гуманітарне охоплення 5W' : 'Humanitarian 5W coverage', status: lang === 'uk' ? 'Авторизація кластера' : 'Cluster auth required' },
+                   { sys: 'KoBo Toolbox', what: lang === 'uk' ? 'Польові оцінки НГО' : 'NGO field assessments', status: lang === 'uk' ? 'Дані кожної орг. окремо' : 'Per-organisation data only' },
+                   { sys: 'OCHA FTS', what: lang === 'uk' ? 'Фінансові потоки (LIVE ✓)' : 'Funding flows (LIVE ✓)', status: lang === 'uk' ? 'Публічне API — підключено' : 'Public API — connected' },
+                   { sys: 'Helsi / ЕСОЗ-2', what: lang === 'uk' ? 'Телемедицина, записи' : 'Telemedicine, appointments', status: lang === 'uk' ? 'Закрита комерц. платформа' : 'Closed commercial platform' },
+                   { sys: 'НСЗУ-дашборди', what: lang === 'uk' ? 'Держпакети психол. допомоги' : 'State mental health packages', status: lang === 'uk' ? 'PDF-звіти, немає API' : 'PDF reports only, no API' },
+                 ].map((row, i) => (
+                   <div key={i} className={`rounded-lg p-3 border text-[10px] ${row.status.includes('✓') || row.status.includes('connected') ? 'bg-cyber-success/5 border-cyber-success/20' : 'bg-slate-800/40 border-slate-700/40'}`}>
+                     <div className="font-bold text-white mb-1 font-mono">{row.sys}</div>
+                     <div className="text-slate-400 mb-1">{row.what}</div>
+                     <div className={row.status.includes('✓') || row.status.includes('connected') ? 'text-cyber-success' : 'text-amber-500/70'}>{row.status}</div>
+                   </div>
+                 ))}
+               </div>
+
+               <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-4">
+                 <p className="text-[11px] text-amber-400/80 leading-relaxed">
+                   {lang === 'uk'
+                     ? "Сукупна вартість відновленої ємності — понад $360 млн/рік. Це не просто 'ефективність', а усунення системної ерозії людського капіталу. FEEL AGAIN інтегрується саме для усунення цього залишкового цифрового бар’єру між сектором НГО та державою."
+                     : "Total value of recovered capacity exceeds $360M/yr. This is not just 'efficiency', but the elimination of systemic human capital erosion. FEEL AGAIN is designed specifically to eliminate this residual digital barrier between NGOs and the state."}
+                 </p>
+               </div>
+
+               <div className="bg-slate-800/40 border border-slate-700/40 rounded-lg p-4 space-y-2">
+                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono">
+                   {lang === 'uk' ? 'DALY-аналіз та економічна модель (FHI 360 / PIN)' : 'DALY analysis & economic model (FHI 360 / PIN)'}
+                 </div>
+                 <p className="text-[11px] text-slate-400 leading-relaxed">
+                   {lang === 'uk'
+                     ? "FHI\u00a0360 розробила для People in Need (Україна) симуляційну модель, яка конвертує результати MHPSS-втручань у показники економічної продуктивності (повернені робочі дні, скорочення стаціонарних витрат, освітні outcomes дітей). Окремо: стандартний курс терапії в Україні ($150\u2013350) авертує 0.5\u20132 DALY. Поріг рентабельності ВООЗ для України \u2248\u00a0$4\u202f300/DALY (1\u00d7 ВНД на душу населення). Розрахункова ефективність: $75\u2013700/DALY \u2014 у 6\u201357\u00d7 нижче порогу."
+                     : "FHI 360 developed for People in Need (Ukraine) a simulation model converting MHPSS outcomes into economic productivity metrics (recovered workdays, reduced inpatient costs, children\u2019s educational outcomes). Separately: a standard therapy course in Ukraine ($150\u2013350) averts 0.5\u20132 DALYs. WHO cost-effectiveness threshold for Ukraine \u2248\u00a0$4,300/DALY (1\u00d7 GNI per capita). Calculated effectiveness: $75\u2013700/DALY \u2014 6\u201357\u00d7 below threshold."}
+                 </p>
+               </div>
+             </div>
+           </div>\n\n{/* Feel Again Website Section */}
            <motion.div 
              whileHover={{ scale: 1.01 }}
              className="mb-12 bg-cyber-surface p-8 rounded-2xl border border-cyber-cyan/20 cyber-glow-cyan"
@@ -2435,60 +2305,6 @@ const App: React.FC = () => {
                </div>
              </div>
            </details>
-
-           {/* Data Infrastructure Gap — why live data is structurally impossible */}
-           <div className="mb-10 border border-slate-800 rounded-xl overflow-hidden">
-             <div className="bg-slate-900/60 px-5 py-3 border-b border-slate-800 flex items-center gap-3">
-               <span className="w-2 h-2 rounded-full bg-amber-500/70 flex-shrink-0" />
-               <span className="cyber-label text-[10px] text-amber-500/80">
-                 {lang === 'uk' ? 'ЧОМУ LIVE-ДАНІ СТРУКТУРНО НЕДОСЯЖНІ' : 'WHY LIVE DATA IS STRUCTURALLY UNAVAILABLE'}
-               </span>
-             </div>
-             <div className="px-5 py-4 space-y-4">
-               <p className="text-[11px] text-slate-400 leading-relaxed">
-                 {lang === 'uk'
-                   ? "Цифрова фрагментація замінила паперову. Проблема цифрової та крос-секторальної фрагментації залишається невирішеною. Через розпорошеність даних між медичними і соціальними службами та необхідність звітувати у несинхронізовані системи гуманітарних кластерів, сукупне адміністративне навантаження на фахівців продовжує складати розрахункові 20\u201340% робочого часу."
-                   : 'Digital fragmentation replaced paper fragmentation. The problem of digital and cross-sector fragmentation remains unsolved. Due to data dispersal between health and social services, and the need to report into unsynchronised humanitarian cluster systems, the cumulative administrative burden on specialists continues to represent an estimated 20–40% of working time.'}
-               </p>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                 {[
-                   { sys: 'ЕСОЗ / НСЗУ', what: lang === 'uk' ? 'Медичні епізоди, рецепти, пакети' : 'Medical episodes, prescriptions, packages', status: lang === 'uk' ? 'Закрито — МОЗ ліцензія' : 'Closed — MoH licence required' },
-                   { sys: 'ActivityInfo (OCHA)', what: lang === 'uk' ? 'Гуманітарне охоплення 5W' : 'Humanitarian 5W coverage', status: lang === 'uk' ? 'Авторизація кластера' : 'Cluster auth required' },
-                   { sys: 'KoBo Toolbox', what: lang === 'uk' ? 'Польові оцінки НГО' : 'NGO field assessments', status: lang === 'uk' ? 'Дані кожної орг. окремо' : 'Per-organisation data only' },
-                   { sys: 'OCHA FTS', what: lang === 'uk' ? 'Фінансові потоки (LIVE ✓)' : 'Funding flows (LIVE ✓)', status: lang === 'uk' ? 'Публічне API — підключено' : 'Public API — connected' },
-                   { sys: 'Helsi / ЕСОЗ-2', what: lang === 'uk' ? 'Телемедицина, записи' : 'Telemedicine, appointments', status: lang === 'uk' ? 'Закрита комерц. платформа' : 'Closed commercial platform' },
-                   { sys: 'НСЗУ-дашборди', what: lang === 'uk' ? 'Держпакети психол. допомоги' : 'State mental health packages', status: lang === 'uk' ? 'PDF-звіти, немає API' : 'PDF reports only, no API' },
-                 ].map((row, i) => (
-                   <div key={i} className={`rounded-lg p-3 border text-[10px] ${row.status.includes('✓') || row.status.includes('connected') ? 'bg-cyber-success/5 border-cyber-success/20' : 'bg-slate-800/40 border-slate-700/40'}`}>
-                     <div className="font-bold text-white mb-1 font-mono">{row.sys}</div>
-                     <div className="text-slate-400 mb-1">{row.what}</div>
-                     <div className={row.status.includes('✓') || row.status.includes('connected') ? 'text-cyber-success' : 'text-amber-500/70'}>{row.status}</div>
-                   </div>
-                 ))}
-               </div>
-
-               {/* Cost of fragmentation */}
-               <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-4">
-                 <p className="text-[11px] text-amber-400/80 leading-relaxed">
-                   {lang === 'uk'
-                     ? "Наслідок: при ~35\u202f000 активних фахівців 20\u201340% адмін-навантаження = ~$60\u202fмлн втраченої клінічної ємності щорічно \u2014 не через нестачу людей, а через цифрову неефективність. Інфраструктура FEEL AGAIN інтегрується саме для усунення цього залишкового цифрового бар\u2019єру."
-                     : "Consequence: across ~35,000 active specialists, a 20–40% admin burden equals ~$60M in lost clinical capacity annually — not from staff shortages, but from digital inefficiency. FEEL AGAIN infrastructure is designed specifically to eliminate this residual digital barrier."}
-                 </p>
-               </div>
-
-               {/* DALY / FHI 360 note */}
-               <div className="bg-slate-800/40 border border-slate-700/40 rounded-lg p-4 space-y-2">
-                 <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono">
-                   {lang === 'uk' ? 'DALY-аналіз та економічна модель (FHI 360 / PIN)' : 'DALY analysis & economic model (FHI 360 / PIN)'}
-                 </div>
-                 <p className="text-[11px] text-slate-400 leading-relaxed">
-                   {lang === 'uk'
-                     ? "FHI\u00a0360 розробила для People in Need (Україна) симуляційну модель, яка конвертує результати MHPSS-втручань у показники економічної продуктивності (повернені робочі дні, скорочення стаціонарних витрат, освітні outcomes дітей). Окремо: стандартний курс терапії в Україні ($150\u2013350) авертує 0.5\u20132 DALY. Поріг рентабельності ВООЗ для України \u2248\u00a0$4\u202f300/DALY (1\u00d7 ВНД на душу населення). Розрахункова ефективність: $75\u2013700/DALY \u2014 у 6\u201357\u00d7 нижче порогу. Це найсильніший аргумент для інвестора: не просто \u2018ефективно\u2019, а \u2018математично поза конкуренцією за будь-якою галуззю охорони здоров\u2019я\u2019."
-                     : "FHI 360 developed for People in Need (Ukraine) a simulation model converting MHPSS outcomes into economic productivity metrics (recovered workdays, reduced inpatient costs, children\u2019s educational outcomes). Separately: a standard therapy course in Ukraine ($150\u2013350) averts 0.5\u20132 DALYs. WHO cost-effectiveness threshold for Ukraine \u2248\u00a0$4,300/DALY (1\u00d7 GNI per capita). Calculated effectiveness: $75\u2013700/DALY \u2014 6\u201357\u00d7 below threshold. This is the strongest investor argument: not just \u2018efficient\u2019 but \u2018mathematically unrivalled across any health sector\u2019."}
-                 </p>
-               </div>
-             </div>
-           </div>
 
            <div className="border-t border-cyber-border pt-6 space-y-2">
              <p className="text-[10px] text-slate-600 italic font-mono">

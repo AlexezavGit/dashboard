@@ -80,7 +80,7 @@ export const L3Footer: React.FC<Props> = ({ lang, nav }) => {
             gap: 4,
           }}
         >
-          {uk ? 'розділи звіту' : 'report sections'} {open ? '↑' : '↓'}
+          {uk ? 'Дані ↑' : 'Data ↑'} {open ? '↑' : '↓'}
         </button>
 
         {/* API connection badge — decision #7: visible on all L2 screens */}

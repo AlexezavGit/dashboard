@@ -24,6 +24,7 @@ interface Props {
 
 // Canonical L2 order for ← → navigation
 const L2_ORDER: ScreenId[] = [
+  'l2-mhei',        // MHEI drill-down — primary entry point
   'l2-fintech',
   'l2-clinical',
   'l2-analytical',
@@ -33,6 +34,7 @@ const L2_ORDER: ScreenId[] = [
 ];
 
 const L2_LABELS: Record<string, { uk: string; en: string }> = {
+  'l2-mhei':        { uk: 'MHEI Дельта', en: 'MHEI Delta' },
   'l2-fintech':     { uk: 'FinTech', en: 'FinTech' },
   'l2-clinical':    { uk: 'Клінічна', en: 'Clinical' },
   'l2-analytical':  { uk: 'Аналітика', en: 'Analytics' },
@@ -70,7 +72,7 @@ export const NavBar: React.FC<Props> = ({
       className="flex-shrink-0 px-5 pt-4 pb-3"
       style={{ borderBottom: '1px solid var(--color-ds-border)' }}
     >
-      {/* Top row: back + breadcrumbs + L2 arrows */}
+      {/* Top row: back + breadcrumbs + right action */}
       <div className="flex items-center gap-3">
 
         {/* BACK BUTTON */}
@@ -136,64 +138,6 @@ export const NavBar: React.FC<Props> = ({
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         )}
-
-        {/* ← → horizontal L2 navigation */}
-        {inL2 && (
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            {/* L2 position indicator */}
-            <div style={{ display: 'flex', gap: '4px', alignItems: 'center', marginRight: '6px' }}>
-              {L2_ORDER.map((id, i) => (
-                <div
-                  key={id}
-                  onClick={() => nav.push(id)}
-                  title={L2_LABELS[id]?.[lang] ?? id}
-                  style={{
-                    width: i === idx ? '18px' : '6px',
-                    height: '6px',
-                    borderRadius: '3px',
-                    background: i === idx ? accentColor : 'rgba(200,164,92,0.22)',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Prev arrow */}
-            <button
-              onClick={() => prevId && nav.push(prevId)}
-              disabled={!prevId}
-              style={{
-                ...pillBase,
-                opacity: prevId ? 1 : 0.3,
-                cursor: prevId ? 'pointer' : 'default',
-              }}
-              onMouseEnter={e => { if (prevId) (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.12)'; }}
-              onMouseLeave={e => { if (prevId) (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.05)'; }}
-              title={prevId ? (L2_LABELS[prevId]?.[lang] ?? prevId) : undefined}
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-              {prevId ? (L2_LABELS[prevId]?.[lang] ?? '←') : (lang === 'uk' ? '←' : '←')}
-            </button>
-
-            {/* Next arrow */}
-            <button
-              onClick={() => nextId && nav.push(nextId)}
-              disabled={!nextId}
-              style={{
-                ...pillBase,
-                opacity: nextId ? 1 : 0.3,
-                cursor: nextId ? 'pointer' : 'default',
-              }}
-              onMouseEnter={e => { if (nextId) (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.12)'; }}
-              onMouseLeave={e => { if (nextId) (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.05)'; }}
-              title={nextId ? (L2_LABELS[nextId]?.[lang] ?? nextId) : undefined}
-            >
-              {nextId ? (L2_LABELS[nextId]?.[lang] ?? '→') : (lang === 'uk' ? '→' : '→')}
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Title row */}
@@ -210,6 +154,64 @@ export const NavBar: React.FC<Props> = ({
           </p>
         )}
       </div>
+
+      {/* ── L2 prev/next — separate bottom row, no collision with LangThemeBar ── */}
+      {inL2 && (
+        <div className="flex items-center gap-2 mt-2.5 pt-2" style={{ borderTop: '1px solid rgba(200,164,92,0.12)' }}>
+          {/* Prev arrow */}
+          <button
+            onClick={() => prevId && nav.push(prevId)}
+            disabled={!prevId}
+            style={{
+              ...pillBase,
+              opacity: prevId ? 1 : 0.3,
+              cursor: prevId ? 'pointer' : 'default',
+            }}
+            onMouseEnter={e => { if (prevId) (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.12)'; }}
+            onMouseLeave={e => { if (prevId) (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.05)'; }}
+            title={prevId ? (L2_LABELS[prevId]?.[lang] ?? prevId) : undefined}
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            {prevId ? (L2_LABELS[prevId]?.[lang] ?? '←') : '←'}
+          </button>
+
+          {/* L2 position indicator dots */}
+          <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+            {L2_ORDER.map((id, i) => (
+              <div
+                key={id}
+                onClick={() => nav.push(id)}
+                title={L2_LABELS[id]?.[lang] ?? id}
+                style={{
+                  width: i === idx ? '18px' : '6px',
+                  height: '6px',
+                  borderRadius: '3px',
+                  background: i === idx ? accentColor : 'rgba(200,164,92,0.22)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Next arrow */}
+          <button
+            onClick={() => nextId && nav.push(nextId)}
+            disabled={!nextId}
+            style={{
+              ...pillBase,
+              opacity: nextId ? 1 : 0.3,
+              cursor: nextId ? 'pointer' : 'default',
+            }}
+            onMouseEnter={e => { if (nextId) (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.12)'; }}
+            onMouseLeave={e => { if (nextId) (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.05)'; }}
+            title={nextId ? (L2_LABELS[nextId]?.[lang] ?? nextId) : undefined}
+          >
+            {nextId ? (L2_LABELS[nextId]?.[lang] ?? '→') : '→'}
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
