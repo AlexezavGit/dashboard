@@ -15,11 +15,11 @@ interface Props {
 const CHAPTERS = [
   { id: 'exec',         uk: 'Виконавче резюме',        en: 'Executive Summary' },
   { id: 'wb',           uk: 'Проєкти Світового банку',  en: 'World Bank Projects' },
+  { id: 'spi',          uk: 'Системні показники (SPI)', en: 'Systemic Indicators (SPI)' },
   { id: 'gaps',         uk: 'Структурні розриви',       en: 'Structural Gaps' },
   { id: 'arch',         uk: 'Архітектура рішення',      en: 'Solution Architecture' },
   { id: 'stakeholders', uk: 'Стейкхолдери',             en: 'Stakeholders' },
   { id: 'risks',        uk: 'Ризики та контраргументи', en: 'Risks & Counter-arguments' },
-  { id: 'conclusions',  uk: 'Аналітичні висновки',       en: 'Analytical Conclusions' },
   { id: 'sources',      uk: 'Джерела',                  en: 'Sources' },
 ];
 
@@ -114,6 +114,109 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
               </div>
             </Section>
           </>
+        )}
+
+        {chapter === 'spi' && (
+          <div className="space-y-8">
+            <Section title={t('Системні показники відновлення (SPI)', 'Systemic Performance Indicators (SPI)')} color="var(--color-ds-teal)">
+              <div className="space-y-6">
+                {[
+                  {
+                    num: '1',
+                    label: t('Дані та Координація (Фрагментованість)', 'Data & Coordination (Fragmentation)'),
+                    val: '48–76M год/рік',
+                    desc: t(
+                      'Неможливо координувати 3.9 млн осіб у напівручному режимі. Відсутність єдиного відкритого набору даних створює адміністративний параліч.',
+                      'Impossible to coordinate 3.9M people semi-manually. Absence of a unified open dataset creates administrative paralysis.'
+                    )
+                  },
+                  {
+                    num: '2',
+                    label: t('Доступність: Шлях Бенефіціара', 'Access: Beneficiary Pathway'),
+                    val: 'Low Continuity',
+                    desc: t(
+                      'Втрата даних при переході шпиталь ↔ цивільний сектор. Повторне травмування через постійне нагадування анамнезу.',
+                      'Data loss during hospital ↔ civilian transition. Retraumatization due to constant anamnesis repetition.'
+                    )
+                  },
+                  {
+                    num: '3',
+                    label: t('Рівність та Гідність', 'Equity & Dignity'),
+                    val: 'Free Choice',
+                    desc: t(
+                      'Вільне обирання фахівця без залежності від розміру гонорару. Доступ до фінансування для кожного бенефіціара.',
+                      'Free choice of specialist regardless of fee size. Access to funding for every beneficiary.'
+                    )
+                  },
+                  {
+                    num: '4',
+                    label: t('Якість послуг (Протоколи)', 'Service Quality (Protocols)'),
+                    val: 'Bravemind VR',
+                    desc: t(
+                      'Відповідність клінічним стандартам. Залучення VR-технологій для підвищення ефективності та зменшення кількості сеансів.',
+                      'Compliance with clinical standards. Using VR technologies to increase efficiency and reduce session count.'
+                    )
+                  },
+                  {
+                    num: '5',
+                    label: t('Своєчасність (Місткість)', 'Timeliness (Capacity)'),
+                    val: 'Conversion Rate',
+                    desc: t(
+                      'Ефективність конверсії навчання у реальну практику. Подолання нестачі містості через технологічну оптимізацію.',
+                      'Efficiency of training-to-practice conversion. Overcoming capacity shortages via technological optimization.'
+                    )
+                  },
+                  {
+                    num: '6',
+                    label: t('Попит та Дія (Стигма)', 'Demand & Action (Stigma)'),
+                    val: '54% Stigma',
+                    desc: t(
+                      '3.9 млн потребують супроводу. Трансформація стигми: "не на часі" або "дорого" — це бар\'єри, які ми знімаємо.',
+                      '3.9M need support. Stigma transformation: "not the time" or "expensive" are barriers we eliminate.'
+                    )
+                  },
+                  {
+                    num: '7',
+                    label: t('Завершуваність (Dropouts)', 'Completion (Dropouts)'),
+                    val: '54% Dropout',
+                    desc: t(
+                      'Велика кількість дропаутів після першого сеансу. Необхідність проактивного супроводу до завершення курсу.',
+                      'High dropout rate after the first session. Need for proactive support until course completion.'
+                    )
+                  },
+                  {
+                    num: '8',
+                    label: t('Простежуваність (GDP Impact)', 'Traceability (GDP Impact)'),
+                    val: '$8B+ Loss',
+                    desc: t(
+                      'Вплив на ВВП у 2020 році — $8 млрд. Під час війни цей показник зростає драматично. Системний вплив ніколи не вимірювався в Україні.',
+                      'GDP impact in 2020 — $8B. During war, this grows dramatically. Systemic impact has never been measured in Ukraine.'
+                    )
+                  },
+                  {
+                    num: '9',
+                    label: t('Ліквідність та Фінансування', 'Liquidity & Financing'),
+                    val: 'Multi-channel',
+                    desc: t(
+                      'Консолідація ресурсів на конкретному бенефіціарі. Змішане де-ризиковане фінансування знижує бар\'єри для донорів.',
+                      'Resource consolidation per specific beneficiary. Blended de-risked financing lowers barriers for donors.'
+                    )
+                  }
+                ].map(spi => (
+                  <div key={spi.num} className="rounded-xl p-5 border border-white/5 bg-white/2 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="w-6 h-6 rounded-full bg-cyber-teal/20 text-cyber-teal flex items-center justify-center text-[10px] font-bold border border-cyber-teal/30">{spi.num}</span>
+                        <span className="text-[13px] font-bold ds-display">{spi.label}</span>
+                      </div>
+                      <span className="font-mono text-[11px] font-bold px-2 py-0.5 rounded bg-cyber-gold/10 text-cyber-gold border border-cyber-gold/20">{spi.val}</span>
+                    </div>
+                    <p className="text-[11px] opacity-70 leading-relaxed ds-body pl-9">{spi.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </Section>
+          </div>
         )}
 
         {chapter === 'wb' && (
