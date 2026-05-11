@@ -47,7 +47,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 px-6 pb-4 pt-3 min-h-0">
 
         {/* ── Left: Training reality ── */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 min-h-0 overflow-hidden">
 
           {/* 3-layer workforce model */}
           <div className="flex-shrink-0 rounded-2xl p-3"
@@ -99,7 +99,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
 
           {/* TRAINED_REALITY stacked bar */}
           <div className="flex-1 rounded-2xl p-4 min-h-0 overflow-hidden"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)', maxHeight: '280px' }}>
+            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)', maxHeight: '200px' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-1" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Рівень навчання за програмою', 'Training level by program', lang)}
             </div>

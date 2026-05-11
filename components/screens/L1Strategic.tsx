@@ -3,6 +3,7 @@ import { motion, AnimatePresence, animate } from 'motion/react';
 import { ChevronRight } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
+import { Logo } from '../ui/Logo';
 
 interface Props {
   lang: Language;
@@ -38,11 +39,11 @@ const LAYERS: LayerDef[] = [
     color: '#e8c97a', glow: 'rgba(200,164,92,0.22)', cardBg: 'rgba(200,164,92,0.07)',
   },
   {
-    id: 'clinical', screenId: 'l2-clinical', weight: 25, current: 40, target: 80,
+    id: 'clinical', screenId: 'l2-clinical', weight: 25, current: 82, target: 90,
     layer: { uk: 'Clinical', en: 'Clinical' },
-    indicator: { uk: 'Завершуваність реабілітації', en: 'Rehabilitation completion' },
-    display: { uk: '~40%', en: '~40%' },
-    unit: { uk: 'епізодів завершено / розпочато', en: 'episodes completed / initiated' },
+    indicator: { uk: 'Позитивна динаміка (1-й цикл)', en: 'Positive outcomes (1st cycle)' },
+    display: { uk: '82–85%', en: '82–85%' },
+    unit: { uk: 'пілотні заклади МОЗ (2025)', en: 'MoH pilot facilities (2025)' },
     color: '#ff7b6e', glow: 'rgba(224,85,69,0.22)', cardBg: 'rgba(224,85,69,0.07)',
   },
   {
@@ -94,12 +95,33 @@ const BAND_LABEL: Record<Band, { uk: string; en: string }> = {
 
 const currentBand = scoreToBand(INDEX_SCORE);
 
-const SOURCES = [
-  { val: '$1.87B', label: { uk: 'WB+EU портфель MH', en: 'WB+EU MH portfolio' } },
-  { val: '€2.5–4.1B', label: { uk: 'непокрита вартість сесій', en: 'unmet session value' } },
-  { val: '260K', label: { uk: 'НСЗУ пацієнтів 2025', en: 'NHSU patients 2025' } },
+// GDP causal chain footer items
+const GDP_CHAIN = [
+  {
+    val: '260K',
+    label: { uk: 'НСЗУ пацієнтів 2025', en: 'NHSU patients 2025' },
+    source: { uk: 'НСЗУ відкриті дані 2025', en: 'NHSU open data 2025' },
+    arrow: true,
+  },
+  {
+    val: '€2.5–4.1B',
+    label: { uk: 'непокриті сесії/рік', en: 'unmet sessions/yr' },
+    source: { uk: 'МОЗ тариф × 3.5M розрив', en: 'MoH tariff × 3.5M gap' },
+    arrow: true,
+  },
+  {
+    val: '$8B/рік ⚠️',
+    label: { uk: 'ВВП-втрати', en: 'GDP losses' },
+    source: { uk: 'WHO/OECD оцінка ⚠️', en: 'WHO/OECD estimate ⚠️' },
+    arrow: true,
+  },
+  {
+    val: '$1.87B',
+    label: { uk: 'заблоковано WB+EU', en: 'blocked WB+EU' },
+    source: { uk: 'WB HEAL/THRIVE портфель', en: 'WB HEAL/THRIVE portfolio' },
+    arrow: false,
+  },
 ];
-
 
 // ── "Ціна бездіяльності" — inaction cost items linking to L3 sections ──────
 interface InactionItem {
@@ -109,12 +131,12 @@ interface InactionItem {
   color: string;
 }
 const INACTION_COSTS: InactionItem[] = [
-  { val: '$0',      label: { uk: 'верифікованих WB-виплат', en: 'verified WB payments' }, anchor: 'section-budget',   color: '#ff7b6e' },
-  { val: '54%',     label: { uk: 'відсів з лікування',      en: 'treatment dropout' },     anchor: 'section-gap',     color: '#ff7b6e' },
-  { val: '4.7M',    label: { uk: 'невидимих сесій',         en: 'invisible sessions' },     anchor: null,              color: '#00d4aa' },
-  { val: '7.8–12р.', label: { uk: 'беклог при 4K практиків (стійкий темп)', en: 'backlog at 4K practitioners (sustainable)' }, anchor: 'section-workforce', color: '#e8c97a' },
+  { val: '$1.07B',  label: { uk: 'заблокованого фінансування WB', en: 'blocked WB funding (HEAL/THRIVE)' }, anchor: 'section-budget',   color: '#ff7b6e' },
+  { val: '1.4M',    label: { uk: 'втрачених сесій клін. психологів', en: 'lost clinical psych. sessions' }, anchor: 'section-inputs',  color: '#ff7b6e' },
+  { val: '87.5K',   label: { uk: 'втрачених циклів лікування (WHO)', en: 'lost treatment cycles (WHO)' },     anchor: 'section-gap',     color: '#ff7b6e' },
+  { val: '25% год.',label: { uk: 'адмін-ерозія клінічного часу', en: 'admin erosion of clinical time' },   anchor: 'section-inputs',  color: '#ff9966' },
   { val: '$8B/рік', label: { uk: 'втрати ВВП від кризи MH', en: 'GDP loss from MH crisis' }, anchor: 'section-economic', color: '#e8c97a' },
-  { val: '6.4M год',label: { uk: 'адмін-витрат/рік',        en: 'admin hrs/yr' },           anchor: 'section-inputs',  color: '#a78bfa' },
+  { val: '7.8–12р.', label: { uk: 'беклог при 4K практиків (стійкий темп)', en: 'backlog at 4K practitioners (sustainable)' }, anchor: 'section-workforce', color: '#e8c97a' },
 ];
 
 // ── Elevator gauge geometry ────────────────────────────────────────────────────
@@ -397,8 +419,6 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 
 // ── Main screen ────────────────────────────────────────────────────────────────
 export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode = true }) => {
-  const [expanded, setExpanded] = useState(false);
-
   return (
     <div
       className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
@@ -416,8 +436,8 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between pl-6 pr-32 pt-3 pb-2 flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <img src="/logo.svg" alt="FEEL Again" className="w-8 h-8 rounded-lg flex-shrink-0" />
+        <div className="flex items-center gap-4">
+          <Logo darkMode={darkMode} />
           <div>
             <div className="flex items-center gap-1.5 text-[9px] font-mono mb-0.5" style={{ color: 'var(--color-ds-muted)' }}>
               <span style={{ color: 'var(--color-ds-gold)' }}>FEEL Again</span>
@@ -431,114 +451,156 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
             </div>
           </div>
         </div>
-
+        {/* API status dot — links to l2-analytical */}
+        <button
+          onClick={() => nav.push('l2-analytical')}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            fontFamily: 'DM Mono, monospace', fontSize: 9,
+            color: 'rgba(0,210,170,0.7)',
+            background: 'rgba(0,210,170,0.06)',
+            border: '1px solid rgba(0,210,170,0.2)',
+            borderRadius: 6, padding: '3px 10px', cursor: 'pointer',
+          }}
+        >
+          <span style={{
+            width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
+            background: '#00d4aa', boxShadow: '0 0 8px #00d4aa',
+            animation: 'pulse 2s infinite',
+          }} />
+          {lang === 'uk' ? '● API Live' : '● API Live'}
+        </button>
       </div>
 
-      {/* ── 3-column body: cards | gauge | cards ── */}
-      <div
-        className="flex-1 min-h-0 px-5 pb-3 gap-4"
-        style={{ display: 'grid', gridTemplateColumns: '1fr 284px 1fr' }}
-      >
-        {/* Left: FinTech, Clinical, Data */}
-        <div className="flex flex-col gap-2.5 min-h-0">
-          {LAYERS.slice(0, 3).map((l, i) => (
-            <LayerCard key={l.id} l={l} i={i} lang={lang} onNav={() => nav.push(l.screenId)} darkMode={darkMode} />
-          ))}
-        </div>
+      {/* ── 2-zone body: Zone A (gauge + cards) | Zone B (inaction) ── */}
+      <div className="flex-1 min-h-0 flex flex-col px-5 pb-1 gap-3">
 
-        {/* Center: Mental Health Economy Index gauge */}
-        <div
-          className="flex flex-col min-h-0 py-1 overflow-y-auto"
-          style={{ scrollbarWidth: 'none' }}
-        >
-          {/* Index name */}
-          <div style={{
-            fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9,
-            color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.12em',
-            textAlign: 'center', marginBottom: 4,
-          }}>
-            {lang === 'uk' ? 'Mental Health Economy Index' : 'Mental Health Economy Index'}
-          </div>
+        {/* Zone A — Diagnostics: MHEI gauge center + 6 gap cards row */}
+        <div className="flex-1 min-h-0 flex gap-4">
 
-          <GaugeDisplay lang={lang} expanded={expanded} onToggle={() => setExpanded(e => !e)} />
-
-          {/* Layer legend below gauge */}
-          <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: '3px 6px', justifyContent: 'center' }}>
-            {LAYERS.map(l => (
-              <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                <div style={{ width: 8, height: 2.5, background: l.color, borderRadius: 1 }} />
-                <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>
-                  {l.layer[lang]}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* ── Ціна бездіяльності ── */}
-          <div style={{ marginTop: 12, borderTop: '1px solid rgba(200,164,92,0.15)', paddingTop: 8 }}>
-            <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 8,
-              color: 'var(--color-ds-gold)', textTransform: 'uppercase', letterSpacing: '0.12em',
-              textAlign: 'center', marginBottom: 6 }}>
-              {lang === 'uk' ? 'Ціна бездіяльності' : 'Cost of Inaction'}
+          {/* MHEI Gauge — clickable drill-down to l2-mhei */}
+          <div
+            className="flex flex-col items-center justify-center py-1 ds-blueprint cursor-pointer"
+            style={{ width: 264, flexShrink: 0 }}
+            onClick={() => nav.push('l2-mhei')}
+            title={lang === 'uk' ? 'Mental Health Economy Index — клацніть для drill-down' : 'Mental Health Economy Index — click to drill down'}
+          >
+            <div style={{
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9,
+              color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.12em',
+              textAlign: 'center', marginBottom: 2,
+            }}>
+              Mental Health Economy Index
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {INACTION_COSTS.map(item => (
-                <button
-                  key={item.val}
-                  onClick={() => {
-                    if (item.anchor === null) {
-                      nav.push('l2-analytical');
-                    } else {
-                      sessionStorage.setItem('l3-scroll', item.anchor);
-                      nav.push('appendix');
-                    }
-                  }}
-                  style={{
-                    display: 'flex', alignItems: 'baseline', gap: 6, background: 'none',
-                    border: 'none', padding: '3px 4px', borderRadius: 5, cursor: 'pointer',
-                    textAlign: 'left', width: '100%',
-                    transition: 'background 0.15s',
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
-                  onMouseLeave={e => (e.currentTarget.style.background = 'none')}
-                >
-                  <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800,
-                    fontSize: 12, color: item.color, lineHeight: 1, minWidth: 52,
-                    textShadow: `0 0 10px ${item.color}55` }}>
-                    {item.val}
+            <div style={{ fontSize: 9, color: 'var(--color-ds-teal)', textAlign: 'center', marginBottom: 4, fontFamily: 'DM Sans, sans-serif' }}>
+              {lang === 'uk' ? '↓ клацніть для drill-down' : '↓ click to drill down'}
+            </div>
+
+            <GaugeDisplay lang={lang} expanded={false} onToggle={() => nav.push('l2-mhei')} />
+
+            {/* Layer legend */}
+            <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: '3px 6px', justifyContent: 'center' }}>
+              {LAYERS.map(l => (
+                <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                  <div style={{ width: 8, height: 2.5, background: l.color, borderRadius: 1 }} />
+                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>
+                    {l.layer[lang]}
                   </span>
-                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
-                    color: 'var(--color-ds-muted)', lineHeight: 1.3 }}>
-                    {item.label[lang]}
-                  </span>
-                </button>
+                </div>
               ))}
             </div>
+            <button
+              onClick={() => nav.push('l2-mhei')}
+              style={{ marginTop: 8, fontSize: 10, color: 'var(--color-ds-teal)', border: '1px solid rgba(0,210,170,0.3)', borderRadius: 6, padding: '4px 12px', background: 'rgba(0,210,170,0.07)', cursor: 'pointer', fontFamily: 'DM Mono, monospace', letterSpacing: '0.05em' }}
+            >
+              {lang === 'uk' ? 'MHEI Дельта →' : 'MHEI Delta →'}
+            </button>
           </div>
-        </div>
 
-        {/* Right: Capacity, Digital, Regulatory */}
-        <div className="flex flex-col gap-2.5 min-h-0">
-          {LAYERS.slice(3).map((l, i) => (
-            <LayerCard key={l.id} l={l} i={i + 3} lang={lang} onNav={() => nav.push(l.screenId)} darkMode={darkMode} />
-          ))}
+          {/* Right side: gap cards + inaction costs */}
+          <div className="flex-1 flex flex-col gap-2.5 min-h-0">
+
+            {/* 6 gap cards — "системні розриви" */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, flex: '0 0 auto' }}>
+              {LAYERS.map((l, i) => (
+                <LayerCard key={l.id} l={l} i={i} lang={lang} onNav={() => nav.push(l.screenId)} darkMode={darkMode} />
+              ))}
+            </div>
+
+            {/* Zone B — Ціна бездіяльності (inaction cost strip) */}
+            <div className="flex-shrink-0" style={{ borderTop: '1px solid rgba(200,164,92,0.15)', paddingTop: 6 }}>
+              <div style={{
+                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 8,
+                color: 'var(--color-ds-gold)', textTransform: 'uppercase', letterSpacing: '0.12em',
+                marginBottom: 4,
+              }}>
+                {lang === 'uk' ? 'Ціна бездіяльності' : 'Cost of Inaction'}
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px' }}>
+                {INACTION_COSTS.map(item => (
+                  <button
+                    key={item.val}
+                    onClick={() => {
+                      if (item.anchor === null) {
+                        nav.push('l2-analytical');
+                      } else {
+                        sessionStorage.setItem('l3-scroll', item.anchor);
+                        nav.push('appendix');
+                      }
+                    }}
+                    style={{
+                      display: 'flex', alignItems: 'baseline', gap: 5, background: 'none',
+                      border: 'none', padding: '2px 4px', borderRadius: 5, cursor: 'pointer',
+                      textAlign: 'left', transition: 'background 0.15s',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+                    onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+                  >
+                    <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800,
+                      fontSize: 11, color: item.color, lineHeight: 1,
+                      textShadow: `0 0 10px ${item.color}55` }}>
+                      {item.val}
+                    </span>
+                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+                      color: 'var(--color-ds-muted)', lineHeight: 1.3 }}>
+                      {item.label[lang]}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ── Footer bar ── */}
+      {/* ── Footer bar — GDP causal chain ── */}
       <div
-        className="flex-shrink-0 px-6 py-2.5 flex items-center gap-5 flex-wrap"
+        className="flex-shrink-0 px-6 py-2 flex items-center gap-3 flex-wrap"
         style={{ borderTop: '1px solid var(--color-ds-border)', background: 'rgba(0,0,0,0.25)' }}
       >
-        {[
-          ...SOURCES,
-          ...(liveHciValue ? [{ val: `HCI ${liveHciValue}`, label: { uk: 'WB live', en: 'WB live' } }] : []),
-        ].map((m) => (
-          <div key={m.val} className="flex items-baseline gap-1.5">
-            <span className="text-[15px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>{m.val}</span>
-            <span className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{m.label[lang]}</span>
-          </div>
+        {GDP_CHAIN.map((m) => (
+          <React.Fragment key={m.val}>
+            <div className="flex flex-col">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-[14px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>{m.val}</span>
+                <span className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{m.label[lang]}</span>
+              </div>
+              <span className="text-[8px] font-mono" style={{ color: 'rgba(200,164,92,0.45)' }}>{m.source[lang]}</span>
+            </div>
+            {m.arrow && (
+              <span style={{ color: 'rgba(200,164,92,0.4)', fontSize: 12, flexShrink: 0 }}>→</span>
+            )}
+          </React.Fragment>
         ))}
+        {liveHciValue && (
+          <>
+            <span style={{ color: 'rgba(200,164,92,0.4)', fontSize: 12 }}>·</span>
+            <div className="flex flex-col">
+              <span className="text-[14px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>HCI {liveHciValue}</span>
+              <span className="text-[8px] font-mono" style={{ color: 'rgba(200,164,92,0.45)' }}>Human Capital Index · World Bank 2020</span>
+            </div>
+          </>
+        )}
         <div className="flex-1" />
         <button
           onClick={() => nav.push('appendix')}

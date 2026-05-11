@@ -59,7 +59,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
             </div>
           </div>
 
-          <div className="flex-1 rounded-2xl p-5 min-h-0"
+          <div className="flex-1 rounded-2xl p-5 min-h-0 overflow-hidden"
             style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
             <div className="text-[11px] font-mono uppercase tracking-wider mb-3" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Тижневий час (20 год/тиж)', 'Weekly time (20 h/wk)', lang)}
