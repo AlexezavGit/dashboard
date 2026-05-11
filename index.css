@@ -7,30 +7,39 @@
   --font-display: "Space Grotesk",  ui-sans-serif, system-ui, sans-serif;
   --font-mono:    "JetBrains Mono", ui-monospace,  SFMono-Regular, monospace;
 
-  /* ── Dark (default) ── */
-  --color-ds-bg:          #062428;
-  --color-ds-bg2:         #082e34;
-  --color-ds-surface:     rgba(255, 255, 255, 0.05);
-  --color-ds-copper:      #C8763A;   /* primary puzzle accent  */
-  --color-ds-copper-bright: #E8A05C; /* hover/highlight        */
-  --color-ds-copper-dim:  rgba(200, 118, 58, 0.18);
-  --color-ds-gold:        #D4A574;   /* secondary text accent  */
+  /* ── Dark (Bunker/Refugio) ── */
+  --color-ds-bg:          #051619;   /* deep petrol noir */
+  --color-ds-bg2:         #0a2428;
+  --color-ds-surface:     rgba(255, 255, 255, 0.04);
+  
+  /* Primary Accents from References */
+  --color-ds-teal:        #00D2FF;   /* vibrant turquoise from poster 1 */
+  --color-ds-orange:      #FF7F00;   /* tetris puzzle orange */
+  --color-ds-yellow:      #FBBF24;   /* bunker logo yellow */
+  
+  --color-ds-copper:      #C8763A;   
+  --color-ds-copper-bright: #E8A05C;
+  --color-ds-copper-dim:  rgba(255, 127, 0, 0.15);
+  --color-ds-gold:        #D4A574;
   --color-ds-gold-dim:    rgba(212, 165, 116, 0.18);
-  --color-ds-teal:        #3DD6CC;   /* blueprint lines        */
-  --color-ds-teal-dim:    rgba(61, 214, 204, 0.15);
+  --color-ds-teal-dim:    rgba(0, 210, 255, 0.12);
   --color-ds-red:         #E86B5A;
-  --color-ds-border:      rgba(61, 214, 204, 0.14);
-  --color-ds-text:        #EDF4F4;
-  --color-ds-muted:       rgba(180, 210, 208, 0.55);
-  --color-ds-navy:        #041c1f;
+  --color-ds-border: rgba(0, 210, 255, 0.2);
+  --color-ds-muted: #64748b;
+  --color-ds-bg-card: rgba(5, 22, 25, 0.8);
+  --color-ds-navy:        #020d0f;
+
+  /* UI Specifics */
+  --color-ds-footer-bg:   #FBBF24;
+  --color-ds-footer-text: #051619;
 
   /* legacy aliases */
-  --color-cyber-bg:      #062428;
-  --color-cyber-surface: rgba(255, 255, 255, 0.05);
-  --color-cyber-border:  rgba(61, 214, 204, 0.14);
-  --color-cyber-cyan:    #3DD6CC;
-  --color-cyber-amber:   #D4A574;
-  --color-cyber-success: #6ECFB4;
+  --color-cyber-bg:      #051619;
+  --color-cyber-surface: rgba(255, 255, 255, 0.04);
+  --color-cyber-border:  rgba(0, 210, 255, 0.12);
+  --color-cyber-cyan:    #00D2FF;
+  --color-cyber-amber:   #FBBF24;
+  --color-cyber-success: #3DD6CC;
   --color-cyber-purple:  #9B87D4;
 }
 
@@ -80,26 +89,69 @@
   }
 }
 
-/* ── Blueprint grid background ───────────────────────────────────────────── */
+/* ── Technological Backgrounds ───────────────────────────────────────────── */
 .ds-blueprint-bg {
   background-image:
-    linear-gradient(rgba(61,214,204,0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(61,214,204,0.06) 1px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(rgba(0,210,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,210,255,0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
 }
 
-.ds-blueprint-bg-fine {
-  background-image:
-    linear-gradient(rgba(61,214,204,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(61,214,204,0.03) 1px, transparent 1px),
-    linear-gradient(rgba(61,214,204,0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(61,214,204,0.07) 1px, transparent 1px);
-  background-size: 10px 10px, 10px 10px, 40px 40px, 40px 40px;
+.ds-circuit-bg {
+  background-image: 
+    radial-gradient(circle at 2px 2px, rgba(0,210,255,0.08) 1px, transparent 0);
+  background-size: 24px 24px;
 }
 
-/* ── Corner markers (Blueprint aesthetic) ────────────────────────────────── */
-.ds-corners {
+/* ── Puzzle & Interactivity Boxes ────────────────────────────────────────── */
+.ds-puzzle-box {
   position: relative;
+  background: var(--color-ds-surface);
+  border: 1px solid var(--color-ds-border);
+  clip-path: polygon(
+    0% 0%, 90% 0%, 100% 10%, 100% 100%, 10% 100%, 0% 90%
+  );
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ds-puzzle-box:hover {
+  background: var(--color-ds-teal-dim);
+  border-color: var(--color-ds-teal);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px var(--color-ds-teal-dim);
+}
+
+:root[data-theme="light"] .ds-puzzle-box {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(42, 142, 136, 0.2);
+}
+
+:root[data-theme="light"] .ds-puzzle-box:hover {
+  background: rgba(42, 142, 136, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.ds-pulse-glow {
+  animation: pulse-glow 2s infinite alternate;
+}
+
+@keyframes pulse-glow {
+  from { box-shadow: 0 0 10px var(--color-ds-teal-dim); }
+  to { box-shadow: 0 0 25px var(--color-ds-teal); }
+}
+
+:root[data-theme="light"] .ds-pulse-glow {
+  animation: pulse-glow-light 2s infinite alternate;
+}
+
+@keyframes pulse-glow-light {
+  from { box-shadow: 0 0 5px rgba(42, 142, 136, 0.1); }
+  to { box-shadow: 0 0 15px rgba(42, 142, 136, 0.3); }
+}
+
+.ds-orange-accent {
+  background: var(--color-ds-orange);
+  color: white;
 }
 .ds-corners::before,
 .ds-corners::after {
@@ -465,12 +517,26 @@
 .text-slate-600 { color: rgba(237,244,244,0.28) !important; }
 .text-slate-700 { color: rgba(237,244,244,0.18) !important; }
 
-:root[data-theme="light"] .text-slate-300 { color: rgba(26,48,48,0.80) !important; }
-:root[data-theme="light"] .text-slate-400 { color: rgba(26,48,48,0.65) !important; }
-:root[data-theme="light"] .text-slate-500 { color: rgba(26,48,48,0.50) !important; }
-:root[data-theme="light"] .text-slate-600 { color: rgba(26,48,48,0.38) !important; }
-:root[data-theme="light"] .text-slate-700 { color: rgba(26,48,48,0.25) !important; }
+:root[data-theme="light"] .text-slate-300 { color: #1A3030 !important; opacity: 0.85; }
+:root[data-theme="light"] .text-slate-400 { color: #1A3030 !important; opacity: 0.7; }
+:root[data-theme="light"] .text-slate-500 { color: #1A3030 !important; opacity: 0.55; }
+:root[data-theme="light"] .text-slate-600 { color: #1A3030 !important; opacity: 0.45; }
+:root[data-theme="light"] .text-slate-700 { color: #1A3030 !important; opacity: 0.3; }
 :root[data-theme="light"] .text-white      { color: #1A3030 !important; }
+
+/* Light mode overrides for background utilities */
+:root[data-theme="light"] .bg-slate-900\/40,
+:root[data-theme="light"] .bg-slate-900\/60 { background: rgba(0, 0, 0, 0.03) !important; }
+:root[data-theme="light"] .bg-slate-800\/30,
+:root[data-theme="light"] .bg-slate-800\/40,
+:root[data-theme="light"] .bg-slate-800\/50 { background: rgba(0, 0, 0, 0.05) !important; }
+:root[data-theme="light"] .bg-cyber-cyan\/5 { background: rgba(42, 142, 136, 0.05) !important; }
+:root[data-theme="light"] .bg-cyber-cyan\/10 { background: rgba(42, 142, 136, 0.08) !important; }
+:root[data-theme="light"] .bg-rose-500\/5 { background: rgba(184, 74, 58, 0.05) !important; }
+:root[data-theme="light"] .bg-rose-500\/10 { background: rgba(184, 74, 58, 0.08) !important; }
+:root[data-theme="light"] .bg-amber-500\/5 { background: rgba(138, 104, 48, 0.05) !important; }
+:root[data-theme="light"] .bg-amber-500\/20 { background: rgba(138, 104, 48, 0.1) !important; }
+:root[data-theme="light"] .bg-orange-500\/20 { background: rgba(168, 95, 40, 0.15) !important; }
 
 /* ── Screen containers ───────────────────────────────────────────────────── */
 .ds-screen {
@@ -531,15 +597,19 @@
 /* ── Alternating L3 section backgrounds ─────────────────────────────────── */
 .ds-section-odd  { background: rgba(61,214,204,0.025); }
 .ds-section-even { background: transparent; }
-.ds-cluster-header {
-  background: rgba(200,118,58,0.07);
-  border-bottom: 1px solid rgba(200,118,58,0.25);
-  border-left: 3px solid var(--color-ds-copper);
-  padding: 8px 16px;
+/* ── Bright Bunker Footer ────────────────────────────────────────────────── */
+.ds-bunker-footer {
+  background-color: var(--color-ds-footer-bg);
+  color: var(--color-ds-footer-text);
+  padding: 4rem 2rem;
   font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  border-top: 8px solid var(--color-ds-navy);
+}
+
+.ds-bunker-footer h2 {
+  font-size: 3rem;
+  font-weight: 900;
   text-transform: uppercase;
-  color: var(--color-ds-copper);
+  letter-spacing: -0.05em;
+  margin-bottom: 1rem;
 }

@@ -41,13 +41,13 @@ import {
 // KPI Card Component
 const KpiCard: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
   const statusBorderColor: Record<string, string> = {
-    danger:  '#e05c5c',
+    danger:  'var(--color-ds-red)',
     warning: 'var(--color-ds-gold)',
     success: 'var(--color-ds-teal)',
     neutral: 'var(--color-ds-teal)',
   };
   const statusTextColor: Record<string, string> = {
-    danger:  '#e05c5c',
+    danger:  'var(--color-ds-red)',
     warning: 'var(--color-ds-gold)',
     success: 'var(--color-ds-teal)',
     neutral: 'var(--color-ds-teal)',
@@ -57,61 +57,107 @@ const KpiCard: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
     <motion.div
       whileHover={{ scale: 1.02, translateY: -4 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className="cyber-card p-5 flex flex-col h-full group"
-      style={{ borderTop: `2px solid ${statusBorderColor[data.status]}` }}
+      className="ds-puzzle-box p-5 flex flex-col h-full group"
+      style={{ borderTop: `4px solid ${statusBorderColor[data.status] || 'var(--color-ds-teal)'}` }}
     >
-      <div className="cyber-label mb-2 flex justify-between items-center">
+      <div className="cyber-label mb-2 flex justify-between items-center" style={{ color: 'var(--color-ds-teal)' }}>
         <span>{data.label[lang]}</span>
-        <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: statusBorderColor[data.status] }} />
+        <div className="w-2 h-2 rounded-sm rotate-45" style={{ backgroundColor: statusBorderColor[data.status] || 'var(--color-ds-teal)' }} />
       </div>
-      <div className="cyber-number text-3xl font-bold mb-1">{data.value}</div>
-      <div className="text-[10px] mb-3 font-medium" style={{ color: 'var(--color-ds-muted)' }}>{data.sub[lang]}</div>
+      <div className="cyber-number text-3xl font-bold mb-1" style={{ color: 'var(--color-ds-yellow)' }}>{data.value}</div>
+      <div className="text-[10px] mb-3 font-bold uppercase tracking-wider" style={{ color: 'var(--color-ds-orange)' }}>{data.sub[lang]}</div>
       <div className="mt-auto space-y-2">
         <div className="text-[10px] font-bold flex items-center gap-1" style={{ color: statusTextColor[data.status] }}>
            {data.change[lang]}
         </div>
-        <div className="text-[9px] italic flex items-center gap-1 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)', color: 'var(--color-ds-muted)' }}>
-          <Info className="w-2.5 h-2.5" /> {lang === 'uk' ? 'Джерело:' : 'Source:'} {data.source[lang]}
+        <div className="text-[9px] font-mono flex items-center gap-1 pt-2" style={{ borderTop: '1px solid var(--color-ds-border)', color: 'var(--color-ds-muted)' }}>
+          <Database className="w-2.5 h-2.5" /> {lang === 'uk' ? 'Джерело:' : 'Source:'} {data.source[lang]}
         </div>
       </div>
     </motion.div>
   );
 };
 
-// Top Metric Component
-const TopMetric: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
-  const Icon = { Users, Building2, GraduationCap }[data.icon] as any;
+// Master Plan Architecture Piece
+const ArchitecturePiece: React.FC<{ data: any, lang: Language, isHovered: boolean, onHover: (hover: boolean) => void }> = ({ data, lang, isHovered, onHover }) => (
+  <motion.div
+    whileHover={{ scale: 1.05, zIndex: 10 }}
+    onMouseEnter={() => onHover(true)}
+    onMouseLeave={() => onHover(false)}
+    className={`ds-puzzle-box p-4 border transition-all duration-300 ${isHovered ? 'border-[--color-ds-teal] shadow-[0_0_20px_rgba(0,210,255,0.3)]' : 'border-transparent'}`}
+    style={{ background: isHovered ? 'var(--color-ds-teal-dim)' : 'var(--color-ds-bg-card)' }}
+  >
+    <div className="flex items-center gap-3 mb-2">
+      <div className={`w-8 h-8 flex items-center justify-center rounded-lg border ${isHovered ? 'ds-orange-accent' : 'border-[--color-ds-border]'}`}>
+        <span className="text-xs font-bold">{data.num}</span>
+      </div>
+      <div className="cyber-label text-[10px] leading-tight" style={{ color: isHovered ? 'var(--color-ds-teal)' : 'var(--color-ds-muted)' }}>
+        {data.flow}
+      </div>
+    </div>
+    <div className="text-[11px] font-mono leading-snug" style={{ color: isHovered ? 'var(--color-ds-yellow)' : 'var(--color-ds-text)' }}>
+      {data.tool}
+    </div>
+  </motion.div>
+);
+
+// HEAL vs THRIVE Synergy Visualization
+const HealThriveSynergy: React.FC<{ lang: Language }> = ({ lang }) => {
+  const heal = HEAL_UKRAINE(lang);
+  const thrive = THRIVE_PROJECT(lang);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.03 }}
-      transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-      className="cyber-card p-6 flex items-center gap-5 border-l-4 relative group"
-      style={{ borderLeftColor: data.color }}
-    >
-      <div className="p-3 rounded-lg border" style={{ color: data.color, backgroundColor: 'var(--color-ds-bg)', borderColor: 'var(--color-ds-border)' }}>
-        <Icon className="w-6 h-6" />
-      </div>
-      <div>
-        <div className="cyber-label flex items-center gap-1">
-          {data.label}
-          {data.tooltip && (
-            <div className="relative flex items-center">
-              <Info className="w-3 h-3 cursor-help" style={{ color: 'var(--color-ds-muted)' }} />
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 normal-case tracking-normal font-sans shadow-xl" style={{ background: '#0a1628', border: '1px solid var(--color-ds-border)' }}>
-                {data.tooltip}
-              </div>
-            </div>
-          )}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+      <div className="ds-puzzle-box p-6 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
+          <Database className="w-16 h-16" />
         </div>
-        <div className="cyber-number text-4xl font-bold leading-none my-1">
-          <FormattedNumber value={data.value} locale={lang} suffix={data.suffix} />
+        <h3 className="cyber-label text-lg mb-4" style={{ color: 'var(--color-ds-teal)' }}>{heal.project}</h3>
+        <div className="flex gap-4 mb-4">
+          <div className="flex-1">
+            <div className="text-[10px] uppercase text-[--color-ds-muted] mb-1">Mechanism</div>
+            <div className="text-xs font-bold text-[--color-ds-yellow]">{heal.mechanism}</div>
+          </div>
+          <div className="flex-1 text-right">
+            <div className="text-[10px] uppercase text-[--color-ds-muted] mb-1">Disbursed</div>
+            <div className="text-sm font-bold text-[--color-ds-orange]">{heal.disbursed} / {heal.total}</div>
+          </div>
         </div>
-        <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>{data.sub}</div>
+        <div className="w-full h-1.5 bg-black/40 rounded-full overflow-hidden mb-4 border border-[--color-ds-border]">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${heal.disbursedPct}%` }}
+            className="h-full bg-[--color-ds-orange]" 
+          />
+        </div>
+        <p className="text-[11px] leading-relaxed text-[--color-ds-text] italic opacity-80">{heal.insight}</p>
       </div>
-    </motion.div>
+
+      <div className="ds-puzzle-box p-6 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-30 transition-opacity">
+          <TrendingUp className="w-16 h-16" />
+        </div>
+        <h3 className="cyber-label text-lg mb-4" style={{ color: 'var(--color-ds-teal)' }}>THRIVE {thrive.id}</h3>
+        <div className="flex gap-4 mb-4">
+          <div className="flex-1">
+            <div className="text-[10px] uppercase text-[--color-ds-muted] mb-1">Mechanism</div>
+            <div className="text-xs font-bold text-[--color-ds-yellow]">{thrive.mechanism}</div>
+          </div>
+          <div className="flex-1 text-right">
+            <div className="text-[10px] uppercase text-[--color-ds-muted] mb-1">Disbursed</div>
+            <div className="text-sm font-bold text-[--color-ds-orange]">{thrive.disbursed} / {thrive.total}</div>
+          </div>
+        </div>
+        <div className="w-full h-1.5 bg-black/40 rounded-full overflow-hidden mb-4 border border-[--color-ds-border]">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${thrive.disbursedPct}%` }}
+            className="h-full bg-[--color-ds-teal]" 
+          />
+        </div>
+        <p className="text-[11px] leading-relaxed text-[--color-ds-text] italic opacity-80">{thrive.critical}</p>
+      </div>
+    </div>
   );
 };
 
@@ -135,6 +181,7 @@ const App: React.FC = () => {
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const [roiInvestment, setRoiInvestment] = useState<number>(5);
+  const [hoveredContext, setHoveredContext] = useState<string | null>(null);
 
   const roiResults = useMemo(() => {
     const investUsd = roiInvestment * 1_000_000;
@@ -277,7 +324,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[--color-ds-bg] text-[--color-ds-text] font-sans custom-scrollbar flex" style={{ backgroundColor: 'var(--color-ds-bg)', color: 'var(--color-ds-text)' }}>
+    <div className="min-h-screen bg-[--color-ds-bg] text-[--color-ds-text] font-sans custom-scrollbar flex ds-blueprint-bg" style={{ backgroundColor: 'var(--color-ds-bg)', color: 'var(--color-ds-text)' }}>
 
       {/* ── L4 FULL ANALYTICAL REPORT ────────────────────────────────── */}
       {showL4 && (
@@ -331,6 +378,15 @@ const App: React.FC = () => {
               </span>
             </div>
             <div className="flex-1" />
+            {/* TERMINAL ACCESS: Primary CTA */}
+            <button
+              onClick={() => window.open('https://terminal.feelagain.ua', '_blank')}
+              className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-[11px] font-bold ds-display flex-shrink-0 transition-all bg-orange-500 text-slate-900 hover:bg-orange-400 shadow-[0_0_15px_rgba(245,158,11,0.3)] animate-pulse"
+            >
+              <Terminal className="w-3.5 h-3.5" />
+              {lang === 'uk' ? 'УВІЙТИ В ТЕРМІНАЛ' : 'LOGIN TO TERMINAL'}
+            </button>
+
             {/* L4 full report button */}
             <button
               onClick={() => { setL4From('l3'); setShowL4(true); }}
@@ -344,7 +400,7 @@ const App: React.FC = () => {
             </button>
             {/* FEEL Again program site link */}
             <a
-              href="https://feelagain.pages.dev"
+              href="https://feelagain.ua"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold ds-display flex-shrink-0 transition-all"
@@ -377,14 +433,27 @@ const App: React.FC = () => {
               {darkMode ? '☀' : '◑'}
             </button>
           </div>
-          <div className="mt-3 ml-1">
-            <h2 className="text-[22px] font-bold ds-display leading-tight" style={{ color: 'var(--color-ds-teal)' }}>
-              {lang === 'uk' ? 'Аналітичний звіт' : 'Analytical Report'}
-            </h2>
-            <p className="text-[12px] ds-body mt-1" style={{ color: 'var(--color-ds-muted)' }}>
-              {lang === 'uk' ? 'МЗПСП Україна — поглиблений аналіз 2024–2025' : 'MHPSS Ukraine — deep analysis 2024–2025'}
-            </p>
+          <div className="mt-4 ml-1 flex items-end justify-between">
+            <div>
+              <h2 className="text-[28px] font-bold ds-display leading-tight tracking-tight" style={{ color: 'var(--color-ds-teal)' }}>
+                {lang === 'uk' ? 'MHPSS INTELLIGENCE ENGINE' : 'MHPSS INTELLIGENCE ENGINE'}
+              </h2>
+              <div className="flex items-center gap-3 mt-1">
+                <span className="px-2 py-0.5 rounded text-[9px] font-bold font-mono bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30 uppercase">
+                  Master Implementation Plan
+                </span>
+                <p className="text-[12px] ds-body font-mono opacity-60">
+                  {lang === 'uk' ? 'Поглиблена аналітика та карта імплементації 2024–2025' : 'Deep analytics & implementation map 2024–2025'}
+                </p>
+              </div>
+            </div>
+            <div className="hidden lg:block text-right">
+              <div className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">{lang === 'uk' ? 'Версія системи' : 'System Version'}</div>
+              <div className="text-[12px] font-mono text-cyber-cyan">v3.0.4-BUNKER</div>
+            </div>
           </div>
+        </div>
+
         </div>
 
         {/* ── CRISIS HERO BAR ─────────────────────────────────────────── */}
@@ -392,9 +461,10 @@ const App: React.FC = () => {
           <span className="w-1.5 h-1.5 rounded-full animate-ping flex-shrink-0" style={{ backgroundColor: 'var(--color-ds-red)' }} />
           <span className="cyber-label">{lang === 'uk' ? 'МАСШТАБ КРИЗИ — ЦИФРИ, ЩО НЕ МОЖНА ІГНОРУВАТИ' : 'CRISIS SCALE — NUMBERS THAT CANNOT BE IGNORED'}</span>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1.5 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-1.5 mb-8">
           {[
             {
+              id: 'gap-covered',
               val: '0.28%',
               label: lang === 'uk' ? 'ПОКРИТТЯ КЛІН. ПОТРЕБИ' : 'CLINICAL NEED COVERED',
               sub: lang === 'uk'
@@ -407,6 +477,7 @@ const App: React.FC = () => {
                 : '180K — NHSU psychological services delivered in primary care during 2024. 62.4M — total clinical session need for 3.9M people (22% of population) at WHO norm of 16 sessions/person. Sources: NHSU open data 2024 / WHO / Lancet 2023.',
             },
             {
+              id: 'unmet-need',
               val: '62.2M',
               label: lang === 'uk' ? 'НЕЗАКРИТА ПОТРЕБА / РІК' : 'UNMET NEED / YEAR',
               sub: lang === 'uk'
@@ -419,6 +490,7 @@ const App: React.FC = () => {
                 : 'Real gap: 62,400,000 − 180,000 = 62,220,000 sessions unmet. Cost to close at blended public-humanitarian rate $30/session = $1.87B/year. At market lower bound (€40/session) = €2.5B/year. Sources: NHSU 2024 / WHO norm / FEEL Again calculation.',
             },
             {
+              id: 'wb-locked',
               val: '$954M',
               label: lang === 'uk' ? 'WB ЗАБЛОКОВАНО / У РОБОТІ' : 'WB LOCKED / IN PROGRESS',
               sub: lang === 'uk'
@@ -431,6 +503,7 @@ const App: React.FC = () => {
                 : 'HEAL P180245 (IPF+PBC): total $500M, disbursed $171M (34%). THRIVE P505616 (PforR): $454M, disbursed ~$320M (70%): $220M advance at signing (Dec 2024) + $19.5M after DLI (Dec 2025). Total: ~$491M / $954M = ~51% disbursed. HEAL C4 focus: $50M for digitalization.',
             },
             {
+              id: 'backlog',
               val: '7.8 ' + (lang === 'uk' ? 'РОК.' : 'YRS'),
               label: lang === 'uk' ? 'БЕКЛОГ ПРИ 4,000 СПЕЦ.' : 'BACKLOG AT 4,000 SPEC.',
               sub: lang === 'uk'
@@ -443,6 +516,7 @@ const App: React.FC = () => {
                 : '4,000 — conservative estimate of NHSU-registered MH specialists (psychiatrists + clinical psychologists) in active practice. Workload norm: ~1,250 sessions/year (50 weeks × 25 sessions/week). Backlog = 62.22M / (4,000 × 1,250) = 12.4 years; at +100% efficiency = 7.8 years. With 19K specialists (incl. shadow) = 1.6-2.2 years. Sources: NHSU portal 2026 / WHO SIMH 2024.',
             },
             {
+              id: 'sync',
               val: '0%',
               label: lang === 'uk' ? 'СИНХРОНІЗАЦІЯ ДАНИХ' : 'DATA SYNCHRONISATION',
               sub: lang === 'uk'
@@ -455,6 +529,7 @@ const App: React.FC = () => {
                 : 'No humanitarian organisation in Ukraine transmits session data directly to ESOZ/NHSU. CommCare, KoBo, ActivityInfo — isolated silos. THRIVE requires 400K verified sessions in ESOZ for disbursement, but source-to-ESOZ pipeline = 0. FEEL Again Digital Bus = the solution.',
             },
             {
+              id: 'lost-capacity',
               val: '$5M',
               label: lang === 'uk' ? 'ЩОМІСЯЦЯ ВТРАЧАЄТЬСЯ' : 'MONTHLY CAPACITY LOST',
               sub: lang === 'uk'
@@ -467,7 +542,13 @@ const App: React.FC = () => {
                 : 'Calculation: ~35,000 active MHPSS specialists × 20% admin overhead × $30/hr (blended rate) × ~200 hrs/mo / 12 = ~$35M-$60M/yr lost clinical capacity. Monthly: ~$3M–5M. Digital integration can reduce admin from 22% to 7%, freeing ~15% of time = +45K sessions/month. FEEL Again calculation.',
             },
           ].map((m) => (
-            <div key={m.label} className="cyber-card px-4 py-3 relative overflow-hidden cursor-help" title={m.tooltip}>
+            <motion.div 
+              key={m.id} 
+              onMouseEnter={() => setHoveredContext(m.id)}
+              onMouseLeave={() => setHoveredContext(null)}
+              className={`cyber-card px-4 py-3 relative overflow-hidden cursor-help transition-all duration-300 ${hoveredContext === m.id ? 'scale-105 z-10 border-[--color-ds-teal]' : ''}`} 
+              title={m.tooltip}
+            >
               <div className="relative">
                 <div className="text-[28px] md:text-[32px] font-bold tracking-tighter leading-none mb-1 ds-display" style={{ color: m.color }}>
                   {m.val}
@@ -478,9 +559,28 @@ const App: React.FC = () => {
                 </div>
                 <div className="text-[9px] mt-0.5 leading-snug" style={{ color: 'var(--color-ds-muted)' }}>{m.sub}</div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
+
+        {/* ── MASTER IMPLEMENTATION PLAN ARCHITECTURE ──────────────────── */}
+        <div className="mb-1.5 flex items-center gap-2">
+          <GitMerge className="w-4 h-4 text-[--color-ds-teal]" />
+          <span className="cyber-label">{lang === 'uk' ? 'АРХІТЕКТУРА MASTER IMPLEMENTATION PLAN' : 'MASTER IMPLEMENTATION PLAN ARCHITECTURE'}</span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
+          {FEEL_AGAIN_ARCHITECTURE(lang).map((arch) => (
+            <ArchitecturePiece 
+              key={arch.num} 
+              data={arch} 
+              lang={lang} 
+              isHovered={hoveredContext === `arch-${arch.num}`} 
+              onHover={(h) => setHoveredContext(h ? `arch-${arch.num}` : null)} 
+            />
+          ))}
+        </div>
+
+        <HealThriveSynergy lang={lang} />
 
         {/* Top Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -1236,59 +1336,77 @@ const App: React.FC = () => {
                   </Card>
 
                   {/* Macro Gap: 0.28% / 62.4M sessions / backlog */}
-                  <div className="cyber-card border border-rose-500/30 rounded-xl overflow-hidden">
-                    <div className="bg-rose-500/5 px-5 py-3 border-b border-rose-500/20 flex items-center gap-3">
-                      <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                      <span className="cyber-label text-[11px] text-rose-400">
-                        {lang === 'uk' ? 'МАКРО-ГЕП: СПРАВЖНІЙ МАСШТАБ (НСЗУ верифіковано)' : 'MACRO GAP: TRUE SCALE (NSZU verified)'}
-                      </span>
+                  <div 
+                    className={`ds-puzzle-box border border-rose-500/30 rounded-xl overflow-hidden transition-all duration-500 relative ${hoveredContext === 'gap-macro' ? 'ds-pulse-glow border-rose-500/60 scale-[1.01]' : ''}`}
+                    onMouseEnter={() => setHoveredContext('gap-macro')}
+                    onMouseLeave={() => setHoveredContext(null)}
+                  >
+                    {/* Blueprint Lines */}
+                    <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
+                      <div className="absolute top-4 left-0 w-8 h-[1px] bg-rose-500" />
+                      <div className="absolute top-0 left-4 w-[1px] h-8 bg-rose-500" />
+                    </div>
+
+                    <div className="bg-rose-500/5 px-5 py-3 border-b border-rose-500/20 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                        <span className="cyber-label text-[11px] text-rose-400 font-bold uppercase tracking-widest">
+                          {lang === 'uk' ? 'МАКРО-ГЕП: СПРАВЖНІЙ МАСШТАБ (НСЗУ верифіковано)' : 'MACRO GAP: TRUE SCALE (NSZU verified)'}
+                        </span>
+                      </div>
+                      <button 
+                        className="text-[9px] font-mono text-rose-400/60 hover:text-rose-400 flex items-center gap-1 bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20 transition-all"
+                        onClick={() => window.open('https://feelagain.ua/terminal', '_blank')}
+                      >
+                        <ExternalLink size={10} />
+                        {lang === 'uk' ? 'ПЕРЕЙТИ В ТЕРМІНАЛ' : 'ENTER TERMINAL'}
+                      </button>
                     </div>
                     <div className="p-5 grid grid-cols-1 lg:grid-cols-3 gap-6">
                       <div className="space-y-3">
-                        <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-4 text-center">
+                        <div className="bg-rose-500/10 border border-rose-500/20 rounded-lg p-4 text-center group cursor-help">
                           <div className="text-[10px] text-rose-400 uppercase tracking-wider font-mono mb-2">
                             {lang === 'uk' ? 'Покриття потреби' : 'Demand coverage'}
                           </div>
-                          <div className="text-5xl font-bold text-rose-400 font-mono">0.28%</div>
-                          <div className="text-[10px] text-slate-500 mt-2">180,000 / 62,400,000 {lang === 'uk' ? 'сесій' : 'sessions'}</div>
+                          <div className="text-5xl font-bold text-rose-400 font-mono group-hover:scale-110 transition-transform">0.28%</div>
+                          <div className="text-[10px] text-slate-500 mt-2 font-mono">180,000 / 62,400,000 {lang === 'uk' ? 'сесій' : 'sessions'}</div>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                           <div className="bg-slate-800/40 border border-slate-700/40 rounded-lg p-3 text-center">
                             <div className="text-[9px] text-slate-500 uppercase tracking-wider font-mono mb-1">{lang === 'uk' ? 'Дефіцит' : 'Gap'}</div>
                             <div className="text-xl font-bold text-cyber-cyan font-mono">62.2M</div>
-                            <div className="text-[8px] text-slate-600">{lang === 'uk' ? 'сесій/рік' : 'sessions/yr'}</div>
+                            <div className="text-[8px] text-slate-600 font-mono">{lang === 'uk' ? 'сесій/рік' : 'sessions/yr'}</div>
                           </div>
                           <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3 text-center">
                             <div className="text-[9px] text-amber-400 uppercase tracking-wider font-mono mb-1">Blended Finance</div>
                             <div className="text-[13px] font-bold text-amber-400 font-mono leading-tight">$1.87B</div>
-                            <div className="text-[8px] text-slate-600">62.2M × $30 · або 119 млрд грн</div>
+                            <div className="text-[8px] text-slate-600 font-mono">62.2M × $30 · або 119 млрд грн</div>
                           </div>
-                        </div>
-                        <div className="bg-cyber-success/5 border border-cyber-success/20 rounded-lg p-3">
-                          <div className="text-[9px] text-cyber-success uppercase tracking-wider font-mono mb-1">
-                            {lang === 'uk' ? 'Ринкова вартість' : 'Market value'}
-                          </div>
-                          <div className="text-xl font-bold text-cyber-success font-mono">€2.5–4.1B</div>
-                          <div className="text-[8px] text-slate-600">{lang === 'uk' ? '62.4M год × €40–65/год' : '62.4M hr × €40–65/hr'}</div>
                         </div>
                       </div>
                       <div className="lg:col-span-2">
-                        <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-3">
-                          {lang === 'uk' ? 'БЕКЛОГ: СКІЛЬКИ РОКІВ ДО ПОКРИТТЯ ПОТРЕБИ' : 'BACKLOG: YEARS TO CLEAR DEMAND'}
+                        <div className="text-[10px] text-slate-500 uppercase tracking-wider font-mono mb-3 flex items-center justify-between">
+                          <span>{lang === 'uk' ? 'БЕКЛОГ: СКІЛЬКИ РОКІВ ДО ПОКРИТТЯ ПОТРЕБИ' : 'BACKLOG: YEARS TO CLEAR DEMAND'}</span>
+                          <span className="text-rose-500/50 text-[8px]">{lang === 'uk' ? 'ТРЕНІНГ НЕ МАСШТАБУЄТЬСЯ' : 'TRAINING DOES NOT SCALE'}</span>
                         </div>
-                        <ResponsiveContainer width="100%" height={200} minWidth={1}>
+                        <ResponsiveContainer width="100%" height={180} minWidth={1}>
                           <BarChart data={BACKLOG_DATA(lang)} margin={{ top: 5, right: 10, bottom: 0, left: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-                            <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#64748b' }} />
-                            <YAxis tick={{ fontSize: 9, fill: '#64748b' }} unit=" р." />
-                            <Tooltip contentStyle={{ backgroundColor: '#0a0f1e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 11 }} formatter={(v: any) => [`${v} р.`]} />
+                            <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#64748b', fontFamily: 'JetBrains Mono' }} />
+                            <YAxis tick={{ fontSize: 9, fill: '#64748b', fontFamily: 'JetBrains Mono' }} unit=" р." />
+                            <Tooltip 
+                              contentStyle={{ backgroundColor: '#0a0f1e', border: '1px solid rgba(255,68,68,0.2)', borderRadius: 8, fontSize: 11 }} 
+                              itemStyle={{ fontFamily: 'JetBrains Mono' }}
+                              formatter={(v: any) => [`${v} р.`]} 
+                            />
                             <Legend wrapperStyle={{ fontSize: '9px', color: '#64748b', fontFamily: 'JetBrains Mono' }} />
                             <Bar dataKey="sustainable" name={lang === 'uk' ? 'Стійкий (1,500 год/рік)' : 'Sustainable (1,500h/yr)'} fill={COLORS.cyberAmber} radius={[3,3,0,0]} />
                             <Bar dataKey="theoretical" name={lang === 'uk' ? 'Теоретичний (2,000 год/рік)' : 'Theoretical (2,000h/yr)'} fill={COLORS.cyberCyan} radius={[3,3,0,0]} />
                           </BarChart>
                         </ResponsiveContainer>
-                        <div className="mt-3 bg-rose-500/5 border border-rose-500/20 rounded-lg p-3">
-                          <p className="text-[10px] text-rose-400/80 leading-relaxed">
+                        <div className="mt-3 bg-rose-500/5 border border-rose-500/20 rounded-lg p-3 relative overflow-hidden group">
+                           <div className="absolute top-0 right-0 w-16 h-16 bg-rose-500/5 rounded-full -mr-8 -mt-8 blur-2xl group-hover:bg-rose-500/10 transition-colors" />
+                          <p className="text-[10px] text-rose-400/80 leading-relaxed font-mono">
                             {lang === 'uk'
                               ? "Навіть при 19\u202f000 фахівців (макс + тінь) \u2014 беклог 1.6\u20132.2 роки. При 4\u202f000 офіційно зареєстрованих \u2014 7.8\u201310.4 роки. Тренінги не масштабуються без інфраструктури."
                               : "Even at 19,000 specialists (max incl. shadow) \u2014 backlog is 1.6\u20132.2 years. At 4,000 officially registered \u2014 7.8\u201310.4 years. Training doesn\u2019t scale without infrastructure."}
@@ -1297,6 +1415,7 @@ const App: React.FC = () => {
                       </div>
                     </div>
                   </div>
+
 
                   {/* Missing Middle */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -1358,26 +1477,129 @@ const App: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Three-level infrastructure crisis */}
-                  <div className="cyber-card border border-amber-500/30 rounded-xl overflow-hidden">
-                    <div className="bg-amber-500/5 px-5 py-3 border-b border-amber-500/20 flex items-center gap-3">
-                      <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                      <span className="cyber-label text-[11px] text-amber-400">
-                        {lang === 'uk' ? 'ТРИ РІВНІ КРИЗИ ІНФРАСТРУКТУРИ ДАНИХ' : 'THREE LEVELS OF DATA INFRASTRUCTURE CRISIS'}
-                      </span>
+                  {/* Implementation Map: Transition to Website/Interfaces */}
+                  <div className="ds-puzzle-box border border-cyber-cyan/30 bg-cyber-cyan/5 rounded-xl overflow-hidden mb-8 relative">
+                    <div className="bg-cyber-cyan/10 px-5 py-4 border-b border-cyber-cyan/20 flex items-center justify-between">
+                      <div>
+                        <div className="text-[13px] font-bold text-cyber-cyan uppercase tracking-widest font-mono">
+                          {lang === 'uk' ? 'КАРТА ІМПЛЕМЕНТАЦІЇ: ВІД ДАНИХ ДО ДІЇ' : 'IMPLEMENTATION MAP: FROM DATA TO ACTION'}
+                        </div>
+                        <div className="text-[9px] text-slate-500 font-mono mt-1">
+                          {lang === 'uk' ? 'ПЕРЕХІД ДО ОПЕРАЦІЙНИХ ІНТЕРФЕЙСІВ' : 'TRANSITION TO OPERATIONAL INTERFACES'}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                         <button 
+                          className="text-[10px] font-mono text-white flex items-center gap-2 bg-cyber-cyan/20 px-3 py-1.5 rounded border border-cyber-cyan/40 hover:bg-cyber-cyan/30 transition-all"
+                          onClick={() => window.open('https://feelagain.ua', '_blank')}
+                        >
+                          <Globe size={12} />
+                          {lang === 'uk' ? 'САЙТ ПРОГРАМИ' : 'PROGRAM WEBSITE'}
+                        </button>
+                        <button 
+                          className="text-[10px] font-mono text-white flex items-center gap-2 bg-orange-500/20 px-3 py-1.5 rounded border border-orange-500/40 hover:bg-orange-500/30 transition-all"
+                          onClick={() => window.open('https://terminal.feelagain.ua', '_blank')}
+                        >
+                          <Terminal size={12} />
+                          {lang === 'uk' ? 'УВІЙТИ В ТЕРМІНАЛ' : 'LOGIN TO TERMINAL'}
+                        </button>
+                      </div>
                     </div>
-                    <div className="p-5">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                        {INFRA_LEVELS(lang).map((lvl, i) => (
-                          <div key={i} className="rounded-xl p-4 border" style={{ borderColor: lvl.color + '30', backgroundColor: lvl.color + '08' }}>
-                            <div className="text-[9px] uppercase tracking-wider font-mono mb-2" style={{ color: lvl.color + 'aa' }}>{lvl.label}</div>
-                            <div className="text-lg font-bold font-mono mb-3" style={{ color: lvl.color }}>{lvl.status}</div>
-                            <p className="text-[10px] text-slate-400 leading-relaxed">{lvl.desc}</p>
+                    
+                    <div className="p-8">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+                        {/* Connecting Lines (Desktop) */}
+                        <div className="hidden md:block absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyber-cyan/30 to-transparent -translate-y-1/2 pointer-events-none" />
+                        
+                        {[
+                          { 
+                            id: 'layer-obs', 
+                            title: lang === 'uk' ? 'ОБСЕРВАТОРІЯ' : 'OBSERVATORY', 
+                            desc: lang === 'uk' ? 'Цей дашборд. Аналіз дефіцитів та макро-метрик.' : 'This dashboard. Gap analysis & macro metrics.',
+                            status: lang === 'uk' ? 'АКТИВНО' : 'ACTIVE',
+                            color: COLORS.cyberCyan,
+                            icon: BarChart2
+                          },
+                          { 
+                            id: 'layer-infra', 
+                            title: lang === 'uk' ? 'ІНФРАСТРУКТУРА' : 'INFRASTRUCTURE', 
+                            desc: lang === 'uk' ? 'FEEL Again Terminal. Рейки для платежів та даних.' : 'FEEL Again Terminal. Rails for payments & data.',
+                            status: lang === 'uk' ? 'БЕТА' : 'BETA',
+                            color: COLORS.cyberAmber,
+                            icon: Cpu
+                          },
+                          { 
+                            id: 'layer-delivery', 
+                            title: lang === 'uk' ? 'ДОСТАВКА' : 'DELIVERY', 
+                            desc: lang === 'uk' ? 'Клінічні інтерфейси. SaaS для терапевтів та НГО.' : 'Clinical Interfaces. SaaS for therapists & NGOs.',
+                            status: lang === 'uk' ? 'РОЗРОБКА' : 'DEV',
+                            color: COLORS.cyberPurple,
+                            icon: Layout
+                          },
+                          { 
+                            id: 'layer-verify', 
+                            title: lang === 'uk' ? 'ВЕРИФІКАЦІЯ' : 'VERIFICATION', 
+                            desc: lang === 'uk' ? 'Донорський портал. Smart-контракти та звітність.' : 'Donor Portal. Smart-contracts & reporting.',
+                            status: lang === 'uk' ? 'ПЛАН' : 'PLAN',
+                            color: COLORS.cyberSuccess,
+                            icon: ShieldCheck
+                          }
+                        ].map((layer, idx) => (
+                          <div key={layer.id} className="relative z-10 group">
+                            <div 
+                              className={`ds-puzzle-box p-5 border-2 transition-all duration-500 bg-slate-900/60 backdrop-blur-md h-full flex flex-col items-center text-center group-hover:scale-105 ${idx === 0 ? 'border-cyber-cyan ds-pulse-glow' : 'border-slate-800'}`}
+                              style={{ borderColor: idx === 0 ? layer.color : undefined }}
+                            >
+                              <div className="w-12 h-12 rounded-lg mb-4 flex items-center justify-center bg-slate-800 border border-slate-700 group-hover:border-cyber-cyan transition-colors">
+                                <layer.icon className="w-6 h-6" style={{ color: layer.color }} />
+                              </div>
+                              <div className="text-[10px] font-mono mb-1 uppercase tracking-widest" style={{ color: layer.color }}>{layer.title}</div>
+                              <div className="text-[11px] text-slate-300 mb-3 leading-tight font-mono">{layer.desc}</div>
+                              <div className="mt-auto px-2 py-0.5 rounded-full text-[8px] font-bold font-mono bg-slate-800 border border-slate-700 text-slate-500 uppercase tracking-tighter">
+                                {layer.status}
+                              </div>
+                            </div>
+                            {idx < 3 && (
+                               <div className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 z-20">
+                                 <div className="w-2 h-2 rotate-45 border-t border-r border-slate-600" />
+                               </div>
+                            )}
                           </div>
                         ))}
                       </div>
-                      <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-3">
-                        <p className="text-[11px] text-amber-400/80 leading-relaxed">
+                    </div>
+                  </div>
+
+                  {/* Three-level infrastructure crisis */}
+                  <div className="ds-puzzle-box border border-amber-500/30 rounded-xl overflow-hidden relative group">
+                     {/* Hover highlight for ROI links */}
+                    <div 
+                      className={`absolute inset-0 bg-amber-500/5 transition-opacity duration-500 ${hoveredContext === 'infra-crisis' ? 'opacity-100' : 'opacity-0'}`}
+                      onMouseEnter={() => setHoveredContext('infra-crisis')}
+                      onMouseLeave={() => setHoveredContext(null)}
+                    />
+                    
+                    <div className="bg-amber-500/5 px-5 py-3 border-b border-amber-500/20 flex items-center justify-between relative z-10">
+                      <div className="flex items-center gap-3">
+                        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                        <span className="cyber-label text-[11px] text-amber-400 font-bold uppercase tracking-widest font-mono">
+                          {lang === 'uk' ? 'ТРИ РІВНІ КРИЗИ ІНФРАСТРУКТУРИ ДАНИХ' : 'THREE LEVELS OF DATA INFRASTRUCTURE CRISIS'}
+                        </span>
+                      </div>
+                      <AlertCircle className="text-amber-500/40" size={14} />
+                    </div>
+                    <div className="p-5 relative z-10">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        {INFRA_LEVELS(lang).map((lvl, i) => (
+                          <div key={i} className="rounded-xl p-4 border transition-all hover:bg-white/5" style={{ borderColor: lvl.color + '30', backgroundColor: lvl.color + '08' }}>
+                            <div className="text-[9px] uppercase tracking-wider font-mono mb-2" style={{ color: lvl.color + 'aa' }}>{lvl.label}</div>
+                            <div className="text-lg font-bold font-mono mb-3" style={{ color: lvl.color }}>{lvl.status}</div>
+                            <p className="text-[10px] text-slate-400 leading-relaxed font-mono">{lvl.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="bg-rose-500/5 border border-rose-500/20 rounded-lg p-3 group-hover:bg-rose-500/10 transition-colors">
+                        <p className="text-[11px] text-rose-400 font-mono leading-relaxed">
                           {lang === 'uk'
                             ? "Наслідок: $954M HEAL/THRIVE заблоковано. Держава оплачує сесії, які не може верифікувати. НГО звітують у несинхронізовані системи. Без Digital Bus \u2014 цей розрив неможливо закрити."
                             : "Result: $954M HEAL/THRIVE locked. State pays for sessions it cannot verify. NGOs report into unsynchronised systems. Without Digital Bus \u2014 this gap cannot be closed."}
@@ -1385,6 +1607,7 @@ const App: React.FC = () => {
                       </div>
                     </div>
                   </div>
+
                 </div>
               )}
 
@@ -1392,59 +1615,76 @@ const App: React.FC = () => {
               {section.id === 'shadow' && (
                 <div className="space-y-6">
                   {/* Structural Disproportions — multiplier chart */}
-                  <div className="cyber-card border border-rose-500/20 rounded-xl overflow-hidden">
-                    <div className="bg-rose-500/5 px-5 py-3 border-b border-rose-500/20 flex items-center gap-3">
-                      <AlertOctagon className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
-                      <span className="cyber-label text-[11px] text-rose-400 flex-1">
-                        {lang === 'uk' ? 'СТРУКТУРНІ ДИСПРОПОРЦІЇ (×)' : 'STRUCTURAL DISPROPORTIONS (×)'}
-                      </span>
-                      <span className="text-[9px] font-mono text-slate-500">
-                        {lang === 'uk' ? 'Множники — наскільки система далека від норми' : 'Multipliers — how far the system deviates from norm'}
-                      </span>
+                  <div 
+                    className={`ds-puzzle-box border border-rose-500/20 rounded-xl overflow-hidden transition-all duration-500 relative ${hoveredContext === 'shadow-economy' ? 'ds-pulse-glow border-rose-500/40 scale-[1.01]' : ''}`}
+                    onMouseEnter={() => setHoveredContext('shadow-economy')}
+                    onMouseLeave={() => setHoveredContext(null)}
+                  >
+                    {/* Blueprint Decorations */}
+                    <div className="absolute top-0 right-0 w-20 h-20 pointer-events-none opacity-10">
+                      <div className="absolute top-4 right-0 w-10 h-[1px] bg-rose-500" />
+                      <div className="absolute top-0 right-4 w-[1px] h-10 bg-rose-500" />
+                    </div>
+
+                    <div className="bg-rose-500/5 px-5 py-3 border-b border-rose-500/20 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <AlertOctagon className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
+                        <span className="cyber-label text-[11px] text-rose-400 font-bold uppercase tracking-widest font-mono">
+                          {lang === 'uk' ? 'СТРУКТУРНІ ДИСПРОПОРЦІЇ (×)' : 'STRUCTURAL DISPROPORTIONS (×)'}
+                        </span>
+                      </div>
+                      <button 
+                        className="text-[9px] font-mono text-rose-400 hover:text-white flex items-center gap-1.5 bg-rose-500/10 px-2.5 py-1 rounded border border-rose-500/20 transition-all"
+                        onClick={() => window.open('https://feelagain.ua/legal', '_blank')}
+                      >
+                        <ShieldCheck size={10} />
+                        {lang === 'uk' ? 'ЛЕГАЛІЗАЦІЯ ПРАКТИКИ' : 'LEGALIZATION PATH'}
+                      </button>
                     </div>
                     <div className="p-4">
-                      <ResponsiveContainer width="100%" height={200} minWidth={1}>
+                      <ResponsiveContainer width="100%" height={220} minWidth={1}>
                         <BarChart
                           layout="vertical"
                           data={STRUCTURAL_DISP_DATA(lang)}
-                          margin={{ left: 10, right: 80, top: 4, bottom: 4 }}
+                          margin={{ left: 10, right: 80, top: 10, bottom: 10 }}
                         >
                           <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#1e293b" />
                           <XAxis
                             type="number"
                             domain={[0, 120]}
-                            tick={{ fontSize: 10, fill: '#64748b', fontFamily: 'monospace' }}
+                            tick={{ fontSize: 9, fill: '#64748b', fontFamily: 'monospace' }}
                             tickFormatter={(v) => `${v}×`}
                           />
                           <YAxis
                             type="category"
                             dataKey="name"
-                            width={220}
-                            tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'monospace' }}
+                            width={180}
+                            tick={{ fontSize: 9, fill: '#94a3b8', fontFamily: 'monospace' }}
                           />
                           <Tooltip
                             cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-                            contentStyle={{ background: '#0f1923', border: '1px solid #1e293b', borderRadius: 8, fontSize: 11 }}
+                            contentStyle={{ background: '#0f1923', border: '1px solid #1e293b', borderRadius: 8, fontSize: 10 }}
                             formatter={(_value: number, _name: string, props: { payload?: { displayValue?: string; calc?: string } }) => {
                               const entry = props.payload;
                               return [entry?.displayValue ?? '', entry?.calc ?? ''];
                             }}
-                            labelStyle={{ color: '#94a3b8', fontSize: 11 }}
+                            labelStyle={{ color: '#94a3b8', fontSize: 10 }}
                           />
-                          <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={22}>
+                          <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={24}>
                             {STRUCTURAL_DISP_DATA(lang).map((entry, idx) => (
                               <Cell key={idx} fill={entry.fill} />
                             ))}
                             <LabelList
                               dataKey="displayValue"
                               position="right"
-                              style={{ fill: '#e2e8f0', fontSize: 12, fontFamily: 'monospace', fontWeight: 700 }}
+                              style={{ fill: '#e2e8f0', fontSize: 11, fontFamily: 'monospace', fontWeight: 700 }}
                             />
                           </Bar>
                         </BarChart>
                       </ResponsiveContainer>
-                      <div className="mt-2 bg-rose-500/5 border border-rose-500/20 rounded-lg px-4 py-2.5">
-                        <p className="text-[10px] text-rose-300 leading-relaxed">
+                      <div className="mt-4 bg-rose-500/5 border border-rose-500/20 rounded-lg px-4 py-3 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-12 h-12 bg-rose-500/5 rounded-bl-3xl -mr-6 -mt-6 blur-xl group-hover:bg-rose-500/10 transition-colors" />
+                        <p className="text-[10px] text-rose-300 leading-relaxed font-mono relative z-10">
                           <span className="font-bold">⚡ {lang === 'uk' ? 'Висновок:' : 'Conclusion:'}</span>{' '}
                           {lang === 'uk'
                             ? 'Приватний ринок перевищує гуманітарний у 110 разів — тіньовий сектор реально фінансує систему. Дефіцит mhGAP: 3,571× нижче від очікуваного (150K сертифікатів → 42 практикуючих). Адмін. gap у 3.1× і бюджетна інверсія 5.0× (55.5% спеціалізованої → стаціонар, МОЗ 2025) — системні, не тимчасові. Жоден проєкт не вирішить ці множники без структурних змін в інфраструктурі.'
@@ -1453,6 +1693,7 @@ const App: React.FC = () => {
                       </div>
                     </div>
                   </div>
+
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card title={lang === 'uk' ? 'Рівні формалізації практики' : 'Practice Formalization Levels'}>
@@ -1563,39 +1804,62 @@ const App: React.FC = () => {
               {section.id === 'economic' && (
                  <div className="space-y-6">
                     {/* ROI Investment Case */}
-                    <div>
-                      <div className="flex items-center gap-3 mb-4">
-                        <TrendingUp className="w-4 h-4 text-cyber-cyan" />
-                        <span className="cyber-label text-[11px] text-cyber-cyan">
-                          {lang === 'uk' ? 'ДОВЕДЕНИЙ ROI: ВАРТІСТЬ БЕЗДІЯЛЬНОСТІ' : 'PROVEN ROI: COST OF INACTION'}
-                        </span>
+                    <div 
+                      className={`ds-puzzle-box p-6 border-t-2 border-cyber-cyan/30 bg-cyber-cyan/5 rounded-xl transition-all duration-500 relative ${hoveredContext === 'gap-macro' ? 'ds-pulse-glow border-cyber-cyan/60 bg-cyber-cyan/10' : ''}`}
+                    >
+                      {/* Blueprint Decoration */}
+                      <div className="absolute bottom-0 right-0 w-24 h-24 pointer-events-none opacity-10">
+                        <div className="absolute bottom-4 right-0 w-12 h-[1px] bg-cyber-cyan" />
+                        <div className="absolute bottom-0 right-4 w-[1px] h-12 bg-cyber-cyan" />
                       </div>
+
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                          <TrendingUp className="w-5 h-5 text-cyber-cyan" />
+                          <span className="cyber-label text-[13px] text-cyber-cyan font-bold uppercase tracking-[0.2em] font-mono">
+                            {lang === 'uk' ? 'ДОВЕДЕНИЙ ROI: ВАРТІСТЬ БЕЗДІЯЛЬНОСТІ' : 'PROVEN ROI: COST OF INACTION'}
+                          </span>
+                        </div>
+                        <button 
+                          className="text-[10px] font-mono text-cyber-cyan hover:text-white flex items-center gap-2 bg-cyber-cyan/10 px-3 py-1.5 rounded border border-cyber-cyan/30 transition-all group"
+                          onClick={() => window.open('https://feelagain.ua/investors', '_blank')}
+                        >
+                          {lang === 'uk' ? 'ДЕТАЛЬНИЙ ROI РОЗРАХУНОК' : 'DETAILED ROI CALCULATION'}
+                          <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                        </button>
+                      </div>
+                      
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         {ROI_CARDS(lang).map((card, i) => (
                           <motion.div
                             key={i}
                             whileHover={{ scale: 1.02, translateY: -3 }}
                             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                            className="cyber-card p-5 border-t-2 flex flex-col gap-3"
+                            className={`cyber-card p-5 border-t-2 flex flex-col gap-3 bg-slate-900/40 backdrop-blur-md relative overflow-hidden group transition-all duration-500 ${hoveredContext === 'gap-macro' && i === 1 ? 'border-cyber-cyan shadow-[0_0_20px_rgba(0,245,255,0.2)]' : 'border-slate-800'}`}
                             style={{ borderTopColor: card.color }}
                           >
+                            <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                             <div className="flex items-start justify-between">
                               <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{card.source}</span>
                               <span className="text-[10px] font-mono text-slate-600">{card.period}</span>
                             </div>
-                            <div className="text-4xl font-bold font-mono" style={{ color: card.color }}>{card.roi}</div>
-                            <p className="text-[11px] text-slate-400 leading-relaxed flex-1">{card.desc}</p>
-                            <div className="text-[9px] text-slate-600 italic border-t border-cyber-border pt-2 font-mono">
-                              {lang === 'uk' ? 'Методологія:' : 'Methodology:'} {card.methodology}
+                            <div className="text-4xl font-bold font-mono group-hover:scale-105 transition-transform" style={{ color: card.color }}>{card.roi}</div>
+                            <p className="text-[11px] text-slate-400 leading-relaxed flex-1 font-mono">{card.desc}</p>
+                            <div className="text-[9px] text-slate-600 italic border-t border-cyber-border/30 pt-2 font-mono flex items-center justify-between">
+                              <span>{lang === 'uk' ? 'Методологія:' : 'Methodology:'} {card.methodology}</span>
+                              <ArrowUpRight size={10} className="opacity-40" />
                             </div>
                           </motion.div>
                         ))}
                       </div>
-                      <InsightBox type="warning">
-                        {lang === 'uk'
-                          ? "При поточному розриві лікування 74% та клінічній потребі 3.5\u202fмлн осіб — незалікований тягар ПТСР та депресії еквівалентний ~$2\u202fмлрд щорічних втрат продуктивності (за моделлю World Bank $4/$ та середньому доходу). Цифрова інфраструктура з мультиплікатором ємності \u2014 найефективніша точка втручання."
-                          : "With the current 74% treatment gap and 3.5M clinical need \u2014 untreated PTSD and depression burden equates to ~$2B annual productivity losses (World Bank $4/$ model, average income). Digital infrastructure with a capacity multiplier is the most cost-effective intervention point."}
-                      </InsightBox>
+                      <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-4 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
+                        <p className="text-[11px] text-amber-300/80 leading-relaxed font-mono">
+                          {lang === 'uk'
+                            ? "При поточному розриві лікування 74% та клінічній потребі 3.5\u202fмлн осіб — незалікований тягар ПТСР та депресії еквівалентний ~$2\u202fмлрд щорічних втрат продуктивності (за моделлю World Bank $4/$ та середньому доходу). Цифрова інфраструктура з мультиплікатором ємності \u2014 найефективніша точка втручання."
+                            : "With the current 74% treatment gap and 3.5M clinical need \u2014 untreated PTSD and depression burden equates to ~$2B annual productivity losses (World Bank $4/$ model, average income). Digital infrastructure with a capacity multiplier is the most cost-effective intervention point."}
+                        </p>
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -2319,12 +2583,33 @@ const App: React.FC = () => {
                {lang === 'uk'
                  ? 'Дані надані виключно для інформаційних цілей. Не є офіційним звітом гуманітарних акторів, фінансових інституцій, або урядових структур.'
                  : 'Data provided for informational purposes only. Not an official report of humanitarian actors, financial institutions, or governmental structures.'}
-             </p>
-           </div>
+        {/* ── BRIGHT BUNKER FOOTER ───────────────────────────────────────── */}
+        <footer className="ds-bunker-footer mt-20 -mx-4 sm:-mx-6 lg:-mx-8">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
+              <div>
+                <div className="text-[10px] font-bold tracking-[0.3em] uppercase mb-4 opacity-60">Master Implementation Plan</div>
+                <h2>MHPSS DASHBOARD</h2>
+                <div className="flex flex-wrap gap-4 mt-8">
+                   <div className="px-4 py-2 bg-black text-white text-xs font-bold uppercase tracking-widest">Confidential</div>
+                   <div className="px-4 py-2 border-2 border-black text-xs font-bold uppercase tracking-widest">V 2.0.25</div>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-sm font-bold leading-relaxed max-w-md ml-auto">
+                  {lang === 'uk' 
+                    ? 'Це не просто цифри. Це гуманітарний пазл, який ми вирішуємо разом. Кожна сесія, кожен спеціаліст — це частина великої картини відновлення України.'
+                    : 'This is not just numbers. This is a humanitarian puzzle we solve together. Every session, every specialist is a part of a larger picture of Ukraine\'s recovery.'}
+                </p>
+                <div className="mt-8 pt-8 border-t border-black/10 text-[10px] font-mono uppercase tracking-widest">
+                  © 2026 Feel Again Intelligence Engine
+                </div>
+              </div>
+            </div>
+          </div>
         </footer>
-      </div>{/* end max-w content */}
-      </div>{/* end shifted main */}
-      </>}{/* end showAppendix */}
+      </div>
+      </> }
     </div>
   );
 };
