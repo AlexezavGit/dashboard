@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { LayoutDashboard, Globe, ChevronDown, ChevronUp, ChevronRight, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot, CalendarDays, Mail, Menu, X, Activity, Calculator, GitMerge, ArrowLeft } from 'lucide-react';
+import { LayoutDashboard, Globe, ChevronDown, ChevronUp, ChevronRight, Check, AlertTriangle, AlertOctagon, Info, Download, Users, Building2, GraduationCap, ShieldCheck, TrendingUp, ExternalLink, BookOpen, Database, FolderOpen, Zap, Lock, CircleDot, CalendarDays, Mail, Menu, X, Activity, Calculator, GitMerge, ArrowLeft, Terminal, BarChart2, Cpu, Layout, AlertCircle, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ScreenRouter } from './components/screens/ScreenRouter';
 import { L4Report } from './components/screens/L4Report';
@@ -100,6 +100,43 @@ const ArchitecturePiece: React.FC<{ data: any, lang: Language, isHovered: boolea
     </div>
   </motion.div>
 );
+
+// Top Metric Component
+const TopMetric: React.FC<{ data: any, lang: Language }> = ({ data, lang }) => {
+  const Icon = { Users, Building2, GraduationCap }[data.icon] as any;
+  
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.03 }}
+      transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+      className="cyber-card p-6 flex items-center gap-5 border-l-4 relative group"
+      style={{ borderLeftColor: data.color }}
+    >
+      <div className="p-3 rounded-lg bg-cyber-bg border border-cyber-border" style={{ color: data.color }}>
+        {Icon && <Icon className="w-6 h-6" />}
+      </div>
+      <div>
+        <div className="cyber-label flex items-center gap-1">
+          {data.label}
+          {data.tooltip && (
+            <div className="relative flex items-center">
+              <Info className="w-3 h-3 text-slate-400 cursor-help" />
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 normal-case tracking-normal font-sans shadow-xl border border-slate-700">
+                {data.tooltip}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="cyber-number text-4xl font-bold leading-none my-1">
+          <FormattedNumber value={data.value} locale={lang} suffix={data.suffix} />
+        </div>
+        <div className="text-[10px] text-slate-500 font-mono">{data.sub}</div>
+      </div>
+    </motion.div>
+  );
+};
 
 // HEAL vs THRIVE Synergy Visualization
 const HealThriveSynergy: React.FC<{ lang: Language }> = ({ lang }) => {
@@ -351,7 +388,8 @@ const App: React.FC = () => {
       )}
 
       {/* ── L3 APPENDIX (accordion nav, no sidebar) ─────────────────── */}
-      {showAppendix && !showL4 && <>
+      {showAppendix && !showL4 && (
+        <>
       <div className="flex-1 min-h-screen">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-12" id="hero-top">
         
@@ -380,7 +418,7 @@ const App: React.FC = () => {
             <div className="flex-1" />
             {/* TERMINAL ACCESS: Primary CTA */}
             <button
-              onClick={() => window.open('https://terminal.feelagain.ua', '_blank')}
+              onClick={() => window.open('https://terminal.feelagain.me', '_blank')}
               className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-[11px] font-bold ds-display flex-shrink-0 transition-all bg-orange-500 text-slate-900 hover:bg-orange-400 shadow-[0_0_15px_rgba(245,158,11,0.3)] animate-pulse"
             >
               <Terminal className="w-3.5 h-3.5" />
@@ -400,7 +438,7 @@ const App: React.FC = () => {
             </button>
             {/* FEEL Again program site link */}
             <a
-              href="https://feelagain.ua"
+              href="https://feelagain.me"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold ds-display flex-shrink-0 transition-all"
@@ -1356,7 +1394,7 @@ const App: React.FC = () => {
                       </div>
                       <button 
                         className="text-[9px] font-mono text-rose-400/60 hover:text-rose-400 flex items-center gap-1 bg-rose-500/10 px-2 py-1 rounded border border-rose-500/20 transition-all"
-                        onClick={() => window.open('https://feelagain.ua/terminal', '_blank')}
+                        onClick={() => window.open('https://feelagain.me/terminal', '_blank')}
                       >
                         <ExternalLink size={10} />
                         {lang === 'uk' ? 'ПЕРЕЙТИ В ТЕРМІНАЛ' : 'ENTER TERMINAL'}
@@ -1491,14 +1529,14 @@ const App: React.FC = () => {
                       <div className="flex gap-2">
                          <button 
                           className="text-[10px] font-mono text-white flex items-center gap-2 bg-cyber-cyan/20 px-3 py-1.5 rounded border border-cyber-cyan/40 hover:bg-cyber-cyan/30 transition-all"
-                          onClick={() => window.open('https://feelagain.ua', '_blank')}
+                          onClick={() => window.open('https://feelagain.me', '_blank')}
                         >
                           <Globe size={12} />
                           {lang === 'uk' ? 'САЙТ ПРОГРАМИ' : 'PROGRAM WEBSITE'}
                         </button>
                         <button 
                           className="text-[10px] font-mono text-white flex items-center gap-2 bg-orange-500/20 px-3 py-1.5 rounded border border-orange-500/40 hover:bg-orange-500/30 transition-all"
-                          onClick={() => window.open('https://terminal.feelagain.ua', '_blank')}
+                          onClick={() => window.open('https://terminal.feelagain.me', '_blank')}
                         >
                           <Terminal size={12} />
                           {lang === 'uk' ? 'УВІЙТИ В ТЕРМІНАЛ' : 'LOGIN TO TERMINAL'}
@@ -1635,7 +1673,7 @@ const App: React.FC = () => {
                       </div>
                       <button 
                         className="text-[9px] font-mono text-rose-400 hover:text-white flex items-center gap-1.5 bg-rose-500/10 px-2.5 py-1 rounded border border-rose-500/20 transition-all"
-                        onClick={() => window.open('https://feelagain.ua/legal', '_blank')}
+                        onClick={() => window.open('https://feelagain.me/legal', '_blank')}
                       >
                         <ShieldCheck size={10} />
                         {lang === 'uk' ? 'ЛЕГАЛІЗАЦІЯ ПРАКТИКИ' : 'LEGALIZATION PATH'}
@@ -1822,7 +1860,7 @@ const App: React.FC = () => {
                         </div>
                         <button 
                           className="text-[10px] font-mono text-cyber-cyan hover:text-white flex items-center gap-2 bg-cyber-cyan/10 px-3 py-1.5 rounded border border-cyber-cyan/30 transition-all group"
-                          onClick={() => window.open('https://feelagain.ua/investors', '_blank')}
+                          onClick={() => window.open('https://feelagain.me/investors', '_blank')}
                         >
                           {lang === 'uk' ? 'ДЕТАЛЬНИЙ ROI РОЗРАХУНОК' : 'DETAILED ROI CALCULATION'}
                           <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
@@ -2518,7 +2556,9 @@ const App: React.FC = () => {
                  </p>
                </div>
              </div>
-           </div>\n\n{/* Feel Again Website Section */}
+           </div>
+
+{/* Feel Again Website Section */}
            <motion.div 
              whileHover={{ scale: 1.01 }}
              className="mb-12 bg-cyber-surface p-8 rounded-2xl border border-cyber-cyan/20 cyber-glow-cyan"
@@ -2583,6 +2623,9 @@ const App: React.FC = () => {
                {lang === 'uk'
                  ? 'Дані надані виключно для інформаційних цілей. Не є офіційним звітом гуманітарних акторів, фінансових інституцій, або урядових структур.'
                  : 'Data provided for informational purposes only. Not an official report of humanitarian actors, financial institutions, or governmental structures.'}
+             </p>
+           </div>
+          </footer>
         {/* ── BRIGHT BUNKER FOOTER ───────────────────────────────────────── */}
         <footer className="ds-bunker-footer mt-20 -mx-4 sm:-mx-6 lg:-mx-8">
           <div className="max-w-7xl mx-auto px-4">
@@ -2605,11 +2648,12 @@ const App: React.FC = () => {
                   © 2026 Feel Again Intelligence Engine
                 </div>
               </div>
-            </div>
           </div>
+            </div>
         </footer>
       </div>
-      </> }
+      </>
+      )}
     </div>
   );
 };

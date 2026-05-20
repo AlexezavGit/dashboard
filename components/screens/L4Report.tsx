@@ -15,6 +15,7 @@ interface Props {
 const CHAPTERS = [
   { id: 'exec',         uk: 'Виконавче резюме',        en: 'Executive Summary' },
   { id: 'wb',           uk: 'Проєкти Світового банку',  en: 'World Bank Projects' },
+  { id: 'methodology', uk: 'Методологія (WB/HNRP)', en: 'Methodology (WB/HNRP)' },
   { id: 'spi',          uk: 'Системні показники (SPI)', en: 'Systemic Indicators (SPI)' },
   { id: 'gaps',         uk: 'Структурні розриви',       en: 'Structural Gaps' },
   { id: 'arch',         uk: 'Архітектура рішення',      en: 'Solution Architecture' },
@@ -214,6 +215,44 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
                     <p className="text-[11px] opacity-70 leading-relaxed ds-body pl-9">{spi.desc}</p>
                   </div>
                 ))}
+              </div>
+            </Section>
+          </div>
+        )}
+
+        {chapter === 'methodology' && (
+          <div className="space-y-10">
+            <Section title={t('Методологічна синхронізація', 'Methodological Alignment')} color="var(--color-ds-teal)">
+              <div className="space-y-6 text-[13px] ds-body leading-relaxed text-[--color-ds-muted]">
+                <div className="p-4 bg-[--color-ds-teal]/5 border border-[--color-ds-teal]/20 rounded-xl">
+                  <h4 className="text-[--color-ds-teal] font-bold uppercase tracking-widest text-[10px] mb-2">Standard 1: World Bank OneHealth Tool</h4>
+                  <p>
+                    {t(
+                      'Всі розрахунки ROI та економічного впливу базуються на параметрах WHO OneHealth Tool, використаних Світовим банком для інвестиційного кейсу психічного здоров\'я в Україні. Ми використовуємо коефіцієнт повернення інвестицій 1:4 та середню вартість успішного курсу лікування $350.',
+                      'All ROI and economic impact calculations are based on WHO OneHealth Tool parameters used by the World Bank for the mental health investment case in Ukraine. We apply the 1:4 ROI multiplier and a $350 average successful treatment course cost.'
+                    )}
+                  </p>
+                </div>
+
+                <div className="p-4 bg-[--color-ds-gold]/5 border border-[--color-ds-gold]/20 rounded-xl">
+                  <h4 className="text-[--color-ds-gold] font-bold uppercase tracking-widest text-[10px] mb-2">Standard 2: OCHA HNRP 2025 Standard</h4>
+                  <p>
+                    {t(
+                      'Показники охоплення (Reached) та цільові групи синхронізовані з Планом гуманітарних потреб та реагування (HNRP) 2025. Визначено 3.5 млн осіб з клінічними потребами та цільове охоплення 1.2 млн осіб для гуманітарного кластеру здоров\'я та UNICEF.',
+                      'Coverage (Reached) metrics and target groups are synchronized with the 2025 Humanitarian Needs and Response Plan (HNRP). Identified 3.5M people with clinical needs and a 1.2M target reach for the Health Cluster and UNICEF.'
+                    )}
+                  </p>
+                </div>
+
+                <div className="p-4 bg-white/5 border border-white/10 rounded-xl">
+                  <h4 className="text-[--color-ds-text] font-bold uppercase tracking-widest text-[10px] mb-2">Standard 3: Gap Analysis Methodology</h4>
+                  <p>
+                    {t(
+                      'Аналіз розривів базується на порівнянні даних НСЗУ (офіційна система охорони здоров\'я) та даних гуманітарних акторів. "Missing Middle" розрив у 60% верифікується як критична зона операційного ризику для портфелів HEAL та THRIVE.',
+                      'Gap analysis is based on comparing NHSU data (official healthcare system) with humanitarian actor data. The "Missing Middle" gap of 60% is verified as a critical operational risk zone for the HEAL and THRIVE portfolios.'
+                    )}
+                  </p>
+                </div>
               </div>
             </Section>
           </div>

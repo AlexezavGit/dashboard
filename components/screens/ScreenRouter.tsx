@@ -15,6 +15,7 @@ import { L2Coverage } from './L2Coverage';
 import { L2Backlog } from './L2Backlog';
 import { L2Operational } from './L2Operational';
 import { L2Analytical } from './L2Analytical';
+import { L2Journey } from './L2Journey';
 import { LangThemeBar } from './LangThemeBar';
 import { AnimatePresence, motion } from 'motion/react';
 
@@ -71,6 +72,7 @@ export const ScreenRouter: React.FC<Props> = ({
     'l2-backlog':       <L2Backlog lang={lang} nav={nav} />,
     'l2-operational':   <L2Operational lang={lang} nav={nav} />,
     'l2-analytical':    <L2Analytical lang={lang} nav={nav} />,
+    'l2-journey':       <L2Journey lang={lang} nav={nav} />,
   };
 
   if (current === 'appendix') return null;

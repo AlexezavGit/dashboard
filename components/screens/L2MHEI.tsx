@@ -91,6 +91,16 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
     setValues(v => ({ ...v, [id]: val }));
   }, []);
 
+  const handleTargetMhei = useCallback((targetMhei: number) => {
+    // Reverse-logic: scale all components to reach target MHEI score
+    const targetRatio = targetMhei / 100;
+    const newValues: Record<string, number> = {};
+    GAP_COMPONENTS.forEach(c => {
+      newValues[c.id] = Math.round(c.target * targetRatio);
+    });
+    setValues(newValues);
+  }, []);
+
   const reset = useCallback(() => {
     setValues(initialValues);
     setPractitioners(943);
@@ -161,11 +171,41 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
             </div>
             <button
               onClick={reset}
-              className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold ds-display transition-all"
+              className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold ds-display transition-all hover:bg-[rgba(200,164,92,0.2)]"
               style={{ background: 'rgba(200,164,92,0.12)', border: '1px solid rgba(200,164,92,0.3)', color: 'var(--color-ds-gold)' }}
             >
               {t('Скинути', 'Reset', lang)}
             </button>
+          </div>
+
+          {/* Master Reverse-Logic Slider */}
+          <div className="rounded-xl p-3 flex-shrink-0" style={{ background: 'rgba(68,136,255,0.05)', border: '1px solid rgba(68,136,255,0.3)' }}>
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-[11px] font-bold ds-display text-[#4488ff] uppercase tracking-wider">
+                {lang === 'uk' ? 'Цільове Моделювання (Reverse-Logic)' : 'Target Modeling (Reverse-Logic)'}
+              </span>
+              <span className="text-[10px] font-mono text-[#4488ff]">
+                MHEI: {mhei}
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] font-mono text-[var(--color-ds-muted)]">0</span>
+              <input
+                type="range"
+                min={0}
+                max={100}
+                value={mhei}
+                onChange={e => handleTargetMhei(Number(e.target.value))}
+                className="flex-1"
+                style={{ accentColor: '#4488ff' }}
+              />
+              <span className="text-[10px] font-mono text-[var(--color-ds-muted)]">100</span>
+            </div>
+            <p className="text-[9px] text-[var(--color-ds-muted)] mt-1.5 leading-tight">
+              {lang === 'uk'
+                ? 'Зсувайте для авто-розрахунку потрібних показників інфраструктури.'
+                : 'Drag to auto-calculate required infrastructure metrics.'}
+            </p>
           </div>
 
           {/* Component sliders */}

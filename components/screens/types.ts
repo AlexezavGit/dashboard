@@ -14,6 +14,7 @@ export type ScreenId =
   | 'l2-backlog'        // Backlog calculation (legacy)
   | 'l2-operational'    // 9 systemic gaps — flip cards
   | 'l2-analytical'     // Data visibility map
+  | 'l2-journey'        // Stakeholder Journeys integration map
   | 'appendix'          // Full scrolling brief (operational/architectural content)
   | 'l4';              // Full analytical report (L4Report)
 

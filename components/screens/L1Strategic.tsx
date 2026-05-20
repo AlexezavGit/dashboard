@@ -4,6 +4,7 @@ import { ChevronRight } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
 import { Logo } from '../ui/Logo';
+import { STRATEGIC_FRAMEWORK, MHEI_VALUE_CHAIN, COLORS } from '../../constants';
 
 interface Props {
   lang: Language;
@@ -12,7 +13,7 @@ interface Props {
   darkMode?: boolean;
 }
 
-type LayerId = 'fintech' | 'clinical' | 'data' | 'sustain' | 'digital' | 'regulatory';
+type LayerId = 'needs' | 'capital' | 'finance' | 'coverage';
 
 interface LayerDef {
   id: LayerId;
@@ -20,69 +21,21 @@ interface LayerDef {
   weight: number;
   current: number;
   target: number;
-  layer: { uk: string; en: string };
-  indicator: { uk: string; en: string };
-  display: { uk: string; en: string };
-  unit: { uk: string; en: string };
   color: string;
   glow: string;
   cardBg: string;
 }
 
-const LAYERS: LayerDef[] = [
-  {
-    id: 'fintech', screenId: 'l2-finance', weight: 25, current: 0, target: 100,
-    layer: { uk: 'ФІНАНСУВАННЯ', en: 'FINANCING' },
-    indicator: { uk: 'Консолідація ресурсів на бенефіціарі', en: 'Resource consolidation per beneficiary' },
-    display: { uk: '$1.87B', en: '$1.87B' },
-    unit: { uk: 'заблоковано через відсутність верифікації', en: 'blocked due to lack of verification' },
-    color: '#e8c97a', glow: 'rgba(200,164,92,0.22)', cardBg: 'rgba(200,164,92,0.07)',
-  },
-  {
-    id: 'clinical', screenId: 'l2-operational', weight: 20, current: 15, target: 90,
-    layer: { uk: 'ДОСТУПНІСТЬ ТА ШЛЯХ', en: 'ACCESS & PATHWAY' },
-    indicator: { uk: 'Цілісність континуїтету (шпиталь ↔ цивільні)', en: 'Continuity integrity (hospital ↔ civilian)' },
-    display: { uk: '22%', en: '22%' },
-    unit: { uk: 'втрата пацієнтів при переході рівнів', en: 'patient loss during level transition' },
-    color: '#ff7b6e', glow: 'rgba(224,85,69,0.22)', cardBg: 'rgba(224,85,69,0.07)',
-  },
-  {
-    id: 'data', screenId: 'l2-analytical', weight: 20, current: 5, target: 100,
-    layer: { uk: 'ДАНІ ТА КООРДИНАЦІЯ', en: 'DATA & COORDINATION' },
-    indicator: { uk: 'Фрагментованість (48-76M год. адмін)', en: 'Fragmentation (48-76M hrs admin)' },
-    display: { uk: '0.0%', en: '0.0%' },
-    unit: { uk: 'інтероперабельність гум. та держ. систем', en: 'humanitarian & state interop' },
-    color: '#00d4aa', glow: 'rgba(0,210,170,0.22)', cardBg: 'rgba(0,210,170,0.07)',
-  },
-  {
-    id: 'sustain', screenId: 'l2-clinical', weight: 15, current: 8, target: 80,
-    layer: { uk: 'ЯКІСТЬ ТА СВОЄЧАСНІСТЬ', en: 'QUALITY & TIMELINESS' },
-    indicator: { uk: 'Протоколи високої ефективності (VR)', en: 'High-efficiency protocols (VR)' },
-    display: { uk: 'Bravemind', en: 'Bravemind' },
-    unit: { uk: 'скорочення сеансів при PTSD (USC)', en: 'session reduction in PTSD (USC)' },
-    color: '#a78bfa', glow: 'rgba(167,139,250,0.22)', cardBg: 'rgba(167,139,250,0.07)',
-  },
-  {
-    id: 'digital', screenId: 'l2-mhei', weight: 10, current: 46, target: 100,
-    layer: { uk: 'ПОПИТ ТА ДІЯ', en: 'DEMAND & ACTION' },
-    indicator: { uk: 'Трансформація стигми (3.9M осіб)', en: 'Stigma transformation (3.9M people)' },
-    display: { uk: '54%', en: '54%' },
-    unit: { uk: 'дропаути через "не на часі / дорого"', en: 'dropouts due to "not time / expensive"' },
-    color: '#ff9966', glow: 'rgba(255,153,102,0.22)', cardBg: 'rgba(255,153,102,0.07)',
-  },
-  {
-    id: 'regulatory', screenId: 'l2-sustain', weight: 10, current: 4, target: 6,
-    layer: { uk: 'ПРОСТЕЖУВАНІСТЬ ВПЛИВУ', en: 'IMPACT TRACEABILITY' },
-    indicator: { uk: 'Системний вплив на ВВП України', en: 'Systemic GDP impact in Ukraine' },
-    display: { uk: '$8B', en: '$8B' },
-    unit: { uk: 'втрати ВВП 2020 (OECD) → зростають', en: '2020 GDP loss (OECD) → growing' },
-    color: '#c084fc', glow: 'rgba(192,132,252,0.22)', cardBg: 'rgba(192,132,252,0.07)',
-  },
+const PILLARS_CONFIG: LayerDef[] = [
+  { id: 'needs',    screenId: 'l2-operational', weight: 25, current: 34, target: 100, color: '#A855F7', glow: 'rgba(168,85,247,0.22)', cardBg: 'rgba(168,85,247,0.07)' },
+  { id: 'capital',  screenId: 'l2-clinical',    weight: 25, current: 18, target: 100, color: '#3B82F6', glow: 'rgba(59,130,246,0.22)', cardBg: 'rgba(59,130,246,0.07)' },
+  { id: 'finance',  screenId: 'l2-finance',     weight: 25, current: 5,  target: 100, color: '#EF4444', glow: 'rgba(239,68,68,0.22)',  cardBg: 'rgba(239,68,68,0.07)' },
+  { id: 'coverage', screenId: 'l2-sustain',     weight: 25, current: 8,  target: 100, color: '#10B981', glow: 'rgba(16,185,129,0.22)', cardBg: 'rgba(16,185,129,0.07)' },
 ];
 
 const INDEX_SCORE = Math.round(
-  LAYERS.reduce((sum, l) => sum + Math.min(100, (l.current / l.target) * 100) * (l.weight / 100), 0)
-); // → 29
+  PILLARS_CONFIG.reduce((sum, l) => sum + Math.min(100, (l.current / l.target) * 100) * (l.weight / 100), 0)
+); // → 29 (Representative MHEI Score)
 
 type Band = 'low' | 'medium' | 'high';
 const scoreToBand = (s: number): Band => s < 34 ? 'low' : s < 67 ? 'medium' : 'high';
@@ -175,7 +128,7 @@ const FLOORS = [
 
 // Fan zones: each LAYER occupies a slice of the arc proportional to its weight
 let _cur = 0;
-const LAYER_ZONES = LAYERS.map(l => {
+const LAYER_ZONES = PILLARS_CONFIG.map(l => {
   const z = { layer: l, start: _cur, end: _cur + l.weight };
   _cur += l.weight;
   return z;
@@ -189,9 +142,9 @@ const gdpImpact = (score: number) => {
 };
 
 // ── Compact layer card ─────────────────────────────────────────────────────────
-const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () => void; darkMode: boolean }> = ({ l, i, lang, onNav, darkMode }) => (
+const LayerCard: React.FC<{ l: LayerDef; pillar: any; i: number; lang: Language; onNav: () => void; darkMode: boolean }> = ({ l, pillar, i, lang, onNav, darkMode }) => (
   <motion.div
-    initial={{ opacity: 0, x: i < 3 ? -10 : 10 }}
+    initial={{ opacity: 0, x: i < 2 ? -10 : 10 }}
     animate={{ opacity: 1, x: 0 }}
     transition={{ delay: i * 0.05, duration: 0.28 }}
     className="flex-1 rounded-2xl px-4 py-3 cursor-pointer group relative overflow-hidden min-h-0"
@@ -201,28 +154,19 @@ const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () =>
     onClick={onNav}
   >
     <div className="flex items-center justify-between mb-1">
-      <span className="cyber-label" style={{ color: l.color, fontSize: '10px' }}>{l.layer[lang]}</span>
+      <span className="cyber-label" style={{ color: l.color, fontSize: '10px' }}>{pillar.label[lang]}</span>
       <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '9px', color: 'var(--color-ds-muted)' }}>w{l.weight}%</span>
     </div>
-    <div style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.6rem)', fontWeight: 900, fontFamily: 'Space Grotesk, sans-serif', color: l.color, lineHeight: 1 }}>
-      {l.display[lang]}
+    <div style={{ fontSize: 'clamp(1.4rem, 2.2vw, 2.0rem)', fontWeight: 900, fontFamily: 'Space Grotesk, sans-serif', color: l.color, lineHeight: 1 }}>
+      {pillar.l1.val}
     </div>
-    <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: 'var(--color-ds-muted)', marginTop: 3 }}>
-      {l.indicator[lang]}
+    <div className="flex items-center justify-between mt-1">
+      <span style={{ fontSize: '10px', color: 'var(--color-ds-text)', opacity: 0.8, fontWeight: 500 }}>{pillar.l1.title[lang]}</span>
+      <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1" style={{ color: l.color }} />
     </div>
-    <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '9px', color: 'var(--color-ds-muted)', marginTop: 2 }}>
-      {l.unit[lang]}
+    <div style={{ fontSize: '8px', color: 'var(--color-ds-muted)', marginTop: 2, fontStyle: 'italic' }}>
+      {pillar.l1.unit[lang]}
     </div>
-    <motion.div
-      whileHover={{ x: 3 }}
-      className="flex items-center gap-1 mt-2"
-      style={{ color: l.color, fontFamily: 'Space Grotesk, sans-serif', fontSize: '9px', fontWeight: 700 }}
-    >
-      {lang === 'uk' ? 'Деталізація' : 'Drill down'}
-      <ChevronRight className="w-3 h-3" />
-    </motion.div>
-    <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-      style={{ background: `radial-gradient(ellipse at center, ${l.glow} 0%, transparent 70%)` }} />
   </motion.div>
 );
 
@@ -383,18 +327,19 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
             style={{ overflow: 'hidden', width: '100%', paddingTop: 12 }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {LAYERS.map((l, i) => {
-                const pct = Math.min(100, (l.current / l.target) * 100);
+              {STRATEGIC_FRAMEWORK(lang).map((p, i) => {
+                const config = PILLARS_CONFIG.find(c => c.id === p.id)!;
+                const pct = Math.min(100, (config.current / config.target) * 100);
                 return (
-                  <div key={l.id}>
+                  <div key={p.id}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
                       <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-                        fontSize: 10, color: l.color }}>
-                        {l.layer[lang]}
+                        fontSize: 10, color: config.color }}>
+                        {p.label[lang]}
                       </span>
                       <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 10,
                         color: 'var(--color-ds-muted)' }}>
-                        {Math.round(pct)}% · w{l.weight}%
+                        {Math.round(pct)}% · w{config.weight}%
                       </span>
                     </div>
                     <div style={{ height: 7, borderRadius: 4, background: 'rgba(255,255,255,0.06)' }}>
@@ -402,8 +347,8 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
                         transition={{ delay: 0.05 + i * 0.07, duration: 0.55 }}
-                        style={{ height: '100%', borderRadius: 4, background: l.color,
-                          boxShadow: `0 0 8px ${l.color}55` }}
+                        style={{ height: '100%', borderRadius: 4, background: config.color,
+                          boxShadow: `0 0 8px ${config.color}55` }}
                       />
                     </div>
                   </div>
@@ -476,12 +421,12 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
       <div className="flex-1 min-h-0 flex flex-col px-5 pb-1 gap-3">
 
         {/* Zone A — Diagnostics: MHEI gauge center + 6 gap cards row */}
-        <div className="flex-1 min-h-0 flex gap-4">
+        <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
 
           {/* MHEI Gauge — clickable drill-down to l2-mhei */}
           <div
-            className="flex flex-col items-center justify-center py-1 ds-blueprint cursor-pointer"
-            style={{ width: 264, flexShrink: 0 }}
+            className="w-full lg:w-[264px] flex-shrink-0 flex flex-col items-center justify-center py-1 ds-blueprint cursor-pointer"
+            style={{ flexShrink: 0 }}
             onClick={() => nav.push('l2-mhei')}
             title={lang === 'uk' ? 'Mental Health Economy Index — клацніть для drill-down' : 'Mental Health Economy Index — click to drill down'}
           >
@@ -500,14 +445,17 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
 
             {/* Layer legend */}
             <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: '3px 6px', justifyContent: 'center' }}>
-              {LAYERS.map(l => (
-                <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                  <div style={{ width: 8, height: 2.5, background: l.color, borderRadius: 1 }} />
-                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>
-                    {l.layer[lang]}
-                  </span>
-                </div>
-              ))}
+              {STRATEGIC_FRAMEWORK(lang).map(p => {
+                const config = PILLARS_CONFIG.find(c => c.id === p.id)!;
+                return (
+                  <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                    <div style={{ width: 8, height: 2.5, background: config.color, borderRadius: 1 }} />
+                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>
+                      {p.label[lang]}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
             <button
               onClick={() => nav.push('l2-mhei')}
@@ -520,11 +468,14 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
           {/* Right side: gap cards + inaction costs */}
           <div className="flex-1 flex flex-col gap-2.5 min-h-0">
 
-            {/* 6 gap cards — "системні розриви" */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, flex: '0 0 auto' }}>
-              {LAYERS.map((l, i) => (
-                <LayerCard key={l.id} l={l} i={i} lang={lang} onNav={() => nav.push(l.screenId)} darkMode={darkMode} />
-              ))}
+            {/* 4 gap cards — "системні розриви" */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 flex-shrink-0">
+              {STRATEGIC_FRAMEWORK(lang).map((pillar, i) => {
+                const config = PILLARS_CONFIG.find(c => c.id === pillar.id)!;
+                return (
+                  <LayerCard key={pillar.id} l={config} pillar={pillar} i={i} lang={lang} onNav={() => nav.push(config.screenId)} darkMode={darkMode} />
+                );
+              })}
             </div>
 
             {/* Zone B — Ціна бездіяльності (inaction cost strip) */}
@@ -602,6 +553,13 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
           </>
         )}
         <div className="flex-1" />
+        <button
+          onClick={() => nav.push('l2-journey')}
+          className="flex items-center gap-1.5 text-[11px] ds-display font-medium px-3 py-1.5 rounded-lg"
+          style={{ background: 'rgba(68,136,255,0.07)', border: '1px solid rgba(68,136,255,0.3)', color: '#4488ff', marginRight: 8 }}
+        >
+          {lang === 'uk' ? 'Шляхи Стейкхолдерів' : 'Stakeholder Journeys'}
+        </button>
         <button
           onClick={() => nav.push('appendix')}
           className="flex items-center gap-1.5 text-[11px] ds-display font-medium"

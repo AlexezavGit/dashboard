@@ -107,7 +107,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
                   />
                   <YAxis hide domain={[0, 6]} />
                   <Tooltip
-                    formatter={(_v: number, _n: string, p: { payload: { displayValue: string; calc: string } }) => [p.payload.displayValue, p.payload.calc]}
+                    formatter={(_v: any, _n: any, item: any) => [item.payload.displayValue, item.payload.calc]}
                     contentStyle={{ background: '#1a2035', border: '1px solid rgba(255,153,102,0.3)', borderRadius: 8, fontSize: 10 }}
                     labelStyle={{ color: '#ff9966' }}
                     itemStyle={{ color: 'rgba(200,208,220,0.9)' }}

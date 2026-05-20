@@ -1371,14 +1371,123 @@ export const FEEL_AGAIN_4_FUNCTIONS = (l: Language) => [
   },
 ];
 
-// ── ROI CALCULATOR PARAMS ─────────────────────────────────────────────────────
+// ── MHEI STRATEGIC FRAMEWORK (World Bank & HNRP Aligned) ──────────────────────
+// Methodology: WHO OneHealth Tool + World Bank Investment Case for Ukraine
+// Data Sources: OCHA HNRP 2025-2026, UNICEF HAC, WB Mental Health Report
+export const STRATEGIC_FRAMEWORK = (l: Language) => [
+  {
+    id: 'needs',
+    color: '#A855F7',
+    label: { uk: 'ОБСЯГ ПОТРЕБ (WB)', en: 'VOLUME OF NEEDS (WB)' },
+    l1: {
+      title: { uk: 'Клінічна потреба (Moderate/Severe)', en: 'Clinical Need (Moderate/Severe)' },
+      val: '3.5M',
+      unit: { uk: 'осіб потребують терапії (WB)', en: 'people need therapy (WB)' }
+    },
+    l2: {
+      title: { uk: 'Загальний ризик (9.6M)', en: 'Total Risk (9.6M)' },
+      metrics: [
+        { label: { uk: 'Охоплено (2025)', en: 'Reached (2025)' }, val: '1.2M' },
+        { label: { uk: 'Gap (Незадоволено)', en: 'Unmet Gap' }, val: '>60%' },
+        { label: { uk: 'Трансформована стигма', en: 'Transformed Stigma' }, val: '54%' }
+      ]
+    },
+    l3: {
+      title: { uk: 'Продуктивність системи', en: 'System Productivity' },
+      val: '25',
+      unit: { uk: 'сесій/тиждень (max load)', en: 'sessions/week (max load)' }
+    }
+  },
+  {
+    id: 'capital',
+    color: '#3B82F6',
+    label: { uk: 'ЛЮДСЬКИЙ КАПІТАЛ', en: 'HUMAN CAPITAL' },
+    l1: {
+      title: { uk: 'Верифіковані фахівці', en: 'Verified Specialists' },
+      val: '1,200',
+      unit: { uk: 'MHPSS фахівців (UNICEF)', en: 'MHPSS specialists (UNICEF)' }
+    },
+    l2: {
+      title: { uk: 'Мережа та кваліфікація', en: 'Network & Qualification' },
+      metrics: [
+        { label: { uk: 'Клінічні (Clinical)', en: 'Clinical' }, val: '25%' },
+        { label: { uk: 'КПТ (CBT Standard)', en: 'CBT Standard' }, val: '40%' },
+        { label: { uk: 'Тіньовий ринок', en: 'Shadow Market' }, val: '~15k' }
+      ]
+    },
+    l3: {
+      title: { uk: 'Вартість результату (Case)', en: 'Cost per Case' },
+      val: '$350',
+      unit: { uk: 'на успішне одужання', en: 'per successful recovery' }
+    }
+  },
+  {
+    id: 'finance',
+    color: '#EF4444',
+    label: { uk: 'БЮДЖЕТИ ТА ГЕПИ', en: 'BUDGETS & GAPS' },
+    l1: {
+      title: { uk: 'Запит HNRP (OCHA)', en: 'HNRP Request (OCHA)' },
+      val: '$131M',
+      unit: { uk: 'Health Cluster 2025', en: 'Health Cluster 2025' }
+    },
+    l2: {
+      title: { uk: 'UNICEF MHPSS (HAC)', en: 'UNICEF MHPSS (HAC)' },
+      metrics: [
+        { label: { uk: 'Захист дітей', en: 'Child Protection' }, val: '$116M' },
+        { label: { uk: 'Освіта (Education)', en: 'Education' }, val: '$54M' },
+        { label: { uk: 'USAID Health %', en: 'USAID Health %' }, val: '23%' }
+      ]
+    },
+    l3: {
+      title: { uk: 'Ефективність інвестицій', en: 'Investment Efficiency' },
+      val: '1:4',
+      unit: { uk: 'ROI (World Bank OneHealth)', en: 'ROI (World Bank OneHealth)' }
+    }
+  },
+  {
+    id: 'coverage',
+    color: '#10B981',
+    label: { uk: 'ОХОПЛЕННЯ ТА ВВП', en: 'COVERAGE & ROI' },
+    l1: {
+      title: { uk: 'Успішне лікування', en: 'Successful Treatment' },
+      val: '72%',
+      unit: { uk: 'зниження симптомів (HAC)', en: 'symptom reduction (HAC)' }
+    },
+    l2: {
+      title: { uk: 'Економічний вплив', en: 'Economic Impact' },
+      metrics: [
+        { label: { uk: 'Втрати ВВП/рік', en: 'GDP Loss/yr' }, val: '3-5%' },
+        { label: { uk: 'Retention Rate', en: 'Retention Rate' }, val: '88%' },
+        { label: { uk: 'Drop-out (1st sess)', en: 'Drop-out (1st sess)' }, val: '25%' }
+      ]
+    },
+    l3: {
+      title: { uk: 'Загальний вплив на ВВП', en: 'Total GDP Impact' },
+      val: '$8B',
+      unit: { uk: 'втрати продуктивності', en: 'productivity losses' }
+    }
+  }
+];
+
+export const MHEI_VALUE_CHAIN = (l: Language) => [
+  { id: 'needs', label: { uk: 'Потреби', en: 'Needs' }, icon: 'Users' },
+  { id: 'resources', label: { uk: 'Ресурси', en: 'Resources' }, icon: 'Database' },
+  { id: 'providers', label: { uk: 'Надавачі', en: 'Providers' }, icon: 'Building2' },
+  { id: 'coverage', label: { uk: 'Охоплення', en: 'Coverage' }, icon: 'Activity' },
+  { id: 'outcomes', label: { uk: 'Результати', en: 'Outcomes' }, icon: 'Check' },
+  { id: 'gdp', label: { uk: 'ВВП Вплив', en: 'GDP Impact' }, icon: 'TrendingUp' }
+];
+
+// ── ROI CALCULATOR PARAMS (World Bank & HNRP Synchronized) ────────────────────
 export const ROI_PARAMS = {
-  costPerSessionUsd: 30,       // blended public-humanitarian tariff
-  sessionsPerBeneficiary: 16,  // WHO norm for trauma populations
-  roiMultiplier: 4,            // WHO: $1 MH investment → $4 return
+  costPerSessionUsd: 30,       // blended public-humanitarian tariff (HNRP average)
+  costPerSuccessCase: 350,     // cost per clinical recovery (WB/USAID)
+  sessionsPerBeneficiary: 12,  // mean of 8-16 session protocol (WB)
+  roiMultiplier: 4,            // WB OneHealth Tool: $1 investment → $4 return
+  recoveryRate: 0.72,          // 72% symptom reduction for completed courses (UNICEF)
   dalysPerCourse: 1.25,        // midpoint of 0.5–2 DALYs averted per therapy course
   whodalyThresholdUsd: 4300,   // 1× Ukraine GNI per capita (WHO cost-effectiveness threshold)
   adminOverheadCurrent: 0.22,  // 22% current humanitarian admin overhead
-  adminOverheadTarget: 0.07,   // 7% target with digital infrastructure
-  monthlyFragmentationCostM: 5, // ~$60M annual clinical capacity lost to admin / 12 months
+  adminOverheadTarget: 0.07,   // 7% target with FEEL Again
+  clinicalGapPct: 0.60,        // >60% clinical coverage gap (WB/OCHA)
 };
