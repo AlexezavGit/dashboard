@@ -267,12 +267,12 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 
           {/* Needle (animated, points from pivot to current score position) */}
           <g ref={needleRef}>
-            <line x1={CX} y1={CY} x2={CX + R - 5} y2={CY}
+            <line x1={CX} y1={CY - 4} x2={CX + R - 5} y2={CY - 4}
               stroke={bandColor} strokeWidth="2.5" strokeLinecap="round"
               style={{ filter: `drop-shadow(0 0 6px ${bandColor}cc)` } as React.CSSProperties}
             />
             {/* Counterweight */}
-            <line x1={CX} y1={CY} x2={CX - 18} y2={CY}
+            <line x1={CX} y1={CY - 4} x2={CX - 18} y2={CY - 4}
               stroke={bandColor} strokeWidth="5.5" strokeLinecap="round" opacity="0.45"
             />
           </g>
