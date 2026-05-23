@@ -3,6 +3,7 @@ import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
 import { L1Strategic } from './L1Strategic';
 import { L2MHEI } from './L2MHEI';
+import { DrilldownProvider } from '../drilldown/DrilldownContext';
 // 6 program layer L2 screens
 import { L2Finance } from './L2Finance';
 import { L2Clinical } from './L2Clinical';
@@ -88,7 +89,9 @@ export const ScreenRouter: React.FC<Props> = ({
           transition={{ duration: 0.25 }}
           className="fixed inset-0 z-50"
         >
-          {screens[current as Exclude<ScreenId, 'appendix'>]}
+          <DrilldownProvider>
+            {screens[current as Exclude<ScreenId, 'appendix'>]}
+          </DrilldownProvider>
         </motion.div>
       </AnimatePresence>
 

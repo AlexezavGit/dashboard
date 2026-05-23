@@ -5,6 +5,7 @@ import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
 import { Logo } from '../ui/Logo';
 import { STRATEGIC_FRAMEWORK, MHEI_VALUE_CHAIN, COLORS } from '../../constants';
+import { useDrilldown } from '../drilldown/DrilldownContext';
 
 interface Props {
   lang: Language;
@@ -364,6 +365,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 
 // ── Main screen ────────────────────────────────────────────────────────────────
 export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode = true }) => {
+  const { setAnswers: setDrillAnswers } = useDrilldown();
   return (
     <div
       className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
@@ -427,7 +429,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
           <div
             className="w-full lg:w-[264px] flex-shrink-0 flex flex-col items-center justify-center py-1 ds-blueprint cursor-pointer"
             style={{ flexShrink: 0 }}
-            onClick={() => nav.push('l2-mhei')}
+            onClick={() => { setDrillAnswers({ indexScore: INDEX_SCORE }); nav.push('l2-mhei'); }}
             title={lang === 'uk' ? 'Mental Health Economy Index — клацніть для drill-down' : 'Mental Health Economy Index — click to drill down'}
           >
             <div style={{
@@ -441,7 +443,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
               {lang === 'uk' ? '↓ клацніть для drill-down' : '↓ click to drill down'}
             </div>
 
-            <GaugeDisplay lang={lang} expanded={false} onToggle={() => nav.push('l2-mhei')} />
+            <GaugeDisplay lang={lang} expanded={false} onToggle={() => { setDrillAnswers({ indexScore: INDEX_SCORE }); nav.push('l2-mhei'); }} />
 
             {/* Layer legend */}
             <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: '3px 6px', justifyContent: 'center' }}>
@@ -458,7 +460,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
               })}
             </div>
             <button
-              onClick={() => nav.push('l2-mhei')}
+              onClick={() => { setDrillAnswers({ indexScore: INDEX_SCORE }); nav.push('l2-mhei'); }}
               style={{ marginTop: 8, fontSize: 10, color: 'var(--color-ds-teal)', border: '1px solid rgba(0,210,170,0.3)', borderRadius: 6, padding: '4px 12px', background: 'rgba(0,210,170,0.07)', cursor: 'pointer', fontFamily: 'DM Mono, monospace', letterSpacing: '0.05em' }}
             >
               {lang === 'uk' ? 'MHEI Дельта →' : 'MHEI Delta →'}
@@ -473,7 +475,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
               {STRATEGIC_FRAMEWORK(lang).map((pillar, i) => {
                 const config = PILLARS_CONFIG.find(c => c.id === pillar.id)!;
                 return (
-                  <LayerCard key={pillar.id} l={config} pillar={pillar} i={i} lang={lang} onNav={() => nav.push(config.screenId)} darkMode={darkMode} />
+                  <LayerCard key={pillar.id} l={config} pillar={pillar} i={i} lang={lang} onNav={() => { setDrillAnswers({ pillarId: pillar.id, pillarLabel: pillar.label[lang], pillarVal: pillar.l1?.val ?? null, indexScore: INDEX_SCORE }); nav.push(config.screenId); }} darkMode={darkMode} />
                 );
               })}
             </div>

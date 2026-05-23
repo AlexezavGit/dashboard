@@ -3,6 +3,8 @@ import { Language } from '../../types';
 import { ScreenNav } from './types';
 import { NavBar } from './NavBar';
 import { L3Footer } from './L3Footer';
+import { useDrilldown } from '../drilldown/DrilldownContext';
+import AnswersSummary from '../drilldown/AnswersSummary';
 
 interface Props { lang: Language; nav: ScreenNav; }
 
@@ -82,6 +84,8 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
   const [values, setValues] = useState<Record<string, number>>(initialValues);
   const [practitioners, setPractitioners] = useState(943);
 
+  const { answers } = useDrilldown();
+
   const mhei = computeMHEI(values);
   const baselineMhei = computeMHEI(initialValues);
   const mheiDelta = mhei - baselineMhei;
@@ -127,6 +131,12 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
         }}
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
+
+      {answers && (
+        <div className="px-5 pt-3">
+          <AnswersSummary answers={answers} lang={lang} onEdit={() => nav.push('l1')} />
+        </div>
+      )}
 
       <div className="flex-1 grid min-h-0 px-5 pb-3 pt-3 gap-4"
         style={{ gridTemplateColumns: '1fr 1fr' }}>
