@@ -1,0 +1,19 @@
+# MCP server configuration for this repository
+# Cloudflare Workers runner using existing GitHub Actions secrets.
+# Do NOT store secrets here; reference GitHub Actions repository secrets.
+
+servers:
+  - name: cloudflare-workers
+    type: cloudflare-workers
+    description: "Deploy and preview Cloudflare Workers via Wrangler. Uses GitHub Actions secrets: CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID"
+    build:
+      command: "npm run build"
+    preview:
+      command: "npm run preview"
+    deploy:
+      command: "npx wrangler deploy"
+      env_secrets:
+        - CLOUDFLARE_API_TOKEN
+        - CLOUDFLARE_ACCOUNT_ID
+    ci_integration:
+      workflow: ".github/workflows/deploy.yml"
