@@ -1,376 +1,376 @@
 import React, { useState, useEffect } from 'react';
 
-interface JourneyStep {
+interface JourneyItem {
   id: string;
   title: { uk: string; en: string };
   tool: string;
   desc: { uk: string; en: string };
 }
 
+interface Phase {
+  id: string;
+  title: { uk: string; en: string };
+  lanes: Record<'beneficiary' | 'provider' | 'donor', JourneyItem | null>;
+}
+
 interface StakeholderJourneysProps {
   lang: 'uk' | 'en';
 }
 
-export function StakeholderJourneys({ lang }: StakeholderJourneysProps) {
-  const [activeTab, setActiveTab] = useState<'donor' | 'provider' | 'beneficiary'>('donor');
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [animationStep, setAnimationStep] = useState<number>(-1);
+const ROLE_LABELS = {
+  beneficiary: { uk: 'Бенефіціар', en: 'Beneficiary' },
+  provider: { uk: 'Провайдер', en: 'Provider' },
+  donor: { uk: 'Донор', en: 'Donor' },
+} as const;
 
-  const journeys: Record<'donor' | 'provider' | 'beneficiary', JourneyStep[]> = {
-    donor: [
-      {
-        id: 'D1',
-        title: { uk: 'Аналітична записка', en: 'Analytica Note' },
-        tool: 'nbu-analysis.pages.dev',
-        desc: {
-          uk: 'Перегляд аналізу збитків ВВП та обґрунтування бюджету програми.',
-          en: 'Viewing GDP loss analysis and verification of the program budget justifications.'
-        }
-      },
-      {
-        id: 'D2',
-        title: { uk: 'Дашборд верифікації', en: 'Verification Dashboard' },
-        tool: 'dashboard.feelagain.me',
-        desc: {
-          uk: 'Моніторинг черг, географічного розподілу та клінічних дефіцитів.',
-          en: 'Monitoring queue size, geographic gaps, and clinical bottlenecks.'
-        }
-      },
-      {
-        id: 'D3',
-        title: { uk: 'Сайт програми', en: 'Program Site' },
-        tool: 'feelagain.me',
-        desc: {
-          uk: 'Ознайомлення з протоколами лікування та структурою субсидій.',
-          en: 'Reviewing clinical protocols and details of the MHPSS subsidy scheme.'
-        }
-      },
-      {
-        id: 'D4',
-        title: { uk: 'Кабінет донора: Онбординг', en: 'Donor Cabinet: Onboarding' },
-        tool: 'feelagain.me/portal',
-        desc: {
-          uk: 'Вибір цільової групи (ВПО, ветерани) та визначення лімітів фінансування.',
-          en: 'Selecting target groups (IDPs, veterans) and setting funding limits.'
-        }
-      },
-      {
-        id: 'D5',
-        title: { uk: 'Кабінет донора: Матчинг', en: 'Donor Cabinet: Matching' },
-        tool: 'feelagain.me/donor',
-        desc: {
-          uk: 'Перегляд профілів законтрактованих провайдерів та резервування траншів.',
-          en: 'Reviewing profiles of contracted providers and allocating funding tranches.'
-        }
-      },
-      {
-        id: 'D6',
-        title: { uk: 'Дошка пошани (ESG)', en: 'Honor Board (ESG)' },
-        tool: 'feelagain.me/esg',
-        desc: {
-          uk: 'Публічне підтвердження цільового використання коштів та розблокування DLI.',
-          en: 'Public validation of fund utilization and ESG compliance metrics.'
-        }
-      }
-    ],
-    provider: [
-      {
-        id: 'P1',
-        title: { uk: 'Train-for-Care', en: 'Train-for-Care' },
-        tool: 'feelagain.me/training',
-        desc: {
-          uk: 'Навчання фахівців доказовим методам (EMDR, VR Bravemind).',
-          en: 'Clinical training on evidence-based protocols (EMDR, VR Bravemind).'
-        }
-      },
-      {
-        id: 'P2',
-        title: { uk: 'Реєстрація НСЗУ (eHealth)', en: 'eHealth / NHSU Sync' },
-        tool: 'ehealth.gov.ua',
-        desc: {
-          uk: 'Синхронізація ліцензій та перевірка відповідності стандартам НСЗУ.',
-          en: 'Synchronizing clinical credentials and checking NHSU compliance.'
-        }
-      },
-      {
-        id: 'P3',
-        title: { uk: 'Кабінет надавача', en: 'Provider Cabinet' },
-        tool: 'feelagain.me/provider',
-        desc: {
-          uk: 'Отримання направлень, ведення розкладу та карток пацієнтів.',
-          en: 'Receiving referrals, managing queues, and patient records.'
-        }
-      },
-      {
-        id: 'P4',
-        title: { uk: 'Результативна оплата', en: 'Outcome-Based Escrow' },
-        tool: 'FEEL Escrow Bus',
-        desc: {
-          uk: 'Зарахування оплати за послуги на основі валідованого результату (PHQ-9/GAD-7).',
-          en: 'Tranche release to provider wallet based on verified clinical outcomes.'
-        }
-      },
-      {
-        id: 'P5',
-        title: { uk: 'Матчинг з донорами', en: 'Donor Matching' },
-        tool: 'FEEL Matcher',
-        desc: {
-          uk: 'Автоматичне заповнення вільних годин фахівців за рахунок донорських квот.',
-          en: 'Auto-allocating remaining provider capacity to active donor allocations.'
-        }
-      }
-    ],
-    beneficiary: [
-      {
+const MODES = {
+  with: {
+    key: 'with',
+    label: { uk: 'З FEEL Again', en: 'With FEEL Again' },
+    subtitle: {
+      uk: 'Платформу FEEL Again включено в кожну фазу — від KoBo-скринінгу до ескроу-транзакцій.',
+      en: 'FEEL Again is embedded in every phase — from KoBo screening to escrow transactions.',
+    },
+  },
+  without: {
+    key: 'without',
+    label: { uk: 'Без FEEL Again', en: 'Without FEEL Again' },
+    subtitle: {
+      uk: 'Тут показано, як система працює без єдиного інтегрованого цифрового шару.',
+      en: 'This shows the path without a unified digital layer.',
+    },
+  },
+} as const;
+
+const getPhases = (mode: 'with' | 'without'): Phase[] => [
+  {
+    id: 'phase-1',
+    title: { uk: 'Діагностика', en: 'Diagnosis' },
+    lanes: {
+      beneficiary: {
         id: 'B1',
-        title: { uk: 'Скринінг / КоБо', en: 'Screening / KoBo' },
-        tool: 'kobo.feelagain.me',
+        title: { uk: 'Скринінг / KoBo', en: 'Screening / KoBo' },
+        tool: mode === 'with' ? 'kobo.feelagain.me' : 'offline form',
         desc: {
-          uk: 'Первинне тестування симптомів та визначення потреби в терапії.',
-          en: 'Self-administered screening using clinically validated forms.'
-        }
+          uk: mode === 'with'
+            ? 'Автоматичне скринінг-формування з FEEL Again та KoBo для швидкого визначення клінічної потреби.'
+            : 'Ручний збір даних через опитувальник без інтегрованого дорожнього маршруту.',
+          en: mode === 'with'
+            ? 'Automated screening via FEEL Again + KoBo for fast clinical need triage.'
+            : 'Manual data collection using a questionnaire without an integrated flow.',
+        },
       },
-      {
+      provider: null,
+      donor: null,
+    },
+  },
+  {
+    id: 'phase-2',
+    title: { uk: 'Підбір', en: 'Matching' },
+    lanes: {
+      beneficiary: {
         id: 'B2',
-        title: { uk: 'Первинна консультація', en: 'First Consultation' },
-        tool: 'feelagain.me/matching',
+        title: { uk: 'Первинна консультація', en: 'Intake Consultation' },
+        tool: mode === 'with' ? 'feelagain.me/matching' : 'paper referral',
         desc: {
-          uk: 'Зустріч з кейс-менеджером, підбір відповідного фахівця.',
-          en: 'Intake interview with a case manager and matching with a specialist.'
-        }
+          uk: mode === 'with'
+            ? 'Кейс-менеджер порівнює потребу з доступною мережею через FEEL Again.'
+            : 'Підбір фахівця через локальний центр без цифрової оптимізації.',
+          en: mode === 'with'
+            ? 'A case manager matches need to available providers through FEEL Again.'
+            : 'Provider matching via local center without digital optimisation.',
+        },
       },
-      {
-        id: 'B3',
+      provider: {
+        id: 'P1',
         title: { uk: 'Реєстрація eHealth', en: 'eHealth Registration' },
-        tool: 'Trembita Bus',
+        tool: mode === 'with' ? 'ehealth.gov.ua' : 'manual registry',
         desc: {
-          uk: 'Внесення медичного епізоду в систему ЄСОЗ для верифікації субсидії.',
-          en: 'Logging the clinical episode into HESZ via the national Trembita bus.'
-        }
+          uk: mode === 'with'
+            ? 'Провайдер синхронізує дані з держреєстром і FEEL шиною.'
+            : 'Провайдер реєструється окремо, без автоматичного обміну даними.',
+          en: mode === 'with'
+            ? 'Provider syncs credentials with the national registry and FEEL bus.'
+            : 'Provider registers separately, without automated data exchange.',
+        },
       },
-      {
+      donor: null,
+    },
+  },
+  {
+    id: 'phase-3',
+    title: { uk: 'Терапія', en: 'Therapy' },
+    lanes: {
+      beneficiary: {
         id: 'B4',
         title: { uk: 'Курс терапії', en: 'Therapy Course' },
-        tool: 'FEEL Therapy Cabin',
+        tool: mode === 'with' ? 'feelagain.me/therapy' : 'clinic services',
         desc: {
-          uk: 'Проходження сесій терапії (10-15 сеансів за доказовим протоколом).',
-          en: 'Completing a course of structured sessions (10-15 sessions of EMDR/CBT).'
-        }
+          uk: mode === 'with'
+            ? 'Сесії ведуться з моніторингом прогресу в цифровому середовищі FEEL.'
+            : 'Сесії організовуються офлайн, без централізованого трекінгу результатів.',
+            en: mode === 'with'
+            ? 'Sessions are tracked in the FEEL digital environment with progress monitoring.'
+            : 'Sessions are organized offline without centralized outcome tracking.',
+        },
       },
-      {
-        id: 'B5',
-        title: { uk: 'Зворотний зв\'язок', en: 'Feedback Loop' },
-        tool: 'feelagain.me/feedback',
+      provider: {
+        id: 'P3',
+        title: { uk: 'Кабінет надавача', en: 'Provider Cabinet' },
+        tool: mode === 'with' ? 'feelagain.me/provider' : 'local scheduler',
         desc: {
-          uk: 'Повторний клінічний скринінг для підтвердження покращення стану.',
-          en: 'Post-intervention clinical screening to confirm state improvement.'
-        }
-      }
-    ]
-  };
+          uk: mode === 'with'
+            ? 'Провайдер керує чергами, записами та протоколами в одному інтерфейсі.'
+            : 'Запис пацієнтів ведеться окремо, без єдиного цифрового екрану.',
+            en: mode === 'with'
+            ? 'Provider manages queues, appointments and protocols in one interface.'
+            : 'Patient scheduling is conducted separately without a unified digital view.',
+        },
+      },
+      donor: null,
+    },
+  },
+  {
+    id: 'phase-4',
+    title: { uk: 'Верифікація', en: 'Verification' },
+    lanes: {
+      beneficiary: {
+        id: 'B5',
+        title: { uk: 'Зворотний зв’язок', en: 'Feedback Loop' },
+        tool: mode === 'with' ? 'feelagain.me/feedback' : 'paper evaluation',
+        desc: {
+          uk: mode === 'with'
+            ? 'Після лікування результат відстежується у цифровій формі.'
+            : 'Після лікування збір зворотного зв’язку здійснюється вручну.',
+            en: mode === 'with'
+            ? 'Post-treatment outcomes are tracked digitally.'
+            : 'Post-treatment feedback is collected manually.',
+        },
+      },
+      provider: {
+        id: 'P4',
+        title: { uk: 'Результативна оплата', en: 'Outcome-Based Payment' },
+        tool: mode === 'with' ? 'FEEL Escrow Bus' : 'manual claim',
+        desc: {
+          uk: mode === 'with'
+            ? 'Провайдер отримує оплату за підтверджений результат через шину FEEL.'
+            : 'Оплата формується вручну на підставі звітів і актів.',
+            en: mode === 'with'
+            ? 'Provider is paid through FEEL bus for verified outcomes.'
+            : 'Payment is manually posted based on reports and forms.',
+        },
+      },
+      donor: {
+        id: 'D2',
+        title: { uk: 'Дашборд верифікації', en: 'Verification Dashboard' },
+        tool: mode === 'with' ? 'dashboard.feelagain.me' : 'legacy report',
+        desc: {
+          uk: mode === 'with'
+            ? 'Донор бачить верифікацію даних у реальному часі.'
+            : 'Донор отримує звіт за запитом, без онлайнової видимості.',
+            en: mode === 'with'
+            ? 'Donor sees real-time data verification.'
+            : 'Donor receives reports on request without online transparency.',
+        },
+      },
+    },
+  },
+  {
+    id: 'phase-5',
+    title: { uk: 'Фінансування', en: 'Financing' },
+    lanes: {
+      beneficiary: null,
+      provider: {
+        id: 'P5',
+        title: { uk: 'Матчинг з донорами', en: 'Donor Matching' },
+        tool: mode === 'with' ? 'FEEL Matcher' : 'ad hoc quota',
+        desc: {
+          uk: mode === 'with'
+            ? 'Платформа автоматично узгоджує непогашені години з донорськими квотами.'
+            : 'Матчинг відбувається вручну й зростає ризик непродуктивного часу.',
+            en: mode === 'with'
+            ? 'The platform auto-aligns unused hours with donor quotas.'
+            : 'Matching happens manually and increases unproductive capacity.',
+        },
+      },
+      donor: {
+        id: 'D5',
+        title: { uk: 'Кабінет донора: Матчинг', en: 'Donor Cabinet: Matching' },
+        tool: mode === 'with' ? 'feelagain.me/donor' : 'legacy tender',
+        desc: {
+          uk: mode === 'with'
+            ? 'Донор бачить, як бюджети розподіляються до сертифікованих провайдерів.'
+            : 'Розподіл бюджету відбувається через довгі тендерні цикли.',
+            en: mode === 'with'
+            ? 'Donor sees budgets allocated to certified providers.'
+            : 'Budget allocation occurs through slow tender cycles.',
+        },
+      },
+    },
+  },
+  {
+    id: 'phase-6',
+    title: { uk: 'ESG / звітність', en: 'ESG / Reporting' },
+    lanes: {
+      beneficiary: null,
+      provider: null,
+      donor: {
+        id: 'D6',
+        title: { uk: 'Дошка пошани (ESG)', en: 'Honor Board (ESG)' },
+        tool: mode === 'with' ? 'feelagain.me/esg' : 'annual audit',
+        desc: {
+          uk: mode === 'with'
+            ? 'Публічна перевірка цільового використання коштів через цифровий ESG-канал.'
+            : 'Звітність формується традиційно з ручною перевіркою.',
+            en: mode === 'with'
+            ? 'Public verification of targeted spending through a digital ESG channel.'
+            : 'Reporting is created traditionally with manual validation.',
+        },
+      },
+    },
+  },
+];
+
+export function StakeholderJourneys({ lang }: StakeholderJourneysProps) {
+  const [mode, setMode] = useState<'with' | 'without'>('with');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [phaseIndex, setPhaseIndex] = useState(0);
+
+  const phases = getPhases(mode);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isPlaying) {
-      setAnimationStep(0);
-      interval = setInterval(() => {
-        setAnimationStep((prev) => {
-          const limit = journeys[activeTab].length;
-          if (prev >= limit - 1) {
-            setIsPlaying(false);
-            return -1;
-          }
-          return prev + 1;
-        });
-      }, 2000);
-    } else {
-      setAnimationStep(-1);
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying, activeTab]);
+    let timer: ReturnType<typeof setTimeout> | undefined;
 
-  const activeSteps = journeys[activeTab];
+    if (isPlaying) {
+      setPhaseIndex(0);
+      timer = setInterval(() => {
+        setPhaseIndex((prev) => {
+          const next = prev + 1;
+          if (next >= phases.length) {
+            setIsPlaying(false);
+            return prev;
+          }
+          return next;
+        });
+      }, 2200);
+    }
+
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isPlaying, phases.length]);
+
+  const activePhase = phases[phaseIndex] || phases[phases.length - 1];
 
   return (
-    <div className="w-full max-w-[1000px] mx-auto text-[var(--color-ds-text)]">
-      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="w-full max-w-[1100px] mx-auto text-[var(--color-ds-text)]">
+      <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <h3 className="text-xl font-bold uppercase tracking-wider text-[var(--color-ds-teal)] border-b border-[var(--color-ds-border)] pb-2 inline-block">
-            {lang === 'uk' ? 'Шлях Стейкхолдерів та Інтеграція' : 'Stakeholder Journeys & Integration'}
+            {lang === 'uk' ? 'Дельта Моделі: Stakeholder Journeys' : 'Delta Model: Stakeholder Journeys'}
           </h3>
-          <p className="text-sm text-[var(--color-ds-muted)] mt-2">
+          <p className="text-sm text-[var(--color-ds-muted)] mt-2 max-w-2xl">
             {lang === 'uk'
-              ? 'Візуалізація цифрового сліду та точок інтеграції для всіх учасників екосистеми FEEL.'
-              : 'Visualization of the digital footprint and integration points for all ecosystem participants.'}
+              ? 'Три ролі рухаються в єдиному таймлайні з початковою діагностикою бенефіціара та поступовим підключенням провайдера й донора. Перемикач показує різницю між FEEL Again та традиційним процесом.'
+              : 'Three roles move within one timeline, starting with beneficiary diagnosis and progressively adding provider and donor stages. The toggle reveals the difference between FEEL Again and a traditional path.'}
           </p>
         </div>
 
-        {/* Play Controls */}
-        <button
-          onClick={() => setIsPlaying(!isPlaying)}
-          className={`px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 border border-[var(--color-ds-border)] ${
-            isPlaying 
-              ? 'bg-[var(--color-ds-teal-dim)] border-[var(--color-ds-teal)] text-[var(--color-ds-teal)] shadow-[0_0_15px_rgba(0,210,170,0.15)]' 
-              : 'bg-[var(--color-ds-bg-card)] text-[var(--color-ds-muted)] hover:text-white hover:border-[var(--color-ds-muted)]'
-          }`}
-        >
-          {isPlaying ? (
-            <>
-              <span className="w-2.5 h-2.5 bg-[var(--color-ds-teal)] rounded-full animate-ping" />
-              {lang === 'uk' ? 'Анімація...' : 'Animating...'}
-            </>
-          ) : (
-            <>
-              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-              {lang === 'uk' ? 'Запустити потік' : 'Play Flow'}
-            </>
-          )}
-        </button>
-      </div>
-
-      {/* Stakeholder Tabs */}
-      <div className="flex border-b border-[var(--color-ds-border)] mb-8">
-        {(['donor', 'provider', 'beneficiary'] as const).map((tab) => {
-          const isActive = activeTab === tab;
-          let label = '';
-          let activeColor = '';
-          
-          if (tab === 'donor') {
-            label = lang === 'uk' ? 'Донор / Фінансист' : 'Donor / Financier';
-            activeColor = 'border-[var(--color-ds-gold)] text-[var(--color-ds-gold)]';
-          } else if (tab === 'provider') {
-            label = lang === 'uk' ? 'Провайдер / Терапевт' : 'Provider / Therapist';
-            activeColor = 'border-[var(--color-ds-teal)] text-[var(--color-ds-teal)]';
-          } else {
-            label = lang === 'uk' ? 'Бенефіціар / Пацієнт' : 'Beneficiary / Patient';
-            activeColor = 'border-[#4488ff] text-[#4488ff]';
-          }
-
-          return (
-            <button
-              key={tab}
-              onClick={() => {
-                setActiveTab(tab);
-                setIsPlaying(false);
-                setAnimationStep(-1);
-              }}
-              className={`flex-1 py-3 text-center text-xs font-bold uppercase tracking-wider border-b-2 transition-all duration-200 ${
-                isActive 
-                  ? activeColor 
-                  : 'border-transparent text-[var(--color-ds-muted)] hover:text-[var(--color-ds-text)]'
-              }`}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Steps Visual Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-6 gap-4 mb-8">
-        {activeSteps.map((step, idx) => {
-          const isCurrent = animationStep === idx;
-          const isCompleted = animationStep > idx;
-          
-          let cardBorder = 'border-[var(--color-ds-border)]';
-          let cardBg = 'bg-[var(--color-ds-bg-card)]';
-          let numColor = 'text-[var(--color-ds-muted)]';
-          
-          if (isCurrent) {
-            if (activeTab === 'donor') {
-              cardBorder = 'border-[var(--color-ds-gold)] shadow-[0_0_15px_rgba(200,164,92,0.25)]';
-              cardBg = 'bg-[var(--color-ds-gold-dim)]';
-              numColor = 'text-[var(--color-ds-gold)]';
-            } else if (activeTab === 'provider') {
-              cardBorder = 'border-[var(--color-ds-teal)] shadow-[0_0_15px_rgba(0,210,170,0.25)]';
-              cardBg = 'bg-[var(--color-ds-teal-dim)]';
-              numColor = 'text-[var(--color-ds-teal)]';
-            } else {
-              cardBorder = 'border-[#4488ff] shadow-[0_0_15px_rgba(68,136,255,0.25)]';
-              cardBg = 'bg-[rgba(68,136,255,0.1)]';
-              numColor = 'text-[#4488ff]';
-            }
-          } else if (isCompleted) {
-            cardBorder = 'border-[var(--color-ds-border)] opacity-60';
-            numColor = 'text-[var(--color-ds-muted)]';
-          }
-
-          return (
-            <div 
-              key={step.id} 
-              className={`border rounded-xl p-4 flex flex-col justify-between min-h-[160px] transition-all duration-300 ${cardBorder} ${cardBg}`}
-            >
-              <div>
-                <div className="flex justify-between items-start mb-2">
-                  <span className={`text-xs font-mono font-bold ${numColor}`}>{step.id}</span>
-                  <span className="text-[9px] font-mono bg-[var(--color-ds-bg)] px-1.5 py-0.5 rounded text-[var(--color-ds-muted)] border border-[var(--color-ds-border)] max-w-[100px] truncate">
-                    {step.tool}
-                  </span>
-                </div>
-                <h4 className="text-xs font-bold text-[var(--color-ds-text)] uppercase tracking-wide mb-2 line-clamp-2">
-                  {lang === 'uk' ? step.title.uk : step.title.en}
-                </h4>
-              </div>
-              <p className="text-[11px] text-[var(--color-ds-muted)] leading-normal line-clamp-3">
-                {lang === 'uk' ? step.desc.uk : step.desc.en}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Connective Zone / Connector Box */}
-      <div className="bg-[var(--color-ds-bg-card)] border border-[var(--color-ds-border)] rounded-xl p-6 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#4488ff] to-transparent opacity-40" />
-        
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2 h-2 rounded-full bg-[#4488ff] animate-pulse" />
-              <h4 className="text-sm font-bold uppercase tracking-wider text-[#4488ff]">
-                {lang === 'uk' ? 'Шина Інтеграції FEEL CONNECTOR' : 'FEEL CONNECTOR Integration Bus'}
-              </h4>
-            </div>
-            <p className="text-xs text-[var(--color-ds-muted)] leading-relaxed">
-              {lang === 'uk'
-                ? 'Уніфіковане ядро платформи, яке синхронізує медичні епізоди FHIR R4 з фінансовими транзакціями, забезпечуючи нульову тінізацію та миттєві цільові виплати.'
-                : 'Unified platform core synchronizing FHIR R4 clinical episodes with secure financial routing, ensuring complete transparency and zero shadow transactions.'}
-            </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 gap-3">
+          <div className="rounded-xl border border-[var(--color-ds-border)] bg-[var(--color-ds-bg-card)] px-4 py-3 text-[11px]">
+            <div className="font-bold text-[var(--color-ds-text)]">{MODES[mode].label[lang]}</div>
+            <div className="mt-1 text-[var(--color-ds-muted)] text-xs leading-snug">{MODES[mode].subtitle[lang]}</div>
           </div>
-
-          <div className="grid grid-cols-2 gap-3 w-full md:w-auto font-mono text-[10px] text-[var(--color-ds-muted)]">
-            <div className="bg-[var(--color-ds-bg)] border border-[var(--color-ds-border)] px-3 py-2 rounded flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-ds-teal)]" />
-              FHIR R4 Bus
-            </div>
-            <div className="bg-[var(--color-ds-bg)] border border-[var(--color-ds-border)] px-3 py-2 rounded flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-ds-teal)]" />
-              Escrow Pay
-            </div>
-            <div className="bg-[var(--color-ds-bg)] border border-[var(--color-ds-border)] px-3 py-2 rounded flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-ds-teal)]" />
-              Trembita Api
-            </div>
-            <div className="bg-[var(--color-ds-bg)] border border-[var(--color-ds-border)] px-3 py-2 rounded flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-ds-teal)]" />
-              HIPAA & GDPR
-            </div>
+          <div className="flex gap-2">
+            {(['with', 'without'] as const).map((option) => (
+              <button
+                key={option}
+                onClick={() => {
+                  setMode(option);
+                  setIsPlaying(false);
+                  setPhaseIndex(0);
+                }}
+                className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${mode === option ? 'bg-[var(--color-ds-teal)] text-black' : 'bg-[var(--color-ds-bg)] text-[var(--color-ds-muted)] border border-[var(--color-ds-border)]'}`}
+              >
+                {MODES[option].label[lang]}
+              </button>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* Pulse path visual connection if playing */}
-        {isPlaying && (
-          <div className="mt-4 pt-4 border-t border-[var(--color-ds-border)] flex justify-center">
-            <div className="flex items-center gap-2 text-[10px] font-mono text-[var(--color-ds-gold)] uppercase tracking-widest">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-ds-gold)] animate-ping" />
-              {lang === 'uk'
-                ? `Дані кроку ${activeSteps[animationStep >= 0 ? animationStep : 0].id} передаються в FEEL шину...`
-                : `Data from step ${activeSteps[animationStep >= 0 ? animationStep : 0].id} routing to FEEL bus...`}
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-[120px_1fr] gap-4">
+        <div className="space-y-2">
+          {(['beneficiary', 'provider', 'donor'] as const).map((role) => (
+            <div key={role} className="rounded-xl border border-[var(--color-ds-border)] bg-[var(--color-ds-bg-card)] p-3 text-[11px] uppercase tracking-wide text-[var(--color-ds-muted)]">
+              {ROLE_LABELS[role][lang]}
             </div>
+          ))}
+        </div>
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {phases.map((phase, index) => (
+              <div
+                key={phase.id}
+                className={`rounded-xl border p-3 text-[11px] ${index === phaseIndex ? 'border-[var(--color-ds-teal)] bg-[rgba(0,212,170,0.05)]' : 'border-[var(--color-ds-border)] bg-[var(--color-ds-bg)]'}`}
+              >
+                <div className="font-bold uppercase tracking-wide text-[var(--color-ds-gold)] mb-2">
+                  {lang === 'uk' ? phase.title.uk : phase.title.en}
+                </div>
+                <div className="text-[10px] text-[var(--color-ds-muted)]">{lang === 'uk' ? `Фаза ${index + 1}` : `Phase ${index + 1}`}</div>
+              </div>
+            ))}
           </div>
-        )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            {(['beneficiary', 'provider', 'donor'] as const).map((role) => (
+              <div key={role} className="space-y-3">
+                {phases.map((phase, phaseIdx) => {
+                  const item = phase.lanes[role];
+                  const isActive = phaseIdx === phaseIndex;
+                  return (
+                    <div
+                      key={`${role}-${phase.id}`}
+                      className={`rounded-2xl border p-4 transition-all duration-200 ${item ? 'bg-[var(--color-ds-bg-card)] border-[var(--color-ds-border)]' : 'bg-transparent border border-transparent opacity-25'} ${isActive && item ? 'shadow-[0_0_20px_rgba(0,212,170,0.12)] border-[var(--color-ds-teal)]' : ''}`}
+                    >
+                      {item ? (
+                        <>
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-[9px] font-mono text-[var(--color-ds-muted)]">{item.id}</span>
+                            <span className="text-[9px] font-semibold text-[var(--color-ds-teal)] break-all max-w-[140px]">{item.tool}</span>
+                          </div>
+                          <h4 className="text-sm font-bold mb-2 text-[var(--color-ds-text)]">
+                            {lang === 'uk' ? item.title.uk : item.title.en}
+                          </h4>
+                          <p className="text-[11px] leading-snug text-[var(--color-ds-muted)]">
+                            {lang === 'uk' ? item.desc.uk : item.desc.en}
+                          </p>
+                        </>
+                      ) : (
+                        <div className="text-[11px] text-[var(--color-ds-muted)]">{lang === 'uk' ? 'Без активної ролі в цій фазі' : 'No active role in this phase'}</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-[var(--color-ds-border)] pt-4">
+        <div>
+          <div className="text-[10px] uppercase tracking-wider text-[var(--color-ds-gold)] mb-1">{lang === 'uk' ? 'Поточна фаза' : 'Current phase'}</div>
+          <div className="text-sm font-bold text-[var(--color-ds-text)]">{lang === 'uk' ? activePhase.title.uk : activePhase.title.en}</div>
+        </div>
+        <button
+          onClick={() => setIsPlaying(!isPlaying)}
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${isPlaying ? 'bg-[var(--color-ds-teal)] text-black' : 'bg-[var(--color-ds-bg)] text-[var(--color-ds-muted)] border border-[var(--color-ds-border)]'}`}
+        >
+          {isPlaying
+            ? lang === 'uk' ? 'Анімація запущена' : 'Animation running'
+            : lang === 'uk' ? 'Запустити покрокову демонстрацію' : 'Run step-by-step demo'}
+        </button>
       </div>
     </div>
   );
