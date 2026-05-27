@@ -141,6 +141,13 @@ const gdpImpact = (score: number) => {
   return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
 };
 
+const L3_MAP_BY_LAYER: Record<string, { topic: string; section: string }> = {
+  needs: { topic: 'method', section: 'scenario-engine' },
+  capital: { topic: 'clinical', section: 'eco-load' },
+  finance: { topic: 'data', section: 'ingestion-flows' },
+  coverage: { topic: 'method', section: 'scenario-engine' },
+};
+
 // ── Compact layer card ─────────────────────────────────────────────────────────
 const LayerCard: React.FC<{ l: LayerDef; pillar: any; i: number; lang: Language; onNav: () => void; darkMode: boolean }> = ({ l, pillar, i, lang, onNav, darkMode }) => (
   <motion.div
@@ -151,7 +158,20 @@ const LayerCard: React.FC<{ l: LayerDef; pillar: any; i: number; lang: Language;
     style={darkMode
       ? { background: l.cardBg, border: `1px solid ${l.color}40`, boxShadow: `0 0 20px ${l.glow}` }
       : { background: '#FFFFFF', border: `1px solid #DDD5CB`, borderLeft: `3px solid ${l.color}`, boxShadow: '8px 8px 24px rgba(58,53,48,0.09), -2px -2px 10px rgba(255,255,255,0.85)' }}
-    onClick={onNav}
+    onClick={(e) => {
+      const openEvidence = e.altKey || e.metaKey || e.ctrlKey;
+      if (!openEvidence) {
+        onNav();
+        return;
+      }
+    
+      e.preventDefault();
+      e.stopPropagation();
+    
+      const l3 = L3_MAP_BY_LAYER[l.id] ?? { topic: 'method', section: 'scenario-engine' };
+      window.location.hash = `#/l3/${encodeURIComponent(l3.topic)}/${encodeURIComponent(l3.section)}`;
+    }}
+    title={`${pillar.l1.title[lang]} — click: drilldown • Alt/Ctrl/Cmd+click: evidence`}
   >
     <div className="flex items-center justify-between mb-1">
       <span className="cyber-label" style={{ color: l.color, fontSize: '10px' }}>{pillar.label[lang]}</span>

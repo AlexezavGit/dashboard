@@ -32,7 +32,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env, params })
 
   const url = new URL(request.url);
   // params.path is the wildcard segments after /api/kobo/
-  const pathSegments = (params.path as string[]) ?? [];
+  const pathParam = params.path;
+  const pathSegments = Array.isArray(pathParam) ? pathParam : pathParam ? [pathParam] : [];
   const koboPath = '/' + pathSegments.join('/');
   const target = `${KOBO_BASE}${koboPath}${url.search}`;
 

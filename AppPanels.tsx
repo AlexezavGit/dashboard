@@ -246,16 +246,99 @@ GET /api/pipeline/gaps
   );
 }
 
+const L3_SECTIONS: Record<
+  string,
+  {
+    title: string;
+    summary: string;
+    assumptions?: string[];
+    sources?: string[];
+    formulas?: string[];
+  }
+> = {
+  'method/scenario-engine': {
+    title: 'Scenario engine (v1)',
+    summary:
+      'Monthly discrete model (120 points) driven by P_total_verified, sessions/day, DigitalBus_rate. 5/16/28 sessions-per-case is an automatic consequence of utilization/backlog, not a manual toggle.',
+    assumptions: [
+      'workdays_per_month = 22 (baseline).',
+      'K_surge = 1.22 (proxy until verified per source).',
+      'K_somatization = 0.15 (benchmark proxy).',
+      'TH_365 = 2.5 (proxy threshold for “>1 year wait”).',
+    ],
+    formulas: [
+      'macroNeedYear = 3_900_000 * K_surge',
+      'detectedMonth = (macroNeedYear/12) * DigitalBus_rate',
+      'capacitySessionsMonth = P_total_verified * sessions_per_day * workdays_per_month',
+    ],
+  },
+  'clinical/eco-load': {
+    title: 'Clinical load & capacity',
+    summary: 'Calculates the maximum output capability of the verified workforce.',
+    formulas: [
+      'Max capacity = P_total * sessions/day * workdays/month',
+      'If Backlog > 0, system runs at 100% capacity',
+    ]
+  },
+  'data/ingestion-flows': {
+    title: 'Digital Bus Lineage',
+    summary: 'Golden record flow tracking. Validates that P_total_verified matches OCHA financial pipelines.',
+    sources: [
+      'UN OCHA FTS (Financial Tracking Service) API',
+      'NHSU Open Data (Contracted providers)',
+      'KoBoToolbox cluster API'
+    ]
+  }
+};
+
 function L3EvidenceView({ topic, section }: { topic: string; section: string }) {
+  const key = `${topic}/${section}`;
+  const data = L3_SECTIONS[key] || {
+    title: `Evidence: ${topic} / ${section}`,
+    summary: 'v1: placeholder shell. Evidence data pending upload.',
+  };
+
   return (
-    <div className="rounded-xl p-4" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--color-ds-border)' }}>
-      <div className="text-[14px] font-bold ds-display mb-2">L3 Evidence</div>
-      <div className="text-[12px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
-        Topic: <b>{topic}</b> / Section: <b>{section}</b>
+    <div className="rounded-xl p-6" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--color-ds-border)' }}>
+      <div className="flex items-center gap-3 mb-4 pb-4" style={{ borderBottom: '1px solid var(--color-ds-border)' }}>
+        <div className="text-[10px] uppercase tracking-wider" style={{ color: 'var(--color-ds-gold)' }}>L3 Ledger</div>
+        <div className="text-[18px] font-bold ds-display">{data.title}</div>
       </div>
-      <div className="text-[12px] ds-body mt-3" style={{ color: 'var(--color-ds-muted)' }}>
-        v1: this is the placeholder shell. Next step is to move existing Appendix content into these English slugs and map KPI clicks → exact sections.
+      
+      <div className="text-[14px] ds-body mb-6" style={{ color: 'var(--color-ds-muted)', lineHeight: 1.6 }}>
+        {data.summary}
       </div>
+
+      {data.assumptions && (
+        <div className="mb-5">
+          <div className="text-[11px] font-bold ds-display mb-2 uppercase tracking-wide" style={{ color: 'var(--color-ds-text)' }}>Assumptions</div>
+          <ul className="list-disc pl-5 space-y-1">
+            {data.assumptions.map((a, i) => <li key={i} className="text-[12px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{a}</li>)}
+          </ul>
+        </div>
+      )}
+
+      {data.formulas && (
+        <div className="mb-5">
+          <div className="text-[11px] font-bold ds-display mb-2 uppercase tracking-wide" style={{ color: 'var(--color-ds-text)' }}>Calculations</div>
+          <div className="space-y-2">
+            {data.formulas.map((f, i) => (
+              <div key={i} className="font-mono text-[11px] p-2 rounded" style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)', color: 'var(--color-ds-teal)' }}>
+                {f}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {data.sources && (
+        <div className="mb-2">
+          <div className="text-[11px] font-bold ds-display mb-2 uppercase tracking-wide" style={{ color: 'var(--color-ds-text)' }}>Cross-referenced sources</div>
+          <ul className="list-disc pl-5 space-y-1">
+            {data.sources.map((s, i) => <li key={i} className="text-[12px] ds-body" style={{ color: 'var(--color-ds-gold)' }}>{s}</li>)}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
@@ -481,7 +564,7 @@ function PipelinePanel({
               {isLoading ? 'Loading…' : 'Click a flow to open lineage evidence.'}
             </div>
             <div className="space-y-2">
-              {dataSources.slice(0, 6).map((s) => (
+              {dataSources.map((s) => (
                 <button key={s.id} type="button" className="w-full text-left rounded-lg px-3 py-2"
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--color-ds-border)' }}
                   onClick={() => onOpenL3('data', 'ingestion-flows')}

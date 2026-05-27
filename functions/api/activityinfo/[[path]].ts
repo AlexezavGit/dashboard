@@ -29,7 +29,8 @@ export const onRequest: PagesFunction<Env> = async ({ request, env, params }) =>
   }
 
   const url = new URL(request.url);
-  const pathSegments = (params.path as string[]) ?? [];
+  const pathParam = params.path;
+  const pathSegments = Array.isArray(pathParam) ? pathParam : pathParam ? [pathParam] : [];
   const aiPath = '/' + pathSegments.join('/');
   const target = `${AI_BASE}${aiPath}${url.search}`;
 

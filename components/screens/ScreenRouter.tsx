@@ -17,7 +17,6 @@ import { L2Operational } from './L2Operational';
 import { L2Analytical } from './L2Analytical';
 import { L2Journey } from './L2Journey';
 import { LangThemeBar } from './LangThemeBar';
-import { AnimatePresence, motion } from 'motion/react';
 
 interface Props {
   lang: Language;
@@ -79,18 +78,9 @@ export const ScreenRouter: React.FC<Props> = ({
 
   return (
     <>
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current}
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1.01 }}
-          transition={{ duration: 0.25 }}
-          className="fixed inset-0 z-50"
-        >
-          {screens[current as Exclude<ScreenId, 'appendix'>]}
-        </motion.div>
-      </AnimatePresence>
+      <div className="fixed inset-0 z-50">
+        {screens[current as Exclude<ScreenId, 'appendix'>]}
+      </div>
 
       {/* ── Persistent lang + theme bar — same position on every L1/L2 screen ── */}
       <div className="fixed top-3 right-4 z-[60] pointer-events-auto">

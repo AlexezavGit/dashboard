@@ -11,7 +11,8 @@
     ],
     "skipLibCheck": true,
     "types": [
-      "node"
+      "vite/client",
+      "@cloudflare/workers-types"
     ],
     "moduleResolution": "bundler",
     "isolatedModules": true,
@@ -25,5 +26,11 @@
     },
     "allowImportingTsExtensions": true,
     "noEmit": true
-  }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "env.d.ts",
+    "functions/**/*.d.ts"
+  ]
 }

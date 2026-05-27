@@ -8,7 +8,8 @@
  */
 
 export const onRequest: PagesFunction = async ({ request, params }) => {
-  const path = (params['path'] as string[]).join('/');
+  const pathParam = params.path;
+  const path = Array.isArray(pathParam) ? pathParam.join('/') : pathParam ?? '';
   const url = new URL(request.url);
   const target = `https://api.hpc.tools/${path}${url.search}`;
 
