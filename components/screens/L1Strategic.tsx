@@ -40,11 +40,12 @@ interface LayerDef {
   cardBg: string;
 }
 
+// MHEI current = 68.5 (Р2: 0–100 scale, LSE methodology, WB-aligned) — verified vision value
 const PILLARS_CONFIG: LayerDef[] = [
-  { id: 'needs',    screenId: 'l2-operational', weight: 25, current: 34, target: 100, color: '#A855F7', glow: 'rgba(168,85,247,0.22)', cardBg: 'rgba(168,85,247,0.07)' },
-  { id: 'capital',  screenId: 'l2-clinical',    weight: 25, current: 18, target: 100, color: '#3B82F6', glow: 'rgba(59,130,246,0.22)', cardBg: 'rgba(59,130,246,0.07)' },
-  { id: 'finance',  screenId: 'l2-finance',     weight: 25, current: 5,  target: 100, color: '#EF4444', glow: 'rgba(239,68,68,0.22)',  cardBg: 'rgba(239,68,68,0.07)' },
-  { id: 'coverage', screenId: 'l2-sustain',     weight: 25, current: 8,  target: 100, color: '#10B981', glow: 'rgba(16,185,129,0.22)', cardBg: 'rgba(16,185,129,0.07)' },
+  { id: 'needs',    screenId: 'l2-operational', weight: 25, current: 74, target: 100, color: '#A855F7', glow: 'rgba(168,85,247,0.22)', cardBg: 'rgba(168,85,247,0.07)' },
+  { id: 'capital',  screenId: 'l2-clinical',    weight: 25, current: 61, target: 100, color: '#3B82F6', glow: 'rgba(59,130,246,0.22)', cardBg: 'rgba(59,130,246,0.07)' },
+  { id: 'finance',  screenId: 'l2-finance',     weight: 25, current: 55, target: 100, color: '#EF4444', glow: 'rgba(239,68,68,0.22)',  cardBg: 'rgba(239,68,68,0.07)' },
+  { id: 'coverage', screenId: 'l2-sustain',     weight: 25, current: 84, target: 100, color: '#10B981', glow: 'rgba(16,185,129,0.22)', cardBg: 'rgba(16,185,129,0.07)' },
 ];
 
 const INDEX_SCORE = Math.round(
