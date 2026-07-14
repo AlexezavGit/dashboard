@@ -42,7 +42,9 @@ interface LayerDef {
 
 // MHEI recalculated (2026-07-14): real crisis-level scores
 // Coverage: 260K sessions / 62.4M needed = 0.41% → score 2
-// Capital: 1,400 specialists / 3.9M people = 0.036% capacity → score 5
+// Capital: ~1,400 clinical psychologists/psychotherapists (Compendium May 2026 forecast)
+//   vs 3.9M people needing care → 0.036% capacity → score 5
+//   Formula: (3.9M × 5 sessions) / (1,400 × 1,000 hrs/yr ÷ 2 hrs/session) = 69:1 gap
 // Finance: $175M locked (HEAL C4 $41.1M + THRIVE $134M), $8B/yr GDP loss → score 12
 // Needs: 3.9M identified but only 260K reached system → score 8
 const PILLARS_CONFIG: LayerDef[] = [
@@ -66,7 +68,7 @@ const TOTAL_UNDISBURSED = HEAL_UNDISBURSED + THRIVE_UNDISBURSED; // ~$175M
 
 type Band = 'low' | 'medium' | 'high';
 const scoreToBand = (s: number): Band => s < 34 ? 'low' : s < 67 ? 'medium' : 'high';
-const BAND_COLOR: Record<Band, string> = { low: '#ff7b6e', medium: '#e8c97a', high: '#00d4aa' };
+const BAND_COLOR: Record<Band, string> = { low: '#ff7b6e', medium: '#E3A22E', high: '#00d4aa' };
 const BAND_LABEL: Record<Band, { uk: string; en: string }> = {
   low:    { uk: 'Кризова стагнація', en: 'Crisis stagnation' },
   medium: { uk: 'Регульоване плато', en: 'Managed plateau' },
@@ -178,8 +180,8 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
           <defs>
             <linearGradient id="mhei-brass" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%"   stopColor="#7a5218" />
-              <stop offset="30%"  stopColor="#e8c97a" />
-              <stop offset="65%"  stopColor="#c8a44c" />
+              <stop offset="30%"  stopColor="#E3A22E" />
+              <stop offset="65%"  stopColor="#C9B36A" />
               <stop offset="100%" stopColor="#5a3a08" />
             </linearGradient>
           </defs>
@@ -190,7 +192,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 
           {/* Zone background tints: Crisis / Transition / Recovery */}
           <path d={eArc(R - 16, 0,  33)}  fill="none" stroke="#ff7b6e" strokeWidth="28" opacity="0.18" />
-          <path d={eArc(R - 16, 33, 67)}  fill="none" stroke="#e8c97a" strokeWidth="28" opacity="0.18" />
+          <path d={eArc(R - 16, 33, 67)}  fill="none" stroke="#E3A22E" strokeWidth="28" opacity="0.18" />
           <path d={eArc(R - 16, 67, 100)} fill="none" stroke="#00d4aa" strokeWidth="28" opacity="0.18" />
 
           {/* Fan lines from pivot — one group per layer, width proportional to weight */}
@@ -232,7 +234,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
                 <line
                   x1={outer.x.toFixed(1)} y1={outer.y.toFixed(1)}
                   x2={inner.x.toFixed(1)} y2={inner.y.toFixed(1)}
-                  stroke={lit ? '#e8c97a' : 'rgba(200,164,92,0.25)'}
+                  stroke={lit ? '#E3A22E' : 'rgba(200,164,92,0.25)'}
                   strokeWidth={isEnd ? 2.5 : 1.5}
                 />
                 <text x={lp.x.toFixed(1)} y={(lp.y + 4).toFixed(1)}
@@ -241,7 +243,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
                     fontFamily: 'Space Grotesk, sans-serif',
                     fontSize: isEnd ? '10px' : '8px',
                     fontWeight: '700',
-                    fill: lit ? '#e8c97a' : 'rgba(200,164,92,0.28)',
+                    fill: lit ? '#E3A22E' : 'rgba(200,164,92,0.28)',
                   }}>
                   {label}
                 </text>
@@ -251,7 +253,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 
           {/* Needle (animated, points from pivot to current score position) */}
           <g ref={needleRef}>
-            <line x1={CX} y1={CY - 4} x2={CX + R - 5} y2={CY - 4}
+            <line x1={CX} y1={CY - 4} x2={CX + R - 15} y2={CY - 4}
               stroke={bandColor} strokeWidth="2.5" strokeLinecap="round"
               style={{ filter: `drop-shadow(0 0 6px ${bandColor}cc)` } as React.CSSProperties}
             />
@@ -278,7 +280,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
           color: bandColor, marginTop: 4 }}>
           {BAND_LABEL[currentBand][lang]}
         </div>
-        <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, color: '#e8c97a',
+        <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 11, color: '#E3A22E',
           opacity: 0.75, marginTop: 3, letterSpacing: '0.06em' }}>
           {gdpImpact(INDEX_SCORE)} {lang === 'uk' ? 'ВВП' : 'GDP'}
         </div>
@@ -318,10 +320,10 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
                   <div key={p.id}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
                       <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
-                        fontSize: 10, color: config.color }}>
+                        fontSize: 11, color: config.color }}>
                         {p.label[lang]}
                       </span>
-                      <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 10,
+                      <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 11,
                         color: 'var(--color-ds-muted)' }}>
                         {Math.round(pct)}% · w{config.weight}%
                       </span>
@@ -371,7 +373,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
         <div className="flex items-center gap-4">
           <Logo darkMode={darkMode} />
           <div>
-            <div className="flex items-center gap-1.5 text-[9px] font-mono mb-0.5" style={{ color: 'var(--color-ds-muted)' }}>
+            <div className="flex items-center gap-1.5 text-[10px] font-mono mb-0.5" style={{ color: 'var(--color-ds-muted)' }}>
               <span style={{ color: 'var(--color-ds-gold)' }}>FEEL Again</span>
               <span>·</span>
               <span>MHPSS Ukraine</span>
@@ -384,24 +386,47 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
           </div>
         </div>
         {/* API status dot — links to l2-analytical */}
-        <button
-          onClick={() => nav.push('l2-analytical')}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            fontFamily: 'DM Mono, monospace', fontSize: 9,
-            color: 'rgba(0,210,170,0.7)',
-            background: 'rgba(0,210,170,0.06)',
-            border: '1px solid rgba(0,210,170,0.2)',
-            borderRadius: 6, padding: '3px 10px', cursor: 'pointer',
-          }}
-        >
-          <span style={{
-            width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
-            background: '#00d4aa', boxShadow: '0 0 8px #00d4aa',
-            animation: 'pulse 2s infinite',
-          }} />
-          {lang === 'uk' ? '● API Live' : '● API Live'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => nav.push('l2-journey')}
+            className="text-[10px] ds-display font-medium px-2 py-1 rounded"
+            style={{ color: 'var(--color-ds-muted)', border: '1px solid var(--color-ds-border)', cursor: 'pointer' }}
+          >
+            {lang === 'uk' ? 'Стейкхолдери' : 'Stakeholders'}
+          </button>
+          <button
+            onClick={() => nav.push('appendix')}
+            className="text-[10px] ds-display font-medium px-2 py-1 rounded"
+            style={{ color: 'var(--color-ds-muted)', border: '1px solid var(--color-ds-border)', cursor: 'pointer' }}
+          >
+            {lang === 'uk' ? 'Звіт' : 'Report'}
+          </button>
+          <button
+            onClick={() => nav.push('l4')}
+            className="text-[10px] ds-display font-bold px-2 py-1 rounded"
+            style={{ background: 'color-mix(in srgb, var(--color-ds-teal) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--color-ds-teal) 35%, transparent)', color: 'var(--color-ds-teal)', cursor: 'pointer' }}
+          >
+            {lang === 'uk' ? 'Повний звіт' : 'Full Report'}
+          </button>
+          <button
+            onClick={() => nav.push('l2-analytical')}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              fontFamily: 'DM Mono, monospace', fontSize: 10,
+              color: 'rgba(0,210,170,0.7)',
+              background: 'rgba(0,210,170,0.06)',
+              border: '1px solid rgba(0,210,170,0.2)',
+              borderRadius: 6, padding: '3px 10px', cursor: 'pointer',
+            }}
+          >
+            <span style={{
+              width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
+              background: '#00d4aa', boxShadow: '0 0 8px #00d4aa',
+              animation: 'pulse 2s infinite',
+            }} />
+            {lang === 'uk' ? '● API Live' : '● API Live'}
+          </button>
+        </div>
       </div>
 
       {/* ── 2-zone body: Zone A (gauge + cards) | Zone B (inaction) ── */}
@@ -410,45 +435,28 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
         {/* Zone A — Diagnostics: MHEI gauge center + 6 gap cards row */}
         <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
 
-          {/* MHEI Gauge — clickable drill-down to l2-mhei */}
+          {/* MHEI Gauge — clickable to L4 full report */}
           <div
             className="w-full lg:w-[264px] flex-shrink-0 flex flex-col items-center justify-center py-1 ds-blueprint cursor-pointer"
             style={{ flexShrink: 0 }}
-            onClick={() => { setDrillAnswers({ indexScore: INDEX_SCORE }); nav.push('l2-mhei'); }}
-            title={lang === 'uk' ? 'Mental Health Economy Index — клацніть для drill-down' : 'Mental Health Economy Index — click to drill down'}
+            onClick={() => nav.push('l4')}
+            title={lang === 'uk' ? 'Mental Health Economy Index — перейти до звіту' : 'Mental Health Economy Index — go to report'}
           >
             <div style={{
-              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9,
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
               color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.12em',
               textAlign: 'center', marginBottom: 2,
             }}>
               Mental Health Economy Index
             </div>
-            <div style={{ fontSize: 9, color: 'var(--color-ds-teal)', textAlign: 'center', marginBottom: 4, fontFamily: 'DM Sans, sans-serif' }}>
-              {lang === 'uk' ? '↓ клацніть для drill-down' : '↓ click to drill down'}
-            </div>
 
-            <GaugeDisplay lang={lang} expanded={false} onToggle={() => { setDrillAnswers({ indexScore: INDEX_SCORE }); nav.push('l2-mhei'); }} />
+            <GaugeDisplay lang={lang} expanded={false} onToggle={() => nav.push('l4')} />
 
-            {/* Layer legend */}
-            <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: '3px 6px', justifyContent: 'center' }}>
-              {STRATEGIC_FRAMEWORK(lang).map(p => {
-                const config = PILLARS_CONFIG.find(c => c.id === p.id)!;
-                return (
-                  <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                    <div style={{ width: 8, height: 2.5, background: config.color, borderRadius: 1 }} />
-                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>
-                      {p.label[lang]}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
             <button
-              onClick={() => { setDrillAnswers({ indexScore: INDEX_SCORE }); nav.push('l2-mhei'); }}
+              onClick={() => nav.push('l4')}
               style={{ marginTop: 8, fontSize: 10, color: 'var(--color-ds-teal)', border: '1px solid rgba(0,210,170,0.3)', borderRadius: 6, padding: '4px 12px', background: 'rgba(0,210,170,0.07)', cursor: 'pointer', fontFamily: 'DM Mono, monospace', letterSpacing: '0.05em' }}
             >
-              {lang === 'uk' ? 'MHEI Дельта →' : 'MHEI Delta →'}
+              {lang === 'uk' ? '→ Повний звіт' : '→ Full Report'}
             </button>
           </div>
 
@@ -480,13 +488,13 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
                 onMouseEnter={e => (e.currentTarget.style.background = darkMode ? 'rgba(46,137,166,0.06)' : 'rgba(18,60,58,0.04)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
               >
-                <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, letterSpacing: '0.1em', color: darkMode ? 'rgba(75,168,188,0.5)' : 'rgba(18,60,58,0.5)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, letterSpacing: '0.1em', color: darkMode ? 'rgba(75,168,188,0.5)' : 'rgba(18,60,58,0.5)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {kpi.label[lang]}
                 </div>
-                <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 300, fontSize: 'clamp(16px, 2.2vw, 24px)', color: kpi.color, lineHeight: 1 }}>
+                <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 300, fontSize: 'clamp(18px, 2.5vw, 28px)', color: kpi.color, lineHeight: 1 }}>
                   {kpi.val}
                 </div>
-                <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: darkMode ? 'rgba(200,190,170,0.35)' : 'rgba(18,60,58,0.4)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: darkMode ? 'rgba(200,190,170,0.35)' : 'rgba(18,60,58,0.4)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {kpi.sub[lang]}
                 </div>
               </div>
@@ -514,60 +522,30 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
                   <span className="text-[14px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>{m.val}</span>
                   <span className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{m.label[lang]}</span>
                 </div>
-                <span className="text-[8px] font-mono" style={{ color: 'rgba(200,164,92,0.45)' }}>{m.source[lang]}</span>
+                <span className="text-[10px] font-mono" style={{ color: 'rgba(200,164,92,0.45)' }}>{m.source[lang]}</span>
               </div>
               {m.arrow && (
                 <span style={{ color: 'rgba(200,164,92,0.4)', fontSize: 12, flexShrink: 0 }}>→</span>
               )}
             </React.Fragment>
           ))}
-          {liveHciValue && (
-            <>
-              <span style={{ color: 'rgba(200,164,92,0.4)', fontSize: 12 }}>·</span>
-              <div className="flex flex-col">
-                <span className="text-[14px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>HCI {liveHciValue}</span>
-                <span className="text-[8px] font-mono" style={{ color: 'rgba(200,164,92,0.45)' }}>Human Capital Index · World Bank 2020</span>
-              </div>
-            </>
-          )}
           <div className="flex-1" />
-          <button
-            onClick={() => nav.push('l2-journey')}
-            className="flex items-center gap-1.5 text-[11px] ds-display font-medium px-3 py-1.5 rounded-lg"
-            style={{ background: 'rgba(68,136,255,0.07)', border: '1px solid rgba(68,136,255,0.3)', color: '#4488ff' }}
-          >
-            {lang === 'uk' ? 'Шляхи Стейкхолдерів' : 'Stakeholder Journeys'}
-          </button>
-          <button
-            onClick={() => nav.push('appendix')}
-            className="flex items-center gap-1.5 text-[11px] ds-display font-medium"
-            style={{ color: 'var(--color-ds-muted)' }}
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-            {lang === 'uk' ? 'Аналітичний звіт' : 'Analytical Report'}
-          </button>
-          <button
-            onClick={() => nav.push('l4')}
-            className="flex items-center gap-1.5 text-[11px] ds-display font-bold px-3 py-1.5 rounded-lg"
-            style={{ background: 'color-mix(in srgb, var(--color-ds-teal) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--color-ds-teal) 35%, transparent)', color: 'var(--color-ds-teal)' }}
-          >
-            {lang === 'uk' ? '→ Повний звіт' : '→ Full Report'}
-          </button>
+          {/* Navigation moved to header */}
         </div>
         {/* Disclaimer row — matches L3 footer */}
         <div className="flex items-start gap-4 flex-wrap" style={{ borderTop: '1px solid rgba(200,164,92,0.1)', paddingTop: 8 }}>
-          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: 'rgba(200,164,92,0.4)', lineHeight: 1.5, maxWidth: 600 }}>
+          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: 'rgba(200,164,92,0.4)', lineHeight: 1.5, maxWidth: 600 }}>
             {lang === 'uk'
               ? 'Дашборд містить дані з відкритих джерел за 2020-2025 рр., «оцінка» зазначено там де дані недоступні. Тіньовий сектор: конкретні дослідження для MHPSS не проводились. Сертифікація: добровільна до 2031 року.'
               : "Dashboard contains data from open sources for 2020-2025, 'estimate' is indicated where data is unavailable. Shadow sector: specific studies for MHPSS were not conducted. Certification: voluntary until 2031."}
           </div>
-          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: 'rgba(200,164,92,0.35)', lineHeight: 1.5, maxWidth: 500 }}>
+          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: 'rgba(200,164,92,0.35)', lineHeight: 1.5, maxWidth: 500 }}>
             {lang === 'uk'
               ? 'Дані надані виключно для інформаційних цілей. Не є офіційним звітом гуманітарних акторів, фінансових інституцій, або урядових структур.'
               : 'Data provided for informational purposes only. Not an official report of humanitarian actors, financial institutions, or governmental structures.'}
           </div>
           <div className="flex-1" />
-          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: 'rgba(200,164,92,0.3)', textAlign: 'right', whiteSpace: 'nowrap' }}>
+          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: 'rgba(200,164,92,0.3)', textAlign: 'right', whiteSpace: 'nowrap' }}>
             © 2026 FEEL Again Program · dashboard.feelagain.me
           </div>
         </div>
