@@ -40,38 +40,42 @@ interface LayerDef {
   cardBg: string;
 }
 
-// MHEI current = 68.5 (Р2: 0–100 scale, LSE methodology, WB-aligned) — verified vision value
+// MHEI recalculated (2026-07-14): real crisis-level scores
+// Coverage: 260K sessions / 62.4M needed = 0.41% → score 2
+// Capital: 1,400 specialists / 3.9M people = 0.036% capacity → score 5
+// Finance: $175M locked (HEAL C4 $41.1M + THRIVE $134M), $8B/yr GDP loss → score 12
+// Needs: 3.9M identified but only 260K reached system → score 8
 const PILLARS_CONFIG: LayerDef[] = [
-  { id: 'needs',    screenId: 'l2-operational', weight: 25, current: 74, target: 100, color: '#A855F7', glow: 'rgba(168,85,247,0.22)', cardBg: 'rgba(168,85,247,0.07)' },
-  { id: 'capital',  screenId: 'l2-clinical',    weight: 25, current: 61, target: 100, color: '#3B82F6', glow: 'rgba(59,130,246,0.22)', cardBg: 'rgba(59,130,246,0.07)' },
-  { id: 'finance',  screenId: 'l2-finance',     weight: 25, current: 55, target: 100, color: '#EF4444', glow: 'rgba(239,68,68,0.22)',  cardBg: 'rgba(239,68,68,0.07)' },
-  { id: 'coverage', screenId: 'l2-sustain',     weight: 25, current: 84, target: 100, color: '#10B981', glow: 'rgba(16,185,129,0.22)', cardBg: 'rgba(16,185,129,0.07)' },
+  { id: 'needs',    screenId: 'l2-operational', weight: 25, current: 8,  target: 100, color: '#A855F7', glow: 'rgba(168,85,247,0.22)', cardBg: 'rgba(168,85,247,0.07)' },
+  { id: 'capital',  screenId: 'l2-clinical',    weight: 25, current: 5,  target: 100, color: '#3B82F6', glow: 'rgba(59,130,246,0.22)', cardBg: 'rgba(59,130,246,0.07)' },
+  { id: 'finance',  screenId: 'l2-finance',     weight: 25, current: 12, target: 100, color: '#EF4444', glow: 'rgba(239,68,68,0.22)',  cardBg: 'rgba(239,68,68,0.07)' },
+  { id: 'coverage', screenId: 'l2-sustain',     weight: 25, current: 2,  target: 100, color: '#10B981', glow: 'rgba(16,185,129,0.22)', cardBg: 'rgba(16,185,129,0.07)' },
 ];
 
 const INDEX_SCORE = Math.round(
   PILLARS_CONFIG.reduce((sum, l) => sum + Math.min(100, (l.current / l.target) * 100) * (l.weight / 100), 0)
-); // → 69 (Representative MHEI Score)
+); // → 7 (Crisis-level stagnation)
 
 // HCI (Human Capital Index) - World Bank 2020
 const HCI_VALUE = 0.63;
 
-// HEAL/THRIVE undisbursed - NEEDS WB RE-VERIFICATION
-const HEAL_UNDISBURSED = 329000000;   // $329M - NEEDS WB RE-VERIFICATION
-const THRIVE_UNDISBURSED = 134000000; // $134M - NEEDS WB RE-VERIFICATION
-const TOTAL_UNDISBURSED = HEAL_UNDISBURSED + THRIVE_UNDISBURSED; // $463M
+// HEAL/THRIVE undisbursed — verified 2026-07-14
+const HEAL_UNDISBURSED = 41100000;    // $41.1M — HEAL Component 4 (NBU Brief v14)
+const THRIVE_UNDISBURSED = 134000000; // $134M — THRIVE DLI awaiting (NBU Brief v14)
+const TOTAL_UNDISBURSED = HEAL_UNDISBURSED + THRIVE_UNDISBURSED; // ~$175M
 
 type Band = 'low' | 'medium' | 'high';
 const scoreToBand = (s: number): Band => s < 34 ? 'low' : s < 67 ? 'medium' : 'high';
 const BAND_COLOR: Record<Band, string> = { low: '#ff7b6e', medium: '#e8c97a', high: '#00d4aa' };
 const BAND_LABEL: Record<Band, { uk: string; en: string }> = {
-  low:    { uk: 'Стагнація / Криза', en: 'Stagnation / Crisis' },
-  medium: { uk: 'Помірне відновлення', en: 'Moderate recovery' },
-  high:   { uk: 'Активне відновлення', en: 'Active recovery' },
+  low:    { uk: 'Кризова стагнація', en: 'Crisis stagnation' },
+  medium: { uk: 'Регульоване плато', en: 'Managed plateau' },
+  high:   { uk: 'Стійке відновлення', en: 'Sustained recovery' },
 };
 
 const currentBand = scoreToBand(INDEX_SCORE);
 
-// GDP causal chain footer items (updated with verified numbers)
+// GDP causal chain footer items (verified 2026-07-14)
 const GDP_CHAIN = [
   {
     val: '260K',
@@ -80,21 +84,21 @@ const GDP_CHAIN = [
     arrow: true,
   },
   {
-    val: '€2.5–4.1B',
-    label: { uk: 'непокриті сесії/рік', en: 'unmet sessions/yr' },
-    source: { uk: 'МОЗ тариф × 3.5M розрив', en: 'MoH tariff × 3.5M gap' },
+    val: '0.41%',
+    label: { uk: 'покриття потреби', en: 'need coverage' },
+    source: { uk: '260K / 62.4M сесій (WHO)', en: '260K / 62.4M sessions (WHO)' },
     arrow: true,
   },
   {
     val: '$8B/рік ⚠️',
     label: { uk: 'ВВП-втрати', en: 'GDP losses' },
-    source: { uk: 'WHO/OECD оцінка ⚠️', en: 'WHO/OECD estimate ⚠️' },
+    source: { uk: 'WHO/RDNA3 оцінка ⚠️', en: 'WHO/RDNA3 estimate ⚠️' },
     arrow: true,
   },
   {
-    val: '$463M',
-    label: { uk: 'WB HEAL+THRIVE невикористано (потребує перевірки)', en: 'WB HEAL+THRIVE undisbursed (needs WB re-verification)' },
-    source: { uk: 'HEAL $329M + THRIVE $134M · WB ISR', en: 'HEAL $329M + THRIVE $134M · WB ISR' },
+    val: 'HCI 0.63',
+    label: { uk: 'Human Capital Index', en: 'Human Capital Index' },
+    source: { uk: 'World Bank 2020', en: 'World Bank 2020' },
     arrow: false,
   },
 ];
@@ -280,7 +284,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
         </div>
         <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
           color: 'var(--color-ds-muted)', marginTop: 2, lineHeight: 1.4 }}>
-          {lang === 'uk' ? 'темп відновлення при завершенні бойових дій' : 'recovery pace when hostilities end'}
+          {lang === 'uk' ? 'реальний стан системи MHPSS' : 'actual MHPSS system state'}
         </div>
       </div>
 
@@ -459,10 +463,10 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
             border: `1px solid ${darkMode ? 'rgba(46,137,166,0.12)' : 'rgba(18,60,58,0.1)'}`,
           }}>
             {([
-              { id: 'needs',    label: { uk: 'ПОТРЕБА', en: 'NEED' }, val: '3.9M', sub: { uk: 'клінічна (WB)', en: 'clinical (WB)' }, color: '#3E91A2', nav: 'l2-operational' },
-              { id: 'capital',  label: { uk: 'СПРОМОЖНІСТЬ', en: 'CAPACITY' }, val: '38%', sub: { uk: 'від потреби закрито', en: 'of need covered' }, color: '#1C5A52', nav: 'l2-clinical' },
-              { id: 'finance',  label: { uk: 'ВВП-ВТРАТИ', en: 'GDP LOSS' }, val: '$8B', sub: { uk: 'щорічно (WHO)', en: 'per year (WHO)' }, color: '#E8741E', nav: 'l2-finance' },
-              { id: 'coverage', label: { uk: 'ROI', en: 'ROI' }, val: '1→4.5×', sub: { uk: 'за 5 років', en: 'over 5 years' }, color: '#FAB007', nav: 'l2-sustain' },
+              { id: 'needs',    label: { uk: 'ПОТРЕБА', en: 'NEED' }, val: '3.9M', sub: { uk: 'клінічна (WB/Lancet)', en: 'clinical (WB/Lancet)' }, color: '#3E91A2', nav: 'l2-operational' },
+              { id: 'capital',  label: { uk: 'СПРОМОЖНІСТЬ', en: 'CAPACITY' }, val: '0.41%', sub: { uk: '260K із 62.4M сесій', en: '260K of 62.4M sessions' }, color: '#E8741E', nav: 'l2-clinical' },
+              { id: 'hci',      label: { uk: 'HCI', en: 'HCI' }, val: '0.63', sub: { uk: 'Human Capital Index', en: 'Human Capital Index' }, color: '#3E91A2', nav: 'l2-analytical' },
+              { id: 'finance',  label: { uk: 'ВВП-ВТРАТИ', en: 'GDP LOSS' }, val: '$8B', sub: { uk: 'щорічно (WHO/RDNA3)', en: 'per year (WHO/RDNA3)' }, color: '#E8741E', nav: 'l2-finance' },
               { id: 'gap',      label: { uk: 'GAP', en: 'GAP' }, val: '62%', sub: { uk: 'незакрита потреба ⚡', en: 'unmet need ⚡' }, color: '#E8741E', nav: 'l2-analytical' },
             ] as const).map((kpi, i, arr) => (
               <div
@@ -525,6 +529,11 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
           </>
         )}
         <div className="flex-1" />
+        <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 7, color: 'rgba(200,164,92,0.35)', textAlign: 'right', maxWidth: 200, lineHeight: 1.4 }}>
+          {lang === 'uk'
+            ? '⚠ Дані потребують верифікації. MHEI — діагностичний індекс, не оцінка якості.'
+            : '⚠ Data needs verification. MHEI is a diagnostic index, not a quality assessment.'}
+        </div>
         <button
           onClick={() => nav.push('l2-journey')}
           className="flex items-center gap-1.5 text-[11px] ds-display font-medium px-3 py-1.5 rounded-lg"
