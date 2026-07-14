@@ -180,8 +180,8 @@ const SequentialStep: React.FC<{
       {/* Period badge */}
       <div style={{
         flexShrink: 0, minWidth: 90, textAlign: 'center',
-        background: isActive ? `${step.color}18` : 'rgba(255,255,255,0.03)',
-        border: `1px solid ${isActive ? `${step.color}44` : 'rgba(255,255,255,0.06)'}`,
+        background: isActive ? `${step.color}18` : (darkMode ? 'rgba(255,255,255,0.03)' : 'rgba(18,60,58,0.04)'),
+        border: `1px solid ${isActive ? `${step.color}44` : (darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(18,60,58,0.08)')}`,
         borderRadius: 5, padding: '4px 6px',
       }}>
         <div style={{
