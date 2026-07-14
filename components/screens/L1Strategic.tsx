@@ -50,7 +50,7 @@ const PILLARS_CONFIG: LayerDef[] = [
 
 const INDEX_SCORE = Math.round(
   PILLARS_CONFIG.reduce((sum, l) => sum + Math.min(100, (l.current / l.target) * 100) * (l.weight / 100), 0)
-); // → 29 (Representative MHEI Score)
+); // → 69 (Representative MHEI Score)
 
 // HCI (Human Capital Index) - World Bank 2020
 const HCI_VALUE = 0.63;
@@ -139,15 +139,17 @@ const eNeedleAngle = (s: number) => 180 - s * 1.8;
 
 // ── Elevator "floors" ─────────────────────────────────────────────────────────
 const FLOORS = [
-  { label: 'B', score: 0   },
-  { label: '1', score: 12  },
-  { label: '2', score: 25  },
-  { label: '3', score: 37  },
-  { label: '4', score: 50  },
-  { label: '5', score: 62  },
-  { label: '6', score: 75  },
-  { label: '7', score: 87  },
-  { label: 'R', score: 100 },
+  { label: '0',   score: 0   },
+  { label: '10',  score: 10  },
+  { label: '20',  score: 20  },
+  { label: '30',  score: 30  },
+  { label: '40',  score: 40  },
+  { label: '50',  score: 50  },
+  { label: '60',  score: 60  },
+  { label: '70',  score: 70  },
+  { label: '80',  score: 80  },
+  { label: '90',  score: 90  },
+  { label: '100', score: 100 },
 ] as const;
 
 // Fan zones: each LAYER occupies a slice of the arc proportional to its weight
@@ -262,7 +264,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 
           {/* Floor tick marks + labels */}
           {FLOORS.map(({ label, score }) => {
-            const isEnd = label === 'B' || label === 'R';
+            const isEnd = label === '0' || label === '100';
             const lit   = score <= INDEX_SCORE;
             const outer = ePt(score, R + 3);
             const inner = ePt(score, R - 10);
