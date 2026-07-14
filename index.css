@@ -1,7 +1,13 @@
 @import "tailwindcss";
 
-/* ── Canonical Design System — El Refugio Atómico ───────────────────────── */
-/* Palette: deep petrol teal background + copper/orange humanitarian puzzle  */
+/* ── Canonical Design System — "Bunker" Cinematic Palette ────────────────── */
+/* Source: FEEL Again Design System Canvas v1.0, Sections B (Themes & Surfaces)
+   and H (Cinematic Palette, verified 2026-06-30). Roles: royal blue = donors,
+   teal = providers, orange = operational/GAP, gold-A (brass) = title plaques,
+   gold-B (amber) = ROI/world-panel numbers, red = collision (<2% usage),
+   sand/cream = light theme + care surfaces. Replaces the earlier "El Refugio
+   Atómico" cyan/orange palette which used cool cyan tones inconsistent with
+   the canvas — this was reported as illegible in light mode. */
 @theme {
   --font-sans:    "DM Sans",        ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk",  ui-sans-serif, system-ui, sans-serif;
@@ -15,66 +21,66 @@
   --breakpoint-xl:   1280px;
   --breakpoint-2xl:  1536px;
 
-  /* ── Dark (Bunker/Refugio) ── */
-  --color-ds-bg:          #051619;   /* deep petrol noir */
-  --color-ds-bg2:         #0a2428;
+  /* ── Dark (Bunker) — canvas Section B1 "DARK · IMMERSIVE" + H1 roles ── */
+  --color-ds-bg:          #050C16;   /* canvas root bg */
+  --color-ds-bg2:         #0C2233;   /* canvas card-d */
   --color-ds-surface:     rgba(255, 255, 255, 0.04);
-  
-  /* Primary Accents from References */
-  --color-ds-teal:        #00D2FF;   /* vibrant turquoise from poster 1 */
-  --color-ds-orange:      #FF7F00;   /* tetris puzzle orange */
-  --color-ds-yellow:      #FBBF24;   /* bunker logo yellow */
-  
-  --color-ds-copper:      #C8763A;   
-  --color-ds-copper-bright: #E8A05C;
-  --color-ds-copper-dim:  rgba(255, 127, 0, 0.15);
-  --color-ds-gold:        #D4A574;
-  --color-ds-gold-dim:    rgba(212, 165, 116, 0.18);
-  --color-ds-teal-dim:    rgba(0, 210, 255, 0.12);
-  --color-ds-red:         #E86B5A;
-  --color-ds-border: rgba(0, 210, 255, 0.2);
+
+  /* Role accents from canvas H1 (verified) */
+  --color-ds-teal:        #3E91A2;   /* ROYAL/TEAL role — providers, "good" direction */
+  --color-ds-orange:      #E8741E;   /* ORANGE role — operational / GAP */
+  --color-ds-yellow:      #FAB007;   /* GOLD-B bright — world panel */
+
+  --color-ds-copper:      #C9B36A;   /* GOLD-A — muted brass, title plaques */
+  --color-ds-copper-bright: #FAB007; /* GOLD-B — bright amber on hover/active */
+  --color-ds-copper-dim:  rgba(201, 179, 106, 0.15);
+  --color-ds-gold:        #F2C04A;   /* GOLD-B mid — ROI/outcome numbers */
+  --color-ds-gold-dim:    rgba(242, 192, 74, 0.18);
+  --color-ds-teal-dim:    rgba(62, 145, 162, 0.12);
+  --color-ds-red:         #E05038;   /* COLLISION role — rare, <2% usage per H1 */
+  --color-ds-border: rgba(62, 145, 162, 0.2);
   --color-ds-muted: #64748b;
-  --color-ds-bg-card: rgba(5, 22, 25, 0.8);
+  --color-ds-bg-card: rgba(5, 12, 22, 0.8);
   --color-ds-navy:        #020d0f;
 
-  /* UI Specifics */
+  /* UI Specifics — canvas E3 footer already uses this exact gold */
   --color-ds-footer-bg:   #FBBF24;
   --color-ds-footer-text: #051619;
 
   /* legacy aliases */
-  --color-cyber-bg:      #051619;
+  --color-cyber-bg:      #050C16;
   --color-cyber-surface: rgba(255, 255, 255, 0.04);
-  --color-cyber-border:  rgba(0, 210, 255, 0.12);
-  --color-cyber-cyan:    #00D2FF;
-  --color-cyber-amber:   #FBBF24;
-  --color-cyber-success: #3DD6CC;
+  --color-cyber-border:  rgba(62, 145, 162, 0.12);
+  --color-cyber-cyan:    #3E91A2;
+  --color-cyber-amber:   #FAB007;
+  --color-cyber-success: #5C8C72;   /* canvas H1 pale-green ANALYTICAL role */
   --color-cyber-purple:  #9B87D4;
 }
 
-/* ── Light theme ─────────────────────────────────────────────────────────── */
+/* ── Light theme — canvas B1 "LIGHT · DEFAULT" (warm sand + petrol text) ─── */
 :root[data-theme="light"] {
-  --color-ds-bg:           #EEF5F5;
-  --color-ds-bg2:          #E4EEEE;
+  --color-ds-bg:           #E9DEC9;   /* canvas card-l sand */
+  --color-ds-bg2:          #E2D5BC;
   --color-ds-surface:      rgba(255,255,255,0.75);
-  --color-ds-copper:       #A85F28;
-  --color-ds-copper-bright:#C07030;
-  --color-ds-copper-dim:   rgba(168,95,40,0.12);
-  --color-ds-gold:         #8A6830;
+  --color-ds-copper:       #B5481A;   /* orange role, darkened for AA contrast on sand */
+  --color-ds-copper-bright:#E8741E;
+  --color-ds-copper-dim:   rgba(181,72,26,0.12);
+  --color-ds-gold:         #8A6830;   /* gold role, darkened for AA contrast on sand */
   --color-ds-gold-dim:     rgba(138,104,48,0.12);
-  --color-ds-teal:         #2A8E88;
-  --color-ds-teal-dim:     rgba(42,142,136,0.12);
-  --color-ds-red:          #B84A3A;
-  --color-ds-border:       #C0D8D6;
-  --color-ds-text:         #1A3030;
-  --color-ds-muted:        #5A8080;
+  --color-ds-teal:         #2C6E7F;   /* teal/royal role, canvas B1 CTA blue */
+  --color-ds-teal-dim:     rgba(44,110,127,0.12);
+  --color-ds-red:          #B5481A;   /* collision role, kept <2% usage */
+  --color-ds-border:       #C9B591;
+  --color-ds-text:         #123C3A;   /* canvas B1 petrol text */
+  --color-ds-muted:        #5A7268;
   --color-ds-navy:         #0f2a2a;
 
-  --color-cyber-bg:      #EEF5F5;
+  --color-cyber-bg:      #E9DEC9;
   --color-cyber-surface: rgba(255,255,255,0.75);
-  --color-cyber-border:  #C0D8D6;
-  --color-cyber-cyan:    #2A8E88;
+  --color-cyber-border:  #C9B591;
+  --color-cyber-cyan:    #2C6E7F;
   --color-cyber-amber:   #8A6830;
-  --color-cyber-success: #3A8870;
+  --color-cyber-success: #2E6B5C;
   --color-cyber-purple:  #6850A0;
 }
 
@@ -200,11 +206,11 @@ html, body {
 
 :root[data-theme="light"] .ds-puzzle-box {
   background: rgba(255, 255, 255, 0.6);
-  border-color: rgba(42, 142, 136, 0.2);
+  border-color: rgba(44, 110, 127, 0.2);
 }
 
 :root[data-theme="light"] .ds-puzzle-box:hover {
-  background: rgba(42, 142, 136, 0.05);
+  background: rgba(44, 110, 127, 0.05);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
@@ -222,8 +228,8 @@ html, body {
 }
 
 @keyframes pulse-glow-light {
-  from { box-shadow: 0 0 5px rgba(42, 142, 136, 0.1); }
-  to { box-shadow: 0 0 15px rgba(42, 142, 136, 0.3); }
+  from { box-shadow: 0 0 5px rgba(44, 110, 127, 0.1); }
+  to { box-shadow: 0 0 15px rgba(44, 110, 127, 0.3); }
 }
 
 .ds-orange-accent {
@@ -301,7 +307,7 @@ html, body {
     border-right: 1px solid var(--color-ds-border);
   }
   :root[data-theme="light"] .ds-sidebar {
-    background: #d8ecec;
+    background: #E2D5BC;
     border-right: 1px solid var(--color-ds-border);
   }
 
@@ -531,8 +537,8 @@ html, body {
   gap: 4px;
   font-size: 9px;
   font-family: var(--font-mono);
-  color: #E8A05C;
-  background: rgba(200,118,58,0.12);
+  color: #FAB007;
+  background: rgba(201,179,106,0.12);
   border: 1px solid rgba(200,118,58,0.35);
   border-radius: 4px;
   padding: 1px 6px;
@@ -566,10 +572,10 @@ html, body {
   font-size: 11px;
   font-family: var(--font-display);
   font-weight: 700;
-  color: #E86B5A;
-  background: rgba(232,107,90,0.10);
-  border: 1px solid rgba(232,107,90,0.30);
-  border-left: 3px solid #E86B5A;
+  color: #E05038;
+  background: rgba(224,80,56,0.10);
+  border: 1px solid rgba(224,80,56,0.30);
+  border-left: 3px solid #E05038;
   border-radius: 6px;
   padding: 6px 12px;
 }
@@ -594,12 +600,12 @@ html, body {
 .text-slate-600 { color: rgba(237,244,244,0.28) !important; }
 .text-slate-700 { color: rgba(237,244,244,0.18) !important; }
 
-:root[data-theme="light"] .text-slate-300 { color: #1A3030 !important; opacity: 0.85; }
-:root[data-theme="light"] .text-slate-400 { color: #1A3030 !important; opacity: 0.7; }
-:root[data-theme="light"] .text-slate-500 { color: #1A3030 !important; opacity: 0.55; }
-:root[data-theme="light"] .text-slate-600 { color: #1A3030 !important; opacity: 0.45; }
-:root[data-theme="light"] .text-slate-700 { color: #1A3030 !important; opacity: 0.3; }
-:root[data-theme="light"] .text-white      { color: #1A3030 !important; }
+:root[data-theme="light"] .text-slate-300 { color: #123C3A !important; opacity: 0.85; }
+:root[data-theme="light"] .text-slate-400 { color: #123C3A !important; opacity: 0.7; }
+:root[data-theme="light"] .text-slate-500 { color: #123C3A !important; opacity: 0.55; }
+:root[data-theme="light"] .text-slate-600 { color: #123C3A !important; opacity: 0.45; }
+:root[data-theme="light"] .text-slate-700 { color: #123C3A !important; opacity: 0.3; }
+:root[data-theme="light"] .text-white      { color: #123C3A !important; }
 
 /* Light mode overrides for background utilities */
 :root[data-theme="light"] .bg-slate-900\/40,
@@ -607,20 +613,20 @@ html, body {
 :root[data-theme="light"] .bg-slate-800\/30,
 :root[data-theme="light"] .bg-slate-800\/40,
 :root[data-theme="light"] .bg-slate-800\/50 { background: rgba(0, 0, 0, 0.05) !important; }
-:root[data-theme="light"] .bg-cyber-cyan\/5 { background: rgba(42, 142, 136, 0.05) !important; }
-:root[data-theme="light"] .bg-cyber-cyan\/10 { background: rgba(42, 142, 136, 0.08) !important; }
-:root[data-theme="light"] .bg-rose-500\/5 { background: rgba(184, 74, 58, 0.05) !important; }
-:root[data-theme="light"] .bg-rose-500\/10 { background: rgba(184, 74, 58, 0.08) !important; }
+:root[data-theme="light"] .bg-cyber-cyan\/5 { background: rgba(44, 110, 127, 0.05) !important; }
+:root[data-theme="light"] .bg-cyber-cyan\/10 { background: rgba(44, 110, 127, 0.08) !important; }
+:root[data-theme="light"] .bg-rose-500\/5 { background: rgba(181, 72, 26, 0.05) !important; }
+:root[data-theme="light"] .bg-rose-500\/10 { background: rgba(181, 72, 26, 0.08) !important; }
 :root[data-theme="light"] .bg-amber-500\/5 { background: rgba(138, 104, 48, 0.05) !important; }
 :root[data-theme="light"] .bg-amber-500\/20 { background: rgba(138, 104, 48, 0.1) !important; }
-:root[data-theme="light"] .bg-orange-500\/20 { background: rgba(168, 95, 40, 0.15) !important; }
+:root[data-theme="light"] .bg-orange-500\/20 { background: rgba(181, 72, 26, 0.15) !important; }
 
 /* ── Screen containers ───────────────────────────────────────────────────── */
 .ds-screen {
   /* base dark */
 }
 :root[data-theme="light"] .ds-screen {
-  background: linear-gradient(150deg, #e0eded 0%, #e8f0f0 100%) !important;
+  background: linear-gradient(150deg, #E9DEC9 0%, #e8f0f0 100%) !important;
 }
 :root[data-theme="light"] .ds-screen > .h-\[2px\] {
   opacity: 0.4;
@@ -633,10 +639,10 @@ html, body {
 
 /* ── Surface/border light overrides ─────────────────────────────────────── */
 :root[data-theme="light"] .bg-cyber-surface { background: rgba(0,0,0,0.04) !important; }
-:root[data-theme="light"] .border-cyber-border { border-color: #C0D8D6 !important; }
-:root[data-theme="light"] .bg-cyber-bg { background: #e0eded !important; }
+:root[data-theme="light"] .border-cyber-border { border-color: #C9B591 !important; }
+:root[data-theme="light"] .bg-cyber-bg { background: #E9DEC9 !important; }
 :root[data-theme="light"] .bg-black\/50 { background: rgba(0,0,0,0.2) !important; }
-:root[data-theme="light"] header { border-color: #C0D8D6 !important; }
+:root[data-theme="light"] header { border-color: #C9B591 !important; }
 :root[data-theme="light"] select {
   background-color: rgba(0,0,0,0.04);
   color: #062428;
@@ -645,29 +651,29 @@ html, body {
 /* ── Cards light ─────────────────────────────────────────────────────────── */
 :root[data-theme="light"] .cyber-card {
   background: rgba(255,255,255,0.82) !important;
-  border: 1px solid #C0D8D6 !important;
+  border: 1px solid #C9B591 !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
 }
 :root[data-theme="light"] .cyber-card:hover {
-  border-color: #A85F28 !important;
-  box-shadow: 0 12px 30px rgba(168,95,40,0.10) !important;
+  border-color: #B5481A !important;
+  box-shadow: 0 12px 30px rgba(181,72,26,0.10) !important;
 }
 
 /* ── NavBar light ────────────────────────────────────────────────────────── */
 :root[data-theme="light"] nav,
 :root[data-theme="light"] [class*="navbar"],
 :root[data-theme="light"] .ds-navbar {
-  background: rgba(224,237,237,0.94) !important;
-  border-bottom-color: #C0D8D6 !important;
+  background: rgba(233,222,201,0.94) !important;
+  border-bottom-color: #C9B591 !important;
 }
 
 /* ── Dividers light ──────────────────────────────────────────────────────── */
-:root[data-theme="light"] .divide-slate-700\/60 > * + * { border-color: #C0D8D6 !important; }
-:root[data-theme="light"] .border-slate-700\/60 { border-color: #C0D8D6 !important; }
+:root[data-theme="light"] .divide-slate-700\/60 > * + * { border-color: #C9B591 !important; }
+:root[data-theme="light"] .border-slate-700\/60 { border-color: #C9B591 !important; }
 
 /* ── Sticky filter bar light ─────────────────────────────────────────────── */
 :root[data-theme="light"] .bg-cyber-bg\/80 {
-  background: rgba(224,237,237,0.88) !important;
+  background: rgba(233,222,201,0.88) !important;
   backdrop-filter: blur(16px);
 }
 
