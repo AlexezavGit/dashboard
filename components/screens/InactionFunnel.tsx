@@ -55,34 +55,40 @@ const WATERFALL = (lang: Language) => [
   },
 ];
 
-// ── Funnel steps (removed 6.8M projection) ───────────────────────────────────
+// ── Patient funnel: population cascade (9.6M → 3.9M → [VERIFIED] → [VERIFIED]) ──
+// Steps 1–2 verified (OCHA HNRP / WHO-Lancet). Steps 3–4 pending WB ISR #6 re-verify.
 const FUNNEL_STEPS = (lang: Language) => [
   {
-    window: { uk: '≤ 30 днів', en: '≤ 30 days' },
-    sessions: { uk: '5 сесій · $330/особу', en: '5 sessions · $330/person' },
-    remission: '82%',
-    outcome: { uk: '+$15.5B дельта', en: '+$15.5B delta' },
-    pop: { uk: '3.9M → 3.2M повернуто', en: '3.9M → 3.2M recovered' },
+    stage: { uk: '9.6M', en: '9.6M' },
+    caption: { uk: 'Усього у психосоціальній потребі', en: 'Total in psychosocial need' },
+    detail: { uk: 'Оцінка ООН HNRP', en: 'UN OCHA HNRP estimate' },
     color: C.green,
     width: '100%',
+    pending: false,
   },
   {
-    window: { uk: '30–180 днів', en: '30–180 days' },
-    sessions: { uk: '12–20 сесій · $1,540/особу', en: '12–20 sessions · $1,540/person' },
-    remission: '50%',
-    outcome: { uk: '-$9.8B (часткові втрати)', en: '-$9.8B (partial losses)' },
-    pop: { uk: '636K охоплено (HEAL ISR #6)', en: '636K reached (HEAL ISR #6)' },
+    stage: { uk: '3.9M', en: '3.9M' },
+    caption: { uk: 'Клінічний рівень потреби', en: 'Clinical-level need' },
+    detail: { uk: 'WHO / Lancet 2024', en: 'WHO / Lancet 2024' },
+    color: C.green,
+    width: '41%',
+    pending: false,
+  },
+  {
+    stage: { uk: 'ПЕРЕВІР', en: 'VERIFY' },
+    caption: { uk: 'Охоплено МНПП', en: 'Reached with MHPSS' },
+    detail: { uk: 'WB ISR #6 — потрібна звірка', en: 'WB ISR #6 — re-verify' },
     color: C.yellow,
-    width: '65%',
+    width: '14%',
+    pending: true,
   },
   {
-    window: { uk: '> 180 днів', en: '> 180 days' },
-    sessions: { uk: 'Соматизація 75% ризик', en: 'Somatization 75% risk' },
-    remission: '—',
-    outcome: { uk: '-$30.7B · колапс бюджету', en: '-$30.7B · budget collapse' },
-    pop: { uk: '3.26M без допомоги → 585K інвалідизація', en: '3.26M untreated → 585K disabled' },
-    color: C.red,
-    width: '35%',
+    stage: { uk: 'ПЕРЕВІР', en: 'VERIFY' },
+    caption: { uk: 'Завершили лікування', en: 'Completed treatment' },
+    detail: { uk: 'WB ISR #6 — потрібна звірка', en: 'WB ISR #6 — re-verify' },
+    color: C.yellow,
+    width: '9%',
+    pending: true,
   },
 ];
 
@@ -111,7 +117,7 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
 
   const tabs: { id: 'timeline' | 'funnel' | 'waterfall'; label: { uk: string; en: string } }[] = [
     { id: 'timeline',  label: { uk: 'Динаміка (36 міс)', en: 'Timeline (36 mo)' } },
-    { id: 'funnel',    label: { uk: 'Воронка рішень',    en: 'Decision Funnel'  } },
+    { id: 'funnel',    label: { uk: 'Воронка пацієнтів', en: 'Patient Funnel' } },
     { id: 'waterfall', label: { uk: 'ROI порівняння',    en: 'ROI Comparison'   } },
   ];
 
@@ -133,8 +139,8 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
           </div>
           <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: C.muted, marginTop: 1 }}>
             {lang === 'uk'
-              ? '3.9M осіб · вікно рішення: 30 днів від травми'
-              : '3.9M people · decision window: 30 days from trauma'}
+              ? '9.6M у потребі → 3.9M клінічна · охоплення — звірка WB ISR #6'
+              : '9.6M in need → 3.9M clinical · coverage pending WB ISR #6'}
           </div>
         </div>
         {/* Tab switcher - mobile friendly */}
@@ -150,7 +156,7 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
               minHeight: 44,
               minWidth: 44,
             }}>
-              {({ timeline: { uk: 'Динаміка (36 міс)', en: 'Timeline (36 mo)' }, funnel: { uk: 'Воронка рішень', en: 'Decision Funnel' }, waterfall: { uk: 'ROI порівняння', en: 'ROI Comparison' } } as Record<string, { uk: string; en: string }>)[t][lang]}
+               {({ timeline: { uk: 'Динаміка (36 міс)', en: 'Timeline (36 mo)' }, funnel: { uk: 'Воронка пацієнтів', en: 'Patient Funnel' }, waterfall: { uk: 'ROI порівняння', en: 'ROI Comparison' } } as Record<string, { uk: string; en: string }>)[t][lang]}
             </button>
           ))}
         </div>
@@ -210,60 +216,66 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
         </motion.div>
       )}
 
-      {/* ── Tab: Funnel ── */}
+      {/* ── Tab: Patient Funnel (population cascade) ── */}
       {tab === 'funnel' && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}
           style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {FUNNEL_STEPS(lang).map((step, i) => (
-          <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', flexWrap: 'wrap' }}>
-            {/* Left: window badge */}
+          <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+            {/* Left: stage badge */}
             <div style={{
-              flexShrink: 0, width: 72, textAlign: 'center',
-              background: `${step.color}18`, border: `1px solid ${step.color}44`,
-              borderRadius: 6, padding: '4px 6px',
+              flexShrink: 0, width: 84, textAlign: 'center',
+              background: step.pending ? `${step.color}10` : `${step.color}18`,
+              border: `1px solid ${step.color}44`,
+              borderRadius: 6, padding: '5px 6px',
+              opacity: step.pending ? 0.75 : 1,
             }}>
-              <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800, fontSize: 10, color: step.color }}>
-                {step.window[lang]}
+              <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800, fontSize: 13, color: step.color }}>
+                {step.stage[lang]}
               </div>
-              <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: C.muted, marginTop: 1 }}>
-                {step.remission !== '—'
-                  ? (lang === 'uk' ? `ремісія ${step.remission}` : `remission ${step.remission}`)
-                  : (lang === 'uk' ? 'без ремісії' : 'no remission')}
+              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: C.muted, marginTop: 1 }}>
+                {step.caption[lang]}
               </div>
             </div>
-            {/* Center: bar + details */}
-            <div style={{ flex: 1, minWidth: 200 }}>
-              <div style={{ height: 6, borderRadius: 3, background: 'rgba(255,255,255,0.06)', marginBottom: 4 }}>
+            {/* Center: bar + detail */}
+            <div style={{ flex: 1, minWidth: 160 }}>
+              <div style={{ height: 8, borderRadius: 4, background: 'rgba(255,255,255,0.06)', marginBottom: 4, overflow: 'hidden' }}>
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: step.width }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
-                  style={{ height: '100%', borderRadius: 3, background: step.color, boxShadow: `0 0 8px ${step.color}55` }}
+                  style={{
+                    height: '100%', borderRadius: 4,
+                    background: step.pending
+                      ? `repeating-linear-gradient(45deg, ${step.color}55, ${step.color}55 4px, transparent 4px, transparent 8px)`
+                      : step.color,
+                    boxShadow: step.pending ? 'none' : `0 0 8px ${step.color}55`,
+                  }}
                 />
               </div>
               <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'rgba(255,255,255,0.7)' }}>
-                {step.sessions[lang]}
-              </div>
-              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: C.muted, marginTop: 1 }}>
-                {step.pop[lang]}
+                {step.detail[lang]}
               </div>
             </div>
-            {/* Right: outcome */}
+            {/* Right: verify status */}
             <div style={{
-              flexShrink: 0, textAlign: 'right',
-              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800,
-              fontSize: 11, color: step.color,
-              textShadow: `0 0 12px ${step.color}55`,
+              flexShrink: 0, textAlign: 'center',
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9,
+              color: step.pending ? C.yellow : C.green,
+              border: `1px solid ${step.pending ? C.yellow : C.green}44`,
+              borderRadius: 5, padding: '3px 6px', minHeight: 44, display: 'flex', alignItems: 'center',
             }}>
-              {step.outcome[lang]}
+              {step.pending
+                ? (lang === 'uk' ? 'ЗВІР' : 'VERIFY')
+                : (lang === 'uk' ? '✓ підтвердж.' : '✓ verified')}
             </div>
           </div>
         ))}
-        {/* Arrow connector */}
-        <div style={{ textAlign: 'center', fontFamily: 'DM Mono, monospace', fontSize: 9, color: C.muted, marginTop: 2 }}>
+        {/* Footer note */}
+        <div style={{ textAlign: 'center', fontFamily: 'DM Mono, monospace', fontSize: 8, color: C.muted, marginTop: 2 }}>
           {lang === 'uk'
-            ? '↓ кожен тиждень затримки = +$52,500 збитків/особу'
-            : '↓ every week of delay = +$52,500 losses/person'}
+            ? '9.6M → 3.9M: каскад потреби · кроки 3–4 — звірка WB ISR #6'
+            : '9.6M → 3.9M: need cascade · steps 3–4 pending WB ISR #6'}
         </div>
       </motion.div>
       )}
