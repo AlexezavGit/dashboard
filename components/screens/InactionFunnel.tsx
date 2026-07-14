@@ -185,7 +185,7 @@ const SequentialStep: React.FC<{
         borderRadius: 5, padding: '4px 6px',
       }}>
         <div style={{
-          fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10,
+          fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
           color: isActive ? step.color : (darkMode ? C.muted : C.mutedLight),
         }}>
           {step.period[lang]}
@@ -195,7 +195,7 @@ const SequentialStep: React.FC<{
       {/* Sessions + standard */}
       <div style={{ flex: 1, minWidth: 120 }}>
         <div style={{
-          fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+          fontFamily: 'DM Sans, sans-serif', fontSize: 10,
           color: isActive
             ? (darkMode ? 'rgba(255,255,255,0.85)' : 'rgba(18,60,58,0.85)')
             : (darkMode ? C.muted : C.mutedLight),
@@ -203,7 +203,7 @@ const SequentialStep: React.FC<{
           {step.sessions[lang]}
         </div>
         <div style={{
-          fontFamily: 'DM Mono, monospace', fontSize: 8,
+          fontFamily: 'DM Mono, monospace', fontSize: 9,
           color: darkMode ? 'rgba(255,255,255,0.3)' : 'rgba(18,60,58,0.35)',
         }}>
           {step.standard}
@@ -213,7 +213,7 @@ const SequentialStep: React.FC<{
       {/* Outcome */}
       <div style={{
         flexShrink: 0, textAlign: 'right',
-        fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10,
+        fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
         color: isActive ? step.color : (darkMode ? C.muted : C.mutedLight),
       }}>
         {step.outcome[lang]}
@@ -222,7 +222,7 @@ const SequentialStep: React.FC<{
       {/* Cost */}
       <div style={{
         flexShrink: 0, textAlign: 'right', minWidth: 80,
-        fontFamily: 'DM Mono, monospace', fontSize: 9,
+        fontFamily: 'DM Mono, monospace', fontSize: 10,
         color: isActive ? step.color : (darkMode ? C.muted : C.mutedLight),
         opacity: isActive ? 1 : 0.5,
       }}>
@@ -274,11 +274,11 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6 }}>
         <div>
-          <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10,
+          <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12,
             color: darkMode ? C.red : '#B5481A', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
             {lang === 'uk' ? '⚠ Ланцюг бездіяльності' : '⚠ Inaction Chain'}
           </div>
-          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10,
             color: darkMode ? C.muted : C.mutedLight, marginTop: 1 }}>
             {lang === 'uk'
               ? '3.9M потребують → 260K отримали (0.41%) · WHO + НСЗУ + WB ISR'
@@ -294,7 +294,7 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
             { id: 'waterfall' as Tab, label: { uk: 'ROI', en: 'ROI' } },
           ]).map(t => (
             <button key={t.id} onClick={() => setTab(t.id)} style={{
-              fontFamily: 'DM Mono, monospace', fontSize: 9,
+              fontFamily: 'DM Mono, monospace', fontSize: 10,
               padding: '4px 8px', borderRadius: 6, cursor: 'pointer',
               background: tab === t.id
                 ? (darkMode ? 'rgba(0,212,170,0.15)' : 'rgba(44,110,127,0.1)')
@@ -326,7 +326,7 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
             ].map(l => (
               <div key={l.color} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                 <div style={{ width: 20, height: 2.5, background: l.color, borderRadius: 2 }} />
-                <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+                <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10,
                   color: darkMode ? C.muted : C.mutedLight }}>{l.label[lang]}</span>
               </div>
             ))}
@@ -360,10 +360,10 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
             </AreaChart>
           </ResponsiveContainer>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
-            <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: C.green }}>
+            <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: C.green }}>
               {lang === 'uk' ? 'Дельта: +$15.5B за 36 міс' : 'Delta: +$15.5B over 36 mo'}
             </span>
-            <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: C.red }}>
+            <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: C.red }}>
               {lang === 'uk' ? 'Колапс: ~24 міс без дій' : 'Collapse: ~24 mo without action'}
             </span>
           </div>
@@ -392,19 +392,19 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
             border: `1px solid ${darkMode ? 'rgba(255,123,110,0.2)' : 'rgba(181,72,26,0.15)'}`,
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 4 }}>
-              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10,
                 color: darkMode ? 'rgba(255,255,255,0.7)' : 'rgba(18,60,58,0.7)' }}>
                 {lang === 'uk'
                   ? 'Без втручання: 15% інвалідизація = $546.75M на 100K осіб'
                   : 'Without intervention: 15% disability = $546.75M per 100K people'}
               </div>
-              <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: C.red, fontWeight: 700 }}>
+              <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, color: C.red, fontWeight: 700 }}>
                 {lang === 'uk' ? '1:200 співвідношення' : '1:200 ratio'}
               </div>
             </div>
           </div>
           {/* Source note */}
-          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8,
+          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9,
             color: darkMode ? C.muted : C.mutedLight, marginTop: 2 }}>
             {lang === 'uk'
               ? 'Джерела: WHO/NICE · НСЗУ Пакет №2 · Policy Paper актуарні розрахунки'
@@ -427,10 +427,10 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
               borderRadius: 6, padding: '5px 6px',
               opacity: step.pending ? 0.75 : 1,
             }}>
-              <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800, fontSize: 13, color: step.color }}>
+              <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800, fontSize: 14, color: step.color }}>
                 {step.stage[lang]}
               </div>
-              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8,
+              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
                 color: darkMode ? C.muted : C.mutedLight, marginTop: 1 }}>
                 {step.caption[lang]}
               </div>
@@ -453,7 +453,7 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
                   }}
                 />
               </div>
-              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10,
                 color: darkMode ? 'rgba(255,255,255,0.7)' : 'rgba(18,60,58,0.7)' }}>
                 {step.detail[lang]}
               </div>
@@ -461,7 +461,7 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
             {/* Right: verify status */}
             <div style={{
               flexShrink: 0, textAlign: 'center',
-              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9,
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10,
               color: step.pending ? C.yellow : C.green,
               border: `1px solid ${step.pending ? C.yellow : C.green}44`,
               borderRadius: 5, padding: '3px 6px', minHeight: 44, display: 'flex', alignItems: 'center',
@@ -473,7 +473,7 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
           </div>
         ))}
         {/* Footer note */}
-        <div style={{ textAlign: 'center', fontFamily: 'DM Mono, monospace', fontSize: 8,
+        <div style={{ textAlign: 'center', fontFamily: 'DM Mono, monospace', fontSize: 9,
           color: darkMode ? C.muted : C.mutedLight, marginTop: 2 }}>
           {lang === 'uk'
             ? '9.6M → 3.9M → 260K: каскад потреби · крок 4 — звірка WB ISR #6'
@@ -489,7 +489,7 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
         {WATERFALL(lang).map((row, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
             {/* Label */}
-            <div style={{ width: '100%', flexShrink: 0, fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+            <div style={{ width: '100%', flexShrink: 0, fontFamily: 'DM Sans, sans-serif', fontSize: 10,
               color: darkMode ? 'rgba(255,255,255,0.75)' : 'rgba(18,60,58,0.75)' }}>
               {row.label}
             </div>
@@ -511,12 +511,12 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
               />
             </div>
             {/* Invest */}
-            <div style={{ width: 52, textAlign: 'right', fontFamily: 'DM Mono, monospace', fontSize: 9,
+            <div style={{ width: 52, textAlign: 'right', fontFamily: 'DM Mono, monospace', fontSize: 10,
               color: darkMode ? C.muted : C.mutedLight }}>
               {row.invest}
             </div>
             {/* Result */}
-            <div style={{ width: 64, textAlign: 'right', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800, fontSize: 11, color: row.color }}>
+            <div style={{ width: 64, textAlign: 'right', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800, fontSize: 12, color: row.color }}>
               {row.result}
             </div>
             {/* ROI badge */}
@@ -524,14 +524,14 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
               width: 52, textAlign: 'center', flexShrink: 0,
               background: `${row.color}18`, border: `1px solid ${row.color}44`,
               borderRadius: 5, padding: '2px 4px',
-              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9, color: row.color,
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10, color: row.color,
             }}>
               {row.roi}
             </div>
           </div>
         ))}
         <div style={{ borderTop: `1px solid ${darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(18,60,58,0.08)'}`,
-          paddingTop: 6, fontFamily: 'DM Mono, monospace', fontSize: 8,
+          paddingTop: 6, fontFamily: 'DM Mono, monospace', fontSize: 9,
           color: darkMode ? C.muted : C.mutedLight }}>
           {lang === 'uk'
             ? 'Джерела: WB ISR #6 · Lancet 2023 · Мінсоцполітики Постанова №234 · НСЗУ тариф 2025'
