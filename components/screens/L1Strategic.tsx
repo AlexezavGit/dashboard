@@ -500,62 +500,77 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
         </div>
       </div>
 
-      {/* ── Footer bar — GDP causal chain ── */}
+      {/* ── Footer bar — GDP causal chain + disclaimers ── */}
       <div
-        className="flex-shrink-0 px-6 py-2 flex items-center gap-3 flex-wrap"
+        className="flex-shrink-0 px-6 py-3 flex flex-col gap-2"
         style={{ borderTop: '1px solid var(--color-ds-border)', background: 'rgba(0,0,0,0.25)' }}
       >
-        {GDP_CHAIN.map((m) => (
-          <React.Fragment key={m.val}>
-            <div className="flex flex-col">
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-[14px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>{m.val}</span>
-                <span className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{m.label[lang]}</span>
+        {/* GDP chain row */}
+        <div className="flex items-center gap-3 flex-wrap">
+          {GDP_CHAIN.map((m) => (
+            <React.Fragment key={m.val}>
+              <div className="flex flex-col">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-[14px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>{m.val}</span>
+                  <span className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{m.label[lang]}</span>
+                </div>
+                <span className="text-[8px] font-mono" style={{ color: 'rgba(200,164,92,0.45)' }}>{m.source[lang]}</span>
               </div>
-              <span className="text-[8px] font-mono" style={{ color: 'rgba(200,164,92,0.45)' }}>{m.source[lang]}</span>
-            </div>
-            {m.arrow && (
-              <span style={{ color: 'rgba(200,164,92,0.4)', fontSize: 12, flexShrink: 0 }}>→</span>
-            )}
-          </React.Fragment>
-        ))}
-        {liveHciValue && (
-          <>
-            <span style={{ color: 'rgba(200,164,92,0.4)', fontSize: 12 }}>·</span>
-            <div className="flex flex-col">
-              <span className="text-[14px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>HCI {liveHciValue}</span>
-              <span className="text-[8px] font-mono" style={{ color: 'rgba(200,164,92,0.45)' }}>Human Capital Index · World Bank 2020</span>
-            </div>
-          </>
-        )}
-        <div className="flex-1" />
-        <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 7, color: 'rgba(200,164,92,0.35)', textAlign: 'right', maxWidth: 200, lineHeight: 1.4 }}>
-          {lang === 'uk'
-            ? '⚠ Дані потребують верифікації. MHEI — діагностичний індекс, не оцінка якості.'
-            : '⚠ Data needs verification. MHEI is a diagnostic index, not a quality assessment.'}
+              {m.arrow && (
+                <span style={{ color: 'rgba(200,164,92,0.4)', fontSize: 12, flexShrink: 0 }}>→</span>
+              )}
+            </React.Fragment>
+          ))}
+          {liveHciValue && (
+            <>
+              <span style={{ color: 'rgba(200,164,92,0.4)', fontSize: 12 }}>·</span>
+              <div className="flex flex-col">
+                <span className="text-[14px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>HCI {liveHciValue}</span>
+                <span className="text-[8px] font-mono" style={{ color: 'rgba(200,164,92,0.45)' }}>Human Capital Index · World Bank 2020</span>
+              </div>
+            </>
+          )}
+          <div className="flex-1" />
+          <button
+            onClick={() => nav.push('l2-journey')}
+            className="flex items-center gap-1.5 text-[11px] ds-display font-medium px-3 py-1.5 rounded-lg"
+            style={{ background: 'rgba(68,136,255,0.07)', border: '1px solid rgba(68,136,255,0.3)', color: '#4488ff' }}
+          >
+            {lang === 'uk' ? 'Шляхи Стейкхолдерів' : 'Stakeholder Journeys'}
+          </button>
+          <button
+            onClick={() => nav.push('appendix')}
+            className="flex items-center gap-1.5 text-[11px] ds-display font-medium"
+            style={{ color: 'var(--color-ds-muted)' }}
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+            {lang === 'uk' ? 'Аналітичний звіт' : 'Analytical Report'}
+          </button>
+          <button
+            onClick={() => nav.push('l4')}
+            className="flex items-center gap-1.5 text-[11px] ds-display font-bold px-3 py-1.5 rounded-lg"
+            style={{ background: 'color-mix(in srgb, var(--color-ds-teal) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--color-ds-teal) 35%, transparent)', color: 'var(--color-ds-teal)' }}
+          >
+            {lang === 'uk' ? '→ Повний звіт' : '→ Full Report'}
+          </button>
         </div>
-        <button
-          onClick={() => nav.push('l2-journey')}
-          className="flex items-center gap-1.5 text-[11px] ds-display font-medium px-3 py-1.5 rounded-lg"
-          style={{ background: 'rgba(68,136,255,0.07)', border: '1px solid rgba(68,136,255,0.3)', color: '#4488ff', marginRight: 8 }}
-        >
-          {lang === 'uk' ? 'Шляхи Стейкхолдерів' : 'Stakeholder Journeys'}
-        </button>
-        <button
-          onClick={() => nav.push('appendix')}
-          className="flex items-center gap-1.5 text-[11px] ds-display font-medium"
-          style={{ color: 'var(--color-ds-muted)' }}
-        >
-          <ChevronRight className="w-3.5 h-3.5" />
-          {lang === 'uk' ? 'Аналітичний звіт' : 'Analytical Report'}
-        </button>
-        <button
-          onClick={() => nav.push('l4')}
-          className="flex items-center gap-1.5 text-[11px] ds-display font-bold px-3 py-1.5 rounded-lg"
-          style={{ background: 'color-mix(in srgb, var(--color-ds-teal) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--color-ds-teal) 35%, transparent)', color: 'var(--color-ds-teal)' }}
-        >
-          {lang === 'uk' ? '→ Повний звіт' : '→ Full Report'}
-        </button>
+        {/* Disclaimer row — matches L3 footer */}
+        <div className="flex items-start gap-4 flex-wrap" style={{ borderTop: '1px solid rgba(200,164,92,0.1)', paddingTop: 8 }}>
+          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: 'rgba(200,164,92,0.4)', lineHeight: 1.5, maxWidth: 600 }}>
+            {lang === 'uk'
+              ? 'Дашборд містить дані з відкритих джерел за 2020-2025 рр., «оцінка» зазначено там де дані недоступні. Тіньовий сектор: конкретні дослідження для MHPSS не проводились. Сертифікація: добровільна до 2031 року.'
+              : "Dashboard contains data from open sources for 2020-2025, 'estimate' is indicated where data is unavailable. Shadow sector: specific studies for MHPSS were not conducted. Certification: voluntary until 2031."}
+          </div>
+          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: 'rgba(200,164,92,0.35)', lineHeight: 1.5, maxWidth: 500 }}>
+            {lang === 'uk'
+              ? 'Дані надані виключно для інформаційних цілей. Не є офіційним звітом гуманітарних акторів, фінансових інституцій, або урядових структур.'
+              : 'Data provided for informational purposes only. Not an official report of humanitarian actors, financial institutions, or governmental structures.'}
+          </div>
+          <div className="flex-1" />
+          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: 'rgba(200,164,92,0.3)', textAlign: 'right', whiteSpace: 'nowrap' }}>
+            © 2026 FEEL Again Program · dashboard.feelagain.me
+          </div>
+        </div>
       </div>
     </div>
   );
