@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
 import { L3Footer } from './L3Footer';
+import { NavBar } from './NavBar';
 
 interface Props { lang: Language; nav: ScreenNav; }
 
@@ -70,24 +70,13 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
   >
     <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, #ff7b6e, #e8c97a 60%, transparent)', boxShadow: '0 0 14px rgba(255,123,110,0.4)' }} />
 
-    {/* Header */}
-    <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0">
-      <button
-        onClick={nav.back}
-        className="flex items-center gap-2 px-4 py-2 rounded-xl ds-display font-bold flex-shrink-0 transition-all"
-        style={{ background: 'rgba(200,164,92,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '12px' }}
-      >
-        <ArrowLeft className="w-4 h-4" /> {T.back[lang]}
-      </button>
-      <div>
-        <div className="text-[17px] font-bold ds-display" style={{ color: '#ff7b6e' }}>{T.title[lang]}</div>
-        <div className="text-[10px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{T.subtitle[lang]}</div>
-      </div>
-      <div className="flex-1" />
-      <button onClick={() => nav.push('l2-operational')} className="text-[11px] ds-display font-medium flex items-center gap-1" style={{ color: 'var(--color-ds-teal)' }}>
-        {lang === 'uk' ? '9 розривів →' : '9 gaps →'} <ChevronRight className="w-3.5 h-3.5" />
-      </button>
-    </div>
+    <NavBar
+      lang={lang}
+      nav={nav}
+      title={T.title}
+      subtitle={T.subtitle}
+      accentColor="#ff7b6e"
+    />
 
     {/* Intro context */}
     <div className="px-5 pb-2 flex-shrink-0">

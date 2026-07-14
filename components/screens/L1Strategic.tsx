@@ -6,6 +6,7 @@ import { ScreenId, ScreenNav } from './types';
 import { Logo } from '../ui/Logo';
 import { STRATEGIC_FRAMEWORK, MHEI_VALUE_CHAIN, COLORS } from '../../constants';
 import { useDrilldown } from '../drilldown/DrilldownContext';
+import { InactionFunnel } from './InactionFunnel';
 
 interface Props {
   lang: Language;
@@ -13,6 +14,18 @@ interface Props {
   liveHciValue?: number | null;
   darkMode?: boolean;
 }
+
+// Mobile breakpoint detection
+const useMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return isMobile;
+};
 
 type LayerId = 'needs' | 'capital' | 'finance' | 'coverage';
 
@@ -38,6 +51,14 @@ const INDEX_SCORE = Math.round(
   PILLARS_CONFIG.reduce((sum, l) => sum + Math.min(100, (l.current / l.target) * 100) * (l.weight / 100), 0)
 ); // → 29 (Representative MHEI Score)
 
+// HCI (Human Capital Index) - World Bank 2020
+const HCI_VALUE = 0.63;
+
+// HEAL/THRIVE undisbursed - NEEDS WB RE-VERIFICATION
+const HEAL_UNDISBURSED = 329000000;   // $329M - NEEDS WB RE-VERIFICATION
+const THRIVE_UNDISBURSED = 134000000; // $134M - NEEDS WB RE-VERIFICATION
+const TOTAL_UNDISBURSED = HEAL_UNDISBURSED + THRIVE_UNDISBURSED; // $463M
+
 type Band = 'low' | 'medium' | 'high';
 const scoreToBand = (s: number): Band => s < 34 ? 'low' : s < 67 ? 'medium' : 'high';
 const BAND_COLOR: Record<Band, string> = { low: '#ff7b6e', medium: '#e8c97a', high: '#00d4aa' };
@@ -49,7 +70,7 @@ const BAND_LABEL: Record<Band, { uk: string; en: string }> = {
 
 const currentBand = scoreToBand(INDEX_SCORE);
 
-// GDP causal chain footer items
+// GDP causal chain footer items (updated with verified numbers)
 const GDP_CHAIN = [
   {
     val: '260K',
@@ -70,9 +91,9 @@ const GDP_CHAIN = [
     arrow: true,
   },
   {
-    val: '$1.87B',
-    label: { uk: 'заблоковано WB+EU', en: 'blocked WB+EU' },
-    source: { uk: 'WB HEAL/THRIVE портфель', en: 'WB HEAL/THRIVE portfolio' },
+    val: '$463M',
+    label: { uk: 'WB HEAL+THRIVE невикористано (потребує перевірки)', en: 'WB HEAL+THRIVE undisbursed (needs WB re-verification)' },
+    source: { uk: 'HEAL $329M + THRIVE $134M · WB ISR', en: 'HEAL $329M + THRIVE $134M · WB ISR' },
     arrow: false,
   },
 ];
@@ -85,11 +106,12 @@ interface InactionItem {
   color: string;
 }
 const INACTION_COSTS: InactionItem[] = [
-  { val: '$1.07B',  label: { uk: 'заблокованого фінансування WB', en: 'blocked WB funding (HEAL/THRIVE)' }, anchor: 'section-budget',   color: '#ff7b6e' },
+  { val: '$41M',  label: { uk: 'HEAL Component 4 · digital · Dec 2026 deadline', en: 'HEAL Component 4 · digital · Dec 2026 deadline' }, anchor: 'section-budget',   color: '#ff7b6e' },
   { val: '1.4M',    label: { uk: 'втрачених сесій клін. психологів', en: 'lost clinical psych. sessions' }, anchor: 'section-inputs',  color: '#ff7b6e' },
   { val: '87.5K',   label: { uk: 'втрачених циклів лікування (WHO)', en: 'lost treatment cycles (WHO)' },     anchor: 'section-gap',     color: '#ff7b6e' },
   { val: '25% год.',label: { uk: 'адмін-ерозія клінічного часу', en: 'admin erosion of clinical time' },   anchor: 'section-inputs',  color: '#ff9966' },
   { val: '$8B/рік', label: { uk: 'втрати ВВП від кризи MH', en: 'GDP loss from MH crisis' }, anchor: 'section-economic', color: '#e8c97a' },
+  // 6.8M removed - was theoretical projection
   { val: '7.8–12р.', label: { uk: 'беклог при 4K практиків (стійкий темп)', en: 'backlog at 4K practitioners (sustainable)' }, anchor: 'section-workforce', color: '#e8c97a' },
 ];
 
@@ -366,6 +388,8 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 // ── Main screen ────────────────────────────────────────────────────────────────
 export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode = true }) => {
   const { setAnswers: setDrillAnswers } = useDrilldown();
+  const isMobile = useMobile();
+
   return (
     <div
       className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
@@ -467,8 +491,67 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
             </button>
           </div>
 
-          {/* Right side: gap cards + inaction costs */}
-          <div className="flex-1 flex flex-col gap-2.5 min-h-0">
+{/* Right side: gap cards + inaction costs */}
+        <div className="flex-1 flex flex-col gap-2.5 min-h-0 lg:hidden">
+          {/* Mobile: stacked gap cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-shrink-0">
+            {STRATEGIC_FRAMEWORK(lang).map((pillar, i) => {
+              const config = PILLARS_CONFIG.find(c => c.id === pillar.id)!;
+              return (
+                <LayerCard key={pillar.id} l={config} pillar={pillar} i={i} lang={lang} onNav={() => { setDrillAnswers({ pillarId: pillar.id, pillarLabel: pillar.label[lang], pillarVal: pillar.l1?.val ?? null, indexScore: INDEX_SCORE }); nav.push(config.screenId); }} darkMode={darkMode} />
+              );
+            })}
+          </div>
+          
+          {/* Mobile: stacked InactionFunnel */}
+          <InactionFunnel lang={lang} darkMode={darkMode} />
+          
+          {/* Zone B — Ціна бездіяльності (inaction cost strip) */}
+          <div className="flex-shrink-0" style={{ borderTop: '1px solid rgba(200,164,92,0.15)', paddingTop: 6 }}>
+            <div style={{
+              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 8,
+              color: 'var(--color-ds-gold)', textTransform: 'uppercase', letterSpacing: '0.12em',
+              marginBottom: 4,
+            }}>
+              {lang === 'uk' ? 'Ціна бездіяльності' : 'Cost of Inaction'}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px' }}>
+              {INACTION_COSTS.map(item => (
+                <button
+                  key={item.val}
+                  onClick={() => {
+                    if (item.anchor === null) {
+                      nav.push('l2-analytical');
+                    } else {
+                      sessionStorage.setItem('l3-scroll', item.anchor);
+                      nav.push('appendix');
+                    }
+                  }}
+                  style={{
+                    display: 'flex', alignItems: 'baseline', gap: 5, background: 'none',
+                    border: 'none', padding: '2px 4px', borderRadius: 5, cursor: 'pointer',
+                    textAlign: 'left', transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+                >
+                  <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800,
+                    fontSize: 11, color: item.color, lineHeight: 1,
+                    textShadow: `0 0 10px ${item.color}55` }}>
+                    {item.val}
+                  </span>
+                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+                    color: 'var(--color-ds-muted)', lineHeight: 1.3 }}>
+                    {item.label[lang]}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: Right side */}
+        <div className="flex-1 flex flex-col gap-2.5 min-h-0 hidden lg:block">
 
             {/* 4 gap cards — "системні розриви" */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 flex-shrink-0">
@@ -479,6 +562,9 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
                 );
               })}
             </div>
+
+            {/* Zone B1 — Three-path decision funnel */}
+            <InactionFunnel lang={lang} darkMode={darkMode} />
 
             {/* Zone B — Ціна бездіяльності (inaction cost strip) */}
             <div className="flex-shrink-0" style={{ borderTop: '1px solid rgba(200,164,92,0.15)', paddingTop: 6 }}>

@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenNav } from './types';
 import { L3Footer } from './L3Footer';
+import { NavBar } from './NavBar';
 
 interface Props { lang: Language; nav: ScreenNav; }
 
@@ -49,26 +49,13 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
   >
     <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, #e8c97a 50%, transparent)', boxShadow: '0 0 14px rgba(232,201,122,0.4)' }} />
 
-    <div className="flex items-center gap-4 px-6 pt-5 pb-3 flex-shrink-0">
-      <button onClick={nav.back} className="flex items-center gap-1.5 text-[11px] ds-display font-medium" style={{ color: 'var(--color-ds-muted)' }}>
-        <ArrowLeft className="w-4 h-4" /> {lang === 'uk' ? 'Назад' : 'Back'}
-      </button>
-      <div className="w-px h-4" style={{ background: 'var(--color-ds-border)' }} />
-      <div>
-        <div className="text-[18px] font-bold ds-display" style={{ color: '#e8c97a' }}>
-          {lang === 'uk' ? 'Анатомія $6–8B втрат ВВП' : 'Anatomy of $6–8B GDP Loss'}
-        </div>
-        <div className="text-[11px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>
-          {lang === 'uk'
-            ? 'Чотири компоненти макроекономічних втрат від нелікованих психічних розладів (ЄБРР / LSE 2023)'
-            : 'Four components of macroeconomic losses from untreated mental disorders (EBRD / LSE 2023)'}
-        </div>
-      </div>
-      <div className="flex-1" />
-      <button onClick={() => nav.push('appendix')} className="text-[11px] ds-display font-medium flex items-center gap-1" style={{ color: 'var(--color-ds-teal)' }}>
-        {lang === 'uk' ? 'Повний аналіз →' : 'Full analysis →'} <ChevronRight className="w-3.5 h-3.5" />
-      </button>
-    </div>
+    <NavBar
+      lang={lang}
+      nav={nav}
+      title={{ uk: 'Анатомія $6–8B втрат ВВП', en: 'Anatomy of $6–8B GDP Loss' }}
+      subtitle={{ uk: 'Чотири компоненти системних втрат — верифікований розрахунок', en: 'Four components of systemic losses — verified calculation' }}
+      accentColor="#e8c97a"
+    />
 
     {/* Pie-like decomposition */}
     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 px-6 pb-5 min-h-0">

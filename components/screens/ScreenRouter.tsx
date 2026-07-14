@@ -30,30 +30,63 @@ interface Props {
   onThemeToggle: () => void;
 }
 
+const VALID_SCREEN_IDS: ScreenId[] = [
+  'l1','l2-mhei','l2-fintech','l2-clinical','l2-data','l2-sustain',
+  'l2-digital','l2-regulatory','l2-finance','l2-coverage','l2-backlog',
+  'l2-operational','l2-analytical','l2-journey',
+];
+
+function readHash(): ScreenId {
+  const h = window.location.hash.replace('#', '') as ScreenId;
+  return VALID_SCREEN_IDS.includes(h) ? h : 'l1';
+}
+
 export const ScreenRouter: React.FC<Props> = ({
   lang, liveHciValue, onAppendix, onL4, onLangChange, darkMode, onThemeToggle,
 }) => {
-  const [history, setHistory] = useState<ScreenId[]>(['l1']);
+  const [history, setHistory] = useState<ScreenId[]>(() => [readHash()]);
 
   const current = history[history.length - 1];
 
+  // Sync hash → state on browser back/forward
+  React.useEffect(() => {
+    const onHashChange = () => {
+      const id = readHash();
+      if (id === current) return;
+      setHistory((h) => [...h, id]);
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, [current]);
+
   const push = useCallback((id: ScreenId) => {
     if (id === 'appendix') {
+      window.location.hash = 'appendix';
       onAppendix();
       return;
     }
     if (id === 'l4') {
+      window.location.hash = 'l4';
       onL4();
       return;
     }
+    window.location.hash = id;
     setHistory((h) => [...h, id]);
   }, [onAppendix, onL4]);
 
   const back = useCallback(() => {
-    setHistory((h) => (h.length > 1 ? h.slice(0, -1) : h));
+    setHistory((h) => {
+      if (h.length <= 1) return h;
+      const next = h.slice(0, -1);
+      window.location.hash = next[next.length - 1];
+      return next;
+    });
   }, []);
 
-  const reset = useCallback(() => setHistory(['l1']), []);
+  const reset = useCallback(() => {
+    window.location.hash = 'l1';
+    setHistory(['l1']);
+  }, []);
 
   const nav: ScreenNav = { current, history, push, back, reset };
 
