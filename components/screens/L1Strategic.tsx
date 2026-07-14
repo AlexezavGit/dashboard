@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, animate } from 'motion/react';
 import { ChevronRight } from 'lucide-react';
 import { Language } from '../../types';
@@ -123,9 +123,6 @@ const eArc = (r: number, s0: number, s1: number) => {
   return `M ${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${deg >= 180 ? 1 : 0} 1 ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`;
 };
 
-// SVG rotation for animated needle: 180° at score=0 (left), 0° at score=100 (right)
-const eNeedleAngle = (s: number) => 180 - s * 1.8;
-
 // ── Elevator "floors" ─────────────────────────────────────────────────────────
 const FLOORS = [
   { label: '0',   score: 0   },
@@ -160,17 +157,8 @@ const gdpImpact = (score: number) => {
 const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () => void }> = ({ lang, expanded, onToggle }) => {
   const CX = EL_CX, CY = EL_CY, R = EL_R;
   const bandColor = BAND_COLOR[currentBand];
-  const needleRef = useRef<SVGGElement>(null);
-
-  // Animate needle via SVG transform attr (CSS rotate(a,cx,cy) is invalid CSS)
-  useEffect(() => {
-    const ctrl = animate(eNeedleAngle(0), eNeedleAngle(INDEX_SCORE), {
-      duration: 1.8, delay: 0.4,
-      ease: [0.34, 1.56, 0.64, 1],
-      onUpdate: v => needleRef.current?.setAttribute('transform', `rotate(${v.toFixed(3)},${CX},${CY})`),
-    });
-    return () => ctrl.stop();
-  }, []);
+  // Compute needle tip directly on the arc — no SVG rotation needed
+  const needleTip = ePt(INDEX_SCORE, R - 18);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -251,17 +239,15 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
             );
           })}
 
-          {/* Needle (animated, points from pivot to current score position) */}
-          <g ref={needleRef}>
-            <line x1={CX} y1={CY - 4} x2={CX + R - 15} y2={CY - 4}
-              stroke={bandColor} strokeWidth="2.5" strokeLinecap="round"
-              style={{ filter: `drop-shadow(0 0 6px ${bandColor}cc)` } as React.CSSProperties}
-            />
-            {/* Counterweight */}
-            <line x1={CX} y1={CY - 4} x2={CX - 18} y2={CY - 4}
-              stroke={bandColor} strokeWidth="5.5" strokeLinecap="round" opacity="0.45"
-            />
-          </g>
+          {/* Needle — static computed from ePt, no rotation needed */}
+          <line x1={CX} y1={CY} x2={needleTip.x.toFixed(2)} y2={needleTip.y.toFixed(2)}
+            stroke={bandColor} strokeWidth="2.5" strokeLinecap="round"
+            style={{ filter: `drop-shadow(0 0 6px ${bandColor}cc)`, transition: 'all 0.6s ease' } as React.CSSProperties}
+          />
+          {/* Counterweight */}
+          <line x1={CX} y1={CY} x2={CX - 14} y2={CY}
+            stroke={bandColor} strokeWidth="5" strokeLinecap="round" opacity="0.4"
+          />
 
           {/* Centre pivot — ornamental brass ring + glow dot */}
           <circle cx={CX} cy={CY} r="14" fill="#0f0803" stroke="url(#mhei-brass)" strokeWidth="2.5" />
@@ -358,7 +344,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
     { id: 'needs',    label: { uk: 'Потреба', en: 'Need' }, val: '3.9M', sub: { uk: '+12% vs 2023', en: '+12% vs 2023' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-teal)', nav: 'l2-operational' },
     { id: 'capital',  label: { uk: 'Спроможність', en: 'Capacity' }, val: '38%', sub: { uk: 'від потреби закрито', en: 'of need covered' }, bars: 2, arrow: 'up' as const, color: 'var(--color-ds-teal)', nav: 'l2-clinical' },
     { id: 'finance',  label: { uk: 'ВВП-втрати / рік', en: 'GDP Loss / yr' }, val: '$8B', sub: { uk: 'WHO методологія', en: 'WHO methodology' }, bars: 5, arrow: 'up' as const, color: 'var(--color-ds-orange)', nav: 'l2-finance' },
-    { id: 'roi',      label: { uk: 'ROI програми', en: 'Programme ROI' }, val: '1→4.5×', sub: { uk: 'за 5 років', en: 'over 5 years' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-gold)', nav: 'l2-sustain' },
+    { id: 'roi',      label: { uk: 'ROI програми', en: 'Programme ROI' }, val: '1→4.5×', sub: { uk: 'за 5 років', en: 'over 5 years' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-gold)', nav: 'l4' },
     { id: 'gap',      label: { uk: 'GAP (collision)', en: 'GAP (collision)' }, val: '62%', sub: { uk: 'незакрита потреба ⚡', en: 'unmet need ⚡' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-orange)', nav: 'l2-analytical' },
   ];
 
