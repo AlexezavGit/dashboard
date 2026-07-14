@@ -99,23 +99,6 @@ const GDP_CHAIN = [
   },
 ];
 
-// ── "Ціна бездіяльності" — inaction cost items linking to L3 sections ──────
-interface InactionItem {
-  val: string;
-  label: { uk: string; en: string };
-  anchor: string | null;   // null → navigate to l2-analytical instead
-  color: string;
-}
-const INACTION_COSTS: InactionItem[] = [
-  { val: '$41M',  label: { uk: 'HEAL Component 4 · digital · Dec 2026 deadline', en: 'HEAL Component 4 · digital · Dec 2026 deadline' }, anchor: 'section-budget',   color: '#ff7b6e' },
-  { val: '1.4M',    label: { uk: 'втрачених сесій клін. психологів', en: 'lost clinical psych. sessions' }, anchor: 'section-inputs',  color: '#ff7b6e' },
-  { val: '87.5K',   label: { uk: 'втрачених циклів лікування (WHO)', en: 'lost treatment cycles (WHO)' },     anchor: 'section-gap',     color: '#ff7b6e' },
-  { val: '25% год.',label: { uk: 'адмін-ерозія клінічного часу', en: 'admin erosion of clinical time' },   anchor: 'section-inputs',  color: '#ff9966' },
-  { val: '$8B/рік', label: { uk: 'втрати ВВП від кризи MH', en: 'GDP loss from MH crisis' }, anchor: 'section-economic', color: '#e8c97a' },
-  // 6.8M removed - was theoretical projection
-  { val: '7.8–12р.', label: { uk: 'беклог при 4K практиків (стійкий темп)', en: 'backlog at 4K practitioners (sustainable)' }, anchor: 'section-workforce', color: '#e8c97a' },
-];
-
 // ── Elevator gauge geometry ────────────────────────────────────────────────────
 // Score 0 = left (B / Crisis), Score 100 = right (R / Recovery)
 // Semicircle from left (180°) over the top to right (0°) in SVG screen space.
@@ -166,35 +149,6 @@ const gdpImpact = (score: number) => {
   const v = (score / 100) * 9.0 - 3.5;
   return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
 };
-
-// ── Compact layer card ─────────────────────────────────────────────────────────
-const LayerCard: React.FC<{ l: LayerDef; pillar: any; i: number; lang: Language; onNav: () => void; darkMode: boolean }> = ({ l, pillar, i, lang, onNav, darkMode }) => (
-  <motion.div
-    initial={{ opacity: 0, x: i < 2 ? -10 : 10 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ delay: i * 0.05, duration: 0.28 }}
-    className="flex-1 rounded-2xl px-4 py-3 cursor-pointer group relative overflow-hidden min-h-0"
-    style={darkMode
-      ? { background: l.cardBg, border: `1px solid ${l.color}40`, boxShadow: `0 0 20px ${l.glow}` }
-      : { background: '#FFFFFF', border: `1px solid #DDD5CB`, borderLeft: `3px solid ${l.color}`, boxShadow: '8px 8px 24px rgba(58,53,48,0.09), -2px -2px 10px rgba(255,255,255,0.85)' }}
-    onClick={onNav}
-  >
-    <div className="flex items-center justify-between mb-1">
-      <span className="cyber-label" style={{ color: l.color, fontSize: '10px' }}>{pillar.label[lang]}</span>
-      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '9px', color: 'var(--color-ds-muted)' }}>w{l.weight}%</span>
-    </div>
-    <div style={{ fontSize: 'clamp(1.4rem, 2.2vw, 2.0rem)', fontWeight: 900, fontFamily: 'Space Grotesk, sans-serif', color: l.color, lineHeight: 1 }}>
-      {pillar.l1.val}
-    </div>
-    <div className="flex items-center justify-between mt-1">
-      <span style={{ fontSize: '10px', color: 'var(--color-ds-text)', opacity: 0.8, fontWeight: 500 }}>{pillar.l1.title[lang]}</span>
-      <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-1" style={{ color: l.color }} />
-    </div>
-    <div style={{ fontSize: '8px', color: 'var(--color-ds-muted)', marginTop: 2, fontStyle: 'italic' }}>
-      {pillar.l1.unit[lang]}
-    </div>
-  </motion.div>
-);
 
 // ── Elevator Gauge component ──────────────────────────────────────────────────
 const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () => void }> = ({ lang, expanded, onToggle }) => {
@@ -494,124 +448,51 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
             </button>
           </div>
 
-{/* Right side: gap cards + inaction costs */}
-        <div className="flex-1 flex flex-col gap-2.5 min-h-0 lg:hidden">
-          {/* Mobile: stacked gap cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-shrink-0">
-            {STRATEGIC_FRAMEWORK(lang).map((pillar, i) => {
-              const config = PILLARS_CONFIG.find(c => c.id === pillar.id)!;
-              return (
-                <LayerCard key={pillar.id} l={config} pillar={pillar} i={i} lang={lang} onNav={() => { setDrillAnswers({ pillarId: pillar.id, pillarLabel: pillar.label[lang], pillarVal: pillar.l1?.val ?? null, indexScore: INDEX_SCORE }); nav.push(config.screenId); }} darkMode={darkMode} />
-              );
-            })}
+{/* Right side — 2 rows: KPI strip + funnel */}
+        <div className="flex-1 flex flex-col gap-2 min-h-0">
+
+          {/* Row 1: KPI strip — 5 Bloomberg marks (wireframe G1) */}
+          <div style={{
+            display: 'flex', gap: 1, flexShrink: 0,
+            background: darkMode ? 'rgba(6,14,24,0.6)' : 'rgba(255,255,255,0.8)',
+            borderRadius: 4, overflow: 'hidden',
+            border: `1px solid ${darkMode ? 'rgba(46,137,166,0.12)' : 'rgba(18,60,58,0.1)'}`,
+          }}>
+            {([
+              { id: 'needs',    label: { uk: 'ПОТРЕБА', en: 'NEED' }, val: '3.9M', sub: { uk: 'клінічна (WB)', en: 'clinical (WB)' }, color: '#3E91A2', nav: 'l2-operational' },
+              { id: 'capital',  label: { uk: 'СПРОМОЖНІСТЬ', en: 'CAPACITY' }, val: '38%', sub: { uk: 'від потреби закрито', en: 'of need covered' }, color: '#1C5A52', nav: 'l2-clinical' },
+              { id: 'finance',  label: { uk: 'ВВП-ВТРАТИ', en: 'GDP LOSS' }, val: '$8B', sub: { uk: 'щорічно (WHO)', en: 'per year (WHO)' }, color: '#E8741E', nav: 'l2-finance' },
+              { id: 'coverage', label: { uk: 'ROI', en: 'ROI' }, val: '1→4.5×', sub: { uk: 'за 5 років', en: 'over 5 years' }, color: '#FAB007', nav: 'l2-sustain' },
+              { id: 'gap',      label: { uk: 'GAP', en: 'GAP' }, val: '62%', sub: { uk: 'незакрита потреба ⚡', en: 'unmet need ⚡' }, color: '#E8741E', nav: 'l2-analytical' },
+            ] as const).map((kpi, i, arr) => (
+              <div
+                key={kpi.id}
+                onClick={() => { setDrillAnswers({ pillarId: kpi.id }); nav.push(kpi.nav); }}
+                style={{
+                  flex: 1, padding: 'clamp(6px, 1vw, 10px) clamp(6px, 1.2vw, 12px)',
+                  borderRight: i < arr.length - 1 ? `1px solid ${darkMode ? 'rgba(46,137,166,0.07)' : 'rgba(18,60,58,0.06)'}` : 'none',
+                  cursor: 'pointer', transition: 'background 0.15s', minWidth: 0,
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = darkMode ? 'rgba(46,137,166,0.06)' : 'rgba(18,60,58,0.04)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+              >
+                <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, letterSpacing: '0.1em', color: darkMode ? 'rgba(75,168,188,0.5)' : 'rgba(18,60,58,0.5)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {kpi.label[lang]}
+                </div>
+                <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 300, fontSize: 'clamp(16px, 2.2vw, 24px)', color: kpi.color, lineHeight: 1 }}>
+                  {kpi.val}
+                </div>
+                <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 8, color: darkMode ? 'rgba(200,190,170,0.35)' : 'rgba(18,60,58,0.4)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {kpi.sub[lang]}
+                </div>
+              </div>
+            ))}
           </div>
-          
-          {/* Mobile: stacked InactionFunnel */}
+
+          {/* Row 2: InactionFunnel */}
           <InactionFunnel lang={lang} darkMode={darkMode} />
-          
-          {/* Zone B — Ціна бездіяльності (inaction cost strip) */}
-          <div className="flex-shrink-0" style={{ borderTop: '1px solid rgba(200,164,92,0.15)', paddingTop: 6 }}>
-            <div style={{
-              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 8,
-              color: 'var(--color-ds-gold)', textTransform: 'uppercase', letterSpacing: '0.12em',
-              marginBottom: 4,
-            }}>
-              {lang === 'uk' ? 'Ціна бездіяльності' : 'Cost of Inaction'}
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px' }}>
-              {INACTION_COSTS.map(item => (
-                <button
-                  key={item.val}
-                  onClick={() => {
-                    if (item.anchor === null) {
-                      nav.push('l2-analytical');
-                    } else {
-                      sessionStorage.setItem('l3-scroll', item.anchor);
-                      nav.push('appendix');
-                    }
-                  }}
-                  style={{
-                    display: 'flex', alignItems: 'baseline', gap: 5, background: 'none',
-                    border: 'none', padding: '2px 4px', borderRadius: 5, cursor: 'pointer',
-                    textAlign: 'left', transition: 'background 0.15s',
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
-                  onMouseLeave={e => (e.currentTarget.style.background = 'none')}
-                >
-                  <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800,
-                    fontSize: 11, color: item.color, lineHeight: 1,
-                    textShadow: `0 0 10px ${item.color}55` }}>
-                    {item.val}
-                  </span>
-                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
-                    color: 'var(--color-ds-muted)', lineHeight: 1.3 }}>
-                    {item.label[lang]}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+
         </div>
-
-        {/* Desktop: Right side */}
-        <div className="flex-1 flex flex-col gap-2.5 min-h-0 hidden lg:block">
-
-            {/* 4 gap cards — "системні розриви" */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 flex-shrink-0">
-              {STRATEGIC_FRAMEWORK(lang).map((pillar, i) => {
-                const config = PILLARS_CONFIG.find(c => c.id === pillar.id)!;
-                return (
-                  <LayerCard key={pillar.id} l={config} pillar={pillar} i={i} lang={lang} onNav={() => { setDrillAnswers({ pillarId: pillar.id, pillarLabel: pillar.label[lang], pillarVal: pillar.l1?.val ?? null, indexScore: INDEX_SCORE }); nav.push(config.screenId); }} darkMode={darkMode} />
-                );
-              })}
-            </div>
-
-            {/* Zone B1 — Three-path decision funnel */}
-            <InactionFunnel lang={lang} darkMode={darkMode} />
-
-            {/* Zone B — Ціна бездіяльності (inaction cost strip) */}
-            <div className="flex-shrink-0" style={{ borderTop: '1px solid rgba(200,164,92,0.15)', paddingTop: 6 }}>
-              <div style={{
-                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 8,
-                color: 'var(--color-ds-gold)', textTransform: 'uppercase', letterSpacing: '0.12em',
-                marginBottom: 4,
-              }}>
-                {lang === 'uk' ? 'Ціна бездіяльності' : 'Cost of Inaction'}
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 12px' }}>
-                {INACTION_COSTS.map(item => (
-                  <button
-                    key={item.val}
-                    onClick={() => {
-                      if (item.anchor === null) {
-                        nav.push('l2-analytical');
-                      } else {
-                        sessionStorage.setItem('l3-scroll', item.anchor);
-                        nav.push('appendix');
-                      }
-                    }}
-                    style={{
-                      display: 'flex', alignItems: 'baseline', gap: 5, background: 'none',
-                      border: 'none', padding: '2px 4px', borderRadius: 5, cursor: 'pointer',
-                      textAlign: 'left', transition: 'background 0.15s',
-                    }}
-                    onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.04)')}
-                    onMouseLeave={e => (e.currentTarget.style.background = 'none')}
-                  >
-                    <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800,
-                      fontSize: 11, color: item.color, lineHeight: 1,
-                      textShadow: `0 0 10px ${item.color}55` }}>
-                      {item.val}
-                    </span>
-                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
-                      color: 'var(--color-ds-muted)', lineHeight: 1.3 }}>
-                      {item.label[lang]}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
