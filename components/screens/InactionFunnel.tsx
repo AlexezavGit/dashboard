@@ -111,7 +111,7 @@ const FUNNEL_STEPS = (lang: Language) => [
   },
   {
     stage: { uk: '3.9M', en: '3.9M' },
-    caption: { uk: 'Клінічний рівень потреби', en: 'Clinical-level need' },
+    caption: { uk: 'Спеціалізована психологічна допомога', en: 'Specialized psychological care' },
     detail: { uk: 'WHO / Lancet 2024', en: 'WHO / Lancet 2024' },
     color: C.green,
     width: '41%',
@@ -119,19 +119,19 @@ const FUNNEL_STEPS = (lang: Language) => [
   },
   {
     stage: { uk: '260K', en: '260K' },
-    caption: { uk: 'НСЗУ пацієнтів 2025', en: 'NHSU patients 2025' },
+    caption: { uk: 'НСЗУ пацієнтів прийнято 2025', en: 'NHSU patients accepted 2025' },
     detail: { uk: 'НСЗУ відкриті дані', en: 'NHSU open data' },
     color: C.yellow,
     width: '2.7%',
     pending: false,
   },
   {
-    stage: { uk: 'ПЕРЕВІР', en: 'VERIFY' },
+    stage: { uk: '260K', en: '260K' },
     caption: { uk: 'Завершили лікування', en: 'Completed treatment' },
-    detail: { uk: 'WB ISR #6 — потрібна звірка', en: 'WB ISR #6 — re-verify' },
+    detail: { uk: 'НСЗУ відкриті дані 2025', en: 'NHSU open data 2025' },
     color: C.yellow,
     width: '1%',
-    pending: true,
+    pending: false,
   },
 ];
 
@@ -276,7 +276,7 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
         <div>
           <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12,
             color: darkMode ? C.red : '#B5481A', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-            {lang === 'uk' ? '⚠ Ланцюг бездіяльності' : '⚠ Inaction Chain'}
+            {lang === 'uk' ? '⚠ Ціна бездіяльності' : '⚠ Cost of Inaction'}
           </div>
           <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10,
             color: darkMode ? C.muted : C.mutedLight, marginTop: 1 }}>
@@ -476,8 +476,8 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
         <div style={{ textAlign: 'center', fontFamily: 'DM Mono, monospace', fontSize: 9,
           color: darkMode ? C.muted : C.mutedLight, marginTop: 2 }}>
           {lang === 'uk'
-            ? '9.6M → 3.9M → 260K: каскад потреби · крок 4 — звірка WB ISR #6'
-            : '9.6M → 3.9M → 260K: need cascade · step 4 pending WB ISR #6'}
+            ? '9.6M → 3.9M → 260K: каскад потреби · HCI 0.63 · 0.41% покриття'
+            : '9.6M → 3.9M → 260K: need cascade · HCI 0.63 · 0.41% coverage'}
         </div>
       </motion.div>
       )}

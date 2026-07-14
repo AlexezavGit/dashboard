@@ -353,94 +353,197 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
   const { setAnswers: setDrillAnswers } = useDrilldown();
   const isMobile = useMobile();
 
+  // Bloomberg-style KPI data with bars + arrows (DS screenshot 7,8)
+  const KPI_DATA = [
+    { id: 'needs',    label: { uk: 'Потреба', en: 'Need' }, val: '3.9M', sub: { uk: '+12% vs 2023', en: '+12% vs 2023' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-teal)', nav: 'l2-operational' },
+    { id: 'capital',  label: { uk: 'Спроможність', en: 'Capacity' }, val: '38%', sub: { uk: 'від потреби закрито', en: 'of need covered' }, bars: 2, arrow: 'up' as const, color: 'var(--color-ds-teal)', nav: 'l2-clinical' },
+    { id: 'finance',  label: { uk: 'ВВП-втрати / рік', en: 'GDP Loss / yr' }, val: '$8B', sub: { uk: 'WHO методологія', en: 'WHO methodology' }, bars: 5, arrow: 'up' as const, color: 'var(--color-ds-orange)', nav: 'l2-finance' },
+    { id: 'roi',      label: { uk: 'ROI програми', en: 'Programme ROI' }, val: '1→4.5×', sub: { uk: 'за 5 років', en: 'over 5 years' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-gold)', nav: 'l2-sustain' },
+    { id: 'gap',      label: { uk: 'GAP (collision)', en: 'GAP (collision)' }, val: '62%', sub: { uk: 'незакрита потреба ⚡', en: 'unmet need ⚡' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-orange)', nav: 'l2-analytical' },
+  ];
+
   return (
     <div
       className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
       style={{
         background: darkMode
-          ? 'radial-gradient(ellipse 80% 60% at 20% 60%, rgba(0,210,170,0.10) 0%, transparent 55%), ' +
-            'radial-gradient(ellipse 60% 50% at 80% 40%, rgba(0,180,200,0.07) 0%, transparent 50%), ' +
-            'linear-gradient(135deg, #0a1628 0%, #1a0a0a 100%)'
+          ? 'linear-gradient(180deg, #050C16 0%, #0a1628 100%)'
           : 'var(--color-ds-bg)',
       }}
     >
-      {/* Top accent line */}
-      <div className="h-[2px] w-full flex-shrink-0"
-        style={{ background: 'linear-gradient(90deg, transparent 0%, #00d4aa 30%, #2ec4b6 60%, rgba(200,164,92,0.7) 100%)', boxShadow: '0 0 20px rgba(0,212,170,0.55)' }} />
-
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between pl-6 pr-32 pt-3 pb-2 flex-shrink-0">
-        <div className="flex items-center gap-4">
-          <Logo darkMode={darkMode} />
-          <div>
-            <div className="flex items-center gap-1.5 text-[10px] font-mono mb-0.5" style={{ color: 'var(--color-ds-muted)' }}>
-              <span style={{ color: 'var(--color-ds-gold)' }}>FEEL Again</span>
-              <span>·</span>
-              <span>MHPSS Ukraine</span>
-              <span>·</span>
-              <span style={{ color: 'var(--color-ds-text)' }}>{lang === 'uk' ? 'ЛАНДШАФТ' : 'LANDSCAPE'}</span>
-            </div>
-            <div className="text-[17px] font-bold ds-display leading-tight" style={{ color: 'var(--color-ds-text)' }}>
-              {lang === 'uk' ? 'Ідеальний шторм — поточний ландшафт MHPSS' : 'Perfect Storm — Current MHPSS Sector Landscape'}
+      {/* ── Header — DS Bunker style with tabs ── */}
+      <div className="flex-shrink-0" style={{
+        background: darkMode ? 'rgba(5,12,22,0.95)' : 'rgba(233,222,201,0.95)',
+        borderBottom: `1px solid ${darkMode ? 'rgba(28,90,82,0.25)' : '#C9B591'}`,
+      }}>
+        <div className="flex items-center justify-between px-4 pt-2 pb-0">
+          {/* Logo + nav tabs */}
+          <div className="flex items-center gap-6">
+            <Logo darkMode={darkMode} />
+            {/* Tab navigation — DS screenshot 8 */}
+            <div className="flex items-center gap-1">
+              {([
+                { id: 'l1' as ScreenId, label: lang === 'uk' ? 'ЛАНДШАФТ' : 'LANDSCAPE' },
+                { id: 'l2-data' as ScreenId, label: 'DIGITAL BUS' },
+                { id: 'l2-clinical' as ScreenId, label: lang === 'uk' ? 'СИМУЛЯЦІЯ' : 'SIMULATION' },
+                { id: 'l2-finance' as ScreenId, label: 'DLI ТРЕКЕР' },
+              ]).map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => nav.push(t.id)}
+                  style={{
+                    fontFamily: 'Space Grotesk, sans-serif', fontWeight: 500, fontSize: 11,
+                    letterSpacing: '0.08em', textTransform: 'uppercase',
+                    padding: '6px 12px', cursor: 'pointer',
+                    color: t.id === 'l1'
+                      ? (darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)')
+                      : 'var(--color-ds-muted)',
+                    background: 'transparent',
+                    borderBottom: t.id === 'l1'
+                      ? `2px solid ${darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)'}`
+                      : '2px solid transparent',
+                    border: 'none', borderBottomWidth: 2, borderBottomStyle: 'solid',
+                    borderBottomColor: t.id === 'l1'
+                      ? (darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)')
+                      : 'transparent',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {t.label}
+                </button>
+              ))}
             </div>
           </div>
-        </div>
-        {/* API status dot — links to l2-analytical */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => nav.push('l2-journey')}
-            className="text-[10px] ds-display font-medium px-2 py-1 rounded"
-            style={{ color: 'var(--color-ds-muted)', border: '1px solid var(--color-ds-border)', cursor: 'pointer' }}
-          >
-            {lang === 'uk' ? 'Стейкхолдери' : 'Stakeholders'}
-          </button>
-          <button
-            onClick={() => nav.push('appendix')}
-            className="text-[10px] ds-display font-medium px-2 py-1 rounded"
-            style={{ color: 'var(--color-ds-muted)', border: '1px solid var(--color-ds-border)', cursor: 'pointer' }}
-          >
-            {lang === 'uk' ? 'Звіт' : 'Report'}
-          </button>
-          <button
-            onClick={() => nav.push('l4')}
-            className="text-[10px] ds-display font-bold px-2 py-1 rounded"
-            style={{ background: 'color-mix(in srgb, var(--color-ds-teal) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--color-ds-teal) 35%, transparent)', color: 'var(--color-ds-teal)', cursor: 'pointer' }}
-          >
-            {lang === 'uk' ? 'Повний звіт' : 'Full Report'}
-          </button>
-          <button
-            onClick={() => nav.push('l2-analytical')}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 5,
-              fontFamily: 'DM Mono, monospace', fontSize: 10,
-              color: 'rgba(0,210,170,0.7)',
-              background: 'rgba(0,210,170,0.06)',
-              border: '1px solid rgba(0,210,170,0.2)',
-              borderRadius: 6, padding: '3px 10px', cursor: 'pointer',
-            }}
-          >
-            <span style={{
-              width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
-              background: '#00d4aa', boxShadow: '0 0 8px #00d4aa',
-              animation: 'pulse 2s infinite',
-            }} />
-            {lang === 'uk' ? '● API Live' : '● API Live'}
-          </button>
+
+          {/* Right side — Signal Lamp LIVE + ALERT */}
+          <div className="flex items-center gap-3">
+            {/* Signal Lamp — DS screenshot 10 */}
+            <button
+              onClick={() => nav.push('l2-analytical')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
+                letterSpacing: '0.1em', textTransform: 'uppercase',
+                color: darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)',
+                background: darkMode
+                  ? 'linear-gradient(135deg, rgba(250,176,7,0.15) 0%, rgba(201,179,106,0.08) 100%)'
+                  : 'rgba(181,72,26,0.08)',
+                border: `1px solid ${darkMode ? 'rgba(250,176,7,0.35)' : 'rgba(181,72,26,0.25)'}`,
+                borderRadius: 6, padding: '5px 14px', cursor: 'pointer',
+                boxShadow: darkMode ? '0 0 12px rgba(250,176,7,0.15)' : 'none',
+              }}
+            >
+              <span style={{
+                width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
+                background: darkMode ? '#FAB007' : '#B5481A',
+                boxShadow: darkMode ? '0 0 8px #FAB007' : 'none',
+                animation: 'pulse 2s infinite',
+              }} />
+              LIVE
+            </button>
+            {/* ALERT badge */}
+            <button
+              onClick={() => nav.push('l2-analytical')}
+              style={{
+                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
+                letterSpacing: '0.08em',
+                color: 'var(--color-ds-red)',
+                background: darkMode ? 'rgba(205,57,26,0.1)' : 'rgba(138,32,24,0.06)',
+                border: `1px solid ${darkMode ? 'rgba(205,57,26,0.3)' : 'rgba(138,32,24,0.2)'}`,
+                borderRadius: 6, padding: '5px 12px', cursor: 'pointer',
+              }}
+            >
+              ALERT 3
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* ── 2-zone body: Zone A (gauge + cards) | Zone B (inaction) ── */}
-      <div className="flex-1 min-h-0 flex flex-col px-5 pb-1 gap-3">
+      {/* ── KPI Strip — Bloomberg inline style (DS screenshots 6,7,8) ── */}
+      <div className="flex-shrink-0 px-4 pt-3 pb-1">
+        <div style={{
+          display: 'flex', gap: 0,
+          background: darkMode ? 'rgba(12,34,51,0.6)' : 'rgba(255,255,255,0.8)',
+          borderRadius: 6, overflow: 'hidden',
+          border: `1px solid ${darkMode ? 'rgba(28,90,82,0.2)' : '#C9B591'}`,
+        }}>
+          {KPI_DATA.map((kpi, i, arr) => (
+            <div
+              key={kpi.id}
+              onClick={() => { setDrillAnswers({ pillarId: kpi.id }); nav.push(kpi.nav); }}
+              style={{
+                flex: 1, padding: '10px 14px',
+                borderRight: i < arr.length - 1 ? `1px solid ${darkMode ? 'rgba(28,90,82,0.12)' : 'rgba(18,60,58,0.08)'}` : 'none',
+                cursor: 'pointer', transition: 'background 0.15s', minWidth: 0,
+              }}
+              onMouseEnter={e => (e.currentTarget.style.background = darkMode ? 'rgba(28,90,82,0.08)' : 'rgba(18,60,58,0.04)')}
+              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+            >
+              {/* Label */}
+              <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 10, letterSpacing: '0.08em',
+                color: 'var(--color-ds-muted)', marginBottom: 4, textTransform: 'uppercase' }}>
+                {kpi.label[lang]}
+              </div>
+              {/* Bloomberg row: bars + value + arrow */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                {/* Signal bars (palichky) */}
+                <div style={{ display: 'flex', gap: 2, alignItems: 'flex-end', height: 14 }}>
+                  {[1,2,3,4,5].map(n => (
+                    <div key={n} style={{
+                      width: 3, borderRadius: 1,
+                      height: `${(n / 5) * 100}%`,
+                      background: n <= kpi.bars
+                        ? (kpi.bars >= 5 ? 'var(--color-ds-gold)' : kpi.bars >= 4 ? 'var(--color-ds-orange)' : 'var(--color-ds-teal)')
+                        : (darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(18,60,58,0.1)'),
+                    }} />
+                  ))}
+                </div>
+                {/* Value */}
+                <span style={{
+                  fontFamily: 'Space Grotesk, sans-serif', fontWeight: 300,
+                  fontSize: 'clamp(20px, 2.8vw, 32px)', lineHeight: 1,
+                  color: kpi.color, fontVariantNumeric: 'tabular-nums',
+                }}>
+                  {kpi.val}
+                </span>
+                {/* Arrow triangle */}
+                <span style={{
+                  fontSize: 10, lineHeight: 1,
+                  color: kpi.arrow === 'up' ? 'var(--color-ds-orange)' : 'var(--color-ds-teal)',
+                }}>
+                  {kpi.arrow === 'up' ? '▲' : '▼'}
+                </span>
+              </div>
+              {/* Sub text */}
+              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)', marginTop: 3 }}>
+                {kpi.sub[lang]}
+              </div>
+              {/* Progress bar */}
+              <div style={{ height: 2, borderRadius: 1, marginTop: 4,
+                background: darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(18,60,58,0.08)' }}>
+                <div style={{ height: '100%', borderRadius: 1, width: `${kpi.bars * 20}%`,
+                  background: kpi.color, opacity: 0.6 }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        {/* Zone A — Diagnostics: MHEI gauge center + 6 gap cards row */}
+      {/* ── Body: Gauge + InactionFunnel ── */}
+      <div className="flex-1 min-h-0 flex flex-col px-4 pb-1 gap-3">
         <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
 
-          {/* MHEI Gauge — clickable to L4 full report */}
+          {/* MHEI Gauge — Bunker card style */}
           <div
-            className="w-full lg:w-[264px] flex-shrink-0 flex flex-col items-center justify-center py-1 ds-blueprint cursor-pointer"
-            style={{ flexShrink: 0 }}
+            className="w-full lg:w-[280px] flex-shrink-0 flex flex-col items-center justify-center py-2 cursor-pointer"
+            style={{
+              background: darkMode
+                ? 'linear-gradient(135deg, rgba(12,34,51,0.8) 0%, rgba(5,12,22,0.9) 100%)'
+                : 'rgba(255,255,255,0.8)',
+              border: `1px solid ${darkMode ? 'rgba(201,179,106,0.2)' : '#C9B591'}`,
+              borderRadius: 8,
+            }}
             onClick={() => nav.push('l4')}
-            title={lang === 'uk' ? 'Mental Health Economy Index — перейти до звіту' : 'Mental Health Economy Index — go to report'}
           >
             <div style={{
               fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
@@ -454,101 +557,55 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
 
             <button
               onClick={() => nav.push('l4')}
-              style={{ marginTop: 8, fontSize: 10, color: 'var(--color-ds-teal)', border: '1px solid rgba(0,210,170,0.3)', borderRadius: 6, padding: '4px 12px', background: 'rgba(0,210,170,0.07)', cursor: 'pointer', fontFamily: 'DM Mono, monospace', letterSpacing: '0.05em' }}
+              style={{ marginTop: 8, fontSize: 11, fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600,
+                color: darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)',
+                border: `1px solid ${darkMode ? 'rgba(250,176,7,0.3)' : 'rgba(181,72,26,0.25)'}`,
+                borderRadius: 6, padding: '5px 14px',
+                background: darkMode ? 'rgba(250,176,7,0.07)' : 'rgba(181,72,26,0.06)',
+                cursor: 'pointer', letterSpacing: '0.05em' }}
             >
               {lang === 'uk' ? '→ Повний звіт' : '→ Full Report'}
             </button>
           </div>
 
-{/* Right side — 2 rows: KPI strip + funnel */}
-        <div className="flex-1 flex flex-col gap-2 min-h-0">
-
-          {/* Row 1: KPI strip — 5 Bloomberg marks (wireframe G1) */}
-          <div style={{
-            display: 'flex', gap: 1, flexShrink: 0,
-            background: darkMode ? 'rgba(6,14,24,0.6)' : 'rgba(255,255,255,0.8)',
-            borderRadius: 4, overflow: 'hidden',
-            border: `1px solid ${darkMode ? 'rgba(46,137,166,0.12)' : 'rgba(18,60,58,0.1)'}`,
-          }}>
-            {([
-              { id: 'needs',    label: { uk: 'ПОТРЕБА', en: 'NEED' }, val: '3.9M', sub: { uk: 'клінічна (WB/Lancet)', en: 'clinical (WB/Lancet)' }, color: '#3E91A2', nav: 'l2-operational' },
-              { id: 'capital',  label: { uk: 'СПРОМОЖНІСТЬ', en: 'CAPACITY' }, val: '0.41%', sub: { uk: '260K із 62.4M сесій', en: '260K of 62.4M sessions' }, color: '#E8741E', nav: 'l2-clinical' },
-              { id: 'hci',      label: { uk: 'HCI', en: 'HCI' }, val: '0.63', sub: { uk: 'Human Capital Index', en: 'Human Capital Index' }, color: '#3E91A2', nav: 'l2-analytical' },
-              { id: 'finance',  label: { uk: 'ВВП-ВТРАТИ', en: 'GDP LOSS' }, val: '$8B', sub: { uk: 'щорічно (WHO/RDNA3)', en: 'per year (WHO/RDNA3)' }, color: '#E8741E', nav: 'l2-finance' },
-              { id: 'gap',      label: { uk: 'GAP', en: 'GAP' }, val: '62%', sub: { uk: 'незакрита потреба ⚡', en: 'unmet need ⚡' }, color: '#E8741E', nav: 'l2-analytical' },
-            ] as const).map((kpi, i, arr) => (
-              <div
-                key={kpi.id}
-                onClick={() => { setDrillAnswers({ pillarId: kpi.id }); nav.push(kpi.nav); }}
-                style={{
-                  flex: 1, padding: 'clamp(6px, 1vw, 10px) clamp(6px, 1.2vw, 12px)',
-                  borderRight: i < arr.length - 1 ? `1px solid ${darkMode ? 'rgba(46,137,166,0.07)' : 'rgba(18,60,58,0.06)'}` : 'none',
-                  cursor: 'pointer', transition: 'background 0.15s', minWidth: 0,
-                }}
-                onMouseEnter={e => (e.currentTarget.style.background = darkMode ? 'rgba(46,137,166,0.06)' : 'rgba(18,60,58,0.04)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-              >
-                <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, letterSpacing: '0.1em', color: darkMode ? 'rgba(75,168,188,0.5)' : 'rgba(18,60,58,0.5)', marginBottom: 3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {kpi.label[lang]}
-                </div>
-                <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 300, fontSize: 'clamp(18px, 2.5vw, 28px)', color: kpi.color, lineHeight: 1 }}>
-                  {kpi.val}
-                </div>
-                <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: darkMode ? 'rgba(200,190,170,0.35)' : 'rgba(18,60,58,0.4)', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {kpi.sub[lang]}
-                </div>
-              </div>
-            ))}
+          {/* Right side — InactionFunnel */}
+          <div className="flex-1 flex flex-col gap-2 min-h-0">
+            <InactionFunnel lang={lang} darkMode={darkMode} />
           </div>
-
-          {/* Row 2: InactionFunnel */}
-          <InactionFunnel lang={lang} darkMode={darkMode} />
-
-        </div>
         </div>
       </div>
 
-      {/* ── Footer bar — GDP causal chain + disclaimers ── */}
+      {/* ── Footer — DS sources + disclaimers ── */}
       <div
-        className="flex-shrink-0 px-6 py-3 flex flex-col gap-2"
-        style={{ borderTop: '1px solid var(--color-ds-border)', background: 'rgba(0,0,0,0.25)' }}
+        className="flex-shrink-0 px-6 py-2 flex items-center gap-4 flex-wrap"
+        style={{
+          borderTop: `1px solid ${darkMode ? 'rgba(28,90,82,0.2)' : '#C9B591'}`,
+          background: darkMode ? 'rgba(5,12,22,0.6)' : 'rgba(233,222,201,0.6)',
+        }}
       >
-        {/* GDP chain row */}
+        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)' }}>
+          {lang === 'uk' ? 'Джерела: WHO · World Bank · МОЗ України · LSE · Feel Again 2025' : 'Sources: WHO · World Bank · MoH Ukraine · LSE · Feel Again 2025'}
+        </span>
+        <div className="flex-1" />
+        {/* Role legend — DS screenshot 8 */}
         <div className="flex items-center gap-3 flex-wrap">
-          {GDP_CHAIN.map((m) => (
-            <React.Fragment key={m.val}>
-              <div className="flex flex-col">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-[14px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>{m.val}</span>
-                  <span className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{m.label[lang]}</span>
-                </div>
-                <span className="text-[10px] font-mono" style={{ color: 'rgba(200,164,92,0.45)' }}>{m.source[lang]}</span>
-              </div>
-              {m.arrow && (
-                <span style={{ color: 'rgba(200,164,92,0.4)', fontSize: 12, flexShrink: 0 }}>→</span>
-              )}
-            </React.Fragment>
+          {[
+            { color: 'var(--color-ds-teal)', label: lang === 'uk' ? 'Синій — ресурси / donors' : 'Blue — resources / donors' },
+            { color: 'var(--color-ds-teal-light)', label: lang === 'uk' ? 'Тіал — providers' : 'Teal — providers' },
+            { color: 'var(--color-ds-orange)', label: lang === 'uk' ? 'Оранж — GAP / operational' : 'Orange — GAP / operational' },
+            { color: 'var(--color-ds-gold)', label: lang === 'uk' ? 'Золото — ROI / outcome' : 'Gold — ROI / outcome' },
+            { color: 'var(--color-ds-red)', label: lang === 'uk' ? 'Червоний — collision (<2%)' : 'Red — collision (<2%)' },
+          ].map(r => (
+            <div key={r.label} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              <div style={{ width: 10, height: 4, background: r.color, borderRadius: 1 }} />
+              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>{r.label}</span>
+            </div>
           ))}
-          <div className="flex-1" />
-          {/* Navigation moved to header */}
         </div>
-        {/* Disclaimer row — matches L3 footer */}
-        <div className="flex items-start gap-4 flex-wrap" style={{ borderTop: '1px solid rgba(200,164,92,0.1)', paddingTop: 8 }}>
-          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: 'rgba(200,164,92,0.4)', lineHeight: 1.5, maxWidth: 600 }}>
-            {lang === 'uk'
-              ? 'Дашборд містить дані з відкритих джерел за 2020-2025 рр., «оцінка» зазначено там де дані недоступні. Тіньовий сектор: конкретні дослідження для MHPSS не проводились. Сертифікація: добровільна до 2031 року.'
-              : "Dashboard contains data from open sources for 2020-2025, 'estimate' is indicated where data is unavailable. Shadow sector: specific studies for MHPSS were not conducted. Certification: voluntary until 2031."}
-          </div>
-          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: 'rgba(200,164,92,0.35)', lineHeight: 1.5, maxWidth: 500 }}>
-            {lang === 'uk'
-              ? 'Дані надані виключно для інформаційних цілей. Не є офіційним звітом гуманітарних акторів, фінансових інституцій, або урядових структур.'
-              : 'Data provided for informational purposes only. Not an official report of humanitarian actors, financial institutions, or governmental structures.'}
-          </div>
-          <div className="flex-1" />
-          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: 'rgba(200,164,92,0.3)', textAlign: 'right', whiteSpace: 'nowrap' }}>
-            © 2026 FEEL Again Program · dashboard.feelagain.me
-          </div>
-        </div>
+        <div className="flex-1" />
+        <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: 'var(--color-ds-muted)' }}>
+          © 2026 FEEL Again · dashboard.feelagain.me
+        </span>
       </div>
     </div>
   );
