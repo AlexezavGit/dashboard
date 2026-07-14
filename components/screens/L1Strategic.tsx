@@ -228,7 +228,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
                 <text x={lp.x.toFixed(1)} y={(lp.y + 4).toFixed(1)}
                   textAnchor="middle" dominantBaseline="central"
                   style={{
-                    fontFamily: 'Space Grotesk, sans-serif',
+                    fontFamily: 'Archivo Black, sans-serif',
                     fontSize: isEnd ? '10px' : '8px',
                     fontWeight: '700',
                     fill: lit ? '#E3A22E' : 'rgba(200,164,92,0.28)',
@@ -258,19 +258,19 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 
       {/* ── Score + band + GDP ── */}
       <div style={{ textAlign: 'center', marginTop: 4 }}>
-        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 900, fontSize: 46,
+        <div style={{ fontFamily: 'Archivo Black, sans-serif', fontWeight: 900, fontSize: 46,
           color: bandColor, lineHeight: 1, textShadow: `0 0 32px ${bandColor}77` }}>
           {INDEX_SCORE}
         </div>
-        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13,
+        <div style={{ fontFamily: 'Archivo Black, sans-serif', fontWeight: 700, fontSize: 13,
           color: bandColor, marginTop: 4 }}>
           {BAND_LABEL[currentBand][lang]}
         </div>
-        <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 11, color: '#E3A22E',
+        <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: '#E3A22E',
           opacity: 0.75, marginTop: 3, letterSpacing: '0.06em' }}>
           {gdpImpact(INDEX_SCORE)} {lang === 'uk' ? 'ВВП' : 'GDP'}
         </div>
-        <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+        <div style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 9,
           color: 'var(--color-ds-muted)', marginTop: 2, lineHeight: 1.4 }}>
           {lang === 'uk' ? 'реальний стан системи MHPSS' : 'actual MHPSS system state'}
         </div>
@@ -279,7 +279,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
       {/* ── Expand toggle ── */}
       <button
         onClick={onToggle}
-        style={{ marginTop: 8, fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+        style={{ marginTop: 8, fontFamily: 'Source Sans 3, sans-serif', fontSize: 9,
           color: bandColor, background: 'none',
           border: `1px solid ${bandColor}44`, borderRadius: 6,
           padding: '3px 14px', cursor: 'pointer' }}
@@ -305,11 +305,11 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
                 return (
                   <div key={p.id}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                      <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700,
+                      <span style={{ fontFamily: 'Archivo Black, sans-serif', fontWeight: 700,
                         fontSize: 11, color: config.color }}>
                         {p.label[lang]}
                       </span>
-                      <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 11,
+                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11,
                         color: 'var(--color-ds-muted)' }}>
                         {Math.round(pct)}% · w{config.weight}%
                       </span>
@@ -378,7 +378,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
                   key={t.id}
                   onClick={() => nav.push(t.id)}
                   style={{
-                    fontFamily: 'Space Grotesk, sans-serif', fontWeight: 500, fontSize: 11,
+                    fontFamily: 'Archivo Black, sans-serif', fontWeight: 500, fontSize: 11,
                     letterSpacing: '0.08em', textTransform: 'uppercase',
                     padding: '6px 12px', cursor: 'pointer',
                     color: t.id === 'l1'
@@ -408,7 +408,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
               onClick={() => nav.push('l2-analytical')}
               style={{
                 display: 'flex', alignItems: 'center', gap: 6,
-                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
+                fontFamily: 'Archivo Black, sans-serif', fontWeight: 700, fontSize: 11,
                 letterSpacing: '0.1em', textTransform: 'uppercase',
                 color: darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)',
                 background: darkMode
@@ -431,7 +431,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
             <button
               onClick={() => nav.push('l2-analytical')}
               style={{
-                fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
+                fontFamily: 'Archivo Black, sans-serif', fontWeight: 700, fontSize: 11,
                 letterSpacing: '0.08em',
                 color: 'var(--color-ds-red)',
                 background: darkMode ? 'rgba(205,57,26,0.1)' : 'rgba(138,32,24,0.06)',
@@ -449,9 +449,12 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
       <div className="flex-shrink-0 px-4 pt-3 pb-1">
         <div style={{
           display: 'flex', gap: 0,
-          background: darkMode ? 'rgba(12,34,51,0.6)' : 'rgba(255,255,255,0.8)',
+          background: darkMode
+            ? 'linear-gradient(90deg, #0C293A 0%, #0B2422 100%)'
+            : 'rgba(255,255,255,0.8)',
           borderRadius: 6, overflow: 'hidden',
-          border: `1px solid ${darkMode ? 'rgba(28,90,82,0.2)' : '#C9B591'}`,
+          border: `1px solid ${darkMode ? '#C9B36A' : '#C9B591'}`,
+          boxShadow: darkMode ? '0 0 12px rgba(201,179,106,0.08)' : 'none',
         }}>
           {KPI_DATA.map((kpi, i, arr) => (
             <div
@@ -466,7 +469,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
             >
               {/* Label */}
-              <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: 10, letterSpacing: '0.08em',
+              <div style={{ fontFamily: 'Archivo Black, sans-serif', fontSize: 10, letterSpacing: '0.08em',
                 color: 'var(--color-ds-muted)', marginBottom: 4, textTransform: 'uppercase' }}>
                 {kpi.label[lang]}
               </div>
@@ -486,7 +489,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
                 </div>
                 {/* Value */}
                 <span style={{
-                  fontFamily: 'Space Grotesk, sans-serif', fontWeight: 300,
+                  fontFamily: 'Archivo Black, sans-serif', fontWeight: 300,
                   fontSize: 'clamp(20px, 2.8vw, 32px)', lineHeight: 1,
                   color: kpi.color, fontVariantNumeric: 'tabular-nums',
                 }}>
@@ -501,7 +504,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
                 </span>
               </div>
               {/* Sub text */}
-              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)', marginTop: 3 }}>
+              <div style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)', marginTop: 3 }}>
                 {kpi.sub[lang]}
               </div>
               {/* Progress bar */}
@@ -524,15 +527,16 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
             className="w-full lg:w-[280px] flex-shrink-0 flex flex-col items-center justify-center py-2 cursor-pointer"
             style={{
               background: darkMode
-                ? 'linear-gradient(135deg, rgba(12,34,51,0.8) 0%, rgba(5,12,22,0.9) 100%)'
+                ? 'linear-gradient(135deg, #0C293A 0%, #0B2422 100%)'
                 : 'rgba(255,255,255,0.8)',
-              border: `1px solid ${darkMode ? 'rgba(201,179,106,0.2)' : '#C9B591'}`,
+              border: `1px solid ${darkMode ? '#C9B36A' : '#C9B591'}`,
               borderRadius: 8,
+              boxShadow: darkMode ? '0 0 20px rgba(201,179,106,0.12)' : 'none',
             }}
             onClick={() => nav.push('l4')}
           >
             <div style={{
-              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
+              fontFamily: 'Archivo Black, sans-serif', fontWeight: 700, fontSize: 11,
               color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.12em',
               textAlign: 'center', marginBottom: 2,
             }}>
@@ -543,7 +547,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
 
             <button
               onClick={() => nav.push('l4')}
-              style={{ marginTop: 8, fontSize: 11, fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600,
+              style={{ marginTop: 8, fontSize: 11, fontFamily: 'Archivo Black, sans-serif', fontWeight: 600,
                 color: darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)',
                 border: `1px solid ${darkMode ? 'rgba(250,176,7,0.3)' : 'rgba(181,72,26,0.25)'}`,
                 borderRadius: 6, padding: '5px 14px',
@@ -569,7 +573,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
           background: darkMode ? 'rgba(5,12,22,0.6)' : 'rgba(233,222,201,0.6)',
         }}
       >
-        <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)' }}>
+        <span style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)' }}>
           {lang === 'uk' ? 'Джерела: WHO · World Bank · МОЗ України · LSE · Feel Again 2025' : 'Sources: WHO · World Bank · MoH Ukraine · LSE · Feel Again 2025'}
         </span>
         <div className="flex-1" />
@@ -584,12 +588,12 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
           ].map(r => (
             <div key={r.label} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <div style={{ width: 10, height: 4, background: r.color, borderRadius: 1 }} />
-              <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>{r.label}</span>
+              <span style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>{r.label}</span>
             </div>
           ))}
         </div>
         <div className="flex-1" />
-        <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: 'var(--color-ds-muted)' }}>
+        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--color-ds-muted)' }}>
           © 2026 FEEL Again · dashboard.feelagain.me
         </span>
       </div>

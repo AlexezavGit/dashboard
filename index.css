@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* ── Google Fonts — DS Typography ──────────────────────────────────────────── */
+/* DS screenshot 10: Archivo Black 800-900 display, Source Sans 3 300-600 body,
+   JetBrains Mono data. Production stack: Space Grotesk 700 + DM Sans 400-700 */
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+
 /* ── Canonical Design System — "Bunker" Cinematic Palette ────────────────── */
 /* Source: FEEL Again Design System Canvas v1.0, Sections B (Themes & Surfaces)
    and H (Cinematic Palette, verified 2026-06-30). Roles: royal blue = donors,
@@ -9,9 +14,9 @@
    Atómico" cyan/orange palette which used cool cyan tones inconsistent with
    the canvas — this was reported as illegible in light mode. */
 @theme {
-  --font-sans:    "DM Sans",        ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk",  ui-sans-serif, system-ui, sans-serif;
-  --font-mono:    "JetBrains Mono", ui-monospace,  SFMono-Regular, monospace;
+  --font-sans:    "Source Sans 3",    ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Archivo Black",    ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono",   ui-monospace,  SFMono-Regular, monospace;
 
   /* ── Mobile-first breakpoints ── */
   --breakpoint-xs:   320px;
