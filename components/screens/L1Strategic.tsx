@@ -570,7 +570,9 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
         className="flex-shrink-0 px-6 py-2 flex items-center gap-4 flex-wrap"
         style={{
           borderTop: `1px solid ${darkMode ? 'rgba(28,90,82,0.2)' : '#C9B591'}`,
-          background: darkMode ? 'rgba(5,12,22,0.6)' : 'rgba(233,222,201,0.6)',
+          background: darkMode
+            ? 'linear-gradient(90deg, rgba(250,176,7,0.06) 0%, rgba(201,179,106,0.04) 100%)'
+            : 'rgba(250,176,7,0.08)',
         }}
       >
         <span style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)' }}>

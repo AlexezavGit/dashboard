@@ -320,13 +320,16 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
           <div style={{ display: 'flex', gap: 12, marginBottom: 6, flexWrap: 'wrap' }}>
             {[
-              { color: C.green,  label: { uk: 'Гілка 1: FEEL Again',         en: 'Path 1: FEEL Again'       } },
-              { color: C.yellow, label: { uk: 'Гілка 2: Часткові зусилля',   en: 'Path 2: Partial effort'   } },
-              { color: C.red,    label: { uk: 'Гілка 3: Бездіяльність',      en: 'Path 3: Inaction'         } },
+              { color: C.green,  dash: '',         label: { uk: 'Гілка 1: FEEL Again',         en: 'Path 1: FEEL Again'       } },
+              { color: C.yellow, dash: '5 3',      label: { uk: 'Гілка 2: Часткові зусилля',   en: 'Path 2: Partial effort'   } },
+              { color: C.red,    dash: '3 3',      label: { uk: 'Гілка 3: Бездіяльність',      en: 'Path 3: Inaction'         } },
             ].map(l => (
               <div key={l.color} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <div style={{ width: 20, height: 2.5, background: l.color, borderRadius: 2 }} />
-                <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10,
+                <svg width="20" height="6" style={{ flexShrink: 0 }}>
+                  <line x1="0" y1="3" x2="20" y2="3" stroke={l.color} strokeWidth="2.5"
+                    strokeDasharray={l.dash} strokeLinecap="round" />
+                </svg>
+                <span style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 10,
                   color: darkMode ? C.muted : C.mutedLight }}>{l.label[lang]}</span>
               </div>
             ))}
