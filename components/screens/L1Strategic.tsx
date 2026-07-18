@@ -270,26 +270,10 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
           opacity: 0.75, marginTop: 3, letterSpacing: '0.06em' }}>
           {gdpImpact(INDEX_SCORE)} {lang === 'uk' ? 'ВВП' : 'GDP'}
         </div>
-        <div style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 9,
-          color: 'var(--color-ds-muted)', marginTop: 2, lineHeight: 1.4 }}>
-          {lang === 'uk' ? 'реальний стан системи MHPSS' : 'actual MHPSS system state'}
-        </div>
+
       </div>
 
-      {/* ── Expand toggle ── */}
-      <button
-        onClick={onToggle}
-        style={{ marginTop: 8, fontFamily: 'Source Sans 3, sans-serif', fontSize: 9,
-          color: bandColor, background: 'none',
-          border: `1px solid ${bandColor}44`, borderRadius: 6,
-          padding: '3px 14px', cursor: 'pointer' }}
-      >
-        {expanded
-          ? (lang === 'uk' ? '↑ згорнути' : '↑ collapse')
-          : (lang === 'uk' ? '↓ розклад індексу' : '↓ index breakdown')}
-      </button>
-
-      {/* ── Expandable breakdown ── */}
+      {/* ── Expandable breakdown (removed duplicate drill-down) ── */}
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -335,7 +319,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 };
 
 // ── Main screen ────────────────────────────────────────────────────────────────
-export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode = true }) => {
+export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode }) => {
   const { setAnswers: setDrillAnswers } = useDrilldown();
   const isMobile = useMobile();
 
@@ -345,16 +329,17 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
     { id: 'capital',  label: { uk: 'Спроможність', en: 'Capacity' }, val: '38%', sub: { uk: 'від потреби закрито', en: 'of need covered' }, bars: 2, arrow: 'up' as const, color: 'var(--color-ds-teal)', nav: 'l2-clinical' },
     { id: 'finance',  label: { uk: 'ВВП-втрати / рік', en: 'GDP Loss / yr' }, val: '$8B', sub: { uk: 'WHO методологія', en: 'WHO methodology' }, bars: 5, arrow: 'up' as const, color: 'var(--color-ds-orange)', nav: 'l2-finance' },
     { id: 'roi',      label: { uk: 'ROI програми', en: 'Programme ROI' }, val: '1→4.5×', sub: { uk: 'за 5 років', en: 'over 5 years' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-gold)', nav: 'l4' },
-    { id: 'gap',      label: { uk: 'GAP (collision)', en: 'GAP (collision)' }, val: '62%', sub: { uk: 'незакрита потреба ⚡', en: 'unmet need ⚡' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-orange)', nav: 'l2-analytical' },
+    { id: 'gap',      label: { uk: 'GAP', en: 'GAP' }, val: '62%', sub: { uk: 'незакрита потреба ⚡', en: 'unmet need ⚡' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-orange)', nav: 'l2-analytical' },
   ];
 
   return (
     <div
-      className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
+      className="fixed inset-0 flex flex-col ds-screen"
       style={{
         background: darkMode
           ? 'linear-gradient(180deg, #050C16 0%, #0a1628 100%)'
           : 'var(--color-ds-bg)',
+        overflow: 'auto',
       }}
     >
       {/* ── Header — DS Bunker style with tabs ── */}
@@ -364,14 +349,14 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
       }}>
         <div className="flex items-center justify-between px-4 pt-2 pb-0">
           {/* Logo + nav tabs */}
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <Logo darkMode={darkMode} />
             {/* Tab navigation — DS screenshot 8 */}
             <div className="flex items-center gap-1">
               {([
                 { id: 'l1' as ScreenId, label: lang === 'uk' ? 'ЛАНДШАФТ' : 'LANDSCAPE' },
                 { id: 'l2-data' as ScreenId, label: 'DIGITAL BUS' },
-                { id: 'l2-clinical' as ScreenId, label: lang === 'uk' ? 'СИМУЛЯЦІЯ' : 'SIMULATION' },
+                { id: 'l2-clinical' as ScreenId, label: lang === 'uk' ? 'МОДЕЛЮВАННЯ' : 'MODELING' },
                 { id: 'l2-finance' as ScreenId, label: 'DLI ТРЕКЕР' },
               ]).map(t => (
                 <button
@@ -402,7 +387,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
           </div>
 
           {/* Right side — Signal Lamp LIVE + ALERT */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 mr-32">
             {/* Signal Lamp — DS screenshot 10 */}
             <button
               onClick={() => nav.push('l2-analytical')}
@@ -446,9 +431,9 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
       </div>
 
       {/* ── KPI Strip — Bloomberg inline style (DS screenshots 6,7,8) ── */}
-      <div className="flex-shrink-0 px-4 pt-3 pb-1">
+      <div className="flex-shrink-0 px-4 pt-2 pb-1">
         <div style={{
-          display: 'flex', gap: 0,
+          display: 'flex', gap: 0, flexWrap: 'wrap',
           background: darkMode
             ? 'linear-gradient(90deg, #0C293A 0%, #0B2422 100%)'
             : 'rgba(255,255,255,0.8)',
@@ -461,9 +446,9 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
               key={kpi.id}
               onClick={() => { setDrillAnswers({ pillarId: kpi.id }); nav.push(kpi.nav); }}
               style={{
-                flex: 1, padding: '10px 14px',
+                flex: '1 1 160px', minWidth: 140, maxWidth: '33%', padding: '8px 12px',
                 borderRight: i < arr.length - 1 ? `1px solid ${darkMode ? 'rgba(28,90,82,0.12)' : 'rgba(18,60,58,0.08)'}` : 'none',
-                cursor: 'pointer', transition: 'background 0.15s', minWidth: 0,
+                cursor: 'pointer', transition: 'background 0.15s',
               }}
               onMouseEnter={e => (e.currentTarget.style.background = darkMode ? 'rgba(28,90,82,0.08)' : 'rgba(18,60,58,0.04)')}
               onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
@@ -474,9 +459,9 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
                 {kpi.label[lang]}
               </div>
               {/* Bloomberg row: bars + value + arrow */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                 {/* Signal bars (palichky) */}
-                <div style={{ display: 'flex', gap: 2, alignItems: 'flex-end', height: 14 }}>
+                <div style={{ display: 'flex', gap: 2, alignItems: 'flex-end', height: 14, flexShrink: 0 }}>
                   {[1,2,3,4,5].map(n => (
                     <div key={n} style={{
                       width: 3, borderRadius: 1,
@@ -490,7 +475,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
                 {/* Value */}
                 <span style={{
                   fontFamily: 'Archivo Black, sans-serif', fontWeight: 300,
-                  fontSize: 'clamp(20px, 2.8vw, 32px)', lineHeight: 1,
+                  fontSize: 'clamp(16px, 2.2vw, 24px)', lineHeight: 1,
                   color: kpi.color, fontVariantNumeric: 'tabular-nums',
                 }}>
                   {kpi.val}
@@ -519,7 +504,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
       </div>
 
       {/* ── Body: Gauge + InactionFunnel ── */}
-      <div className="flex-1 min-h-0 flex flex-col px-4 pb-1 gap-3">
+      <div className="flex-1 min-h-0 flex flex-col px-4 pb-2 gap-3">
         <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
 
           {/* MHEI Gauge — Bunker card style */}
@@ -529,7 +514,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
               background: darkMode
                 ? 'linear-gradient(135deg, #0C293A 0%, #0B2422 100%)'
                 : 'rgba(255,255,255,0.8)',
-              border: `1px solid ${darkMode ? '#C9B36A' : '#C9B591'}`,
+              border: `1px solid ${darkMode ? 'var(--color-ds-gold)' : '#C9B591'}`,
               borderRadius: 8,
               boxShadow: darkMode ? '0 0 20px rgba(201,179,106,0.12)' : 'none',
             }}
@@ -540,22 +525,16 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
               color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.12em',
               textAlign: 'center', marginBottom: 2,
             }}>
-              Mental Health Economy Index
+              {lang === 'uk' ? 'ІНДЕКС ЕКОНОМІКИ ПСИХІЧНОГО ЗДОРОВ\'Я' : 'Mental Health Economy Index'}
             </div>
 
             <GaugeDisplay lang={lang} expanded={false} onToggle={() => nav.push('l4')} />
-
-            <button
-              onClick={() => nav.push('l4')}
-              style={{ marginTop: 8, fontSize: 11, fontFamily: 'Archivo Black, sans-serif', fontWeight: 600,
-                color: darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)',
-                border: `1px solid ${darkMode ? 'rgba(250,176,7,0.3)' : 'rgba(181,72,26,0.25)'}`,
-                borderRadius: 6, padding: '5px 14px',
-                background: darkMode ? 'rgba(250,176,7,0.07)' : 'rgba(181,72,26,0.06)',
-                cursor: 'pointer', letterSpacing: '0.05em' }}
-            >
-              {lang === 'uk' ? '→ Повний звіт' : '→ Full Report'}
-            </button>
+            <div style={{
+              marginTop: 6, fontSize: 10, fontFamily: 'JetBrains Mono, monospace',
+              color: 'var(--color-ds-muted)', textAlign: 'center'
+            }}>
+              {lang === 'uk' ? 'натисніть для деталей' : 'click for details'}
+            </div>
           </div>
 
           {/* Right side — InactionFunnel */}
@@ -582,11 +561,10 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
         {/* Role legend — DS screenshot 8 */}
         <div className="flex items-center gap-3 flex-wrap">
           {[
-            { color: 'var(--color-ds-teal)', label: lang === 'uk' ? 'Синій — ресурси / donors' : 'Blue — resources / donors' },
-            { color: 'var(--color-ds-teal-light)', label: lang === 'uk' ? 'Тіал — providers' : 'Teal — providers' },
+            { color: 'var(--color-ds-royal)', label: lang === 'uk' ? 'Королівський — ресурси / donors' : 'Royal — resources / donors' },
+            { color: 'var(--color-ds-teal)', label: lang === 'uk' ? 'Тіал — providers' : 'Teal — providers' },
             { color: 'var(--color-ds-orange)', label: lang === 'uk' ? 'Оранж — GAP / operational' : 'Orange — GAP / operational' },
             { color: 'var(--color-ds-gold)', label: lang === 'uk' ? 'Золото — ROI / outcome' : 'Gold — ROI / outcome' },
-            { color: 'var(--color-ds-red)', label: lang === 'uk' ? 'Червоний — collision (<2%)' : 'Red — collision (<2%)' },
           ].map(r => (
             <div key={r.label} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               <div style={{ width: 10, height: 4, background: r.color, borderRadius: 1 }} />

@@ -1,9 +1,9 @@
-@import "tailwindcss";
-
 /* ── Google Fonts — DS Typography ──────────────────────────────────────────── */
 /* DS screenshot 10: Archivo Black 800-900 display, Source Sans 3 300-600 body,
    JetBrains Mono data. Production stack: Space Grotesk 700 + DM Sans 400-700 */
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Source+Sans+3:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;700&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap');
+
+@import "tailwindcss";
 
 /* ── Canonical Design System — "Bunker" Cinematic Palette ────────────────── */
 /* Source: FEEL Again Design System Canvas v1.0, Sections B (Themes & Surfaces)
@@ -715,4 +715,24 @@ html, body {
   text-transform: uppercase;
   letter-spacing: -0.05em;
   margin-bottom: 1rem;
+}
+
+/* ── L1Strategic Mobile Fixes ────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  /* Make gauge container take less vertical space on mobile */
+  .ds-screen > div.flex-col.lg\:flex-row > div:first-child {
+    padding: 12px 8px;
+  }
+  
+  /* Ensure KPI strip scrolls horizontally on small screens */
+  .ds-screen .flex-shrink-0.px-4.pt-3.pb-1 > div {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Reduce gauge SVG size on mobile */
+  .ds-screen svg[viewBox="0 0 280 158"] {
+    max-width: 240px;
+    height: auto;
+  }
 }

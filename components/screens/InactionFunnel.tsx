@@ -234,7 +234,7 @@ const SequentialStep: React.FC<{
 
 type Tab = 'timeline' | 'chain' | 'funnel' | 'waterfall';
 
-export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = ({ lang, darkMode = true }) => {
+export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = ({ lang, darkMode = false }) => {
   const [tab, setTab] = useState<Tab>('timeline');
   const [activeStep, setActiveStep] = useState(0);
   const isMobile = useMobile();
@@ -334,7 +334,7 @@ export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = 
               </div>
             ))}
           </div>
-          <ResponsiveContainer width="100%" height={200}>
+          <ResponsiveContainer width="100%" height={isMobile ? 140 : 200}>
             <AreaChart data={TIMELINE} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
               <defs>
                 {[['ga', C.green], ['gb', C.yellow], ['gc', C.red]].map(([id, color]) => (

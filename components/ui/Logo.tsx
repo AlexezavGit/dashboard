@@ -3,54 +3,91 @@ import React from 'react';
 interface LogoProps {
   className?: string;
   darkMode?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }
 
-export const Logo: React.FC<LogoProps> = ({ className, darkMode = true }) => {
-  // DS canonical colors from screenshot 1
-  const teal = darkMode ? '#1C5A52' : '#123C3A';
-  const gold = darkMode ? '#E3A22E' : '#C9B36A';
-  const orange = darkMode ? '#B5481A' : '#992602';
-  const blue = darkMode ? '#0C293A' : '#0B2422';
-  const textGold = darkMode ? '#E3A22E' : '#8A6830';
+// Canonical FEEL mark from Design System A4
+// Uses 4 rectangular puzzle pieces (F, E1, E2, L) with different colors/opacity
+// Light theme: petrol/teal colors on cream background
+// Dark theme: cream/gold colors on bunker background
+// Bottom fade: 0-58% full, 58-78% 40% opacity, 78-100% 15% opacity (no "jaws")
+export const Logo: React.FC<LogoProps> = ({ className, darkMode = false, size = 'md' }) => {
+  const sizeMap = { sm: 40, md: 56, lg: 72 };
+  const logoSize = sizeMap[size];
+  
+  // Colors for light theme (from Design System)
+  const colorF = darkMode ? '#F2EADB' : '#123C3A';
+  const colorE1 = darkMode ? '#C9B36A' : '#8A6830';
+  const colorE2 = darkMode ? 'rgba(242,234,219,0.55)' : 'rgba(18,60,58,0.55)';
+  const colorL = darkMode ? 'rgba(242,234,219,0.3)' : 'rgba(18,60,58,0.3)';
+  const colorAgain = darkMode ? '#C9B36A' : '#8A6830';
+
+  // Scale for the original 1024x1024 SVG
+  const scale = logoSize / 1024 * 0.8;
+  const scaledSize = 1024 * scale;
+  const againFontSize = logoSize * 0.25;
 
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      {/* FE Monogram — geometric bar composition */}
-      <div className="flex-shrink-0" style={{ width: 48, height: 48 }}>
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-          {/* Vertical bars — left group (F) */}
-          <rect x="4" y="4" width="6" height="40" rx="1" fill={teal} />
-          <rect x="12" y="4" width="4" height="28" rx="1" fill={blue} />
-          <rect x="18" y="8" width="3" height="20" rx="1" fill={gold} opacity="0.7" />
-
-          {/* Horizontal bars — F crossbars */}
-          <rect x="4" y="4" width="18" height="4" rx="1" fill={teal} />
-          <rect x="4" y="16" width="14" height="3" rx="1" fill={gold} />
-          <rect x="4" y="24" width="10" height="2" rx="1" fill={orange} opacity="0.6" />
-
-          {/* Vertical bars — right group (E) */}
-          <rect x="26" y="4" width="5" height="40" rx="1" fill={orange} />
-          <rect x="33" y="8" width="4" height="32" rx="1" fill={teal} opacity="0.6" />
-          <rect x="39" y="4" width="5" height="40" rx="1" fill={blue} opacity="0.5" />
-
-          {/* Horizontal bars — E crossbars */}
-          <rect x="26" y="4" width="18" height="4" rx="1" fill={orange} />
-          <rect x="26" y="18" width="14" height="3" rx="1" fill={teal} />
-          <rect x="26" y="30" width="16" height="3" rx="1" fill={gold} />
-          <rect x="26" y="42" width="18" height="4" rx="1" fill={blue} opacity="0.4" />
-        </svg>
-      </div>
-
-      {/* "Again" text — spaced letters, gold on dark / petrol on light */}
-      <div className="select-none" style={{
-        fontFamily: 'Space Grotesk, sans-serif',
-        fontWeight: 400,
-        fontSize: 14,
-        letterSpacing: '0.35em',
-        color: textGold,
-        lineHeight: 1,
+    <div className={`flex flex-col items-center gap-1 ${className}`} style={{ width: logoSize, height: logoSize }}>
+      {/* FEEL mark with bottom fade using SVG mask */}
+      <svg
+        viewBox="0 0 1024 1024"
+        width={scaledSize}
+        height={scaledSize}
+        style={{ display: 'block' }}
+      >
+        <defs>
+          {/* Bottom fade gradient mask */}
+          <linearGradient id="logo-fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stopColor="white" stopOpacity="1"/>
+            <stop offset="58%"  stopColor="white" stopOpacity="1"/>
+            <stop offset="78%"  stopColor="white" stopOpacity="0.4"/>
+            <stop offset="100%" stopColor="white" stopOpacity="0.15"/>
+          </linearGradient>
+          
+          {/* Mask that applies the fade */}
+          <mask id="logo-mask">
+            <rect x="0" y="0" width="1024" height="1024" fill="url(#logo-fade)"/>
+          </mask>
+        </defs>
+        
+        {/* Apply mask to the entire FEEL group */}
+        <g mask="url(#logo-mask)">
+          {/* F (frontmost) */}
+          <path d="M 285.71 226.54 L 285.71 797.46 L 345.54 797.46 L 345.54 541.41 L 532.39 541.41 L 532.39 484.11 L 345.54 484.11 L 345.54 283.84 L 547.33 283.84 L 547.33 226.54 Z" fill={colorF} />
+          
+          {/* E1 (gold/brass) */}
+          <path d="M 407.41 226.54 L 407.41 797.46 L 467.24 797.46 L 467.24 541.41 L 654.09 541.41 L 654.09 484.11 L 467.24 484.11 L 467.24 283.84 L 669.03 283.84 L 669.03 226.54 Z" fill={colorE1} />
+          
+          {/* E2 (semi-transparent) */}
+          <path d="M 529.11 226.54 L 529.11 797.46 L 588.94 797.46 L 588.94 541.41 L 775.79 541.41 L 775.79 484.11 L 588.94 484.11 L 588.94 283.84 L 790.73 283.84 L 790.73 226.54 Z" fill={colorE2} />
+          
+          {/* L (backmost, most transparent) */}
+          <path d="M 650.81 226.54 L 650.81 797.46 L 710.64 797.46 L 710.64 283.84 L 790.73 283.84 L 790.73 226.54 Z" fill={colorL} />
+        </g>
+      </svg>
+      
+      {/* Again text with spaced letters */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        width: scaledSize * 0.85,
+        marginTop: -logoSize * 0.05,
       }}>
-        Again
+        {['A', 'g', 'a', 'i', 'n'].map((letter, i) => (
+          <span 
+            key={i}
+            style={{
+              fontFamily: 'Source Sans 3, sans-serif',
+              fontWeight: 700,
+              fontSize: againFontSize,
+              color: colorAgain,
+              lineHeight: 1,
+            }}
+          >
+            {letter}
+          </span>
+        ))}
       </div>
     </div>
   );
