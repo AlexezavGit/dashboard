@@ -4,14 +4,12 @@ import { ScreenId, ScreenNav } from './types';
 import { L1Strategic } from './L1Strategic';
 import { L2MHEI } from './L2MHEI';
 import { DrilldownProvider } from '../drilldown/DrilldownContext';
-// 6 program layer L2 screens
 import { L2Finance } from './L2Finance';
 import { L2Clinical } from './L2Clinical';
 import { L2Data } from './L2Data';
 import { L2Sustain } from './L2Sustain';
 import { L2Digital } from './L2Digital';
 import { L2Regulatory } from './L2Regulatory';
-// legacy/supporting screens
 import { L2Coverage } from './L2Coverage';
 import { L2Backlog } from './L2Backlog';
 import { L2Operational } from './L2Operational';
@@ -19,6 +17,31 @@ import { L2Analytical } from './L2Analytical';
 import { L2Journey } from './L2Journey';
 import { LangThemeBar } from './LangThemeBar';
 import { AnimatePresence, motion } from 'motion/react';
+
+// Slide direction per screen — defines where the panel comes FROM
+const SLIDE_DIRECTION: Partial<Record<ScreenId, 'left' | 'right' | 'bottom'>> = {
+  'l2-mhei':        'left',
+  'l4':             'bottom',
+  'l2-finance':     'right',
+  'l2-fintech':     'right',
+  'l2-clinical':    'right',
+  'l2-data':        'right',
+  'l2-operational': 'right',
+  'l2-analytical':  'right',
+  'l2-sustain':     'right',
+  'l2-digital':     'right',
+  'l2-regulatory':  'right',
+  'l2-coverage':    'right',
+  'l2-backlog':     'right',
+  'l2-journey':     'right',
+};
+
+const slideVariants = {
+  left:   { initial: { x: '-100%', opacity: 0 }, exit: { x: '100%', opacity: 0 } },
+  right:  { initial: { x: '100%',  opacity: 0 }, exit: { x: '-100%', opacity: 0 } },
+  bottom: { initial: { y: '100%',  opacity: 0 }, exit: { y: '100%',  opacity: 0 } },
+  fade:   { initial: { opacity: 0, scale: 0.98 }, exit: { opacity: 0, scale: 1.01 } },
+};
 
 interface Props {
   lang: Language;
@@ -91,35 +114,36 @@ export const ScreenRouter: React.FC<Props> = ({
   const nav: ScreenNav = { current, history, push, back, reset };
 
   const screens: Record<Exclude<ScreenId, 'appendix' | 'l4'>, React.ReactNode> = {
-    'l1':               <L1Strategic lang={lang} nav={nav} liveHciValue={liveHciValue} darkMode={darkMode} />,
-    'l2-mhei':          <L2MHEI lang={lang} nav={nav} />,
-    // 6 program layer L2 screens
-    'l2-fintech':       <L2Finance lang={lang} nav={nav} />,
-    'l2-clinical':      <L2Clinical lang={lang} nav={nav} />,
-    'l2-data':          <L2Data lang={lang} nav={nav} />,
-    'l2-sustain':       <L2Sustain lang={lang} nav={nav} />,
-    'l2-digital':       <L2Digital lang={lang} nav={nav} />,
-    'l2-regulatory':    <L2Regulatory lang={lang} nav={nav} />,
-    // legacy/supporting screens
-    'l2-finance':       <L2Finance lang={lang} nav={nav} />,
-    'l2-coverage':      <L2Coverage lang={lang} nav={nav} />,
-    'l2-backlog':       <L2Backlog lang={lang} nav={nav} />,
-    'l2-operational':   <L2Operational lang={lang} nav={nav} />,
-    'l2-analytical':    <L2Analytical lang={lang} nav={nav} />,
-    'l2-journey':       <L2Journey lang={lang} nav={nav} />,
+    'l1':             <L1Strategic lang={lang} nav={nav} liveHciValue={liveHciValue} darkMode={darkMode} />,
+    'l2-mhei':        <L2MHEI lang={lang} nav={nav} />,
+    'l2-fintech':     <L2Finance lang={lang} nav={nav} />,
+    'l2-finance':     <L2Finance lang={lang} nav={nav} />,
+    'l2-clinical':    <L2Clinical lang={lang} nav={nav} />,
+    'l2-data':        <L2Data lang={lang} nav={nav} />,
+    'l2-sustain':     <L2Sustain lang={lang} nav={nav} />,
+    'l2-digital':     <L2Digital lang={lang} nav={nav} />,
+    'l2-regulatory':  <L2Regulatory lang={lang} nav={nav} />,
+    'l2-coverage':    <L2Coverage lang={lang} nav={nav} />,
+    'l2-backlog':     <L2Backlog lang={lang} nav={nav} />,
+    'l2-operational': <L2Operational lang={lang} nav={nav} />,
+    'l2-analytical':  <L2Analytical lang={lang} nav={nav} />,
+    'l2-journey':     <L2Journey lang={lang} nav={nav} />,
   };
 
   if (current === 'appendix') return null;
+
+  const dir = SLIDE_DIRECTION[current] ?? 'fade';
+  const vars = slideVariants[dir];
 
   return (
     <>
       <AnimatePresence mode="wait">
         <motion.div
           key={current}
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1.01 }}
-          transition={{ duration: 0.25 }}
+          initial={{ ...vars.initial }}
+          animate={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+          exit={{ ...vars.exit }}
+          transition={{ duration: 0.28, ease: [0.32, 0, 0.67, 0] }}
           className="fixed inset-0 z-50"
         >
           <DrilldownProvider>
@@ -128,7 +152,7 @@ export const ScreenRouter: React.FC<Props> = ({
         </motion.div>
       </AnimatePresence>
 
-      {/* ── Persistent lang + theme bar — same position on every L1/L2 screen ── */}
+      {/* Persistent lang + theme bar */}
       <div className="fixed top-3 right-4 z-[60] pointer-events-auto">
         <LangThemeBar
           lang={lang}

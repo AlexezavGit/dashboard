@@ -163,65 +163,54 @@ export const NavBar = ({
   );
 
   const renderMobile = () => (
-    <div
-      className="fixed inset-0 z-50 safe-area-inset"
-      style={{
-        background: 'rgba(10, 22, 40, 0.95)',
-        backdropFilter: 'blur(12px)',
-        borderTop: '1px solid rgba(200,164,92,0.2)',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      <div
-        className="flex-shrink-0 px-4 pt-3 pb-2"
-        style={{ borderBottom: '1px solid var(--color-ds-border)' }}
+    <>
+      {/* Sticky top bar — same as desktop but compact */}
+      <header
+        className="sticky top-0 z-40 backdrop-blur-xl"
+        style={{
+          background: 'rgba(255,255,255,0.08)',
+          borderBottom: '1px solid var(--color-ds-border)',
+        }}
       >
-        <div className="flex items-center gap-3">
-          <button
-            onClick={nav.back}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold ds-display transition-all flex-shrink-0"
-            style={{
-              background: 'rgba(200,164,92,0.18)',
-              border: '2px solid var(--color-ds-gold)',
-              color: 'var(--color-ds-gold)',
-              fontSize: '13px',
-              minWidth: '90px',
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.32)'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.18)'; }}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {lang === 'uk' ? 'Назад' : 'Back'}
-          </button>
+        <div className="flex items-center gap-2 px-3 py-2">
+          {renderBackButton()}
           <div className="flex-1 min-w-0">
+            {renderBreadcrumbs()}
             {renderTitleRow()}
           </div>
           {renderRightAction()}
         </div>
-      </div>
+      </header>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4">
-        {renderBreadcrumbs()}
-        <div className="mt-4 space-y-3">
+      {/* Bottom tab bar */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-40"
+        style={{
+          background: 'rgba(10,22,40,0.96)',
+          borderTop: '1px solid var(--color-ds-border)',
+          backdropFilter: 'blur(12px)',
+        }}
+      >
+        <div className="flex">
           {MOBILE_TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => nav.push(tab.id as ScreenId)}
-              className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all ds-body"
+              className="flex-1 flex flex-col items-center gap-1 py-2 transition-all"
               style={{
-                background: nav.current === tab.id ? 'rgba(200,164,92,0.15)' : 'rgba(255,255,255,0.03)',
-                border: nav.current === tab.id ? '1px solid var(--color-ds-gold)' : '1px solid var(--color-ds-border)',
-                color: nav.current === tab.id ? 'var(--color-ds-gold)' : 'var(--color-ds-text)',
+                color: nav.current === tab.id ? 'var(--color-ds-gold)' : 'var(--color-ds-muted)',
+                minHeight: 52,
               }}
             >
-              <tab.icon className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--color-ds-gold)' }} />
-              <span>{tab.label[lang]}</span>
+              <tab.icon className="w-5 h-5" />
+              <span style={{ fontSize: 9, fontFamily: 'var(--font-ds-display)', letterSpacing: '0.06em' }}>
+                {tab.label[lang]}
+              </span>
             </button>
           ))}
         </div>
-      </div>
-    </div>
+      </nav>
+    </>
   );
 
   const renderDesktop = () => (

@@ -518,7 +518,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
               borderRadius: 8,
               boxShadow: darkMode ? '0 0 20px rgba(201,179,106,0.12)' : 'none',
             }}
-            onClick={() => nav.push('l4')}
+            onClick={() => nav.push('l2-mhei')}
           >
             <div style={{
               fontFamily: 'Archivo Black, sans-serif', fontWeight: 700, fontSize: 11,
@@ -528,7 +528,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
               {lang === 'uk' ? 'ІНДЕКС ЕКОНОМІКИ ПСИХІЧНОГО ЗДОРОВ\'Я' : 'Mental Health Economy Index'}
             </div>
 
-            <GaugeDisplay lang={lang} expanded={false} onToggle={() => nav.push('l4')} />
+            <GaugeDisplay lang={lang} expanded={false} onToggle={() => nav.push('l2-mhei')} />
             <div style={{
               marginTop: 6, fontSize: 10, fontFamily: 'JetBrains Mono, monospace',
               color: 'var(--color-ds-muted)', textAlign: 'center'
