@@ -3,6 +3,9 @@ import { LayoutDashboard, Globe, ChevronDown, ChevronUp, ChevronRight, Check, Al
 import { motion, AnimatePresence } from 'motion/react';
 import { ScreenRouter } from './components/screens/ScreenRouter';
 import { L4Report } from './components/screens/L4Report';
+import { UnifiedRing, RingResource } from './components/ring/UnifiedRing';
+import { RING_KPIS } from './components/ring/ringKpis';
+import { DS } from './designTokens';
 import {
   TEXTS, COLORS, KPI_DATA, SECTIONS_CONFIG, TOP_METRICS,
   PREVALENCE_DATA, RISK_GROUP_DATA, WORKFORCE_DATA, WAR_IMPACT_DATA, SECTOR_DIST_DATA,
@@ -208,6 +211,7 @@ const App: React.FC = () => {
   });
   const [showAppendix, setShowAppendix] = useState<boolean>(false);
   const [showL4, setShowL4] = useState<boolean>(false);
+  const [ringResource, setRingResource] = useState<RingResource>('data');
   const [l4From, setL4From] = useState<'l1' | 'l3'>('l3');
   const [activeSection, setActiveSection] = useState<SectionFilter>('all');
   const [c2Open, setC2Open] = useState(false);
@@ -362,6 +366,26 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[--color-ds-bg] text-[--color-ds-text] font-sans custom-scrollbar flex ds-blueprint-bg" style={{ backgroundColor: 'var(--color-ds-bg)', color: 'var(--color-ds-text)' }}>
+
+      {/* ── UNIFIED RING — mounted ONCE outside ScreenRouter → no flicker ── */}
+      <UnifiedRing
+        lang={lang}
+        active={ringResource}
+        kpis={RING_KPIS[ringResource]}
+        onSelect={(id) => {
+          setRingResource(id);
+          if (id !== 'data') {
+            // Програма/Користувачі/Демо/Партнери → зовнішні ресурси констелляції
+            const urls: Record<string, string> = {
+              program: 'https://feelagain.me',
+              users: 'https://feelagain.me/users',
+              demo: 'https://feelagain.me/demo',
+              partners: 'https://feelagain.me/partners',
+            };
+            window.open(urls[id], '_blank');
+          }
+        }}
+      />
 
       {/* ── L4 FULL ANALYTICAL REPORT ────────────────────────────────── */}
       {showL4 && (

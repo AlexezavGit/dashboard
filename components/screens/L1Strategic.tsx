@@ -393,7 +393,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
 
   return (
     <div
-      className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
+      className="ds-screen-app flex flex-col overflow-hidden ds-screen"
       style={{
         background: darkMode
           ? 'radial-gradient(ellipse 80% 60% at 20% 60%, rgba(0,210,170,0.10) 0%, transparent 55%), ' +

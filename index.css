@@ -147,6 +147,17 @@ html, body {
   -webkit-text-size-adjust: 100%;
 }
 
+/* ── UnifiedRing height (mounted outside ScreenRouter) ─────────────────── */
+:root {
+  --ring-height: 82px;   /* 44 scale + 8 ticks + 30 data strip — keep in sync with RING_HEIGHT */
+}
+
+/* контентний шар під кільцем — L1/L2/L3 */
+.ds-screen-app {
+  position: fixed;
+  inset: var(--ring-height) 0 0 0;
+}
+
 /* ── Base ────────────────────────────────────────────────────────────────── */
 @layer base {
   html { scroll-behavior: smooth; }
@@ -158,6 +169,7 @@ html, body {
     transition: background-color 0.3s ease, color 0.3s ease;
     margin: 0;
     overflow-x: hidden;
+    padding-top: var(--ring-height);
   }
 
   h1, h2, h3, h4, h5, h6 {

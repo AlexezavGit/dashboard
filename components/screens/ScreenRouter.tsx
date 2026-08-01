@@ -120,7 +120,8 @@ export const ScreenRouter: React.FC<Props> = ({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.01 }}
           transition={{ duration: 0.25 }}
-          className="fixed inset-0 z-50"
+          className="ds-screen-app"
+          style={{ zIndex: 50 }}
         >
           <DrilldownProvider>
             {screens[current as Exclude<ScreenId, 'appendix'>]}
