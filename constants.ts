@@ -268,7 +268,7 @@ export const FUNDING_VS_REACH_DATA = [
 export const ECONOMIC_BURDEN_INDICATORS = (l: Language) => [
   { name: l === 'uk' ? 'Поширеність розладів' : 'Disorder Prevalence', percent: '22', value: '9,600,000', source: 'Lancet', period: '2023', units: l === 'uk' ? 'осіб' : 'people' },
   { name: l === 'uk' ? 'Потребують підтримки (МОЗ)' : 'Need support (MOH)', percent: '35', value: '15,000,000', source: 'MOH', period: '2024', units: l === 'uk' ? 'осіб' : 'people' },
-  { name: l === 'uk' ? 'Втрати ВВП (World Bank)' : 'GDP losses (World Bank)', percent: '4.5', value: '$6,000,000,000', source: 'World Bank', period: '2025', units: l === 'uk' ? 'USD (оцінка)' : 'USD (est.)' },
+  { name: l === 'uk' ? 'Втрати ВВП (IMF/World Bank)' : 'GDP losses (IMF/World Bank)', percent: '8.2', value: '$13,940,000,000', source: 'IMF est. $170B base / World Bank', period: '2025', units: l === 'uk' ? 'USD (оцінка)' : 'USD (est.)' },
   // LSE/FHI360 methodology: 4-5% of pre-war GDP. Pre-war MH budget ~8B UAH; war-adjusted 10-12B UAH
   { name: l === 'uk' ? 'Втрати ВВП з поправкою на війну (LSE/FHI 360)' : 'War-adjusted GDP loss (LSE/FHI 360)', percent: '10–12', value: l === 'uk' ? '10–12 млрд ₴' : '₴10–12B', source: 'LSE/FHI 360', period: '2023–2025', units: l === 'uk' ? 'оцінка, UAH' : 'estimate, UAH' },
   // World Bank / UNDP: >70% of population experienced income decline due to war
@@ -397,13 +397,22 @@ export const MACRO_GAP = {
   blendedFinanceNeedUAH: 119_120_190_000, // 62.22M × 1914.5
   marketMinEurBln: 2.5,              // 62.4M hr × €40/hr
   marketMaxEurBln: 4.1,              // 62.4M hr × €65/hr
-  gdpLossUSD: '$1.2B+',             // War Room canonical
-  lockedFundsUSD: '$954M',           // HEAL/THRIVE (War Room)
+  gdpLossUSD: '$13.94B',           // v5 canonical V-29: 8.2% × $170B (IMF base)
+  lockedFundsUSD: '$860M',           // v5 canonical: THRIVE undisbursed (context). $954M HEAL gap = DEPRECATED (§2.3)
+  planningBaseSessions: 28_000_000,  // v5 §1: 3.9M × 12 sess × 60% uptake. 62.4M = theoretical max @16sess
   // Aftershock: extended cumulative estimate (moderate + severe, incl. IDPs returning, refugees, cumulative trauma)
   // 6.72M × 16 = 107.52M sessions; × €50 avg = €5.376B ≈ €5.4B; / (4000 × 1250/yr) = 21.5 years
   aftershockBeneficiaries: 6_720_000,
   aftershockMarketEurBln: 5.4,
   aftershockBacklogYears: 21.5,
+};
+
+// MHEI — Mental Health Economy Index (v5 §1): rescaled to 0-100 scale.
+// Legacy scale 4.12→8.16 is DEPRECATED (V-127/128). Current = 8.16 on 0-100.
+export const MHEI = {
+  current: 8.16,
+  scale: '0-100',
+  note: 'v5 canonical — rescaled from legacy 4.12→8.16; see DATA_DICTIONARY_v5.md',
 };
 
 // NSZU (NHSU) Portal Verified Snapshot — станом на 10.04.2026 08:06

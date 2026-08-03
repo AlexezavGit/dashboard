@@ -409,6 +409,46 @@ async function fetchKobo(): Promise<LiveMetrics['kobo']> {
   }
 }
 
+/**
+ * Digital Bus sync — aggregated live feed (ESOZ eHealth + humanitarian APIs).
+ * Calls the dashboard's own /api/sync Pages Function (Cloudflare proxy),
+ * which holds ActivityInfo/KoBo secrets server-side. Never fetches
+ * external tokens from the client bundle (Anti-Haltura: no leaked secrets).
+ */
+async function fetchDigitalBusSync(): Promise<{
+  esoz: number | null;
+  humanitarian: { beneficiaries: number; sessions: number; assessments: number; source: string; confidence: number } | null;
+  status: 'synced' | 'bridge_broken' | 'unavailable';
+  errors: string[];
+} | null> {
+  try {
+    const res = await fetchWithTimeout('/api/sync', { method: 'POST' });
+    if (!res.ok) {
+      // 502 = MALFUNCTION_BRIDGE_BROKEN (state API unreachable) — surface, don't fake
+      if (res.status === 502) {
+        const body = await res.json().catch(() => ({}));
+        return {
+          esoz: null,
+          humanitarian: body?.data?.humanitarian ?? null,
+          status: 'bridge_broken',
+          errors: body?.details ?? ['Digital Bus bridge broken: ESOZ unreachable'],
+        };
+      }
+      return null;
+    }
+    const body = await res.json();
+    if (!body?.success) return null;
+    return {
+      esoz: body.data?.esoz ?? null,
+      humanitarian: body.data?.humanitarian ?? null,
+      status: 'synced',
+      errors: [],
+    };
+  } catch {
+    return null;
+  }
+}
+
 /** Run all fetches in parallel and return combined results + source statuses */
 export async function fetchAllLiveData(): Promise<{
   metrics: LiveMetrics;
@@ -424,12 +464,13 @@ export async function fetchAllLiveData(): Promise<{
   const hasKoboToken = proxyHealth.kobo === 'configured';
   const hasActivityInfoToken = proxyHealth.activityinfo === 'configured';
 
-  const [hdxFunding, activityInfo, kobo, worldBankHealth, worldBankHci] = await Promise.all([
+  const [hdxFunding, activityInfo, kobo, worldBankHealth, worldBankHci, digitalBus] = await Promise.all([
     fetchFtsFunding(),
     fetchActivityInfo(),
     fetchKobo(),
     fetchWorldBankHealthData(),
     fetchWorldBankHci(),
+    fetchDigitalBusSync(),
   ]);
   const hdxPopulation = getUkrainePopulation();
 
@@ -567,6 +608,30 @@ export async function fetchAllLiveData(): Promise<{
       potentialData: {
         uk: 'Якби доступ був: ~6M+ пацієнтів, психіатричні ep-ізоди, ПТСР-діагнози, черги до психологів, географія звернень по регіонах.',
         en: 'If access granted: ~6M+ patients, psychiatric episodes, PTSD diagnoses, psychologist waitlists, regional consultation geography.',
+      },
+    },
+    {
+      id: 'digital_bus',
+      name: { uk: 'Digital Bus (синхронізація)', en: 'Digital Bus (sync)' },
+      status: digitalBus
+        ? digitalBus.status === 'bridge_broken'
+          ? 'unavailable'
+          : digitalBus.esoz !== null
+            ? 'live'
+            : 'restricted'
+        : 'not_configured',
+      lastFetched: digitalBus ? now : undefined,
+      requiresAuth: false,
+      apiBase: '/api/sync',
+      dataType: {
+        uk: 'ЕСОЗ eHealth + гуманітарні API (CHD / ActivityInfo / KoBo)',
+        en: 'ESOZ eHealth + humanitarian APIs (CHD / ActivityInfo / KoBo)',
+      },
+      updateFrequency: { uk: 'Реальний час (транзакційна шина)', en: 'Real-time (transactional bus)' },
+      error: digitalBus?.errors?.length ? digitalBus.errors.join('; ') : undefined,
+      restrictionNote: {
+        uk: 'Стан: ' + (digitalBus?.status ?? 'n/a') + '. ЕСОЗ — закрита держсистема; гуманітарні API потребують токенів (ActivityInfo/KoBo) у змінних середовища.',
+        en: 'Status: ' + (digitalBus?.status ?? 'n/a') + '. ESOZ is a closed state system; humanitarian APIs need tokens (ActivityInfo/KoBo) in env vars.',
       },
     },
     {
