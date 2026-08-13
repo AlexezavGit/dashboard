@@ -1,33 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, animate } from 'motion/react';
 import { ChevronRight } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
-import { Logo } from '../ui/Logo';
-import { STRATEGIC_FRAMEWORK, MHEI_VALUE_CHAIN, COLORS } from '../../constants';
-import { useDrilldown } from '../drilldown/DrilldownContext';
-import { InactionFunnel } from './InactionFunnel';
 
 interface Props {
   lang: Language;
   nav: ScreenNav;
   liveHciValue?: number | null;
-  darkMode?: boolean;
 }
 
-// Mobile breakpoint detection
-const useMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
-  return isMobile;
-};
-
-type LayerId = 'needs' | 'capital' | 'finance' | 'coverage';
+type LayerId = 'fintech' | 'clinical' | 'data' | 'sustain' | 'digital' | 'regulatory';
 
 interface LayerDef {
   id: LayerId;
@@ -35,155 +18,204 @@ interface LayerDef {
   weight: number;
   current: number;
   target: number;
+  layer: { uk: string; en: string };
+  indicator: { uk: string; en: string };
+  display: { uk: string; en: string };
+  unit: { uk: string; en: string };
   color: string;
   glow: string;
   cardBg: string;
 }
 
-// MHEI recalculated (2026-07-14): real crisis-level scores
-// Coverage: 260K sessions / 62.4M needed = 0.41% → score 2
-// Capital: ~1,400 clinical psychologists/psychotherapists (Compendium May 2026 forecast)
-//   vs 3.9M people needing care → 0.036% capacity → score 5
-//   Formula: (3.9M × 5 sessions) / (1,400 × 1,000 hrs/yr ÷ 2 hrs/session) = 69:1 gap
-// Finance: $175M locked (HEAL C4 $41.1M + THRIVE $134M), $8B/yr GDP loss → score 12
-// Needs: 3.9M identified but only 260K reached system → score 8
-const PILLARS_CONFIG: LayerDef[] = [
-  { id: 'needs',    screenId: 'l2-operational', weight: 25, current: 8,  target: 100, color: '#A855F7', glow: 'rgba(168,85,247,0.22)', cardBg: 'rgba(168,85,247,0.07)' },
-  { id: 'capital',  screenId: 'l2-clinical',    weight: 25, current: 5,  target: 100, color: '#3B82F6', glow: 'rgba(59,130,246,0.22)', cardBg: 'rgba(59,130,246,0.07)' },
-  { id: 'finance',  screenId: 'l2-finance',     weight: 25, current: 12, target: 100, color: '#EF4444', glow: 'rgba(239,68,68,0.22)',  cardBg: 'rgba(239,68,68,0.07)' },
-  { id: 'coverage', screenId: 'l2-sustain',     weight: 25, current: 2,  target: 100, color: '#10B981', glow: 'rgba(16,185,129,0.22)', cardBg: 'rgba(16,185,129,0.07)' },
+const LAYERS: LayerDef[] = [
+  {
+    id: 'fintech', screenId: 'l2-fintech', weight: 25, current: 0, target: 30,
+    layer: { uk: 'FinTech', en: 'FinTech' },
+    indicator: { uk: 'Виплати, прив\'язані до результатів', en: 'Outcome-linked payments' },
+    display: { uk: '$0', en: '$0' },
+    unit: { uk: 'верифікованих outcome-виплат', en: 'verified outcome payments' },
+    color: '#e8c97a', glow: 'rgba(200,164,92,0.22)', cardBg: 'rgba(200,164,92,0.07)',
+  },
+  {
+    id: 'clinical', screenId: 'l2-clinical', weight: 25, current: 40, target: 80,
+    layer: { uk: 'Clinical', en: 'Clinical' },
+    indicator: { uk: 'Завершуваність реабілітації', en: 'Rehabilitation completion' },
+    display: { uk: '~40%', en: '~40%' },
+    unit: { uk: 'епізодів завершено / розпочато', en: 'episodes completed / initiated' },
+    color: '#ff7b6e', glow: 'rgba(224,85,69,0.22)', cardBg: 'rgba(224,85,69,0.07)',
+  },
+  {
+    id: 'data', screenId: 'l2-data', weight: 20, current: 5, target: 60,
+    layer: { uk: 'Data & Coord', en: 'Data & Coord' },
+    indicator: { uk: 'Інтероперабельність', en: 'Interoperability' },
+    display: { uk: '<5%', en: '<5%' },
+    unit: { uk: 'сесій з крос-системним записом', en: 'sessions with cross-system record' },
+    color: '#00d4aa', glow: 'rgba(0,210,170,0.22)', cardBg: 'rgba(0,210,170,0.07)',
+  },
+  {
+    id: 'sustain', screenId: 'l2-sustain', weight: 15, current: 35, target: 70,
+    layer: { uk: 'Місткість', en: 'Capacity' },
+    indicator: { uk: 'Конверсія навчання → практика', en: 'Training → practice conversion' },
+    display: { uk: '~35%', en: '~35%' },
+    unit: { uk: '57K awareness → 700 клін · «зникла середина»', en: '57K awareness → 700 clinical · "missing middle"' },
+    color: '#a78bfa', glow: 'rgba(167,139,250,0.22)', cardBg: 'rgba(167,139,250,0.07)',
+  },
+  {
+    id: 'digital', screenId: 'l2-digital', weight: 10, current: 70, target: 95,
+    layer: { uk: 'Digitalization', en: 'Digitalization' },
+    indicator: { uk: 'Ерозія від дублювання', en: 'Duplication erosion' },
+    display: { uk: '−30%', en: '−30%' },
+    unit: { uk: 'клін. часу втрачено на дубль-звіти', en: 'clinical time lost to duplicate reports' },
+    color: '#ff9966', glow: 'rgba(255,153,102,0.22)', cardBg: 'rgba(255,153,102,0.07)',
+  },
+  {
+    id: 'regulatory', screenId: 'l2-regulatory', weight: 5, current: 1, target: 25,
+    layer: { uk: 'Regulatory', en: 'Regulatory' },
+    indicator: { uk: 'Локалізація гум. ресурсів', en: 'Humanitarian localization' },
+    display: { uk: '~1%', en: '~1%' },
+    unit: { uk: 'гум. фінансування через укр. організ.', en: 'humanitarian funding via Ukrainian orgs' },
+    color: '#c084fc', glow: 'rgba(192,132,252,0.22)', cardBg: 'rgba(192,132,252,0.07)',
+  },
 ];
 
 const INDEX_SCORE = Math.round(
-  PILLARS_CONFIG.reduce((sum, l) => sum + Math.min(100, (l.current / l.target) * 100) * (l.weight / 100), 0)
-); // → 7 (Crisis-level stagnation)
-
-// HCI (Human Capital Index) - World Bank 2020
-const HCI_VALUE = 0.63;
-
-// HEAL/THRIVE undisbursed — verified 2026-07-14
-const HEAL_UNDISBURSED = 41100000;    // $41.1M — HEAL Component 4 (NBU Brief v14)
-const THRIVE_UNDISBURSED = 134000000; // $134M — THRIVE DLI awaiting (NBU Brief v14)
-const TOTAL_UNDISBURSED = HEAL_UNDISBURSED + THRIVE_UNDISBURSED; // ~$175M
+  LAYERS.reduce((sum, l) => sum + Math.min(100, (l.current / l.target) * 100) * (l.weight / 100), 0)
+); // → 29
 
 type Band = 'low' | 'medium' | 'high';
 const scoreToBand = (s: number): Band => s < 34 ? 'low' : s < 67 ? 'medium' : 'high';
-const BAND_COLOR: Record<Band, string> = { low: '#ff7b6e', medium: '#E3A22E', high: '#00d4aa' };
+const BAND_COLOR: Record<Band, string> = { low: '#ff7b6e', medium: '#e8c97a', high: '#00d4aa' };
 const BAND_LABEL: Record<Band, { uk: string; en: string }> = {
-  low:    { uk: 'Кризова стагнація', en: 'Crisis stagnation' },
-  medium: { uk: 'Регульоване плато', en: 'Managed plateau' },
-  high:   { uk: 'Стійке відновлення', en: 'Sustained recovery' },
+  low:    { uk: 'Стагнація / Криза', en: 'Stagnation / Crisis' },
+  medium: { uk: 'Помірне відновлення', en: 'Moderate recovery' },
+  high:   { uk: 'Активне відновлення', en: 'Active recovery' },
 };
 
 const currentBand = scoreToBand(INDEX_SCORE);
 
-// GDP causal chain footer items (verified 2026-07-14)
-const GDP_CHAIN = [
-  {
-    val: '260K',
-    label: { uk: 'НСЗУ пацієнтів 2025', en: 'NHSU patients 2025' },
-    source: { uk: 'НСЗУ відкриті дані 2025', en: 'NHSU open data 2025' },
-    arrow: true,
-  },
-  {
-    val: '0.41%',
-    label: { uk: 'покриття потреби', en: 'need coverage' },
-    source: { uk: '260K / 62.4M сесій (WHO)', en: '260K / 62.4M sessions (WHO)' },
-    arrow: true,
-  },
-  {
-    val: '$8B/рік ⚠️',
-    label: { uk: 'ВВП-втрати', en: 'GDP losses' },
-    source: { uk: 'WHO/RDNA3 оцінка ⚠️', en: 'WHO/RDNA3 estimate ⚠️' },
-    arrow: true,
-  },
-  {
-    val: 'HCI 0.63',
-    label: { uk: 'Human Capital Index', en: 'Human Capital Index' },
-    source: { uk: 'World Bank 2020', en: 'World Bank 2020' },
-    arrow: false,
-  },
+interface Metric {
+  val: string;
+  label: { uk: string; en: string };
+  screen?: ScreenId;
+  sourceUrl?: string;
+}
+
+const METRICS: Metric[] = [
+  { val: '$1.87B',   label: { uk: 'WB+EU портфель MH',        en: 'WB+EU MH portfolio' },              screen: 'l2-fintech',    sourceUrl: 'https://projects.worldbank.org/en/projects-operations/project-detail/P173201' },
+  { val: '6.8M',    label: { uk: 'потреба ПТСР/депресія',     en: 'PTSD/depression need' },            screen: 'l2-clinical',   sourceUrl: 'https://www.who.int/ukraine' },
+  { val: '<5%',     label: { uk: 'інтероперабельність сесій', en: 'session interop' },                 screen: 'l2-data' },
+  { val: '~3M',     label: { uk: 'невидимі гум. сесії',       en: 'invisible humanitarian sessions' }, screen: 'l2-analytical' },
+  { val: '260K',    label: { uk: 'НСЗУ пацієнтів 2025',       en: 'NHSU patients 2025' },              screen: 'appendix',      sourceUrl: 'https://nszu.gov.ua' },
+  { val: '57K→700', label: { uk: '«зникла середина»',         en: '"missing middle"' },               screen: 'l2-sustain' },
+  { val: '−30%',    label: { uk: 'втрат. клін. час. дублюв.', en: 'clinical time lost' },             screen: 'l2-digital' },
+  { val: '~1%',     label: { uk: 'локалізація гум. фін.',     en: 'humanitarian localization' },      screen: 'l2-regulatory' },
 ];
 
 // ── Elevator gauge geometry ────────────────────────────────────────────────────
 // Score 0 = left (B / Crisis), Score 100 = right (R / Recovery)
-// Semicircle from left (180°) over the top to right (0°) in SVG screen space.
 const EL_CX = 140, EL_CY = 135, EL_R = 100;
 
-// Convert score 0-100 → {x,y} on a circle of radius r centred at (EL_CX, EL_CY)
 const ePt = (s: number, r: number) => {
-  const a = Math.PI * (1 - s / 100); // π (left) → 0 (right)
+  const a = Math.PI * (1 - s / 100);
   return { x: EL_CX + r * Math.cos(a), y: EL_CY - r * Math.sin(a) };
 };
 
-// SVG arc path from score s0 → s1 at radius r, clockwise (= over the top)
 const eArc = (r: number, s0: number, s1: number) => {
   const p0 = ePt(s0, r), p1 = ePt(s1, r);
   const deg = Math.abs(s1 - s0) * 1.8;
   return `M ${p0.x.toFixed(2)} ${p0.y.toFixed(2)} A ${r} ${r} 0 ${deg >= 180 ? 1 : 0} 1 ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`;
 };
 
-// ── Elevator "floors" ─────────────────────────────────────────────────────────
+const eNeedleAngle = (s: number) => 180 - s * 1.8;
+
 const FLOORS = [
-  { label: '0',   score: 0   },
-  { label: '10',  score: 10  },
-  { label: '20',  score: 20  },
-  { label: '30',  score: 30  },
-  { label: '40',  score: 40  },
-  { label: '50',  score: 50  },
-  { label: '60',  score: 60  },
-  { label: '70',  score: 70  },
-  { label: '80',  score: 80  },
-  { label: '90',  score: 90  },
-  { label: '100', score: 100 },
+  { label: 'B', score: 0 }, { label: '1', score: 12 }, { label: '2', score: 25 },
+  { label: '3', score: 37 }, { label: '4', score: 50 }, { label: '5', score: 62 },
+  { label: '6', score: 75 }, { label: '7', score: 87 }, { label: 'R', score: 100 },
 ] as const;
 
-// Fan zones: each LAYER occupies a slice of the arc proportional to its weight
 let _cur = 0;
-const LAYER_ZONES = PILLARS_CONFIG.map(l => {
+const LAYER_ZONES = LAYERS.map(l => {
   const z = { layer: l, start: _cur, end: _cur + l.weight };
   _cur += l.weight;
   return z;
 });
 
-// GDP impact formula: −3.5 % at score=0, +5.5 % at score=100
-// (WHO/WB: 1 % GDP in MH → 2–4 % GDP return; untreated disorders cost 3–5 % GDP/yr)
 const gdpImpact = (score: number) => {
   const v = (score / 100) * 9.0 - 3.5;
   return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
 };
 
-// ── Elevator Gauge component ──────────────────────────────────────────────────
+// ── Compact layer card ─────────────────────────────────────────────────────────
+const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () => void }> = ({ l, i, lang, onNav }) => (
+  <motion.div
+    initial={{ opacity: 0, x: i < 3 ? -10 : 10 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ delay: i * 0.05, duration: 0.28 }}
+    className="flex-1 rounded-2xl px-4 py-3 cursor-pointer group relative overflow-hidden min-h-0"
+    style={{ background: l.cardBg, border: `1px solid ${l.color}40`, boxShadow: `0 0 20px ${l.glow}` }}
+    onClick={onNav}
+  >
+    <div className="flex items-center justify-between mb-1">
+      <span className="cyber-label" style={{ color: l.color, fontSize: '10px' }}>{l.layer[lang]}</span>
+      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '9px', color: 'var(--color-ds-muted)' }}>w{l.weight}%</span>
+    </div>
+    <div style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.6rem)', fontWeight: 900, fontFamily: 'Space Grotesk, sans-serif', color: l.color, lineHeight: 1 }}>
+      {l.display[lang]}
+    </div>
+    <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: 'rgba(200,208,220,0.85)', marginTop: 3 }}>
+      {l.indicator[lang]}
+    </div>
+    <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '9px', color: 'var(--color-ds-muted)', marginTop: 2 }}>
+      {l.unit[lang]}
+    </div>
+    <motion.div
+      whileHover={{ x: 3 }}
+      className="flex items-center gap-1 mt-2"
+      style={{ color: l.color, fontFamily: 'Space Grotesk, sans-serif', fontSize: '9px', fontWeight: 700 }}
+    >
+      {lang === 'uk' ? 'Деталізація' : 'Drill down'}
+      <ChevronRight className="w-3 h-3" />
+    </motion.div>
+    <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+      style={{ background: `radial-gradient(ellipse at center, ${l.glow} 0%, transparent 70%)` }} />
+  </motion.div>
+);
+
+// ── Elevator Gauge ────────────────────────────────────────────────────────────
 const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () => void }> = ({ lang, expanded, onToggle }) => {
   const CX = EL_CX, CY = EL_CY, R = EL_R;
   const bandColor = BAND_COLOR[currentBand];
-  // Compute needle tip directly on the arc — no SVG rotation needed
-  const needleTip = ePt(INDEX_SCORE, R - 18);
+  const needleRef = useRef<SVGGElement>(null);
+
+  useEffect(() => {
+    const ctrl = animate(eNeedleAngle(0), eNeedleAngle(INDEX_SCORE), {
+      duration: 1.8, delay: 0.4,
+      ease: [0.34, 1.56, 0.64, 1],
+      onUpdate: v => needleRef.current?.setAttribute('transform', `rotate(${v.toFixed(3)},${CX},${CY})`),
+    });
+    return () => ctrl.stop();
+  }, []);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      {/* ── Elevator SVG dial ── */}
       <div onClick={onToggle} style={{ cursor: 'pointer', width: '100%' }}>
         <svg viewBox="0 0 280 158" width="100%" style={{ display: 'block', overflow: 'visible' }}>
           <defs>
             <linearGradient id="mhei-brass" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%"   stopColor="#7a5218" />
-              <stop offset="30%"  stopColor="#E3A22E" />
-              <stop offset="65%"  stopColor="#C9B36A" />
+              <stop offset="30%"  stopColor="#e8c97a" />
+              <stop offset="65%"  stopColor="#c8a44c" />
               <stop offset="100%" stopColor="#5a3a08" />
             </linearGradient>
           </defs>
 
-          {/* Dark semicircle dial face */}
-          <path d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY} Z`}
-            fill="rgba(6,4,2,0.93)" />
+          <path d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY} Z`} fill="rgba(6,4,2,0.93)" />
 
-          {/* Zone background tints: Crisis / Transition / Recovery */}
           <path d={eArc(R - 16, 0,  33)}  fill="none" stroke="#ff7b6e" strokeWidth="28" opacity="0.18" />
-          <path d={eArc(R - 16, 33, 67)}  fill="none" stroke="#E3A22E" strokeWidth="28" opacity="0.18" />
+          <path d={eArc(R - 16, 33, 67)}  fill="none" stroke="#e8c97a" strokeWidth="28" opacity="0.18" />
           <path d={eArc(R - 16, 67, 100)} fill="none" stroke="#00d4aa" strokeWidth="28" opacity="0.18" />
 
-          {/* Fan lines from pivot — one group per layer, width proportional to weight */}
           {LAYER_ZONES.map(({ layer: l, start, end }) => {
             const count = Math.max(2, Math.round((end - start) / 4.5));
             return Array.from({ length: count }, (_, k) => {
@@ -198,82 +230,71 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
             });
           })}
 
-          {/* Progress arc filled to current score */}
           <path d={eArc(R - 16, 0, INDEX_SCORE)} fill="none"
             stroke={bandColor} strokeWidth="28" opacity="0.88" strokeLinecap="round" />
 
-          {/* Inner ornamental ring */}
           <path d={eArc(R - 30, 0, 100)} fill="none" stroke="rgba(200,164,92,0.18)" strokeWidth="1" />
+          <path d={eArc(R + 5, 0, 100)}  fill="none" stroke="url(#mhei-brass)" strokeWidth="7" />
+          <line x1={CX - R - 7} y1={CY} x2={CX + R + 7} y2={CY} stroke="url(#mhei-brass)" strokeWidth="3.5" />
 
-          {/* Outer brass frame arc + base line */}
-          <path d={eArc(R + 5, 0, 100)} fill="none" stroke="url(#mhei-brass)" strokeWidth="7" />
-          <line x1={CX - R - 7} y1={CY} x2={CX + R + 7} y2={CY}
-            stroke="url(#mhei-brass)" strokeWidth="3.5" />
-
-          {/* Floor tick marks + labels */}
           {FLOORS.map(({ label, score }) => {
-            const isEnd = label === '0' || label === '100';
+            const isEnd = label === 'B' || label === 'R';
             const lit   = score <= INDEX_SCORE;
             const outer = ePt(score, R + 3);
             const inner = ePt(score, R - 10);
             const lp    = ePt(score, R + 18);
             return (
               <g key={label}>
-                <line
-                  x1={outer.x.toFixed(1)} y1={outer.y.toFixed(1)}
-                  x2={inner.x.toFixed(1)} y2={inner.y.toFixed(1)}
-                  stroke={lit ? '#E3A22E' : 'rgba(200,164,92,0.25)'}
-                  strokeWidth={isEnd ? 2.5 : 1.5}
-                />
+                <line x1={outer.x.toFixed(1)} y1={outer.y.toFixed(1)} x2={inner.x.toFixed(1)} y2={inner.y.toFixed(1)}
+                  stroke={lit ? '#e8c97a' : 'rgba(200,164,92,0.25)'} strokeWidth={isEnd ? 2.5 : 1.5} />
                 <text x={lp.x.toFixed(1)} y={(lp.y + 4).toFixed(1)}
                   textAnchor="middle" dominantBaseline="central"
-                  style={{
-                    fontFamily: 'Archivo Black, sans-serif',
-                    fontSize: isEnd ? '10px' : '8px',
-                    fontWeight: '700',
-                    fill: lit ? '#E3A22E' : 'rgba(200,164,92,0.28)',
-                  }}>
+                  style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: isEnd ? '10px' : '8px', fontWeight: '700',
+                    fill: lit ? '#e8c97a' : 'rgba(200,164,92,0.28)' }}>
                   {label}
                 </text>
               </g>
             );
           })}
 
-          {/* Needle — static computed from ePt, no rotation needed */}
-          <line x1={CX} y1={CY} x2={needleTip.x.toFixed(2)} y2={needleTip.y.toFixed(2)}
-            stroke={bandColor} strokeWidth="2.5" strokeLinecap="round"
-            style={{ filter: `drop-shadow(0 0 6px ${bandColor}cc)`, transition: 'all 0.6s ease' } as React.CSSProperties}
-          />
-          {/* Counterweight */}
-          <line x1={CX} y1={CY} x2={CX - 14} y2={CY}
-            stroke={bandColor} strokeWidth="5" strokeLinecap="round" opacity="0.4"
-          />
+          <g ref={needleRef}>
+            <line x1={CX} y1={CY} x2={CX + R - 5} y2={CY}
+              stroke={bandColor} strokeWidth="2.5" strokeLinecap="round"
+              style={{ filter: `drop-shadow(0 0 6px ${bandColor}cc)` } as React.CSSProperties} />
+            <line x1={CX} y1={CY} x2={CX - 18} y2={CY}
+              stroke={bandColor} strokeWidth="5.5" strokeLinecap="round" opacity="0.45" />
+          </g>
 
-          {/* Centre pivot — ornamental brass ring + glow dot */}
           <circle cx={CX} cy={CY} r="14" fill="#0f0803" stroke="url(#mhei-brass)" strokeWidth="2.5" />
-          <circle cx={CX} cy={CY} r="5" fill={bandColor}
-            style={{ filter: `drop-shadow(0 0 12px ${bandColor}cc)` }} />
+          <circle cx={CX} cy={CY} r="5"  fill={bandColor} style={{ filter: `drop-shadow(0 0 12px ${bandColor}cc)` }} />
         </svg>
       </div>
 
-      {/* ── Score + band + GDP ── */}
       <div style={{ textAlign: 'center', marginTop: 4 }}>
-        <div style={{ fontFamily: 'Archivo Black, sans-serif', fontWeight: 900, fontSize: 46,
+        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 900, fontSize: 46,
           color: bandColor, lineHeight: 1, textShadow: `0 0 32px ${bandColor}77` }}>
           {INDEX_SCORE}
         </div>
-        <div style={{ fontFamily: 'Archivo Black, sans-serif', fontWeight: 700, fontSize: 13,
-          color: bandColor, marginTop: 4 }}>
+        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: bandColor, marginTop: 4 }}>
           {BAND_LABEL[currentBand][lang]}
         </div>
-        <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: '#E3A22E',
-          opacity: 0.75, marginTop: 3, letterSpacing: '0.06em' }}>
+        <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, color: '#e8c97a', opacity: 0.75, marginTop: 3, letterSpacing: '0.06em' }}>
           {gdpImpact(INDEX_SCORE)} {lang === 'uk' ? 'ВВП' : 'GDP'}
         </div>
-
+        <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)', marginTop: 2, lineHeight: 1.4 }}>
+          {lang === 'uk' ? 'темп відновлення при завершенні бойових дій' : 'recovery pace when hostilities end'}
+        </div>
       </div>
 
-      {/* ── Expandable breakdown (removed duplicate drill-down) ── */}
+      <button
+        onClick={onToggle}
+        style={{ marginTop: 8, fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+          color: bandColor, background: 'none',
+          border: `1px solid ${bandColor}44`, borderRadius: 6, padding: '3px 14px', cursor: 'pointer' }}
+      >
+        {expanded ? (lang === 'uk' ? '↑ згорнути' : '↑ collapse') : (lang === 'uk' ? '↓ розклад індексу' : '↓ index breakdown')}
+      </button>
+
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -283,28 +304,20 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
             style={{ overflow: 'hidden', width: '100%', paddingTop: 12 }}
           >
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {STRATEGIC_FRAMEWORK(lang).map((p, i) => {
-                const config = PILLARS_CONFIG.find(c => c.id === p.id)!;
-                const pct = Math.min(100, (config.current / config.target) * 100);
+              {LAYERS.map((l, i) => {
+                const pct = Math.min(100, (l.current / l.target) * 100);
                 return (
-                  <div key={p.id}>
+                  <div key={l.id}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                      <span style={{ fontFamily: 'Archivo Black, sans-serif', fontWeight: 700,
-                        fontSize: 11, color: config.color }}>
-                        {p.label[lang]}
-                      </span>
-                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11,
-                        color: 'var(--color-ds-muted)' }}>
-                        {Math.round(pct)}% · w{config.weight}%
-                      </span>
+                      <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10, color: l.color }}>{l.layer[lang]}</span>
+                      <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, color: 'var(--color-ds-muted)' }}>{Math.round(pct)}% · w{l.weight}%</span>
                     </div>
                     <div style={{ height: 7, borderRadius: 4, background: 'rgba(255,255,255,0.06)' }}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
                         transition={{ delay: 0.05 + i * 0.07, duration: 0.55 }}
-                        style={{ height: '100%', borderRadius: 4, background: config.color,
-                          boxShadow: `0 0 8px ${config.color}55` }}
+                        style={{ height: '100%', borderRadius: 4, background: l.color, boxShadow: `0 0 8px ${l.color}55` }}
                       />
                     </div>
                   </div>
@@ -319,263 +332,133 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 };
 
 // ── Main screen ────────────────────────────────────────────────────────────────
-export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode }) => {
-  const { setAnswers: setDrillAnswers } = useDrilldown();
-  const isMobile = useMobile();
-
-  // Bloomberg-style KPI data with bars + arrows (DS screenshot 7,8)
-  const KPI_DATA = [
-    { id: 'needs',    label: { uk: 'Потреба', en: 'Need' }, val: '3.9M', sub: { uk: '+12% vs 2023', en: '+12% vs 2023' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-teal)', nav: 'l2-operational' },
-    { id: 'capital',  label: { uk: 'Спроможність', en: 'Capacity' }, val: '38%', sub: { uk: 'від потреби закрито', en: 'of need covered' }, bars: 2, arrow: 'up' as const, color: 'var(--color-ds-teal)', nav: 'l2-clinical' },
-    { id: 'finance',  label: { uk: 'ВВП-втрати / рік', en: 'GDP Loss / yr' }, val: '$8B', sub: { uk: 'WHO методологія', en: 'WHO methodology' }, bars: 5, arrow: 'up' as const, color: 'var(--color-ds-orange)', nav: 'l2-finance' },
-    { id: 'roi',      label: { uk: 'ROI програми', en: 'Programme ROI' }, val: '1→4.5×', sub: { uk: 'за 5 років', en: 'over 5 years' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-gold)', nav: 'l4' },
-    { id: 'gap',      label: { uk: 'GAP', en: 'GAP' }, val: '62%', sub: { uk: 'незакрита потреба ⚡', en: 'unmet need ⚡' }, bars: 4, arrow: 'up' as const, color: 'var(--color-ds-orange)', nav: 'l2-analytical' },
-  ];
+export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
+  const [expanded, setExpanded] = useState(false);
 
   return (
     <div
-      className="fixed inset-0 flex flex-col ds-screen"
+      className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
       style={{
-        background: darkMode
-          ? 'linear-gradient(180deg, #050C16 0%, #0a1628 100%)'
-          : 'var(--color-ds-bg)',
-        overflow: 'auto',
+        background:
+          'radial-gradient(ellipse 80% 60% at 20% 60%, rgba(0,210,170,0.10) 0%, transparent 55%), ' +
+          'radial-gradient(ellipse 60% 50% at 80% 40%, rgba(0,180,200,0.07) 0%, transparent 50%), ' +
+          'linear-gradient(135deg, #0a1628 0%, #1a0a0a 100%)',
       }}
     >
-      {/* ── Header — DS Bunker style with tabs ── */}
-      <div className="flex-shrink-0" style={{
-        background: darkMode ? 'rgba(5,12,22,0.95)' : 'rgba(233,222,201,0.95)',
-        borderBottom: `1px solid ${darkMode ? 'rgba(28,90,82,0.25)' : '#C9B591'}`,
-      }}>
-        <div className="flex items-center justify-between px-4 pt-2 pb-0">
-          {/* Logo + nav tabs */}
-          <div className="flex items-center gap-4">
-            <Logo darkMode={darkMode} />
-            {/* Tab navigation — DS screenshot 8 */}
-            <div className="flex items-center gap-1">
-              {([
-                { id: 'l1' as ScreenId, label: lang === 'uk' ? 'ЛАНДШАФТ' : 'LANDSCAPE' },
-                { id: 'l2-data' as ScreenId, label: 'DIGITAL BUS' },
-                { id: 'l2-clinical' as ScreenId, label: lang === 'uk' ? 'МОДЕЛЮВАННЯ' : 'MODELING' },
-                { id: 'l2-finance' as ScreenId, label: 'DLI ТРЕКЕР' },
-              ]).map(t => (
-                <button
-                  key={t.id}
-                  onClick={() => nav.push(t.id)}
-                  style={{
-                    fontFamily: 'Archivo Black, sans-serif', fontWeight: 500, fontSize: 11,
-                    letterSpacing: '0.08em', textTransform: 'uppercase',
-                    padding: '6px 12px', cursor: 'pointer',
-                    color: t.id === 'l1'
-                      ? (darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)')
-                      : 'var(--color-ds-muted)',
-                    background: 'transparent',
-                    borderBottom: t.id === 'l1'
-                      ? `2px solid ${darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)'}`
-                      : '2px solid transparent',
-                    border: 'none', borderBottomWidth: 2, borderBottomStyle: 'solid',
-                    borderBottomColor: t.id === 'l1'
-                      ? (darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)')
-                      : 'transparent',
-                    transition: 'all 0.15s',
-                  }}
-                >
-                  {t.label}
-                </button>
-              ))}
+      <div className="h-[2px] w-full flex-shrink-0"
+        style={{ background: 'linear-gradient(90deg, transparent 0%, #00d4aa 30%, #2ec4b6 60%, rgba(200,164,92,0.7) 100%)', boxShadow: '0 0 20px rgba(0,212,170,0.55)' }} />
+
+      {/* Header */}
+      <div className="flex items-center justify-between pl-6 pr-32 pt-3 pb-2 flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <img src="/logo.svg" alt="FEEL Again" className="w-8 h-8 rounded-lg flex-shrink-0" />
+          <div>
+            <div className="flex items-center gap-1.5 text-[9px] font-mono mb-0.5" style={{ color: 'var(--color-ds-muted)' }}>
+              <span style={{ color: 'var(--color-ds-gold)' }}>FEEL Again</span>
+              <span>·</span><span>MHPSS Ukraine</span><span>·</span>
+              <span style={{ color: 'var(--color-ds-text)' }}>{lang === 'uk' ? 'ЛАНДШАФТ' : 'LANDSCAPE'}</span>
+            </div>
+            <div className="text-[17px] font-bold ds-display leading-tight" style={{ color: 'var(--color-ds-text)' }}>
+              {lang === 'uk' ? 'Ідеальний шторм — поточний ландшафт MHPSS' : 'Perfect Storm — Current MHPSS Sector Landscape'}
             </div>
           </div>
-
-          {/* Right side — Signal Lamp LIVE + ALERT */}
-          <div className="flex items-center gap-3 mr-32">
-            {/* Signal Lamp — DS screenshot 10 */}
-            <button
-              onClick={() => nav.push('l2-analytical')}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                fontFamily: 'Archivo Black, sans-serif', fontWeight: 700, fontSize: 11,
-                letterSpacing: '0.1em', textTransform: 'uppercase',
-                color: darkMode ? 'var(--color-ds-gold)' : 'var(--color-ds-orange)',
-                background: darkMode
-                  ? 'linear-gradient(135deg, rgba(250,176,7,0.15) 0%, rgba(201,179,106,0.08) 100%)'
-                  : 'rgba(181,72,26,0.08)',
-                border: `1px solid ${darkMode ? 'rgba(250,176,7,0.35)' : 'rgba(181,72,26,0.25)'}`,
-                borderRadius: 6, padding: '5px 14px', cursor: 'pointer',
-                boxShadow: darkMode ? '0 0 12px rgba(250,176,7,0.15)' : 'none',
-              }}
-            >
-              <span style={{
-                width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
-                background: darkMode ? '#FAB007' : '#B5481A',
-                boxShadow: darkMode ? '0 0 8px #FAB007' : 'none',
-                animation: 'pulse 2s infinite',
-              }} />
-              LIVE
-            </button>
-            {/* ALERT badge */}
-            <button
-              onClick={() => nav.push('l2-analytical')}
-              style={{
-                fontFamily: 'Archivo Black, sans-serif', fontWeight: 700, fontSize: 11,
-                letterSpacing: '0.08em',
-                color: 'var(--color-ds-red)',
-                background: darkMode ? 'rgba(205,57,26,0.1)' : 'rgba(138,32,24,0.06)',
-                border: `1px solid ${darkMode ? 'rgba(205,57,26,0.3)' : 'rgba(138,32,24,0.2)'}`,
-                borderRadius: 6, padding: '5px 12px', cursor: 'pointer',
-              }}
-            >
-              ALERT 3
-            </button>
-          </div>
+        </div>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button onClick={() => nav.push('l2-operational')}
+            className="text-[11px] px-3 py-1.5 rounded-lg ds-display font-semibold"
+            style={{ color: 'var(--color-ds-teal)', border: '1px solid rgba(46,196,182,0.3)' }}>
+            {lang === 'uk' ? '9 розривів →' : '9 gaps →'}
+          </button>
+          <button onClick={() => nav.push('l2-analytical')}
+            className="text-[11px] px-3 py-1.5 rounded-lg ds-display font-semibold"
+            style={{ color: 'var(--color-ds-gold)', border: '1px solid var(--color-ds-border)' }}>
+            {lang === 'uk' ? 'Дані →' : 'Data →'}
+          </button>
         </div>
       </div>
 
-      {/* ── KPI Strip — Bloomberg inline style (DS screenshots 6,7,8) ── */}
-      <div className="flex-shrink-0 px-4 pt-2 pb-1">
-        <div style={{
-          display: 'flex', gap: 0, flexWrap: 'wrap',
-          background: darkMode
-            ? 'linear-gradient(90deg, #0C293A 0%, #0B2422 100%)'
-            : 'rgba(255,255,255,0.8)',
-          borderRadius: 6, overflow: 'hidden',
-          border: `1px solid ${darkMode ? '#C9B36A' : '#C9B591'}`,
-          boxShadow: darkMode ? '0 0 12px rgba(201,179,106,0.08)' : 'none',
-        }}>
-          {KPI_DATA.map((kpi, i, arr) => (
-            <div
-              key={kpi.id}
-              onClick={() => { setDrillAnswers({ pillarId: kpi.id }); nav.push(kpi.nav); }}
-              style={{
-                flex: '1 1 160px', minWidth: 140, maxWidth: '33%', padding: '8px 12px',
-                borderRight: i < arr.length - 1 ? `1px solid ${darkMode ? 'rgba(28,90,82,0.12)' : 'rgba(18,60,58,0.08)'}` : 'none',
-                cursor: 'pointer', transition: 'background 0.15s',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.background = darkMode ? 'rgba(28,90,82,0.08)' : 'rgba(18,60,58,0.04)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-            >
-              {/* Label */}
-              <div style={{ fontFamily: 'Archivo Black, sans-serif', fontSize: 10, letterSpacing: '0.08em',
-                color: 'var(--color-ds-muted)', marginBottom: 4, textTransform: 'uppercase' }}>
-                {kpi.label[lang]}
-              </div>
-              {/* Bloomberg row: bars + value + arrow */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                {/* Signal bars (palichky) */}
-                <div style={{ display: 'flex', gap: 2, alignItems: 'flex-end', height: 14, flexShrink: 0 }}>
-                  {[1,2,3,4,5].map(n => (
-                    <div key={n} style={{
-                      width: 3, borderRadius: 1,
-                      height: `${(n / 5) * 100}%`,
-                      background: n <= kpi.bars
-                        ? (kpi.bars >= 5 ? 'var(--color-ds-gold)' : kpi.bars >= 4 ? 'var(--color-ds-orange)' : 'var(--color-ds-teal)')
-                        : (darkMode ? 'rgba(255,255,255,0.08)' : 'rgba(18,60,58,0.1)'),
-                    }} />
-                  ))}
-                </div>
-                {/* Value */}
-                <span style={{
-                  fontFamily: 'Archivo Black, sans-serif', fontWeight: 300,
-                  fontSize: 'clamp(16px, 2.2vw, 24px)', lineHeight: 1,
-                  color: kpi.color, fontVariantNumeric: 'tabular-nums',
-                }}>
-                  {kpi.val}
-                </span>
-                {/* Arrow triangle */}
-                <span style={{
-                  fontSize: 10, lineHeight: 1,
-                  color: kpi.arrow === 'up' ? 'var(--color-ds-orange)' : 'var(--color-ds-teal)',
-                }}>
-                  {kpi.arrow === 'up' ? '▲' : '▼'}
-                </span>
-              </div>
-              {/* Sub text */}
-              <div style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 10, color: 'var(--color-ds-muted)', marginTop: 3 }}>
-                {kpi.sub[lang]}
-              </div>
-              {/* Progress bar */}
-              <div style={{ height: 2, borderRadius: 1, marginTop: 4,
-                background: darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(18,60,58,0.08)' }}>
-                <div style={{ height: '100%', borderRadius: 1, width: `${kpi.bars * 20}%`,
-                  background: kpi.color, opacity: 0.6 }} />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Body: Gauge + InactionFunnel ── */}
-      <div className="flex-1 min-h-0 flex flex-col px-4 pb-2 gap-3">
-        <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-4">
-
-          {/* MHEI Gauge — Bunker card style */}
-          <div
-            className="w-full lg:w-[280px] flex-shrink-0 flex flex-col items-center justify-center py-2 cursor-pointer"
-            style={{
-              background: darkMode
-                ? 'linear-gradient(135deg, #0C293A 0%, #0B2422 100%)'
-                : 'rgba(255,255,255,0.8)',
-              border: `1px solid ${darkMode ? 'var(--color-ds-gold)' : '#C9B591'}`,
-              borderRadius: 8,
-              boxShadow: darkMode ? '0 0 20px rgba(201,179,106,0.12)' : 'none',
-            }}
-            onClick={() => nav.push('l2-mhei')}
-          >
-            <div style={{
-              fontFamily: 'Archivo Black, sans-serif', fontWeight: 700, fontSize: 11,
-              color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.12em',
-              textAlign: 'center', marginBottom: 2,
-            }}>
-              {lang === 'uk' ? 'ІНДЕКС ЕКОНОМІКИ ПСИХІЧНОГО ЗДОРОВ\'Я' : 'Mental Health Economy Index'}
-            </div>
-
-            <GaugeDisplay lang={lang} expanded={false} onToggle={() => nav.push('l2-mhei')} />
-            <div style={{
-              marginTop: 6, fontSize: 10, fontFamily: 'JetBrains Mono, monospace',
-              color: 'var(--color-ds-muted)', textAlign: 'center'
-            }}>
-              {lang === 'uk' ? 'натисніть для деталей' : 'click for details'}
-            </div>
-          </div>
-
-          {/* Right side — InactionFunnel */}
-          <div className="flex-1 flex flex-col gap-2 min-h-0">
-            <InactionFunnel lang={lang} darkMode={darkMode} />
-          </div>
-        </div>
-      </div>
-
-      {/* ── Footer — DS sources + disclaimers ── */}
-      <div
-        className="flex-shrink-0 px-6 py-2 flex items-center gap-4 flex-wrap"
-        style={{
-          borderTop: `1px solid ${darkMode ? 'rgba(28,90,82,0.2)' : '#C9B591'}`,
-          background: darkMode
-            ? 'linear-gradient(90deg, rgba(250,176,7,0.06) 0%, rgba(201,179,106,0.04) 100%)'
-            : 'rgba(250,176,7,0.08)',
-        }}
+      {/* 3-column body — Desktop: grid, Mobile: column (gauge top, 2-col cards below) */}
+      <div className="flex-1 min-h-0 overflow-y-auto md:overflow-hidden px-5 pb-3 gap-4 flex flex-col md:grid"
+        style={{ gridTemplateColumns: '1fr 284px 1fr' }}
       >
-        <span style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)' }}>
-          {lang === 'uk' ? 'Джерела: WHO · World Bank · МОЗ України · LSE · Feel Again 2025' : 'Sources: WHO · World Bank · MoH Ukraine · LSE · Feel Again 2025'}
-        </span>
-        <div className="flex-1" />
-        {/* Role legend — DS screenshot 8 */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {[
-            { color: 'var(--color-ds-royal)', label: lang === 'uk' ? 'Королівський — ресурси / donors' : 'Royal — resources / donors' },
-            { color: 'var(--color-ds-teal)', label: lang === 'uk' ? 'Тіал — providers' : 'Teal — providers' },
-            { color: 'var(--color-ds-orange)', label: lang === 'uk' ? 'Оранж — GAP / operational' : 'Orange — GAP / operational' },
-            { color: 'var(--color-ds-gold)', label: lang === 'uk' ? 'Золото — ROI / outcome' : 'Gold — ROI / outcome' },
-          ].map(r => (
-            <div key={r.label} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <div style={{ width: 10, height: 4, background: r.color, borderRadius: 1 }} />
-              <span style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>{r.label}</span>
-            </div>
-          ))}
+        {/* Center gauge — mobile: first, desktop: middle */}
+        <div className="flex flex-col min-h-0 py-1 overflow-y-auto md:order-2 order-1" style={{ scrollbarWidth: 'none' }}>
+          <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9,
+            color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.12em',
+            textAlign: 'center', marginBottom: 4 }}>
+            Mental Health Economy Index
+          </div>
+          <GaugeDisplay lang={lang} expanded={expanded} onToggle={() => setExpanded(e => !e)} />
+          <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: '3px 6px', justifyContent: 'center' }}>
+            {LAYERS.map(l => (
+              <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                <div style={{ width: 8, height: 2.5, background: l.color, borderRadius: 1 }} />
+                <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>{l.layer[lang]}</span>
+              </div>
+            ))}
+          </div>
         </div>
+
+        {/* Left + Right cards — mobile: 2-col grid below gauge */}
+        <div className="grid grid-cols-2 gap-2.5 md:contents md:order-1 order-2">
+          <div className="flex flex-col gap-2.5 min-h-0">
+            {LAYERS.slice(0, 3).map((l, i) => (
+              <LayerCard key={l.id} l={l} i={i} lang={lang} onNav={() => nav.push(l.screenId)} />
+            ))}
+          </div>
+          <div className="flex flex-col gap-2.5 min-h-0">
+            {LAYERS.slice(3).map((l, i) => (
+              <LayerCard key={l.id} l={l} i={i + 3} lang={lang} onNav={() => nav.push(l.screenId)} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Footer — 8 clickable metrics + nav buttons */}
+      <div className="flex-shrink-0 px-4 py-2 flex items-center gap-0 flex-wrap"
+        style={{ borderTop: '1px solid var(--color-ds-border)', background: 'rgba(0,0,0,0.25)' }}
+      >
+        {[
+          ...METRICS,
+          ...(liveHciValue ? [{ val: `HCI ${liveHciValue}`, label: { uk: 'WB live', en: 'WB live' }, sourceUrl: 'https://data.worldbank.org/indicator/HD.HCI.OVRL?locations=UA' } as Metric] : []),
+        ].map((m) => {
+          const clickable = m.screen || m.sourceUrl;
+          const handleClick = () => {
+            if (m.screen) nav.push(m.screen);
+            else if (m.sourceUrl) window.open(m.sourceUrl, '_blank', 'noopener,noreferrer');
+          };
+          return (
+            <div
+              key={m.val}
+              onClick={clickable ? handleClick : undefined}
+              className="flex items-baseline gap-1 px-2 py-1.5 rounded-lg transition-colors duration-150"
+              style={{ cursor: clickable ? 'pointer' : 'default', background: 'transparent' }}
+              onMouseEnter={e => { if (clickable) (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.08)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              title={m.sourceUrl && !m.screen ? (lang === 'uk' ? 'Відкрити джерело' : 'Open source') : undefined}
+            >
+              <span className="text-[13px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>{m.val}</span>
+              <span className="text-[9px] ds-body leading-tight max-w-[70px]" style={{ color: 'var(--color-ds-muted)' }}>{m.label[lang]}</span>
+              {m.sourceUrl && !m.screen && (
+                <svg width="8" height="8" viewBox="0 0 10 10" fill="none" style={{ marginLeft: 1, flexShrink: 0, opacity: 0.4, color: 'var(--color-ds-muted)' }}>
+                  <path d="M1 9L9 1M9 1H4M9 1V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+              )}
+            </div>
+          );
+        })}
         <div className="flex-1" />
-        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 9, color: 'var(--color-ds-muted)' }}>
-          © 2026 FEEL Again · dashboard.feelagain.me
-        </span>
+        <button onClick={() => nav.push('appendix')}
+          className="flex items-center gap-1 text-[11px] ds-display font-medium px-2 py-1.5 flex-shrink-0"
+          style={{ color: 'var(--color-ds-muted)' }}>
+          <ChevronRight className="w-3.5 h-3.5" />
+          {lang === 'uk' ? 'L3' : 'L3'}
+        </button>
+        <button onClick={() => nav.push('l4')}
+          className="flex items-center gap-1.5 text-[11px] ds-display font-bold px-3 py-1.5 rounded-lg flex-shrink-0"
+          style={{ background: 'color-mix(in srgb, var(--color-ds-teal) 12%, transparent)', border: '1px solid color-mix(in srgb, var(--color-ds-teal) 35%, transparent)', color: 'var(--color-ds-teal)' }}>
+          {lang === 'uk' ? '→ Звіт' : '→ Report'}
+        </button>
       </div>
     </div>
   );
