@@ -11,7 +11,7 @@ import {
   TIMELINE_ITEMS, ADMIN_BURDEN, COORD_ITEMS, REACH_TABLE_DATA, INPUTS_OUTCOMES_DATA, SOURCES,
   FUNDING_VS_REACH_DATA, REGIONAL_BARRIERS_HEATMAP, DISORDER_IMPACT_BUBBLE,
   ECONOMIC_BURDEN_INDICATORS, REGIONAL_DISORDER_DATA,
-  CAPACITY_CEILING_DATA, ROI_CARDS, CONNECTED_ASSETS,
+  CAPACITY_CEILING_DATA, CONNECTED_ASSETS,
   MACRO_GAP, BACKLOG_DATA, INFRA_LEVELS, FEEL_AGAIN_POSITION,
   FEEL_AGAIN_ARCHITECTURE, HEAL_UKRAINE,
   THRIVE_PROJECT, HEAL_C4_PROCUREMENT, COUNTERARGUMENTS, ARCH_FLOW,
@@ -19,7 +19,7 @@ import {
   PERFECT_STORM_SCALE, STRUCTURAL_DISP_DATA,
   KEY_CONCLUSIONS, MISSING_DATA,
   NSZU_SNAPSHOT, GRAND_BARGAIN_3,
-  DATA_INTELLIGENCE, FEEL_AGAIN_4_FUNCTIONS, ROI_PARAMS,
+  DATA_INTELLIGENCE, ROI_PARAMS,
 } from './constants';
 import { Language, SectionFilter } from './types';
 import { Card } from './components/ui/Card';
@@ -1022,58 +1022,33 @@ const App: React.FC = () => {
 
             {/* data-intelligence moved to L2Analytical (l2-analytical screen) */}
 
-            {/* ── CLUSTER 3 — РІШЕННЯ (посилання) ──────────────────────────── */}
-            <div className="ds-cluster-header mb-6 mt-4">
-              {lang === 'uk' ? 'КЛАСТЕР 3 — РІШЕННЯ · Функції FEEL Again' : 'CLUSTER 3 — SOLUTIONS · FEEL Again Functions'}
+            {/* ── CLUSTER 3 — РІШЕННЯ: link to L4 ──────────────────────────── */}
+            <div className="ds-cluster-header mb-4 mt-4">
+              {lang === 'uk' ? 'КЛАСТЕР 3 — РІШЕННЯ' : 'CLUSTER 3 — SOLUTIONS'}
             </div>
-
-            {/* ── FEEL AGAIN 4 CORE FUNCTIONS (charts only) ─────────────────── */}
-            <div className="mb-12" id="feel-functions">
-              <div className="flex items-center gap-3 mb-6 px-1">
-                <div className="h-px flex-1 bg-gradient-to-r from-cyber-amber/40 to-transparent" />
-                <span className="text-[10px] font-mono text-cyber-amber uppercase tracking-[0.2em] px-2">
-                  {lang === 'uk' ? 'FEEL AGAIN — 4 КЛЮЧОВІ ФУНКЦІЇ ІНФРАСТРУКТУРИ' : 'FEEL AGAIN — 4 CORE INFRASTRUCTURE FUNCTIONS'}
-                </span>
-                <div className="h-px flex-1 bg-gradient-to-l from-cyber-amber/40 to-transparent" />
+            <div className="mb-10 rounded-2xl p-5 flex items-center justify-between gap-4"
+              style={{ border: '1px solid color-mix(in srgb, var(--color-ds-teal) 30%, transparent)', background: 'color-mix(in srgb, var(--color-ds-teal) 6%, transparent)' }}>
+              <div>
+                <div className="text-[13px] font-bold ds-display mb-1" style={{ color: 'var(--color-ds-teal)' }}>
+                  {lang === 'uk' ? 'Архітектура рішення FEEL Again' : 'FEEL Again Solution Architecture'}
+                </div>
+                <div className="text-[11px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
+                  {lang === 'uk'
+                    ? 'Потік даних: гуманітарна → FHIR-шина → державна зона (ЄСОЗ · НСЗУ · МОЗ). Стейкхолдери, ризики та повна архітектура — у Аналітичному звіті.'
+                    : 'Data flow: humanitarian → FHIR bus → state zone (ESOZ · NHSU · MOH). Stakeholders, risks, and full architecture — in the Analytical Report.'}
+                </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {FEEL_AGAIN_4_FUNCTIONS(lang).map((fn, i) => (
-                  <div key={i} className="rounded-xl border overflow-hidden flex flex-col" style={{ borderColor: fn.color + '30' }}>
-                    <div className="px-4 py-3 flex items-center gap-3" style={{ backgroundColor: fn.color + '12', borderBottom: `1px solid ${fn.color}30` }}>
-                      <span className="text-2xl font-bold font-mono" style={{ color: fn.color }}>{fn.num}</span>
-                      <div>
-                        <div className="text-[13px] font-bold" style={{ color: fn.color }}>{fn.title}</div>
-                        <div className="text-[9px] text-slate-500 font-mono">{fn.subtitle}</div>
-                      </div>
-                    </div>
-                    <div className="px-4 py-3 flex-1 space-y-2">
-                      {fn.points.map((pt, j) => (
-                        <div key={j} className="flex items-start gap-2">
-                          <span className="text-[9px] mt-0.5 flex-shrink-0" style={{ color: fn.color }}>▸</span>
-                          <span className="text-[10px] text-slate-400 leading-snug">{pt}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="px-4 pb-3 space-y-1.5">
-                      <div className="text-[8px] font-mono text-slate-700 border-t border-slate-800/60 pt-2">{fn.tech}</div>
-                      <div className="text-[9px] font-mono font-bold" style={{ color: fn.color }}>{fn.impact}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {/* Architecture summary */}
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
-                {[
-                  { label: lang === 'uk' ? 'Вхід' : 'Input', val: lang === 'uk' ? 'CommCare · KoBo · ActivityInfo' : 'CommCare · KoBo · ActivityInfo', color: '#8B5CF6' },
-                  { label: lang === 'uk' ? 'FEEL Again шина' : 'FEEL Again bus', val: 'FHIR R4 → Trembita → ESOZ', color: '#D4A017' },
-                  { label: lang === 'uk' ? 'Вихід (DLI)' : 'Output (DLI)', val: lang === 'uk' ? 'ЄСОЗ · НСЗУ · MOH · Donor reporting' : 'ESOZ · NHSU · MOH · Donor reporting', color: '#16A34A' },
-                ].map((item, i) => (
-                  <div key={i} className="rounded-lg px-4 py-3 border" style={{ borderColor: item.color + '30', backgroundColor: item.color + '08' }}>
-                    <div className="text-[8px] font-mono uppercase tracking-wider text-slate-600 mb-1">{item.label}</div>
-                    <div className="text-[10px] font-mono font-bold" style={{ color: item.color }}>{item.val}</div>
-                  </div>
-                ))}
-              </div>
+              <button
+                onClick={() => { setL4From('l3'); setShowL4(true); }}
+                className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-[11px] font-bold ds-display transition-all"
+                style={{ background: 'color-mix(in srgb, var(--color-ds-teal) 15%, transparent)', border: '1px solid color-mix(in srgb, var(--color-ds-teal) 40%, transparent)', color: 'var(--color-ds-teal)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, var(--color-ds-teal) 25%, transparent)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, var(--color-ds-teal) 15%, transparent)'; }}
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                {lang === 'uk' ? 'Аналітичний звіт' : 'Analytical Report'}
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
             </div>
 
             {/* ── ROI CALCULATOR ───────────────────────────────────────────── */}
@@ -2046,56 +2021,33 @@ const App: React.FC = () => {
                       {/* ECONOMIC / ROI */}
                       {section.id === 'economic' && (
                         <div className="space-y-6">
-                          {/* ROI Investment Case */}
-                          <div
-                            className={`ds-puzzle-box p-6 border-t-2 border-cyber-cyan/30 bg-cyber-cyan/5 rounded-xl transition-all duration-500 relative ${hoveredContext === 'gap-macro' ? 'ds-pulse-glow border-cyber-cyan/60 bg-cyber-cyan/10' : ''}`}
-                          >
-                            {/* Blueprint Decoration */}
-                            <div className="absolute bottom-0 right-0 w-24 h-24 pointer-events-none opacity-10">
-                              <div className="absolute bottom-4 right-0 w-12 h-[1px] bg-cyber-cyan" />
-                              <div className="absolute bottom-0 right-4 w-[1px] h-12 bg-cyber-cyan" />
-                            </div>
-
-                            <div className="flex items-center justify-between mb-6">
-                              <div className="flex items-center gap-3">
-                                <TrendingUp className="w-5 h-5 text-cyber-cyan" />
-                                <span className="cyber-label text-[13px] text-cyber-cyan font-bold uppercase tracking-[0.2em] font-mono">
-                                  {lang === 'uk' ? 'ДОВЕДЕНИЙ ROI: ВАРТІСТЬ БЕЗДІЯЛЬНОСТІ' : 'PROVEN ROI: COST OF INACTION'}
-                                </span>
+                          {/* ROI → L4 link card */}
+                          <div className="rounded-xl p-5 flex items-center justify-between gap-4"
+                            style={{ border: '1px solid color-mix(in srgb, var(--color-ds-gold) 30%, transparent)', background: 'color-mix(in srgb, var(--color-ds-gold) 6%, transparent)' }}>
+                            <div>
+                              <div className="text-[13px] font-bold ds-display mb-1" style={{ color: 'var(--color-ds-gold)' }}>
+                                {lang === 'uk' ? 'ROI — обґрунтування інвестицій (WHO · World Bank · IHME)' : 'ROI — investment rationale (WHO · World Bank · IHME)'}
                               </div>
-                              <button
-                                className="text-[10px] font-mono text-cyber-cyan hover:text-white flex items-center gap-2 bg-cyber-cyan/10 px-3 py-1.5 rounded border border-cyber-cyan/30 transition-all group"
-                                onClick={() => window.open('https://feelagain.me/investors', '_blank')}
-                              >
-                                {lang === 'uk' ? 'ДЕТАЛЬНИЙ ROI РОЗРАХУНОК' : 'DETAILED ROI CALCULATION'}
-                                <ChevronRight size={12} className="group-hover:translate-x-1 transition-transform" />
-                              </button>
+                              <div className="text-[11px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
+                                {lang === 'uk'
+                                  ? '$1→$4 (WHO) · $1→$5 (World Bank) · $1→$13 (IHME). Детальне обґрунтування — у Аналітичному звіті.'
+                                  : '$1→$4 (WHO) · $1→$5 (World Bank) · $1→$13 (IHME). Full rationale in the Analytical Report.'}
+                              </div>
                             </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                              {ROI_CARDS(lang).map((card, i) => (
-                                <motion.div
-                                  key={i}
-                                  whileHover={{ scale: 1.02, translateY: -3 }}
-                                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                                  className={`cyber-card p-5 border-t-2 flex flex-col gap-3 bg-slate-900/40 backdrop-blur-md relative overflow-hidden group transition-all duration-500 ${hoveredContext === 'gap-macro' && i === 1 ? 'border-cyber-cyan shadow-[0_0_20px_rgba(0,245,255,0.2)]' : 'border-slate-800'}`}
-                                  style={{ borderTopColor: card.color }}
-                                >
-                                  <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                                  <div className="flex items-start justify-between">
-                                    <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{card.source}</span>
-                                    <span className="text-[10px] font-mono text-slate-600">{card.period}</span>
-                                  </div>
-                                  <div className="text-4xl font-bold font-mono group-hover:scale-105 transition-transform" style={{ color: card.color }}>{card.roi}</div>
-                                  <p className="text-[11px] text-slate-400 leading-relaxed flex-1 font-mono">{card.desc}</p>
-                                  <div className="text-[9px] text-slate-600 italic border-t border-cyber-border/30 pt-2 font-mono flex items-center justify-between">
-                                    <span>{lang === 'uk' ? 'Методологія:' : 'Methodology:'} {card.methodology}</span>
-                                    <ArrowUpRight size={10} className="opacity-40" />
-                                  </div>
-                                </motion.div>
-                              ))}
-                            </div>
-                            <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-4 relative overflow-hidden">
+                            <button
+                              onClick={() => { setL4From('l3'); setShowL4(true); }}
+                              className="flex-shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-[11px] font-bold ds-display transition-all"
+                              style={{ background: 'color-mix(in srgb, var(--color-ds-gold) 15%, transparent)', border: '1px solid color-mix(in srgb, var(--color-ds-gold) 40%, transparent)', color: 'var(--color-ds-gold)' }}
+                              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, var(--color-ds-gold) 25%, transparent)'; }}
+                              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'color-mix(in srgb, var(--color-ds-gold) 15%, transparent)'; }}
+                            >
+                              <BookOpen className="w-3.5 h-3.5" />
+                              {lang === 'uk' ? 'Аналітичний звіт' : 'Analytical Report'}
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                          {/* amber callout placeholder to close the removed block */}
+                          <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-4 relative overflow-hidden">
                               <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
                               <p className="text-[11px] text-amber-300/80 leading-relaxed font-mono">
                                 {lang === 'uk'
@@ -2103,7 +2055,6 @@ const App: React.FC = () => {
                                   : "With the current 74% treatment gap and 3.5M clinical need \u2014 untreated PTSD and depression burden equates to ~$2B annual productivity losses (World Bank $4/$ model, average income). Digital infrastructure with a capacity multiplier is the most cost-effective intervention point."}
                               </p>
                             </div>
-                          </div>
 
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             <Card colSpan="full" title={lang === 'uk' ? 'Економічний тягар: індикатори' : 'Economic Burden: Indicators'}>
