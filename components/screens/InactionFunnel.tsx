@@ -1,549 +1,238 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, ReferenceLine,
-} from 'recharts';
+import React from 'react';
+import { motion } from 'motion/react';
+import { ArrowLeft } from 'lucide-react';
 import { Language } from '../../types';
-import { useMobile } from '@/components/hooks/useMobile';
+import { ScreenNav } from './types';
+import { L3Footer } from './L3Footer';
+import { RegValue } from '../RegValue';
+import { reg, formatValue, STATUS_LABEL, type RegCode } from '../../data/registry';
 
-interface Props { lang: Language; darkMode?: boolean; }
+interface Props { lang: Language; nav: ScreenNav; }
 
-// ── Palette ──────────────────────────────────────────────────────────────────
-const C = {
-  green:  '#00d4aa',
-  yellow: '#e8c97a',
-  red:    '#ff7b6e',
-  muted:  'rgba(255,255,255,0.38)',
-  mutedLight: 'rgba(18,60,58,0.5)',
-  border: 'rgba(255,255,255,0.08)',
-  borderLight: 'rgba(18,60,58,0.12)',
-  bg:     'rgba(0,0,0,0.28)',
-  bgLight: 'rgba(255,255,255,0.8)',
-};
+// Тунель бездіяльності у двох доріжках. Доріжка «люди» рахує осіб, доріжка «послуги» — записи ЕСОЗ
+// про надану послугу. Між доріжками немає спільної осі і немає відсотка: особа і послуга — різні одиниці.
+// Кожне число береться з реєстру фактів FEEL Again за кодом; значень у цьому файлі немає.
 
-// ── Timeline data (months 0-36) ───────────────────────────────────────────────
-const TIMELINE = Array.from({ length: 37 }, (_, m) => ({
-  m,
-  a: parseFloat((m === 0 ? 0 : -1.29 + (m / 36) * (15.5 + 1.29)).toFixed(2)),
-  b: parseFloat((-(m / 36) * 9.8).toFixed(2)),
-  c: parseFloat((m < 24 ? -(m / 24) * 30.7 : -30.7).toFixed(2)),
-}));
+const t = (uk: string, en: string, lang: Language) => (lang === 'uk' ? uk : en);
 
-// ── Sequential inaction chain steps ──────────────────────────────────────────
-// Based on WHO standards + NSZU Package №2 + verification documents
-const INACTION_STEPS = (lang: Language) => [
-  {
-    period: { uk: '0–30 днів', en: '0–30 days' },
-    sessions: { uk: '5 сесій', en: '5 sessions' },
-    standard: 'WHO/NICE',
-    outcome: { uk: '82% ремісія', en: '82% remission' },
-    cost: { uk: '~$150–200', en: '~$150–200' },
-    color: C.green,
-    barWidth: '100%',
-  },
-  {
-    period: { uk: '30–180 днів', en: '30–180 days' },
-    sessions: { uk: '5–8 сесій', en: '5–8 sessions' },
-    standard: 'WHO',
-    outcome: { uk: 'нижча ремісія', en: 'lower remission' },
-    cost: { uk: '~$200–400', en: '~$200–400' },
-    color: C.yellow,
-    barWidth: '65%',
-  },
-  {
-    period: { uk: '180 дн–24 міс', en: '180d–24mo' },
-    sessions: { uk: '12–20 сесій + соматизація', en: '12–20 sessions + somatization' },
-    standard: 'WHO',
-    outcome: { uk: 'хронізація', en: 'chronification' },
-    cost: { uk: '~$2,000–5,000', en: '~$2,000–5,000' },
-    color: C.yellow,
-    barWidth: '35%',
-  },
-  {
-    period: { uk: '24+ місяців', en: '24+ months' },
-    sessions: { uk: '28 днів стаціонар (до 8 циклів/рік)', en: '28 days inpatient (up to 8 cycles/yr)' },
-    standard: 'НСЗУ Пакет №2',
-    outcome: { uk: 'інвалідизація', en: 'disability' },
-    cost: { uk: '$40,500 / 5 років', en: '$40,500 / 5 years' },
-    color: C.red,
-    barWidth: '15%',
-  },
-];
+/** Частка з реєстру у відсотках без округлення: зсув десяткової коми на два знаки в рядку. */
+function pct(value: string, lang: Language): string {
+  const [int, frac = ''] = value.split('.');
+  const f = frac.padEnd(2, '0');
+  const whole = String(Number(int + f.slice(0, 2)));
+  const rest = f.slice(2);
+  return formatValue(rest ? `${whole}.${rest}` : whole, lang) + ' %';
+}
 
-// ── Waterfall rows ────────────────────────────────────────────────────────────
-const WATERFALL = (lang: Language) => [
-  {
-    label: { uk: 'Цифрове плече (FEEL Again)', en: 'Digital lever (FEEL Again)' },
-    invest: '-$1.29B',
-    result: '+$15.5B',
-    roi: '12:1',
-    bar: 100,
-    color: C.green,
-  },
-  {
-    label: { uk: 'Часткові зусилля (без координації)', en: 'Partial effort (no coordination)' },
-    invest: '-$9.8B',
-    result: '+$5.7B',
-    roi: '0.6:1',
-    bar: 37,
-    color: C.yellow,
-  },
-  {
-    label: { uk: 'Бездіяльність (статус-кво)', en: 'Inaction (status quo)' },
-    invest: '$0',
-    result: '-$30.7B',
-    roi: 'КОЛАПС',
-    bar: 0,
-    color: C.red,
-  },
-];
+const TEXT = 'var(--color-ds-text, rgba(214,221,230,0.88))';
+const MUTED = 'var(--color-ds-muted)';
+const BORDER = 'var(--color-ds-border)';
 
-// ── Patient funnel: population cascade (9.6M → 3.9M → [VERIFIED] → [VERIFIED]) ──
-const FUNNEL_STEPS = (lang: Language) => [
-  {
-    stage: { uk: '9.6M', en: '9.6M' },
-    caption: { uk: 'Усього у психосоціальній потребі', en: 'Total in psychosocial need' },
-    detail: { uk: 'Оцінка ООН HNRP', en: 'UN OCHA HNRP estimate' },
-    color: C.green,
-    width: '100%',
-    pending: false,
-  },
-  {
-    stage: { uk: '3.9M', en: '3.9M' },
-    caption: { uk: 'Спеціалізована психологічна допомога', en: 'Specialized psychological care' },
-    detail: { uk: 'WHO / Lancet 2024', en: 'WHO / Lancet 2024' },
-    color: C.green,
-    width: '41%',
-    pending: false,
-  },
-  {
-    stage: { uk: '260K', en: '260K' },
-    caption: { uk: 'НСЗУ пацієнтів прийнято 2025', en: 'NHSU patients accepted 2025' },
-    detail: { uk: 'НСЗУ відкриті дані', en: 'NHSU open data' },
-    color: C.yellow,
-    width: '2.7%',
-    pending: false,
-  },
-  {
-    stage: { uk: '260K', en: '260K' },
-    caption: { uk: 'Завершили лікування', en: 'Completed treatment' },
-    detail: { uk: 'НСЗУ відкриті дані 2025', en: 'NHSU open data 2025' },
-    color: C.yellow,
-    width: '1%',
-    pending: false,
-  },
-];
-
-// ── Custom tooltip ────────────────────────────────────────────────────────────
-const ChartTooltip = ({ active, payload, label, lang }: any) => {
-  if (!active || !payload?.length) return null;
-  return (
-    <div style={{ background: '#0a1628', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 8, padding: '8px 12px', fontSize: 11 }}>
-      <div style={{ color: C.muted, marginBottom: 4, fontFamily: 'DM Mono, monospace' }}>
-        {lang === 'uk' ? `Місяць ${label}` : `Month ${label}`}
-      </div>
-      {payload.map((p: any) => (
-        <div key={p.dataKey} style={{ color: p.color, fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700 }}>
-          {p.name}: {p.value >= 0 ? '+' : ''}{p.value}B
+/** Смуга, ширина якої пропорційна значенню в межах однієї доріжки (одна одиниця). */
+const Bar: React.FC<{ code: RegCode; max: number; label: string; lang: Language; color: string; delay: number }> =
+  ({ code, max, label, lang, color, delay }) => {
+    const e = reg(code);
+    const w = Math.max(0.5, (Number(e.value) / max) * 100);
+    return (
+      <div className="flex flex-col gap-0.5">
+        <div className="flex items-baseline justify-between gap-3">
+          <span className="text-[10px] ds-body leading-snug" style={{ color: TEXT }}>{label}</span>
+          <span className="text-[12px] font-bold ds-display whitespace-nowrap" style={{ color: TEXT }}>
+            <RegValue code={code} lang={lang} unit={false} />
+          </span>
         </div>
-      ))}
-    </div>
-  );
-};
+        <div className="h-2 rounded-sm" style={{ background: 'color-mix(in srgb, var(--color-ds-muted) 14%, transparent)' }}>
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${w}%` }}
+            transition={{ delay, duration: 0.6 }}
+            className="h-2 rounded-sm"
+            style={{ background: color }}
+          />
+        </div>
+      </div>
+    );
+  };
 
-// ── Sequential highlight step component ───────────────────────────────────────
-const SequentialStep: React.FC<{
-  step: ReturnType<typeof INACTION_STEPS>[number];
-  index: number;
-  isActive: boolean;
-  darkMode: boolean;
-  lang: Language;
-}> = ({ step, index, isActive, darkMode, lang }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0.3, x: -8 }}
-      animate={{
-        opacity: isActive ? 1 : 0.3,
-        x: 0,
-      }}
-      transition={{ duration: 0.5, delay: isActive ? 0 : 0.1 }}
+/** Щабель, для якого відкритих даних немає: порожня смуга зі штриховкою і словесним поясненням. */
+const Gap: React.FC<{ label: string; why: string }> = ({ label, why }) => (
+  <div className="flex flex-col gap-0.5">
+    <div className="flex items-baseline justify-between gap-3">
+      <span className="text-[10px] ds-body leading-snug" style={{ color: TEXT }}>{label}</span>
+      <span className="text-[12px] font-bold ds-display whitespace-nowrap" style={{ color: MUTED }}>—</span>
+    </div>
+    <div
+      className="h-2 rounded-sm"
       style={{
-        display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap',
-        padding: '6px 8px', borderRadius: 6,
-        background: isActive
-          ? (darkMode ? `${step.color}12` : `${step.color}08`)
-          : 'transparent',
-        border: `1px solid ${isActive ? `${step.color}33` : 'transparent'}`,
+        border: `1px dashed ${MUTED}`,
+        background: 'repeating-linear-gradient(45deg, transparent 0 4px, color-mix(in srgb, var(--color-ds-muted) 22%, transparent) 4px 6px)',
+      }}
+    />
+    <span className="text-[9px] ds-body" style={{ color: MUTED }}>{why}</span>
+  </div>
+);
+
+const Lane: React.FC<{ title: string; unit: string; children: React.ReactNode }> = ({ title, unit, children }) => (
+  <div className="flex flex-col gap-2.5 p-4 rounded-xl min-h-0" style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${BORDER}` }}>
+    <div>
+      <div className="cyber-label" style={{ color: 'var(--color-ds-gold)' }}>{title}</div>
+      <div className="text-[9px] font-mono" style={{ color: MUTED }}>{unit}</div>
+    </div>
+    {children}
+  </div>
+);
+
+export const InactionFunnel: React.FC<Props> = ({ lang, nav }) => {
+  const peopleMax = Number(reg('R-004').value);
+  const svcMax = Math.max(...(['R-160', 'R-161', 'R-162'] as RegCode[]).map(c => Number(reg(c).value)));
+  const ostMax = Number(reg('R-189').value);
+  const cov = reg('R-191');
+  const who = reg('R-192');
+  const svc25 = reg('R-160');
+  const svc26 = reg('R-163');
+
+  return (
+    <div
+      className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
+      style={{
+        background:
+          'radial-gradient(ellipse 50% 60% at 30% 50%, rgba(0,210,170,0.12) 0%, transparent 55%), ' +
+          'linear-gradient(135deg, #080f1c 0%, #0a1628 100%)',
       }}
     >
-      {/* Period badge */}
-      <div style={{
-        flexShrink: 0, minWidth: 90, textAlign: 'center',
-        background: isActive ? `${step.color}18` : (darkMode ? 'rgba(255,255,255,0.03)' : 'rgba(18,60,58,0.04)'),
-        border: `1px solid ${isActive ? `${step.color}44` : (darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(18,60,58,0.08)')}`,
-        borderRadius: 5, padding: '4px 6px',
-      }}>
-        <div style={{
-          fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
-          color: isActive ? step.color : (darkMode ? C.muted : C.mutedLight),
-        }}>
-          {step.period[lang]}
-        </div>
-      </div>
+      <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #00d4aa, #2ec4b6 50%, transparent)' }} />
 
-      {/* Sessions + standard */}
-      <div style={{ flex: 1, minWidth: 120 }}>
-        <div style={{
-          fontFamily: 'DM Sans, sans-serif', fontSize: 10,
-          color: isActive
-            ? (darkMode ? 'rgba(255,255,255,0.85)' : 'rgba(18,60,58,0.85)')
-            : (darkMode ? C.muted : C.mutedLight),
-        }}>
-          {step.sessions[lang]}
-        </div>
-        <div style={{
-          fontFamily: 'DM Mono, monospace', fontSize: 9,
-          color: darkMode ? 'rgba(255,255,255,0.3)' : 'rgba(18,60,58,0.35)',
-        }}>
-          {step.standard}
-        </div>
-      </div>
-
-      {/* Outcome */}
-      <div style={{
-        flexShrink: 0, textAlign: 'right',
-        fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 11,
-        color: isActive ? step.color : (darkMode ? C.muted : C.mutedLight),
-      }}>
-        {step.outcome[lang]}
-      </div>
-
-      {/* Cost */}
-      <div style={{
-        flexShrink: 0, textAlign: 'right', minWidth: 80,
-        fontFamily: 'DM Mono, monospace', fontSize: 10,
-        color: isActive ? step.color : (darkMode ? C.muted : C.mutedLight),
-        opacity: isActive ? 1 : 0.5,
-      }}>
-        {step.cost[lang]}
-      </div>
-    </motion.div>
-  );
-};
-
-type Tab = 'timeline' | 'chain' | 'funnel' | 'waterfall';
-
-export const InactionFunnel: React.FC<{ lang: Language; darkMode?: boolean }> = ({ lang, darkMode = false }) => {
-  const [tab, setTab] = useState<Tab>('timeline');
-  const [activeStep, setActiveStep] = useState(0);
-  const isMobile = useMobile();
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Sequential animation for chain tab
-  useEffect(() => {
-    if (tab === 'chain') {
-      setActiveStep(0);
-      intervalRef.current = setInterval(() => {
-        setActiveStep(prev => {
-          if (prev >= 3) {
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            return 3;
-          }
-          return prev + 1;
-        });
-      }, 1800);
-    } else {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    }
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  }, [tab]);
-
-  const steps = INACTION_STEPS(lang);
-
-  return (
-    <div style={{
-      background: darkMode ? C.bg : C.bgLight,
-      border: `1px solid ${darkMode ? C.border : C.borderLight}`,
-      borderRadius: 12,
-      padding: '10px 14px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 8,
-    }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6 }}>
+      {/* ── Header ── */}
+      <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0">
+        <button
+          onClick={nav.back}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl ds-display font-bold flex-shrink-0"
+          style={{ background: 'rgba(200,164,92,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '12px' }}
+        >
+          <ArrowLeft className="w-4 h-4" />
+          {t('Назад', 'Back', lang)}
+        </button>
         <div>
-          <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 12,
-            color: darkMode ? C.red : '#B5481A', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-            {lang === 'uk' ? '⚠ Ціна бездіяльності' : '⚠ Cost of Inaction'}
+          <div className="text-[17px] font-bold ds-display" style={{ color: TEXT }}>
+            {t('Тунель бездіяльності: люди і послуги окремо', 'Inaction funnel: people and services kept apart', lang)}
           </div>
-          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10,
-            color: darkMode ? C.muted : C.mutedLight, marginTop: 1 }}>
-            {lang === 'uk'
-              ? '3.9M потребують → 260K отримали (0.41%) · WHO + НСЗУ + WB ISR'
-              : '3.9M need → 260K reached (0.41%) · WHO + NHSU + WB ISR'}
+          <div className="text-[10px] ds-body" style={{ color: MUTED }}>
+            {t(
+              'Держава рахує надані послуги і посади, але не публікує, скільки людей отримали психіатричну допомогу. Тому доріжки не мають спільної осі, а між ними немає відсотка.',
+              'The state counts services delivered and posts, but does not publish how many people received psychiatric care. The lanes therefore share no axis, and no percentage links them.',
+              lang,
+            )}
           </div>
-        </div>
-        {/* Tab switcher */}
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          {([
-            { id: 'timeline' as Tab, label: { uk: 'Динаміка', en: 'Timeline' } },
-            { id: 'chain' as Tab,    label: { uk: 'Ланцюг', en: 'Chain' } },
-            { id: 'funnel' as Tab,   label: { uk: 'Воронка', en: 'Funnel' } },
-            { id: 'waterfall' as Tab, label: { uk: 'ROI', en: 'ROI' } },
-          ]).map(t => (
-            <button key={t.id} onClick={() => setTab(t.id)} style={{
-              fontFamily: 'DM Mono, monospace', fontSize: 10,
-              padding: '4px 8px', borderRadius: 6, cursor: 'pointer',
-              background: tab === t.id
-                ? (darkMode ? 'rgba(0,212,170,0.15)' : 'rgba(44,110,127,0.1)')
-                : 'transparent',
-              border: `1px solid ${tab === t.id
-                ? (darkMode ? 'rgba(0,212,170,0.5)' : 'rgba(44,110,127,0.3)')
-                : (darkMode ? 'rgba(255,255,255,0.1)' : 'rgba(18,60,58,0.1)')}`,
-              color: tab === t.id
-                ? (darkMode ? C.green : '#2C6E7F')
-                : (darkMode ? C.muted : C.mutedLight),
-              transition: 'all 0.15s',
-              minHeight: 44,
-              minWidth: 44,
-            }}>
-              {t.label[lang]}
-            </button>
-          ))}
         </div>
       </div>
 
-      {/* ── Tab: Timeline ── */}
-      {tab === 'timeline' && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}>
-          <div style={{ display: 'flex', gap: 12, marginBottom: 6, flexWrap: 'wrap' }}>
-            {[
-              { color: C.green,  dash: '',         label: { uk: 'Гілка 1: FEEL Again',         en: 'Path 1: FEEL Again'       } },
-              { color: C.yellow, dash: '5 3',      label: { uk: 'Гілка 2: Часткові зусилля',   en: 'Path 2: Partial effort'   } },
-              { color: C.red,    dash: '3 3',      label: { uk: 'Гілка 3: Бездіяльність',      en: 'Path 3: Inaction'         } },
-            ].map(l => (
-              <div key={l.color} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <svg width="20" height="6" style={{ flexShrink: 0 }}>
-                  <line x1="0" y1="3" x2="20" y2="3" stroke={l.color} strokeWidth="2.5"
-                    strokeDasharray={l.dash} strokeLinecap="round" />
-                </svg>
-                <span style={{ fontFamily: 'Source Sans 3, sans-serif', fontSize: 10,
-                  color: darkMode ? C.muted : C.mutedLight }}>{l.label[lang]}</span>
-              </div>
-            ))}
-          </div>
-          <ResponsiveContainer width="100%" height={isMobile ? 140 : 200}>
-            <AreaChart data={TIMELINE} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-              <defs>
-                {[['ga', C.green], ['gb', C.yellow], ['gc', C.red]].map(([id, color]) => (
-                  <linearGradient key={id} id={id} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor={color} stopOpacity={0.25} />
-                    <stop offset="95%" stopColor={color} stopOpacity={0.02} />
-                  </linearGradient>
-                ))}
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(18,60,58,0.08)'} />
-              <XAxis dataKey="m" tick={{ fontSize: 8, fill: darkMode ? C.muted : C.mutedLight, fontFamily: 'DM Mono, monospace' }}
-                tickFormatter={v => v === 0 ? '0' : v === 18 ? (lang === 'uk' ? '18м' : '18m') : v === 36 ? (lang === 'uk' ? '36м' : '36m') : ''}
-                interval={0} />
-              <YAxis tick={{ fontSize: 8, fill: darkMode ? C.muted : C.mutedLight, fontFamily: 'DM Mono, monospace' }}
-                tickFormatter={v => `${v}B`} />
-              <ReferenceLine y={0} stroke={darkMode ? 'rgba(255,255,255,0.2)' : 'rgba(18,60,58,0.15)'} strokeDasharray="4 4" />
-              <ReferenceLine x={18} stroke="rgba(232,201,122,0.3)" strokeDasharray="3 3"
-                label={{ value: lang === 'uk' ? 'беззбитковість' : 'breakeven', position: 'top', fontSize: 8, fill: C.yellow }} />
-              <Tooltip content={<ChartTooltip lang={lang} />} />
-              <Area type="monotone" dataKey="a" name={lang === 'uk' ? 'FEEL Again' : 'FEEL Again'}
-                stroke={C.green} fill="url(#ga)" strokeWidth={2} dot={false} />
-              <Area type="monotone" dataKey="b" name={lang === 'uk' ? 'Часткові' : 'Partial'}
-                stroke={C.yellow} fill="url(#gb)" strokeWidth={1.5} dot={false} strokeDasharray="5 3" />
-              <Area type="monotone" dataKey="c" name={lang === 'uk' ? 'Бездіяльність' : 'Inaction'}
-                stroke={C.red} fill="url(#gc)" strokeWidth={1.5} dot={false} strokeDasharray="3 3" />
-            </AreaChart>
-          </ResponsiveContainer>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
-            <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: C.green }}>
-              {lang === 'uk' ? 'Дельта: +$15.5B за 36 міс' : 'Delta: +$15.5B over 36 mo'}
-            </span>
-            <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 9, color: C.red }}>
-              {lang === 'uk' ? 'Колапс: ~24 міс без дій' : 'Collapse: ~24 mo without action'}
-            </span>
-          </div>
-        </motion.div>
-      )}
+      <div className="flex-1 min-h-0 overflow-y-auto px-5 pb-3 grid gap-3 md:grid-cols-2 content-start">
+        {/* ── Доріжка 1: люди ── */}
+        <Lane title={t('ДОРІЖКА «ЛЮДИ»', 'LANE “PEOPLE”', lang)} unit={t('одиниця: осіб', 'unit: persons', lang)}>
+          <Bar code="R-004" max={peopleMax} lang={lang} color="var(--color-ds-orange)" delay={0.1}
+            label={t('Особи в групі ризику', 'People at risk', lang)} />
+          <Bar code="R-001" max={peopleMax} lang={lang} color="var(--color-ds-orange)" delay={0.2}
+            label={t('Клінічна потреба в психологічній допомозі (проєкція)', 'Clinical need for psychological care (projection)', lang)} />
+          <Gap
+            label={t('Отримали допомогу за психіатричними пакетами НСЗУ', 'Received care under NHSU psychiatric packages', lang)}
+            why={t(
+              'НСЗУ не публікує кількість осіб за пакетами центрів ментального здоров’я і стаціонару. Потрібен запит на публічну інформацію: унікальні пацієнти за пакетом за 2025 рік з ЕСОЗ.',
+              'NHSU does not publish the number of persons under the mental-health-centre and inpatient packages. A public-information request is needed: unique patients per package for 2025 from ESOZ.',
+              lang,
+            )}
+          />
+          <Gap
+            label={t('Завершили лікування', 'Completed treatment', lang)}
+            why={t('Відкритих даних немає ні в НСЗУ, ні в МОЗ.', 'No open data from either NHSU or the MoH.', lang)}
+          />
 
-      {/* ── Tab: Sequential Inaction Chain ── */}
-      {tab === 'chain' && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {/* Sequential steps */}
-          {steps.map((step, i) => (
-            <SequentialStep
-              key={i}
-              step={step}
-              index={i}
-              isActive={i <= activeStep}
-              darkMode={darkMode}
-              lang={lang}
-            />
-          ))}
-          {/* Summary bar */}
-          <div style={{
-            marginTop: 4, padding: '6px 8px', borderRadius: 6,
-            background: darkMode ? 'rgba(255,123,110,0.08)' : 'rgba(181,72,26,0.06)',
-            border: `1px solid ${darkMode ? 'rgba(255,123,110,0.2)' : 'rgba(181,72,26,0.15)'}`,
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 4 }}>
-              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10,
-                color: darkMode ? 'rgba(255,255,255,0.7)' : 'rgba(18,60,58,0.7)' }}>
-                {lang === 'uk'
-                  ? 'Без втручання: 15% інвалідизація = $546.75M на 100K осіб'
-                  : 'Without intervention: 15% disability = $546.75M per 100K people'}
-              </div>
-              <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, color: C.red, fontWeight: 700 }}>
-                {lang === 'uk' ? '1:200 співвідношення' : '1:200 ratio'}
-              </div>
+          {/* Єдиний пакет, де держава публікує осіб */}
+          <div className="mt-1 pt-3 flex flex-col gap-2.5" style={{ borderTop: `1px solid ${BORDER}` }}>
+            <div className="text-[10px] ds-body font-semibold" style={{ color: TEXT }}>
+              {t(
+                'Єдиний психіатричний пакет, де держава публікує людей: замісна підтримувальна терапія (власний масштаб)',
+                'The only psychiatric package where the state publishes people: opioid substitution therapy (own scale)',
+                lang,
+              )}
+            </div>
+            <Bar code="R-189" max={ostMax} lang={lang} color="var(--color-ds-orange)" delay={0.3}
+              label={t('Люди, які вживають опіоїди ін’єкційно (оцінка дослідження)', 'People who inject opioids (study estimate)', lang)} />
+            <Bar code="R-190" max={ostMax} lang={lang} color="var(--color-ds-teal)" delay={0.4}
+              label={t(`Отримували замісну терапію, ${reg('R-190').period}`, `Receiving substitution therapy, ${reg('R-190').period}`, lang)} />
+            <div className="text-[10px] ds-body leading-relaxed" style={{ color: TEXT }} title={`${cov.code} · ${cov.conflict}`}>
+              {t('Охоплення за розрахунком: ', 'Coverage as calculated: ', lang)}
+              <b>{pct(cov.value, lang)}</b>
+              {' '}<span style={{ color: MUTED }}>({STATUS_LABEL[cov.status].mark} {STATUS_LABEL[cov.status][lang]} · {cov.code})</span>.{' '}
+              {t('Рекомендований мінімум ВООЗ і ЮНЕЙДС, як його наводить ЦГЗ: ', 'WHO and UNAIDS recommended minimum, as cited by the PHC: ', lang)}
+              <b>{pct(who.value, lang)}</b>
+              {' '}<span style={{ color: MUTED }}>({STATUS_LABEL[who.status].mark} {STATUS_LABEL[who.status][lang]} · {who.code})</span>.
+            </div>
+            <div className="text-[9px] ds-body leading-relaxed rounded-lg px-2.5 py-1.5"
+              style={{ color: TEXT, border: '1px dashed var(--color-ds-orange)' }}>
+              ⚑ {t(
+                'Розбіжність: ЦГЗ на тій самій сторінці пише «охоплює 5,8%», а поділ опублікованих ним же чисел дає інше значення. Причину сторінка не пояснює. У знаменнику лише ін’єкційне вживання.',
+                'Discrepancy: the PHC states “covers 5.8%” on the same page, while dividing its own published figures gives a different value. The page does not explain why. The denominator covers injecting use only.',
+                lang,
+              )}
             </div>
           </div>
-          {/* Source note */}
-          <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 9,
-            color: darkMode ? C.muted : C.mutedLight, marginTop: 2 }}>
-            {lang === 'uk'
-              ? 'Джерела: WHO/NICE · НСЗУ Пакет №2 · Policy Paper актуарні розрахунки'
-              : 'Sources: WHO/NICE · NHSU Package №2 · Policy Paper actuarial calculations'}
-          </div>
-        </motion.div>
-      )}
+        </Lane>
 
-      {/* ── Tab: Patient Funnel (population cascade) ── */}
-      {tab === 'funnel' && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-        {FUNNEL_STEPS(lang).map((step, i) => (
-          <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-            {/* Left: stage badge */}
-            <div style={{
-              flexShrink: 0, width: 84, textAlign: 'center',
-              background: step.pending ? `${step.color}10` : `${step.color}18`,
-              border: `1px solid ${step.color}44`,
-              borderRadius: 6, padding: '5px 6px',
-              opacity: step.pending ? 0.75 : 1,
-            }}>
-              <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800, fontSize: 14, color: step.color }}>
-                {step.stage[lang]}
-              </div>
-              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9,
-                color: darkMode ? C.muted : C.mutedLight, marginTop: 1 }}>
-                {step.caption[lang]}
-              </div>
-            </div>
-            {/* Center: bar + detail */}
-            <div style={{ flex: 1, minWidth: 160 }}>
-              <div style={{ height: 8, borderRadius: 4,
-                background: darkMode ? 'rgba(255,255,255,0.06)' : 'rgba(18,60,58,0.06)',
-                marginBottom: 4, overflow: 'hidden' }}>
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: step.width }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                  style={{
-                    height: '100%', borderRadius: 4,
-                    background: step.pending
-                      ? `repeating-linear-gradient(45deg, ${step.color}55, ${step.color}55 4px, transparent 4px, transparent 8px)`
-                      : step.color,
-                    boxShadow: step.pending ? 'none' : `0 0 8px ${step.color}55`,
-                  }}
-                />
-              </div>
-              <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10,
-                color: darkMode ? 'rgba(255,255,255,0.7)' : 'rgba(18,60,58,0.7)' }}>
-                {step.detail[lang]}
-              </div>
-            </div>
-            {/* Right: verify status */}
-            <div style={{
-              flexShrink: 0, textAlign: 'center',
-              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10,
-              color: step.pending ? C.yellow : C.green,
-              border: `1px solid ${step.pending ? C.yellow : C.green}44`,
-              borderRadius: 5, padding: '3px 6px', minHeight: 44, display: 'flex', alignItems: 'center',
-            }}>
-              {step.pending
-                ? (lang === 'uk' ? 'ЗВІР' : 'VERIFY')
-                : (lang === 'uk' ? '✓ підтвердж.' : '✓ verified')}
-            </div>
-          </div>
-        ))}
-        {/* Footer note */}
-        <div style={{ textAlign: 'center', fontFamily: 'DM Mono, monospace', fontSize: 9,
-          color: darkMode ? C.muted : C.mutedLight, marginTop: 2 }}>
-          {lang === 'uk'
-            ? '9.6M → 3.9M → 260K: каскад потреби · HCI 0.63 · 0.41% покриття'
-            : '9.6M → 3.9M → 260K: need cascade · HCI 0.63 · 0.41% coverage'}
-        </div>
-      </motion.div>
-      )}
+        {/* ── Доріжка 2: послуги ── */}
+        <Lane
+          title={t('ДОРІЖКА «ПОСЛУГИ»', 'LANE “SERVICES”', lang)}
+          unit={t('одиниця: наданих послуг — запис ЕСОЗ про надану послугу, не сесія і не особа', 'unit: services delivered — an ESOZ service record, not a session and not a person', lang)}
+        >
+          <div className="text-[10px] ds-body font-semibold" style={{ color: TEXT }}>{svc25.period}</div>
+          <Bar code="R-160" max={svcMax} lang={lang} color="var(--color-ds-teal)" delay={0.1}
+            label={t('Центри ментального здоров’я і мобільні команди', 'Mental health centres and mobile teams', lang)} />
+          <Bar code="R-161" max={svcMax} lang={lang} color="var(--color-ds-teal)" delay={0.2}
+            label={t('Психіатрична допомога в стаціонарі', 'Inpatient psychiatric care', lang)} />
+          <Bar code="R-162" max={svcMax} lang={lang} color="var(--color-ds-teal)" delay={0.3}
+            label={t('Замісна підтримувальна терапія', 'Opioid substitution therapy', lang)} />
 
-      {/* ── Tab: Waterfall ── */}
-      {tab === 'waterfall' && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2 }}
-          style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {WATERFALL(lang).map((row, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            {/* Label */}
-            <div style={{ width: '100%', flexShrink: 0, fontFamily: 'DM Sans, sans-serif', fontSize: 10,
-              color: darkMode ? 'rgba(255,255,255,0.75)' : 'rgba(18,60,58,0.75)' }}>
-              {row.label}
+          <div className="text-[10px] ds-body font-semibold mt-1" style={{ color: TEXT }}>{svc26.period}</div>
+          <Bar code="R-163" max={svcMax} lang={lang} color="var(--color-ds-gold)" delay={0.4}
+            label={t('Центри ментального здоров’я і мобільні команди', 'Mental health centres and mobile teams', lang)} />
+          <Bar code="R-164" max={svcMax} lang={lang} color="var(--color-ds-gold)" delay={0.5}
+            label={t('Психіатрична допомога в стаціонарі', 'Inpatient psychiatric care', lang)} />
+          <Bar code="R-165" max={svcMax} lang={lang} color="var(--color-ds-gold)" delay={0.6}
+            label={t('Замісна підтримувальна терапія', 'Opioid substitution therapy', lang)} />
+
+          <div className="mt-1 pt-3 flex flex-col gap-1.5" style={{ borderTop: `1px solid ${BORDER}` }}>
+            <div className="text-[10px] ds-body font-semibold" style={{ color: TEXT }}>
+              {t(`Хто надає: напрям «Психологічна і психіатрична допомога», ${reg('R-170').period}`,
+                 `Who delivers: “Psychological and psychiatric care” direction, ${reg('R-170').period}`, lang)}
             </div>
-            {/* Bar */}
-            <div style={{ flex: 1, height: 20,
-              background: darkMode ? 'rgba(255,255,255,0.05)' : 'rgba(18,60,58,0.05)',
-              borderRadius: 4, overflow: 'hidden' }}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${row.bar}%` }}
-                transition={{ delay: i * 0.12, duration: 0.55 }}
-                style={{
-                  height: '100%', borderRadius: 4,
-                  background: row.bar === 0
-                    ? `repeating-linear-gradient(45deg, ${row.color}22, ${row.color}22 4px, transparent 4px, transparent 8px)`
-                    : row.color,
-                  boxShadow: row.bar > 0 ? `0 0 10px ${row.color}44` : 'none',
-                }}
-              />
+            <div className="text-[10px] ds-body" style={{ color: TEXT }}>
+              <RegValue code="R-170" lang={lang} />
             </div>
-            {/* Invest */}
-            <div style={{ width: 52, textAlign: 'right', fontFamily: 'DM Mono, monospace', fontSize: 10,
-              color: darkMode ? C.muted : C.mutedLight }}>
-              {row.invest}
+            <div className="text-[10px] ds-body" style={{ color: TEXT }}>
+              <RegValue code="R-172" lang={lang} />{' '}{t('— лікарі, унікальні особи', '— doctors, unique persons', lang)}
             </div>
-            {/* Result */}
-            <div style={{ width: 64, textAlign: 'right', fontFamily: 'Space Grotesk, sans-serif', fontWeight: 800, fontSize: 12, color: row.color }}>
-              {row.result}
+            <div className="text-[10px] ds-body" style={{ color: TEXT }}>
+              <RegValue code="R-186" lang={lang} unit={false} />{' '}
+              {t('посад профілю психічного здоров’я (психіатри, психологи, психотерапевти, наркологи)', 'mental-health-profile posts (psychiatrists, psychologists, psychotherapists, narcologists)', lang)}
             </div>
-            {/* ROI badge */}
-            <div style={{
-              width: 52, textAlign: 'center', flexShrink: 0,
-              background: `${row.color}18`, border: `1px solid ${row.color}44`,
-              borderRadius: 5, padding: '2px 4px',
-              fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10, color: row.color,
-            }}>
-              {row.roi}
+            <div className="text-[9px] ds-body leading-relaxed" style={{ color: MUTED }}>
+              {t(
+                'НСЗУ не платить за сесію. Центри ментального здоров’я, мобільні команди і стаціонар оплачуються глобальною ставкою, замісна терапія — капітаційною ставкою на пацієнта (Посібник ПМГ 2026, с. 36). Тому показника «сесій на рік» у державних даних немає.',
+                'NHSU does not pay per session. Mental health centres, mobile teams and inpatient care are paid a global rate; substitution therapy a capitation rate per patient (PMG 2026 handbook, p. 36). State data therefore holds no “sessions per year” figure.',
+                lang,
+              )}
             </div>
           </div>
-        ))}
-        <div style={{ borderTop: `1px solid ${darkMode ? 'rgba(255,255,255,0.07)' : 'rgba(18,60,58,0.08)'}`,
-          paddingTop: 6, fontFamily: 'DM Mono, monospace', fontSize: 9,
-          color: darkMode ? C.muted : C.mutedLight }}>
-          {lang === 'uk'
-            ? 'Джерела: WB ISR #6 · Lancet 2023 · Мінсоцполітики Постанова №234 · НСЗУ тариф 2025'
-            : 'Sources: WB ISR #6 · Lancet 2023 · MinSocPolicy Decree #234 · NHSU tariff 2025'}
-        </div>
-      </motion.div>
-      )}
+        </Lane>
+      </div>
+
+      <div className="px-5 pb-2 flex-shrink-0 text-[9px] font-mono" style={{ color: MUTED }}>
+        {t(
+          'Джерела: реєстр фактів FEEL Again; дашборди НСЗУ «Статистика наданих послуг» і «Надавачі за напрямом»; ЦГЗ «Статистика ЗПТ»; Посібник ПМГ 2026. Наведіть курсор на число — побачите походження, період і статус.',
+          'Sources: FEEL Again fact registry; NHSU dashboards “Services delivered” and “Providers by direction”; PHC “OST statistics”; PMG 2026 handbook. Hover a figure to see origin, period and status.',
+          lang,
+        )}
+      </div>
+      <L3Footer lang={lang} nav={nav} />
     </div>
   );
 };
-
-export default InactionFunnel;

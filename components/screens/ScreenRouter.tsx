@@ -12,6 +12,7 @@ import { L2Digital } from './L2Digital';
 import { L2Regulatory } from './L2Regulatory';
 import { L2Coverage } from './L2Coverage';
 import { L2Backlog } from './L2Backlog';
+import { InactionFunnel } from './InactionFunnel';
 import { L2Operational } from './L2Operational';
 import { L2Analytical } from './L2Analytical';
 import { L2Journey } from './L2Journey';
@@ -33,6 +34,7 @@ const SLIDE_DIRECTION: Partial<Record<ScreenId, 'left' | 'right' | 'bottom'>> = 
   'l2-regulatory':  'right',
   'l2-coverage':    'right',
   'l2-backlog':     'right',
+  'l2-inaction':    'right',
   'l2-journey':     'right',
 };
 
@@ -55,7 +57,7 @@ interface Props {
 
 const VALID_SCREEN_IDS: ScreenId[] = [
   'l1','l2-mhei','l2-fintech','l2-clinical','l2-data','l2-sustain',
-  'l2-digital','l2-regulatory','l2-finance','l2-coverage','l2-backlog',
+  'l2-digital','l2-regulatory','l2-finance','l2-coverage','l2-backlog','l2-inaction',
   'l2-operational','l2-analytical','l2-journey',
 ];
 
@@ -125,6 +127,7 @@ export const ScreenRouter: React.FC<Props> = ({
     'l2-regulatory':  <L2Regulatory lang={lang} nav={nav} />,
     'l2-coverage':    <L2Coverage lang={lang} nav={nav} />,
     'l2-backlog':     <L2Backlog lang={lang} nav={nav} />,
+    'l2-inaction':    <InactionFunnel lang={lang} nav={nav} />,
     'l2-operational': <L2Operational lang={lang} nav={nav} />,
     'l2-analytical':  <L2Analytical lang={lang} nav={nav} />,
     'l2-journey':     <L2Journey lang={lang} nav={nav} />,

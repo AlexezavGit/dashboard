@@ -364,6 +364,11 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
           </div>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
+          <button onClick={() => nav.push('l2-inaction')}
+            className="text-[11px] px-3 py-1.5 rounded-lg ds-display font-semibold"
+            style={{ color: 'var(--color-ds-orange)', border: '1px solid color-mix(in srgb, var(--color-ds-orange) 40%, transparent)' }}>
+            {lang === 'uk' ? 'Тунель бездіяльності →' : 'Inaction funnel →'}
+          </button>
           <button onClick={() => nav.push('l2-operational')}
             className="text-[11px] px-3 py-1.5 rounded-lg ds-display font-semibold"
             style={{ color: 'var(--color-ds-teal)', border: '1px solid rgba(46,196,182,0.3)' }}>

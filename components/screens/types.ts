@@ -12,6 +12,7 @@ export type ScreenId =
   | 'l2-finance'        // (alias of l2-fintech for back-compat — financial chain visualization)
   | 'l2-coverage'       // Coverage decomposition (legacy)
   | 'l2-backlog'        // Backlog calculation (legacy)
+  | 'l2-inaction'       // Inaction funnel: people lane and services lane, registry-only numbers
   | 'l2-operational'    // 9 systemic gaps — flip cards
   | 'l2-analytical'     // Data visibility map
   | 'l2-journey'        // Stakeholder Journeys integration map
