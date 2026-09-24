@@ -7,7 +7,7 @@
  * - /api/health → shows which secrets are configured
  *
  * Secrets → Cloudflare Dashboard → Workers → dashboard → Settings → Variables:
- *   KOBO_API_TOKEN       = 66bb52de75381723cdaec050cf9ffa5ae05fbb5d
+ *   KOBO_API_TOKEN       = <секрет задається лише в Cloudflare, не в коді>
  *   ACTIVITYINFO_API_KEY = <add after ActivityInfo registration>
  */
 

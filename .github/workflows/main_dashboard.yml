@@ -3,10 +3,10 @@
 
 name: Build and deploy Node.js app to Azure Web App - dashboard
 
+# Автоматичний запуск вимкнено 24.09.2026 (рішення Alex): єдине місце публікації — Cloudflare.
+# Azure-процес розгортав увесь каталог без скрипта start і без проксі KoBo/ActivityInfo.
+# Запуск лише вручну з вкладки Actions.
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:

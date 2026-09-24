@@ -5,7 +5,7 @@
  * Token stored as Pages Environment Variable (secret):
  *   Cloudflare Dashboard → Pages → dashboard → Settings →
  *   Environment Variables → Add → KOBO_API_TOKEN (secret)
- *   Value: 66bb52de75381723cdaec050cf9ffa5ae05fbb5d
+ *   Value: <секрет задається лише в Cloudflare, не в коді>
  */
 
 interface Env {
