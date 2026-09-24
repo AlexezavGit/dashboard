@@ -902,42 +902,116 @@ export const STAKEHOLDER_MATRIX = (l: Language) => [
   },
 ];
 
-// Formalization cost model v3 — full decomposition
-export const FORMALIZATION_COST_V3 = (l: Language) => ({
-  assumption: l === 'uk'
-    ? '\u0404вро 1,500/міс середній дохід, \u0454вро 46/год ставка, 1,000 год/рік реальний обсяг роботи'
-    : '\u20ac1,500/month avg income, \u20ac46/hr rate, 1,000 hrs/year actual shadow workload',
-  shadowNet: '\u20ac1,500/month',
-  formalNet: '\u20ac335\u2013520/month (23\u201335%)',
-  penaltyPct: 65,
-  directCosts: {
-    label: l === 'uk' ? 'A. Пряме навантаження (податки + адмін)' : 'A. Direct costs (taxes + admin)',
-    items: [
-      { label: l === 'uk' ? 'ФОП Група 3 (5% від \u20ac1,500)' : 'FOP Group 3 tax (5% of \u20ac1,500)', amountPerMonth: 75 },
-      { label: l === 'uk' ? '\u0404СВ (мінімум)' : 'ESV (minimum)', amountPerMonth: 32 },
-      { label: l === 'uk' ? 'Бухгалтерські послуги' : 'Accounting services', amountPerMonth: 100 },
-    ],
-    totalPerMonth: 207,
-    totalPerYear: 2484,
+// Formalization cost model v4 — canonical (replaces v3, 65% RETRACTED per _CANON.md C-14/V-37)
+// Base: 1,000 hrs/yr (4–5 sessions/day × ~220 days, anti-burnout limit per V-132/V-133)
+// Three scenarios: shadow / formal €50 (domestic market) / formal €70 (diaspora return target)
+// Penalty = (direct taxes + admin hours × rate) / gross revenue
+// Source: _CANON.md §3.5, §9; Alex 2026-08-26
+export const FORMALIZATION_COST_V4 = (l: Language) => ({
+  // ── Shared base ──────────────────────────────────────────────────────────
+  base: {
+    hoursPerYear: 1000,           // 4–5 sessions/day × ~220 days (V-132 anti-burnout)
+    adminSharePct: 20,            // 20% of hours lost to admin/reporting (WHO SIMH 2024)
+    complianceSharePct: 5,        // 5% tax compliance hours
+    adminHoursPerYear: 200,       // 1000 × 20%
+    complianceHoursPerYear: 50,   // 1000 × 5%
+    esvPerYear: 384,              // ЄСВ minimum annual (UAH-indexed, EUR equiv ~€384)
+    accountingPerYear: 1200,      // бухгалтер ~€100/mo
+    fopTaxRate: 0.05,             // ФОП Група 3: 5% of revenue
   },
-  opportunityCost: {
-    label: l === 'uk' ? 'B. Opportunity cost (втрачені продуктивні години)' : 'B. Opportunity cost (lost productive hours)',
-    items: [
-      { label: l === 'uk' ? '20% часу адм\u0456н: 200 год/рік \u00d7 \u20ac46/год' : '20% admin time: 200 hrs/year \u00d7 \u20ac46/hr', amountPerMonth: 767 },
-      { label: l === 'uk' ? '5% комплаєнс: 50 год/рік \u00d7 \u20ac46/год' : '5% tax compliance: 50 hrs/year \u00d7 \u20ac46/hr', amountPerMonth: 192 },
-    ],
-    totalPerMonth: 958,
-    totalPerYear: 11500,
+
+  // ── Scenario A: Shadow (current baseline) ────────────────────────────────
+  shadow: {
+    label: l === 'uk' ? 'Тіньова практика (зараз)' : 'Shadow practice (current)',
+    rateEur: 50,
+    grossPerYear: 50000,          // 1000 hrs × €50
+    grossPerMonth: 4167,
+    directCostsPerYear: 0,
+    opportunityCostPerYear: 0,    // no admin burden — no reporting
+    netPerYear: 50000,
+    netPerMonth: 4167,
+    penaltyPct: 0,
+    note: l === 'uk'
+      ? 'Нульовий адмінтягар. Нульові податки. Але: немає доступу до НСЗУ, донорів, корпоративних контрактів, SIB.'
+      : 'Zero admin burden. Zero taxes. But: no access to NHSU, donors, corporate contracts, SIB.',
   },
-  total: {
-    perMonth: 1165,
-    perYear: 13984,
-    label: 'TOTAL A + B',
+
+  // ── Scenario B: Formal €50/hr (domestic market) ──────────────────────────
+  formal50: {
+    label: l === 'uk' ? 'Формальна практика €50/год (внутрішній ринок)' : 'Formal practice €50/hr (domestic market)',
+    rateEur: 50,
+    grossPerYear: 50000,
+    grossPerMonth: 4167,
+    directCosts: {
+      fopTax: 2500,               // 5% × €50,000
+      esv: 384,
+      accounting: 1200,
+      total: 4084,
+    },
+    opportunityCost: {
+      adminHours: 200,            // 200 hrs × €50
+      complianceHours: 50,        // 50 hrs × €50
+      total: 12500,
+    },
+    totalCostPerYear: 16584,      // 4084 + 12500
+    netPerYear: 33416,
+    netPerMonth: 2785,
+    penaltyPct: 33,               // 16584 / 50000 = 33%
+    note: l === 'uk'
+      ? 'Штраф 33% — структурна пастка. Але: доступ до НСЗУ (840 грн/год пакет 51), донорські контракти, корпоративний сектор.'
+      : 'Penalty 33% — structural trap. But: NHSU access (₴840/hr package 51), donor contracts, corporate sector.',
   },
-  conclusion: l === 'uk'
-    ? 'Формалізація знищує 2/3 доходу психолога. При \u20ac2,000-3,000/міс (Київ) пропорція покращується, але структурна пастка залишається: 25% часу \u2014 на адміністрування замість клієнтів.'
-    : 'Formalization destroys 2/3 of practitioner income. At \u20ac2,000-3,000/month (Kyiv) the ratio improves, but the structural trap remains: 25% of time on admin instead of clients.',
+
+  // ── Scenario C: Formal €70/hr (diaspora return target = 70% of EU rate) ──
+  formal70: {
+    label: l === 'uk' ? 'Формальна практика €70/год (повернення діаспори, 70% EU)' : 'Formal practice €70/hr (diaspora return, 70% of EU rate)',
+    rateEur: 70,
+    grossPerYear: 70000,
+    grossPerMonth: 5833,
+    directCosts: {
+      fopTax: 3500,               // 5% × €70,000
+      esv: 384,
+      accounting: 1200,
+      total: 5084,
+    },
+    opportunityCost: {
+      adminHours: 200,            // 200 hrs × €70
+      complianceHours: 50,        // 50 hrs × €70
+      total: 17500,
+    },
+    totalCostPerYear: 22584,      // 5084 + 17500
+    netPerYear: 47416,
+    netPerMonth: 3951,
+    penaltyPct: 32,               // 22584 / 70000 = 32%
+    note: l === 'uk'
+      ? 'Штраф 32% — але чистий дохід €3,951/міс проти €4,167 тіньового. Різниця лише €216/міс. При +€600/міс referral bonus (V-39) — формальна практика ВИГІДНІША.'
+      : 'Penalty 32% — but net income €3,951/mo vs €4,167 shadow. Gap only €216/mo. With +€600/mo referral bonus (V-39) — formal practice is MORE profitable.',
+    diasporaCase: l === 'uk'
+      ? 'Ключовий аргумент повернення: €70/год = 70% від EU ставки (~€100/год). Чистий дохід порівнянний з тіньовим при повній легальності, доступі до НСЗУ та донорів.'
+      : 'Key return argument: €70/hr = 70% of EU rate (~€100/hr). Net income comparable to shadow with full legality, NHSU and donor access.',
+  },
+
+  // ── Delta: what FEEL Again removes ───────────────────────────────────────
+  feelAgainEffect: {
+    label: l === 'uk' ? 'Ефект FEEL Again (зниження friction)' : 'FEEL Again effect (friction reduction)',
+    adminReductionHours: 180,     // 200 → 20 hrs/yr (V-38: 250 → <20 hrs)
+    adminReductionEur50: 9000,    // 180 hrs × €50
+    adminReductionEur70: 12600,   // 180 hrs × €70
+    newPenaltyPct50: 7,           // (4084 + 2500) / 50000 = 13% → with referral bonus net positive
+    newPenaltyPct70: 7,
+    referralBonusPerMonth: 600,   // +€600/mo from platform referrals (V-39)
+    conclusion: l === 'uk'
+      ? 'FEEL Again знімає 180 год/рік адмінтягаря. Штраф формалізації падає з 33% до ~7%. При €70/год формальна практика стає ВИГІДНІШОЮ за тіньову на €384/міс.'
+      : 'FEEL Again removes 180 hrs/yr admin burden. Formalization penalty drops from 33% to ~7%. At €70/hr formal practice becomes MORE profitable than shadow by €384/mo.',
+  },
+
+  // ── Legacy field (kept for backward compat, RETRACTED) ───────────────────
+  penaltyPct: null, // RETRACTED — was 65%, incorrect base (€1,500/mo ≠ 1,000 hrs/yr). See _CANON.md C-14/V-37
 });
+
+// Keep V3 as deprecated alias so existing imports don't break
+// @deprecated Use FORMALIZATION_COST_V4
+export const FORMALIZATION_COST_V3 = FORMALIZATION_COST_V4;
 
 // Dual-project synergy: corrected narrative (replaces PforR misattribution to HEAL)
 export const DUAL_PROJECT_NARRATIVE = (l: Language) =>
@@ -997,8 +1071,8 @@ export const KEY_CONCLUSIONS = (l: Language) => [
     num: '2',
     title: l === 'uk' ? 'Тіньовий сектор як донор' : 'Shadow sector as a donor',
     body: l === 'uk'
-      ? 'Приватний ринок де-факто субсидує державну систему. Без легалізації та інтеграції тіньового сектору — який стримується штрафом за формалізацію у 65% доходу — система не матиме ресурс для масштабування.'
-      : 'The private market de facto subsidises the state system. Without legalising and integrating the shadow sector — held back by a 65% income penalty on formalisation — the system will lack the resource to scale.',
+      ? 'Приватний ринок де-факто субсидує державну систему. Без легалізації та інтеграції тіньового сектору — який стримується штрафом за формалізацію ~33% доходу (при €50/год) — система не матиме ресурс для масштабування. При €70/год та зниженні адмінтягаря FEEL Again — формальна практика вигідніша за тіньову.'
+      : 'The private market de facto subsidises the state system. Without legalising and integrating the shadow sector — held back by a ~33% income penalty on formalisation (at €50/hr) — the system will lack the resource to scale. At €70/hr with FEEL Again admin reduction, formal practice becomes more profitable than shadow.',
   },
   {
     icon: 'TrendingUp',
@@ -1068,8 +1142,8 @@ export const ALL_CONCLUSIONS_GRID = (l: Language) => [
     section: 'SHADOW',
     color: '#8B5CF6',
     text: l === 'uk'
-      ? '€979/міс штраф за формалізацію = 65% доходу. Без зниження friction формалізація не відбудеться — система не отримає кадрів.'
-      : '€979/mo penalty for formalisation = 65% of income. Without friction reduction, formalisation won\'t happen — system won\'t gain workforce.',
+      ? '~33% штраф за формалізацію при €50/год (€70/год + FEEL Again = формальна практика вигідніша). Без зниження friction формалізація не відбудеться — система не отримає кадрів.'
+      : '~33% penalty at €50/hr (€70/hr + FEEL Again = formal practice more profitable). Without friction reduction, formalisation won\'t happen — system won\'t gain workforce.',
   },
   {
     section: 'INPUTS',
@@ -1324,7 +1398,7 @@ export const FEEL_AGAIN_4_FUNCTIONS = (l: Language) => [
     color: '#D4A017',
     points: [
       l === 'uk' ? 'Сертифікаційні шляхи для тіньових практиків' : 'Certification pathways for shadow practitioners',
-      l === 'uk' ? 'Тінь → формальна практика без штрафу 65%' : 'Shadow → formal practice without 65% income penalty',
+      l === 'uk' ? 'Тінь → формальна практика: штраф 33%→7% через FEEL Again' : 'Shadow → formal practice: penalty 33%→7% via FEEL Again',
       l === 'uk' ? 'Невидима робоча сила стає видимою' : 'Invisible workforce becomes visible',
     ],
     tech: 'W3C Verifiable Credentials',

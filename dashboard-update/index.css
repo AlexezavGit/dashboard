@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-cyber-bg: #050A15;
+  --color-cyber-cyan: #00F5FF;
+  --color-cyber-amber: #F59E0B;
+  --color-cyber-success: #00FF66;
+  --color-cyber-purple: #A855F7;
+  --color-cyber-border: rgba(0, 245, 255, 0.1);
+  --color-cyber-surface: rgba(255, 255, 255, 0.03);
+}
+
+@layer base {
+  body {
+    @apply bg-cyber-bg text-slate-300 font-sans selection:bg-cyber-amber/30 selection:text-cyber-amber;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
+  }
+}
+
+@layer components {
+  .cyber-card {
+    @apply bg-cyber-surface border border-cyber-border rounded-xl backdrop-blur-md transition-all duration-300;
+  }
+  
+  .cyber-card:hover {
+    @apply border-cyber-cyan/30 shadow-[0_0_20px_rgba(0,245,255,0.05)];
+  }
+  
+  .cyber-number {
+    @apply font-mono text-cyber-cyan;
+  }
+  
+  .cyber-label {
+    @apply text-[10px] uppercase tracking-widest font-bold text-slate-500;
+  }
+
+  .cyber-glow-cyan {
+    @apply shadow-[0_0_15px_rgba(0,245,255,0.2)];
+  }
+  
+  .cyber-glow-amber {
+    @apply shadow-[0_0_15px_rgba(245,158,11,0.2)];
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 245, 255, 0.2);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 245, 255, 0.4);
+}
+
+/* Light Theme Overrides */
+.light {
+  --color-cyber-bg: #F8FAFC;
+  --color-cyber-cyan: #0891B2;
+  --color-cyber-amber: #D97706;
+  --color-cyber-success: #059669;
+  --color-cyber-purple: #7C3AED;
+  --color-cyber-border: rgba(0, 0, 0, 0.08);
+  --color-cyber-surface: rgba(0, 0, 0, 0.02);
+}
+
+.light body,
+.light .min-h-screen {
+  color: #334155;
+}
+
+.light .text-white {
+  color: #0F172A;
+}
+
+.light .text-slate-300 {
+  color: #475569;
+}
+
+.light .text-slate-400 {
+  color: #64748B;
+}
+
+.light .text-slate-500 {
+  color: #64748B;
+}
+
+.light .text-slate-600 {
+  color: #475569;
+}
+
+.light .cyber-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.light .cyber-card:hover {
+  border-color: rgba(8, 145, 178, 0.3);
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.08);
+}
+
+.light .cyber-number {
+  color: #0891B2;
+}
+
+.light .bg-cyber-bg\/80 {
+  background: rgba(248, 250, 252, 0.8);
+}
+
+.light select option {
+  background: #F8FAFC;
+  color: #0F172A;
+}
+
+.light .custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.light .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(8, 145, 178, 0.3);
+}
+
+.light .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(8, 145, 178, 0.5);
+}
+
+.light table thead {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.light table tbody tr:hover {
+  background: rgba(8, 145, 178, 0.04);
+}

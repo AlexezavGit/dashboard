@@ -1,0 +1,210 @@
+From 2f3567c6f10629225f04c994024bc957b396dd61 Mon Sep 17 00:00:00 2001
+From: AlexezavGit <alexezav@gmail.com>
+Date: Sat, 23 May 2026 17:27:27 +0300
+Subject: [PATCH 2/2] =?UTF-8?q?Refactor:=20centralize=20drill-down=20answe?=
+ =?UTF-8?q?rs=20(DrilldownContext)=20and=20wire=20L1=E2=86=92L2?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- Adds DrilldownContext and AnswersSummary UI
+- L1 sets drill answers before navigation; L2 reads and shows summary
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
+---
+ components/drilldown/AnswersSummary.tsx   | 28 +++++++++++++++++++++
+ components/drilldown/DrilldownContext.tsx | 30 +++++++++++++++++++++++
+ components/screens/L1Strategic.tsx        | 10 +++++---
+ components/screens/L2MHEI.tsx             | 10 ++++++++
+ components/screens/ScreenRouter.tsx       |  5 +++-
+ 5 files changed, 78 insertions(+), 5 deletions(-)
+ create mode 100644 components/drilldown/AnswersSummary.tsx
+ create mode 100644 components/drilldown/DrilldownContext.tsx
+
+diff --git a/components/drilldown/AnswersSummary.tsx b/components/drilldown/AnswersSummary.tsx
+new file mode 100644
+index 0000000..9e6b633
+--- /dev/null
++++ b/components/drilldown/AnswersSummary.tsx
+@@ -0,0 +1,28 @@
++import React from 'react';
++import { DrillAnswers } from './DrilldownContext';
++import { Language } from '../../types';
++
++interface Props { answers: DrillAnswers; lang: Language; onEdit: () => void }
++
++export const AnswersSummary: React.FC<Props> = ({ answers, lang, onEdit }) => {
++  if (!answers) return null;
++  const entries = Object.entries(answers).slice(0, 6);
++  return (
++    <div className="p-3 rounded-lg ds-spotlight" style={{ border: '1px solid rgba(255,255,255,0.04)', background: 'rgba(255,255,255,0.02)' }}>
++      <div className="flex items-center justify-between mb-2">
++        <div style={{ fontSize: 12, fontWeight: 700 }}>{lang === 'uk' ? 'Контекст drill-down' : 'Drill-down context'}</div>
++        <button onClick={onEdit} style={{ fontSize: 12, color: 'var(--color-ds-teal)' }}>{lang === 'uk' ? 'Редагувати' : 'Edit'}</button>
++      </div>
++      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
++        {entries.map(([k, v]) => (
++          <div key={k} style={{ fontSize: 11, color: 'var(--color-ds-muted)' }}>
++            <div style={{ fontWeight: 700, color: 'var(--color-ds-text)' }}>{k}</div>
++            <div>{String(v)}</div>
++          </div>
++        ))}
++      </div>
++    </div>
++  );
++};
++
++export default AnswersSummary;
+diff --git a/components/drilldown/DrilldownContext.tsx b/components/drilldown/DrilldownContext.tsx
+new file mode 100644
+index 0000000..fba1945
+--- /dev/null
++++ b/components/drilldown/DrilldownContext.tsx
+@@ -0,0 +1,30 @@
++import React, { createContext, useContext, useState, ReactNode } from 'react';
++
++export type DrillAnswers = Record<string, any> | null;
++
++interface DrilldownContextType {
++  answers: DrillAnswers;
++  setAnswers: (a: DrillAnswers) => void;
++  clear: () => void;
++}
++
++const DrilldownContext = createContext<DrilldownContextType | undefined>(undefined);
++
++export const DrilldownProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
++  const [answers, setAnswersState] = useState<DrillAnswers>(null);
++
++  const setAnswers = (a: DrillAnswers) => setAnswersState(a);
++  const clear = () => setAnswersState(null);
++
++  return (
++    <DrilldownContext.Provider value={{ answers, setAnswers, clear }}>
++      {children}
++    </DrilldownContext.Provider>
++  );
++};
++
++export const useDrilldown = () => {
++  const ctx = useContext(DrilldownContext);
++  if (!ctx) throw new Error('useDrilldown must be used within DrilldownProvider');
++  return ctx;
++};
+diff --git a/components/screens/L1Strategic.tsx b/components/screens/L1Strategic.tsx
+index 0d5fe80..76ab56b 100644
+--- a/components/screens/L1Strategic.tsx
++++ b/components/screens/L1Strategic.tsx
+@@ -5,6 +5,7 @@ import { Language } from '../../types';
+ import { ScreenId, ScreenNav } from './types';
+ import { Logo } from '../ui/Logo';
+ import { STRATEGIC_FRAMEWORK, MHEI_VALUE_CHAIN, COLORS } from '../../constants';
++import { useDrilldown } from '../drilldown/DrilldownContext';
+ 
+ interface Props {
+   lang: Language;
+@@ -364,6 +365,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
+ 
+ // ── Main screen ────────────────────────────────────────────────────────────────
+ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode = true }) => {
++  const { setAnswers: setDrillAnswers } = useDrilldown();
+   return (
+     <div
+       className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
+@@ -427,7 +429,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
+           <div
+             className="w-full lg:w-[264px] flex-shrink-0 flex flex-col items-center justify-center py-1 ds-blueprint cursor-pointer"
+             style={{ flexShrink: 0 }}
+-            onClick={() => nav.push('l2-mhei')}
++            onClick={() => { setDrillAnswers({ indexScore: INDEX_SCORE }); nav.push('l2-mhei'); }}
+             title={lang === 'uk' ? 'Mental Health Economy Index — клацніть для drill-down' : 'Mental Health Economy Index — click to drill down'}
+           >
+             <div style={{
+@@ -441,7 +443,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
+               {lang === 'uk' ? '↓ клацніть для drill-down' : '↓ click to drill down'}
+             </div>
+ 
+-            <GaugeDisplay lang={lang} expanded={false} onToggle={() => nav.push('l2-mhei')} />
++            <GaugeDisplay lang={lang} expanded={false} onToggle={() => { setDrillAnswers({ indexScore: INDEX_SCORE }); nav.push('l2-mhei'); }} />
+ 
+             {/* Layer legend */}
+             <div style={{ marginTop: 8, display: 'flex', flexWrap: 'wrap', gap: '3px 6px', justifyContent: 'center' }}>
+@@ -458,7 +460,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
+               })}
+             </div>
+             <button
+-              onClick={() => nav.push('l2-mhei')}
++              onClick={() => { setDrillAnswers({ indexScore: INDEX_SCORE }); nav.push('l2-mhei'); }}
+               style={{ marginTop: 8, fontSize: 10, color: 'var(--color-ds-teal)', border: '1px solid rgba(0,210,170,0.3)', borderRadius: 6, padding: '4px 12px', background: 'rgba(0,210,170,0.07)', cursor: 'pointer', fontFamily: 'DM Mono, monospace', letterSpacing: '0.05em' }}
+             >
+               {lang === 'uk' ? 'MHEI Дельта →' : 'MHEI Delta →'}
+@@ -473,7 +475,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue, darkMode
+               {STRATEGIC_FRAMEWORK(lang).map((pillar, i) => {
+                 const config = PILLARS_CONFIG.find(c => c.id === pillar.id)!;
+                 return (
+-                  <LayerCard key={pillar.id} l={config} pillar={pillar} i={i} lang={lang} onNav={() => nav.push(config.screenId)} darkMode={darkMode} />
++                  <LayerCard key={pillar.id} l={config} pillar={pillar} i={i} lang={lang} onNav={() => { setDrillAnswers({ pillarId: pillar.id, pillarLabel: pillar.label[lang], pillarVal: pillar.l1?.val ?? null, indexScore: INDEX_SCORE }); nav.push(config.screenId); }} darkMode={darkMode} />
+                 );
+               })}
+             </div>
+diff --git a/components/screens/L2MHEI.tsx b/components/screens/L2MHEI.tsx
+index 5d4b2da..c7c3e03 100644
+--- a/components/screens/L2MHEI.tsx
++++ b/components/screens/L2MHEI.tsx
+@@ -3,6 +3,8 @@ import { Language } from '../../types';
+ import { ScreenNav } from './types';
+ import { NavBar } from './NavBar';
+ import { L3Footer } from './L3Footer';
++import { useDrilldown } from '../drilldown/DrilldownContext';
++import AnswersSummary from '../drilldown/AnswersSummary';
+ 
+ interface Props { lang: Language; nav: ScreenNav; }
+ 
+@@ -82,6 +84,8 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
+   const [values, setValues] = useState<Record<string, number>>(initialValues);
+   const [practitioners, setPractitioners] = useState(943);
+ 
++  const { answers } = useDrilldown();
++
+   const mhei = computeMHEI(values);
+   const baselineMhei = computeMHEI(initialValues);
+   const mheiDelta = mhei - baselineMhei;
+@@ -128,6 +132,12 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
+         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
+       />
+ 
++      {answers && (
++        <div className="px-5 pt-3">
++          <AnswersSummary answers={answers} lang={lang} onEdit={() => nav.push('l1')} />
++        </div>
++      )}
++
+       <div className="flex-1 grid min-h-0 px-5 pb-3 pt-3 gap-4"
+         style={{ gridTemplateColumns: '1fr 1fr' }}>
+ 
+diff --git a/components/screens/ScreenRouter.tsx b/components/screens/ScreenRouter.tsx
+index 93e9106..a370443 100644
+--- a/components/screens/ScreenRouter.tsx
++++ b/components/screens/ScreenRouter.tsx
+@@ -3,6 +3,7 @@ import { Language } from '../../types';
+ import { ScreenId, ScreenNav } from './types';
+ import { L1Strategic } from './L1Strategic';
+ import { L2MHEI } from './L2MHEI';
++import { DrilldownProvider } from '../drilldown/DrilldownContext';
+ // 6 program layer L2 screens
+ import { L2Finance } from './L2Finance';
+ import { L2Clinical } from './L2Clinical';
+@@ -88,7 +89,9 @@ export const ScreenRouter: React.FC<Props> = ({
+           transition={{ duration: 0.25 }}
+           className="fixed inset-0 z-50"
+         >
+-          {screens[current as Exclude<ScreenId, 'appendix'>]}
++          <DrilldownProvider>
++            {screens[current as Exclude<ScreenId, 'appendix'>]}
++          </DrilldownProvider>
+         </motion.div>
+       </AnimatePresence>
+ 
+-- 
+2.53.0
+
