@@ -8,6 +8,8 @@
     "build": "vite build",
     "preview": "npm run build && wrangler dev",
     "lint": "tsc --noEmit",
+    "registry:build": "node scripts/registry/build-registry.mjs",
+    "registry:check": "node scripts/registry/check-forbidden.mjs",
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
