@@ -29,7 +29,7 @@ interface LayerDef {
 
 const LAYERS: LayerDef[] = [
   {
-    id: 'fintech', screenId: 'l2-fintech', weight: 25, current: 0, target: 30,
+    id: 'fintech', screenId: 'l2-finance', weight: 25, current: 0, target: 30,
     layer: { uk: 'FinTech', en: 'FinTech' },
     indicator: { uk: 'Виплати, прив\'язані до результатів', en: 'Outcome-linked payments' },
     display: { uk: '$0', en: '$0' },
@@ -101,7 +101,7 @@ interface Metric {
 }
 
 const METRICS: Metric[] = [
-  { val: '$1.87B',   label: { uk: 'WB+EU портфель MH',        en: 'WB+EU MH portfolio' },              screen: 'l2-fintech',    sourceUrl: 'https://projects.worldbank.org/en/projects-operations/project-detail/P173201' },
+  { val: '$1.87B',   label: { uk: 'WB+EU портфель MH',        en: 'WB+EU MH portfolio' },              screen: 'l2-finance',    sourceUrl: 'https://projects.worldbank.org/en/projects-operations/project-detail/P173201' },
   { val: '6.8M',    label: { uk: 'потреба ПТСР/депресія',     en: 'PTSD/depression need' },            screen: 'l2-clinical',   sourceUrl: 'https://www.who.int/ukraine' },
   { val: '<5%',     label: { uk: 'інтероперабельність сесій', en: 'session interop' },                 screen: 'l2-data' },
   { val: '~3M',     label: { uk: 'невидимі гум. сесії',       en: 'invisible humanitarian sessions' }, screen: 'l2-analytical' },

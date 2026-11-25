@@ -62,7 +62,8 @@ const VALID_SCREEN_IDS: ScreenId[] = [
 ];
 
 function readHash(): ScreenId {
-  const h = window.location.hash.replace('#', '') as ScreenId;
+  const raw = window.location.hash.replace('#', '');
+  const h = (raw === 'l2-fintech' ? 'l2-finance' : raw) as ScreenId;
   return VALID_SCREEN_IDS.includes(h) ? h : 'l1';
 }
 
@@ -78,7 +79,11 @@ export const ScreenRouter: React.FC<Props> = ({
     const onHashChange = () => {
       const id = readHash();
       if (id === current) return;
-      setHistory((h) => [...h, id]);
+      setHistory((h) => {
+        // Browser "back" revisits the previous entry — pop instead of pushing forward.
+        if (h.length > 1 && id === h[h.length - 2]) return h.slice(0, -1);
+        return [...h, id];
+      });
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
@@ -116,10 +121,10 @@ export const ScreenRouter: React.FC<Props> = ({
   const nav: ScreenNav = { current, history, push, back, reset };
 
   const screens: Record<Exclude<ScreenId, 'appendix' | 'l4'>, React.ReactNode> = {
-    'l1':             <L1Strategic lang={lang} nav={nav} liveHciValue={liveHciValue} darkMode={darkMode} />,
+    'l1':             <L1Strategic lang={lang} nav={nav} liveHciValue={liveHciValue} />,
     'l2-mhei':        <L2MHEI lang={lang} nav={nav} />,
-    'l2-fintech':     <L2Finance lang={lang} nav={nav} />,
     'l2-finance':     <L2Finance lang={lang} nav={nav} />,
+    'l2-fintech':     <L2Finance lang={lang} nav={nav} />,
     'l2-clinical':    <L2Clinical lang={lang} nav={nav} />,
     'l2-data':        <L2Data lang={lang} nav={nav} />,
     'l2-sustain':     <L2Sustain lang={lang} nav={nav} />,

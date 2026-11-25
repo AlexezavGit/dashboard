@@ -25,8 +25,9 @@ interface Props {
 
 const L2_ORDER = [
   'l2-mhei',
-  'l2-fintech',
+  'l2-finance',
   'l2-clinical',
+  'l2-data',
   'l2-coverage',
   'l2-operational',
   'l2-analytical',
@@ -34,13 +35,15 @@ const L2_ORDER = [
   'l2-digital',
   'l2-regulatory',
   'l2-backlog',
+  'l2-inaction',
   'l2-journey',
 ] as const;
 
 const L2_LABELS = {
   'l2-mhei':        { uk: 'MHEI', en: 'MHEI' },
-  'l2-fintech':     { uk: 'Фінанси', en: 'Finance' },
+  'l2-finance':     { uk: 'Фінанси', en: 'Finance' },
   'l2-clinical':    { uk: 'Клінічна', en: 'Clinical' },
+  'l2-data':        { uk: 'Дані', en: 'Data' },
   'l2-coverage':    { uk: 'Покриття', en: 'Coverage' },
   'l2-operational': { uk: '9 Розривів', en: '9 Gaps' },
   'l2-analytical':  { uk: 'Аналітика', en: 'Analytics' },
@@ -48,14 +51,15 @@ const L2_LABELS = {
   'l2-digital':     { uk: 'Диджитал', en: 'Digital' },
   'l2-regulatory':  { uk: 'Регулятор', en: 'Regulatory' },
   'l2-backlog':     { uk: 'Беклог', en: 'Backlog' },
+  'l2-inaction':    { uk: 'Без дії', en: 'Inaction' },
   'l2-journey':     { uk: 'Стейкхолдери', en: 'Journeys' },
 } as const;
 
 const MOBILE_TABS = [
   { id: 'l1', icon: LayoutDashboard, label: { uk: 'Огляд', en: 'Overview' } },
-  { id: 'l2-fintech', icon: DollarSign, label: { uk: 'Фінанси', en: 'Finance' } },
+  { id: 'l2-finance', icon: DollarSign, label: { uk: 'Фінанси', en: 'Finance' } },
   { id: 'l2-operational', icon: AlertTriangle, label: { uk: 'Розриви', en: 'Gaps' } },
-  { id: 'cabinet', icon: Users, label: { uk: 'Кабінет', en: 'Cabinet' } },
+  { id: 'l2-mhei', icon: Users, label: { uk: 'Кабінет', en: 'Cabinet' } },
 ] as const;
 
 const useMobile = () => {

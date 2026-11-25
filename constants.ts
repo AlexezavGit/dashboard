@@ -249,7 +249,7 @@ export const TRAINED_REALITY_DATA = (l: Language) => [
   { name: 'mhGAP Clinical', awareness: 0, psychosocial: 0, clinical: 700 },
 ];
 
-export const CLUSTER_DATA = (l: LocalizedString) => [
+export const CLUSTER_DATA = (l: Language) => [
   { name: '2024', req: 145, rec: 177, mh: 0 },
   { name: '2025', req: 130.9, rec: 138.9, mh: 0 },
 ];
@@ -300,11 +300,11 @@ export const DISORDER_IMPACT_BUBBLE = (l: Language) => [
 
 // --- Static Content ---
 
-export const TIMELINE_ITEMS = (l: LocalizedString) => [
-  { year: l.uk === 'uk' ? 'До 2024' : 'Pre-2024', text: l.uk === 'uk' ? 'Ліцензування відсутнє. Будь-хто міг надавати психологічні послуги без підтвердження кваліфікації.' : 'No licensing. Anyone could provide psychological services without qualification verification.', color: COLORS.red },
-  { year: '2024', text: l.uk === 'uk' ? 'Підписано Закон про сертифікацію психологів та психотерапевтів. Створення реєстру постачальників послуг.' : 'Certification Law signed for psychologists & psychotherapists. Provider registry being created.', color: COLORS.orange },
-  { year: '2024–2031', text: l.uk === 'uk' ? 'Перехідний період: сертифікація добровільна. Вимоги: вища освіта, курс з психічних розладів, підвищення кваліфікації.' : 'Transition period: certification voluntary. Requirements: higher education, course on mental disorders, professional development.', color: COLORS.blueLight },
-  { year: l.uk === 'uk' ? 'Після 2031' : 'Post-2031', text: l.uk === 'uk' ? "Сертифікація стає обов'язковою. Саморегулівні організації для психотерапевтів." : 'Certification becomes mandatory. Self-regulatory organizations for psychotherapists.', color: COLORS.green },
+export const TIMELINE_ITEMS = (l: Language) => [
+  { year: l === 'uk' ? 'До 2024' : 'Pre-2024', text: l === 'uk' ? 'Ліцензування відсутнє. Будь-хто міг надавати психологічні послуги без підтвердження кваліфікації.' : 'No licensing. Anyone could provide psychological services without qualification verification.', color: COLORS.red },
+  { year: '2024', text: l === 'uk' ? 'Підписано Закон про сертифікацію психологів та психотерапевтів. Створення реєстру постачальників послуг.' : 'Certification Law signed for psychologists & psychotherapists. Provider registry being created.', color: COLORS.orange },
+  { year: '2024–2031', text: l === 'uk' ? 'Перехідний період: сертифікація добровільна. Вимоги: вища освіта, курс з психічних розладів, підвищення кваліфікації.' : 'Transition period: certification voluntary. Requirements: higher education, course on mental disorders, professional development.', color: COLORS.blueLight },
+  { year: l === 'uk' ? 'Після 2031' : 'Post-2031', text: l === 'uk' ? "Сертифікація стає обов'язковою. Саморегулівні організації для психотерапевтів." : 'Certification becomes mandatory. Self-regulatory organizations for psychotherapists.', color: COLORS.green },
 ];
 
 export const ADMIN_BURDEN = (l: Language) => [
