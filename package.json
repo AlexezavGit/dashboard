@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "npm run build && wrangler dev",
-    "lint": "tsc --noEmit",
+    "lint": "tsc --noEmit && tsc --noEmit -p tsconfig.cloudflare.json",
     "registry:build": "node scripts/registry/build-registry.mjs",
     "registry:check": "node scripts/registry/check-forbidden.mjs",
     "deploy": "npm run build && wrangler deploy"

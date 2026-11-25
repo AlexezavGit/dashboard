@@ -86,8 +86,9 @@ export const onRequest: PagesFunction<Env> = async ({ request, env }) => {
     });
     clearTimeout(t);
     if (chdRes.ok) {
-      const data = await chdRes.json();
-      humData.beneficiaries = Array.isArray(data?.data) ? data.data.length : 0;
+      const data: unknown = await chdRes.json();
+      const payload = data as { data?: unknown[] };
+      humData.beneficiaries = Array.isArray(payload?.data) ? payload.data.length : 0;
       hasLiveHumData = true;
     } else {
       results.errors.push(`CHD API Error: ${chdRes.status}`);

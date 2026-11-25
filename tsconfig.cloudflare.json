@@ -1,0 +1,29 @@
+// Окремий ts-проєкт для Cloudflare-шару (functions/, worker/): тут потрібні
+// глобальні типи workers-types, які в кореневому проєкті перевизначають DOM
+// fetch і ламають типізацію services/liveData.ts. Див. §8 хендофу, v2.11.
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "types": [
+      "node",
+      "@cloudflare/workers-types"
+    ],
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": [
+    "functions",
+    "worker"
+  ]
+}
