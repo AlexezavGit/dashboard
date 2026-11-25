@@ -23,20 +23,18 @@ interface Props {
   rightAction?: { label: { uk: string; en: string }; screen: ScreenId; color?: string };
 }
 
+// §8.1 п.7: горизонтальне листання = drilldowns шести шарів L1 у порядку розкриття + індекс MHEI.
+// Legacy/підтримувальні скріни (coverage, operational, analytical, backlog, inaction, journey)
+// у листанні не беруть участі — у них власні входи з L1 і чіпів; operational/аналітика — матеріал
+// Білої/Зеленої книги (L3/L4, нижнє меню).
 const L2_ORDER = [
   'l2-mhei',
   'l2-finance',
   'l2-clinical',
   'l2-data',
-  'l2-coverage',
-  'l2-operational',
-  'l2-analytical',
   'l2-sustain',
   'l2-digital',
   'l2-regulatory',
-  'l2-backlog',
-  'l2-inaction',
-  'l2-journey',
 ] as const;
 
 const L2_LABELS = {
@@ -154,7 +152,11 @@ export const NavBar = ({
     <div className="mt-3">
       <h2
         className="text-[22px] font-bold ds-display leading-tight"
-        style={{ color: accentColor }}
+        style={{
+          /* Світла тема: нафтовий текст (деутеранопія-безпечно, лише яскравісний
+             контраст); темна тема: акцент скріна як fallback. */
+          color: `var(--color-ds-text, ${accentColor})`,
+        }}
       >
         {title[lang]}
       </h2>
@@ -177,7 +179,7 @@ export const NavBar = ({
         }}
       >
         <div className="flex items-center gap-2 px-3 py-2">
-          {renderBackButton()}
+          {!inL2 && renderBackButton()}
           <div className="flex-1 min-w-0">
             {renderBreadcrumbs()}
             {renderTitleRow()}
@@ -190,7 +192,7 @@ export const NavBar = ({
       <nav
         className="fixed bottom-0 left-0 right-0 z-40"
         style={{
-          background: 'rgba(10,22,40,0.96)',
+          background: 'var(--color-ds-bg2)',
           borderTop: '1px solid var(--color-ds-border)',
           backdropFilter: 'blur(12px)',
         }}
@@ -226,7 +228,9 @@ export const NavBar = ({
       }}
     >
       <div className="flex items-center gap-3 px-4 py-3">
-        {inL2 && renderBackButton()}
+        {/* У горизонтальному листанні (inL2) «Назад» зайва: prev/next покривають рух.
+            На поза послідовними скрінами (легасі, journey) «Назад» лишається. */}
+        {!inL2 && renderBackButton()}
         <div className="flex-1 min-w-0 flex items-center gap-3">
           {renderBreadcrumbs()}
           {renderTitleRow()}

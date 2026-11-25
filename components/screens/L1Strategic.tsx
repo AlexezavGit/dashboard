@@ -379,6 +379,11 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
             style={{ color: 'var(--color-ds-gold)', border: '1px solid var(--color-ds-border)' }}>
             {lang === 'uk' ? 'Дані →' : 'Data →'}
           </button>
+          <button onClick={() => nav.push('l2-journey')}
+            className="text-[11px] px-3 py-1.5 rounded-lg ds-display font-semibold"
+            style={{ color: 'var(--color-ds-royal)', border: '1px solid color-mix(in srgb, var(--color-ds-royal) 40%, transparent)' }}>
+            {lang === 'uk' ? 'Шляхи та кабінети →' : 'Journeys & cabinets →'}
+          </button>
         </div>
       </div>
 

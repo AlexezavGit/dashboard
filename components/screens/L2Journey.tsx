@@ -35,7 +35,7 @@ export const L2Journey: React.FC<Props> = ({ lang, nav }) => (
         <ArrowLeft className="w-4 h-4" /> {T.back[lang]}
       </button>
       <div>
-        <div className="text-[17px] font-bold ds-display" style={{ color: '#4488ff' }}>{T.title[lang]}</div>
+        <div className="text-[17px] font-bold ds-display" style={{ color: 'var(--color-ds-text, #4488ff)' }}>{T.title[lang]}</div>
         <div className="text-[10px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{T.subtitle[lang]}</div>
       </div>
     </div>
