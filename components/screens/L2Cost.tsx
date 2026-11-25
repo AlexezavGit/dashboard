@@ -12,7 +12,7 @@ const COMPONENTS = [
     pct: 45,
     label: { uk: 'Втрата продуктивності праці', en: 'Lost labour productivity' },
     value: '$2.7–3.6B',
-    color: '#ff7b6e',
+    color: '#B8463C',
     note: { uk: '3.9M осіб × 22% зниження продуктивності × mid-range зарплата', en: '3.9M people × 22% productivity decline × mid-range wage' },
   },
   {
@@ -26,14 +26,14 @@ const COMPONENTS = [
     pct: 15,
     label: { uk: 'Довгострокова економічна ерозія (DALY)', en: 'Long-term economic erosion (DALYs)' },
     value: '$0.9–1.2B',
-    color: '#00d4aa',
+    color: '#2C6E64',
     note: { uk: '~320K DALY/рік × $3,000 WHO threshold — хронізація без лікування', en: '~320K DALYs/year × $3,000 WHO threshold — chronification without treatment' },
   },
   {
     pct: 10,
     label: { uk: 'Адміністративна ерозія та дублювання', en: 'Administrative erosion & duplication' },
     value: '$0.6B',
-    color: '#a78bfa',
+    color: '#2C6E64',
     note: { uk: '35K фахівців × 22% адмін. час × blended rate — пряма операційна втрата', en: '35K specialists × 22% admin time × blended rate — direct operational loss' },
   },
 ];
@@ -43,7 +43,7 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
     className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
     style={{
       background:
-        'radial-gradient(ellipse 60% 50% at 80% 50%, rgba(200,164,92,0.14) 0%, transparent 55%), ' +
+        'radial-gradient(ellipse 60% 50% at 80% 50%, rgba(201,179,106,0.14) 0%, transparent 55%), ' +
         'linear-gradient(135deg, #0a1628 0%, #1a0a08 100%)',
     }}
   >
@@ -112,7 +112,7 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
             label: { uk: 'Вартість закриття розриву', en: 'Cost to close the gap' },
             value: '$1.87B/рік',
             sub: { uk: '62.2M сесій × $30 (blended rate)', en: '62.2M sessions × $30 (blended rate)' },
-            color: '#00d4aa',
+            color: '#2C6E64',
           },
           {
             label: { uk: 'ROI інвестиції в MHPSS', en: 'ROI of MHPSS investment' },
@@ -124,7 +124,7 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
             label: { uk: 'WB THRIVE + HEAL (вже активні)', en: 'WB THRIVE + HEAL (already active)' },
             value: '$954M',
             sub: { uk: 'Кошти виділено, але невидимі послуги не рахуються для DLI', en: 'Funds allocated, but invisible services don\'t count for DLIs' },
-            color: '#a78bfa',
+            color: '#2C6E64',
           },
         ].map((item, i) => (
           <motion.div
@@ -136,7 +136,7 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
             style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${item.color}33` }}
           >
             <div className="flex items-baseline justify-between mb-1">
-              <span className="text-[11px] ds-body" style={{ color: 'rgba(200,208,220,0.75)' }}>{item.label[lang]}</span>
+              <span className="text-[11px] ds-body" style={{ color: 'rgba(242,234,219,0.75)' }}>{item.label[lang]}</span>
               <span className="text-[22px] font-bold ds-display" style={{ color: item.color }}>{item.value}</span>
             </div>
             <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{item.sub[lang]}</div>
@@ -149,9 +149,9 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
           className="mt-auto p-4 rounded-xl"
-          style={{ background: 'rgba(0,210,170,0.07)', border: '1px solid rgba(0,210,170,0.2)' }}
+          style={{ background: 'rgba(44,110,100,0.07)', border: '1px solid rgba(44,110,100,0.2)' }}
         >
-          <p className="text-[12px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.8)' }}>
+          <p className="text-[12px] ds-body leading-relaxed" style={{ color: 'rgba(242,234,219,0.8)' }}>
             {lang === 'uk'
               ? 'Інвестиція $1.87B/рік поверне $7.5–11.2B через відновлення продуктивності. FEEL Again знижує транзакційні витрати до 3.5–7% — робить кожен долар ефективнішим.'
               : 'A $1.87B/yr investment returns $7.5–11.2B through restored productivity. FEEL Again reduces transaction costs to 3.5–7% — making every dollar more effective.'}

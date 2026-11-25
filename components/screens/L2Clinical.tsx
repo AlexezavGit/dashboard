@@ -23,7 +23,7 @@ const KPI_CARDS = [
     val: '20%',
     label: { uk: 'звертаються за допомогою', en: 'seek help' },
     sub:  { uk: 'із тих, хто має симптоми (WHO, квітень 2025)', en: 'of those with symptoms (WHO, April 2025)' },
-    color: '#ff7b6e',
+    color: '#B8463C',
     bg: 'rgba(255,123,110,0.08)',
     border: 'rgba(255,123,110,0.3)',
     note: { uk: '⚠ Вхідний бар\'єр > ризик dropout', en: '⚠ Entry barrier > dropout risk' },
@@ -32,9 +32,9 @@ const KPI_CARDS = [
     val: '550K+',
     label: { uk: 'звернень до первинної ланки', en: 'primary care contacts' },
     sub:  { uk: 'сімейні лікарі / mhGAP 2025 (МОЗ)', en: 'family doctors / mhGAP 2025 (МОЗ)' },
-    color: '#00d4aa',
-    bg: 'rgba(0,212,170,0.07)',
-    border: 'rgba(0,212,170,0.25)',
+    color: '#2C6E64',
+    bg: 'rgba(44,110,100,0.07)',
+    border: 'rgba(44,110,100,0.25)',
     note: { uk: '+10% до 2024, ×4 до 2023', en: '+10% vs 2024, ×4 vs 2023' },
   },
   {
@@ -42,17 +42,17 @@ const KPI_CARDS = [
     label: { uk: 'спеціалізована допомога', en: 'specialized care' },
     sub:  { uk: '152 Центри ментального здоров\'я (МОЗ 2025)', en: '152 Mental Health Centres (МОЗ 2025)' },
     color: '#c8a45c',
-    bg: 'rgba(200,164,92,0.07)',
-    border: 'rgba(200,164,92,0.25)',
+    bg: 'rgba(201,179,106,0.07)',
+    border: 'rgba(201,179,106,0.25)',
     note: { uk: '21% — діти', en: '21% — children' },
   },
   {
     val: '82–85%',
     label: { uk: 'позитивна динаміка (PHQ-9/GAD-7)', en: 'positive dynamics (PHQ-9/GAD-7)' },
     sub:  { uk: 'Центри досконалості, після 1-го циклу', en: 'Centres of Excellence, after 1st cycle' },
-    color: '#a78bfa',
-    bg: 'rgba(167,139,250,0.07)',
-    border: 'rgba(167,139,250,0.25)',
+    color: '#2C6E64',
+    bg: 'rgba(44,110,100,0.07)',
+    border: 'rgba(44,110,100,0.25)',
     note: { uk: 'цикл = 14+ днів, до 8 циклів/рік', en: 'cycle = 14+ days, up to 8/yr' },
   },
 ];
@@ -60,13 +60,13 @@ const KPI_CARDS = [
 // Funnel: від потреби до верифікованого покриття
 const FUNNEL = (lang: Language) => [
   { name: t('Клінічна потреба', 'Clinical need', lang), value: 3900000, color: '#ff4444', pct: 100 },
-  { name: t('Звертаються (20%)', 'Seek help (20%)', lang), value: 780000, color: '#ff7b6e', pct: 20 },
-  { name: t('Первинна ланка', 'Primary care', lang), value: 550000, color: '#00d4aa', pct: 14.1 },
+  { name: t('Звертаються (20%)', 'Seek help (20%)', lang), value: 780000, color: '#B8463C', pct: 20 },
+  { name: t('Первинна ланка', 'Primary care', lang), value: 550000, color: '#2C6E64', pct: 14.1 },
   { name: t('Спеціалізована', 'Specialized', lang), value: 118000, color: '#c8a45c', pct: 3.0 },
 ];
 
 const MILITARY = [
-  { label: { uk: 'Завершили реабілітацію (МоД 2025)', en: 'Completed rehab (MoD 2025)' }, val: '33K+', color: '#00d4aa' },
+  { label: { uk: 'Завершили реабілітацію (МоД 2025)', en: 'Completed rehab (MoD 2025)' }, val: '33K+', color: '#2C6E64' },
   { label: { uk: 'Довгострокова (після-гострий)', en: 'Long-term (post-acute)' }, val: '70%', color: '#c8a45c' },
 ];
 
@@ -79,12 +79,12 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
       style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1a0a0a 100%)' }}
     >
       <div className="h-[2px] w-full flex-shrink-0"
-        style={{ background: 'linear-gradient(90deg, transparent, #ff7b6e, #00d4aa, rgba(200,164,92,0.4))', boxShadow: '0 0 16px rgba(255,123,110,0.4)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent, #B8463C, #2C6E64, rgba(201,179,106,0.4))', boxShadow: '0 0 16px rgba(255,123,110,0.4)' }} />
 
       <NavBar
         lang={lang}
         nav={nav}
-        accentColor="#00d4aa"
+        accentColor="#2C6E64"
         title={{ uk: 'Клінічне охоплення та результати 2025', en: 'Clinical coverage & outcomes 2025' }}
         subtitle={{ uk: 'МОЗ · НСЗУ · WHO — верифіковані дані', en: 'МОЗ · НСЗУ · WHO — verified data' }}
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
@@ -103,7 +103,7 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
                 <div className="font-black ds-display leading-none" style={{ fontSize: '32px', color: k.color }}>
                   {k.val}
                 </div>
-                <div className="text-[12px] font-semibold ds-body mt-1.5 leading-tight" style={{ color: 'rgba(200,208,220,0.9)' }}>
+                <div className="text-[12px] font-semibold ds-body mt-1.5 leading-tight" style={{ color: 'rgba(242,234,219,0.9)' }}>
                   {k.label[lang]}
                 </div>
                 <div className="text-[10px] font-mono mt-1 leading-tight" style={{ color: 'var(--color-ds-muted)' }}>
@@ -160,7 +160,7 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
 
           {/* Military rehab */}
           <div className="rounded-xl p-4 flex-shrink-0"
-            style={{ background: 'rgba(0,212,170,0.05)', border: '1px solid rgba(0,212,170,0.2)' }}>
+            style={{ background: 'rgba(44,110,100,0.05)', border: '1px solid rgba(44,110,100,0.2)' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-2.5"
               style={{ color: 'var(--color-ds-muted)' }}>
               {t('Ветерани — МоД 2025', 'Veterans — MoD 2025', lang)}

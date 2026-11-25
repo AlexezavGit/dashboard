@@ -326,7 +326,9 @@ const App: React.FC = () => {
     try { return (localStorage.getItem('mhpss_lang') as Language) || 'uk'; } catch { return 'uk'; }
   });
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    try { const v = localStorage.getItem('mhpss_dark'); return v === null ? false : v === '1'; } catch { return false; }
+    // Canonical bootstrap (Dashboard.html): key 'feel-theme', default dark;
+    // stale 'mhpss_dark' key is ignored so the DS default applies.
+    try { const v = localStorage.getItem('feel-theme'); return v === 'light' ? false : true; } catch { return true; }
   });
   const [showAppendix, setShowAppendix] = useState<boolean>(false);
   const [showL4, setShowL4] = useState<boolean>(false);
@@ -366,8 +368,9 @@ const App: React.FC = () => {
 
   // Canonical Design System: persist theme + apply data-theme attribute
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
-    try { localStorage.setItem('mhpss_dark', darkMode ? '1' : '0'); } catch { }
+    const t = darkMode ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    try { localStorage.setItem('feel-theme', t); } catch { }
   }, [darkMode]);
 
   // Persist language selection
@@ -523,9 +526,9 @@ const App: React.FC = () => {
                     <button
                       onClick={() => setShowAppendix(false)}
                       className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold ds-display transition-all flex-shrink-0 w-full sm:w-auto"
-                      style={{ background: 'rgba(200,164,92,0.18)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '13px', minWidth: '90px' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.32)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.18)'; }}
+                      style={{ background: 'rgba(201,179,106,0.18)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '13px', minWidth: '90px' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,179,106,0.32)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,179,106,0.18)'; }}
                     >
                       <ArrowLeft className="w-4 h-4" />
                       {lang === 'uk' ? 'Назад' : 'Back'}
@@ -566,9 +569,9 @@ const App: React.FC = () => {
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold ds-display flex-shrink-0 transition-all w-full sm:w-auto"
-                      style={{ background: 'rgba(200,164,92,0.10)', border: '1px solid rgba(200,164,92,0.30)', color: 'var(--color-ds-gold)', textDecoration: 'none' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.20)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.10)'; }}
+                      style={{ background: 'rgba(201,179,106,0.10)', border: '1px solid rgba(201,179,106,0.30)', color: 'var(--color-ds-gold)', textDecoration: 'none' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,179,106,0.20)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,179,106,0.10)'; }}
                     >
                       {lang === 'uk' ? 'FEEL Again ↗' : 'FEEL Again ↗'}
                     </a>
@@ -806,7 +809,7 @@ const App: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <a href="https://feelagain.me" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold ds-display transition-all" style={{ background: 'rgba(200,164,92,0.16)', color: 'var(--color-ds-gold)', border: '1px solid rgba(200,164,92,0.35)' }}>
+                  <a href="https://feelagain.me" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold ds-display transition-all" style={{ background: 'rgba(201,179,106,0.16)', color: 'var(--color-ds-gold)', border: '1px solid rgba(201,179,106,0.35)' }}>
                     <ExternalLink className="w-3.5 h-3.5" />
                     {lang === 'uk' ? 'Відкрити сайт FEEL Again' : 'Open FEEL Again website'}
                   </a>
@@ -920,7 +923,7 @@ const App: React.FC = () => {
                       }}
                       className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold ds-display transition-all"
                       style={isActive
-                        ? { background: 'rgba(200,164,92,0.18)', color: 'var(--color-ds-gold)', border: '1px solid rgba(200,164,92,0.5)' }
+                        ? { background: 'rgba(201,179,106,0.18)', color: 'var(--color-ds-gold)', border: '1px solid rgba(201,179,106,0.5)' }
                         : { background: 'transparent', color: 'var(--color-ds-muted)', border: '1px solid var(--color-ds-border)' }}
                       onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = 'var(--color-ds-text)'; }}
                       onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLElement).style.color = 'var(--color-ds-muted)'; }}
@@ -1168,7 +1171,7 @@ const App: React.FC = () => {
                                 <XAxis type="number" hide />
                                 <YAxis type="category" dataKey="name" width={140} tick={{ fontSize: 11, fill: '#94a3b8' }} interval={0} />
                                 <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: '#050A15', border: '1px solid rgba(0, 245, 255, 0.2)', borderRadius: 8 }} itemStyle={{ color: '#00F5FF' }} />
-                                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={24} label={{ position: 'right', fill: '#00F5FF', fontSize: 11, fontWeight: 'bold', fontFamily: 'JetBrains Mono', formatter: (v: any) => `${v}%` }}>
+                                <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={24} label={{ position: 'right', fill: '#00F5FF', fontSize: 11, fontWeight: 'bold', fontFamily: 'Spline Sans Mono', formatter: (v: any) => `${v}%` }}>
                                   {PREVALENCE_DATA(lang).map((entry, index) => (
                                     <Cell key={`cell-${index}`} fill={entry.fill} />
                                   ))}
@@ -1352,7 +1355,7 @@ const App: React.FC = () => {
                               <ResponsiveContainer width="100%" height={220} minWidth={1}>
                                 <ComposedChart data={[{ year: '2024', health: 239, mh: 5.98 }, { year: '2025', health: 222.1, mh: 5.55 }, { year: '2026', health: 258.6, mh: 6.47 }]}>
                                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                                  <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'JetBrains Mono' }} />
+                                  <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'Spline Sans Mono' }} />
                                   <YAxis yAxisId="left" tick={{ fontSize: 10 }} label={{ value: lang === 'uk' ? 'Млрд ₴' : 'B ₴', angle: -90, position: 'insideLeft', style: { fontSize: 9 } }} />
                                   <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} label={{ value: lang === 'uk' ? 'МЗ (2.5%)' : 'MH (2.5%)', angle: 90, position: 'insideRight', style: { fontSize: 9 } }} />
                                   <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: 8 }} />
@@ -1518,7 +1521,7 @@ const App: React.FC = () => {
                                   <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-15} textAnchor="end" height={60} />
                                   <YAxis tick={{ fontSize: 11 }} unit="M" />
                                   <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: 8 }} />
-                                  <Legend wrapperStyle={{ fontSize: '10px', fontFamily: 'JetBrains Mono', color: '#94a3b8' }} />
+                                  <Legend wrapperStyle={{ fontSize: '10px', fontFamily: 'Spline Sans Mono', color: '#94a3b8' }} />
                                   <Bar dataKey="need" name={lang === 'uk' ? 'Потреба' : 'Need'} fill={COLORS.redLight} radius={[4, 4, 0, 0]} />
                                   <Bar dataKey="reached" name={lang === 'uk' ? 'Охоплено' : 'Reached'} fill={COLORS.green} radius={[4, 4, 0, 0]} />
                                 </BarChart>
@@ -1610,14 +1613,14 @@ const App: React.FC = () => {
                                 <ResponsiveContainer width="100%" height={180} minWidth={1}>
                                   <BarChart data={BACKLOG_DATA(lang)} margin={{ top: 5, right: 10, bottom: 0, left: 0 }}>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-                                    <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#64748b', fontFamily: 'JetBrains Mono' }} />
-                                    <YAxis tick={{ fontSize: 9, fill: '#64748b', fontFamily: 'JetBrains Mono' }} unit=" р." />
+                                    <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#64748b', fontFamily: 'Spline Sans Mono' }} />
+                                    <YAxis tick={{ fontSize: 9, fill: '#64748b', fontFamily: 'Spline Sans Mono' }} unit=" р." />
                                     <Tooltip
                                       contentStyle={{ backgroundColor: '#0a0f1e', border: '1px solid rgba(255,68,68,0.2)', borderRadius: 8, fontSize: 11 }}
-                                      itemStyle={{ fontFamily: 'JetBrains Mono' }}
+                                      itemStyle={{ fontFamily: 'Spline Sans Mono' }}
                                       formatter={(v: any) => [`${v} р.`]}
                                     />
-                                    <Legend wrapperStyle={{ fontSize: '9px', color: '#64748b', fontFamily: 'JetBrains Mono' }} />
+                                    <Legend wrapperStyle={{ fontSize: '9px', color: '#64748b', fontFamily: 'Spline Sans Mono' }} />
                                     <Bar dataKey="sustainable" name={lang === 'uk' ? 'Стійкий (1,500 год/рік)' : 'Sustainable (1,500h/yr)'} fill={COLORS.cyberAmber} radius={[3, 3, 0, 0]} />
                                     <Bar dataKey="theoretical" name={lang === 'uk' ? 'Теоретичний (2,000 год/рік)' : 'Theoretical (2,000h/yr)'} fill={COLORS.cyberCyan} radius={[3, 3, 0, 0]} />
                                   </BarChart>
@@ -2283,10 +2286,10 @@ const App: React.FC = () => {
                   <button
                     onClick={() => setC2Open(o => !o)}
                     className="ds-cluster-header w-full text-left cursor-pointer select-none flex items-center justify-between"
-                    style={{ borderRadius: 12, padding: '10px 16px', background: 'rgba(200,164,92,0.07)', border: '1px solid rgba(200,164,92,0.3)' }}
+                    style={{ borderRadius: 12, padding: '10px 16px', background: 'rgba(201,179,106,0.07)', border: '1px solid rgba(201,179,106,0.3)' }}
                   >
                     <span>{lang === 'uk' ? 'КЛАСТЕР 2 — ДОКАЗИ · Пояснює масштаб' : 'CLUSTER 2 — EVIDENCE · Explains the scale'}</span>
-                    <span style={{ fontSize: 12, marginLeft: 8, color: 'rgba(200,164,92,0.7)' }}>{c2Open ? '▲' : '▼'}</span>
+                    <span style={{ fontSize: 12, marginLeft: 8, color: 'rgba(201,179,106,0.7)' }}>{c2Open ? '▲' : '▼'}</span>
                   </button>
                 </div>
               )}

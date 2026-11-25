@@ -1,22 +1,20 @@
 /* ── Google Fonts — DS Typography ──────────────────────────────────────────── */
-/* DS screenshot 10: Archivo Black 800-900 display, Source Sans 3 300-600 body,
-   JetBrains Mono data. Production stack: Space Grotesk 700 + DM Sans 400-700 */
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Source+Sans+3:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;700&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap');
+/* Canonical trio — 04-DESIGN-TOKENS.md §3: Archivo (display/headings),
+   Source Sans 3 (body), Spline Sans Mono (data/labels).
+   DM Sans / Space Grotesk / JetBrains Mono — НЕ канон. */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Sans+3:wght@300;400;600&family=Spline+Sans+Mono:wght@400;500&display=swap');
 
 @import "tailwindcss";
 
 /* ── Canonical Design System — "Bunker" Cinematic Palette ────────────────── */
-/* Source: FEEL Again Design System Canvas v1.0, Sections B (Themes & Surfaces)
-   and H (Cinematic Palette, verified 2026-06-30). Roles: royal blue = donors,
-   teal = providers, orange = operational/GAP, gold-A (brass) = title plaques,
-   gold-B (amber) = ROI/world-panel numbers, red = collision (<2% usage),
-   sand/cream = light theme + care surfaces. Replaces the earlier "El Refugio
-   Atómico" cyan/orange palette which used cool cyan tones inconsistent with
-   the canvas — this was reported as illegible in light mode. */
+/* Source: FEEL Again Design System Canvas v1.0 (B1 themes, H1 palette
+   verified 2026-06-30) + 08-COLOR-CODING.md: color = station/actor/assessment,
+   never decoration. Numbers are single ink; gold only for ROI; red <2%;
+   yellow is alarm only. Dark default follows Dashboard.html (petrol surface). */
 @theme {
-  --font-sans:    "Source Sans 3",    ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Archivo Black",    ui-sans-serif, system-ui, sans-serif;
-  --font-mono:    "JetBrains Mono",   ui-monospace,  SFMono-Regular, monospace;
+  --font-sans:    "Source Sans 3",   ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Archivo",         ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "Spline Sans Mono", ui-monospace,  SFMono-Regular, monospace;
 
   /* ── Mobile-first breakpoints ── */
   --breakpoint-xs:   320px;
@@ -26,10 +24,12 @@
   --breakpoint-xl:   1280px;
   --breakpoint-2xl:  1536px;
 
-  /* ── Dark (Bunker) — canvas Section B1 "DARK · IMMERSIVE" + H1 roles ── */
-  --color-ds-bg:          #050C16;   /* canvas root bg */
-  --color-ds-bg2:         #0C2233;   /* canvas card-d */
-  --color-ds-surface:     rgba(255, 255, 255, 0.04);
+  /* ── Dark (Bunker) — canvas B1 "DARK · IMMERSIVE" (dashboard petrol default,
+         Dashboard.html canonical values) + H1 roles ── */
+  --color-ds-bg:          #0B2422;   /* canvas B1 dark: petrol surface */
+  --color-ds-bg2:         #0E302E;   /* Dashboard.html body gradient */
+  --color-ds-text:        #F2EADB;   /* single ink for numbers/headings */
+  --color-ds-surface:     rgba(13, 42, 38, 0.8);
 
   /* Role accents from canvas H1 (verified 2026-06-30) */
   --color-ds-teal:        #1C5A52;   /* ТІАЛ · PROVIDERS — primary teal */
@@ -52,56 +52,56 @@
   --color-ds-royal-dark:  #0C293A;   /* КОРОЛІВСЬКИЙ dark */
   --color-ds-analytical:  #2E6B5C;   /* БІЛО-ЗЕЛЕНИЙ · ANALYTICAL */
   --color-ds-border:      rgba(28, 90, 82, 0.25);
-  --color-ds-muted:       #5A7268;
-  --color-ds-bg-card:     rgba(5, 12, 22, 0.8);
-  --color-ds-navy:        #020d0f;
+  --color-ds-muted:       #8CBEB4;
+  --color-ds-bg-card:     rgba(13, 42, 38, 0.8);
+  --color-ds-navy:        #0f2a2a;
 
   /* Footer — canvas E3 */
   --color-ds-footer-bg:   #FAB007;
   --color-ds-footer-text: #051619;
 
   /* legacy aliases */
-  --color-cyber-bg:      #050C16;
+  --color-cyber-bg:      #0B2422;
   --color-cyber-surface: rgba(255, 255, 255, 0.04);
   --color-cyber-border:  rgba(62, 145, 162, 0.12);
   --color-cyber-cyan:    #3E91A2;
   --color-cyber-amber:   #FAB007;
   --color-cyber-success: #5C8C72;   /* canvas H1 pale-green ANALYTICAL role */
-  --color-cyber-purple:  #9B87D4;
+  --color-cyber-purple:  #2E6B5C;   /* analytical tone (violet not in DS palette) */
 }
 
-/* ── Light theme — canvas B1 "LIGHT · DEFAULT" (warm sand + petrol text) ─── */
+/* ── Light theme — 08-COLOR-CODING §2: station ДАНІ = КОРОЛІВСЬКИЙ family ── */
 :root[data-theme="light"] {
-  --color-ds-bg:           #E9DEC9;   /* РІСОК/КРЕМ · LIGHT & CARE */
-  --color-ds-bg2:          #E2D5BC;
-  --color-ds-surface:      rgba(255,255,255,0.75);
-  --color-ds-teal:         #123C3A;   /* ТІАЛ dark — petrol text */
-  --color-ds-teal-light:   #1C5A52;
+  --color-ds-bg:           #D8E2E6;   /* royal light surface */
+  --color-ds-bg2:          #C0D6D8;   /* canvas calm-light ramp */
+  --color-ds-text:         #06293A;   /* navy ink */
+  --color-ds-surface:      rgba(255,255,255,0.78);
+  --color-ds-teal:         #1C5A52;   /* ТІАЛ guest — assessment only */
+  --color-ds-teal-light:   #2C6E64;
   --color-ds-teal-dark:    #0B2422;
-  --color-ds-orange:       #B5481A;   /* ОРАНЖЕВИЙ dark — AA on sand */
+  --color-ds-orange:       #B5481A;   /* ОРАНЖ dark — AA on light */
   --color-ds-orange-bright:#D35F1E;
-  --color-ds-yellow:       #8A6830;   /* ЗОЛОТО-B darkened for AA on sand */
-  --color-ds-gold:         #8A6830;   /* gold role darkened */
-  --color-ds-gold-a:       #A8945A;   /* ЗОЛОТО-A dark */
+  --color-ds-yellow:       #8A6830;   /* alarm darkened for AA */
+  --color-ds-gold:         #8A6830;
+  --color-ds-gold-a:       #A8945A;
   --color-ds-gold-dim:     rgba(138,104,48,0.12);
-  --color-ds-copper:       #B5481A;   /* orange role on sand */
+  --color-ds-copper:       #B5481A;
   --color-ds-copper-bright:#E8741E;
   --color-ds-copper-dim:   rgba(181,72,26,0.12);
-  --color-ds-red:          #B5481A;   /* collision role */
-  --color-ds-royal:        #0E4D63;   /* КОРОЛІВСЬКИЙ */
-  --color-ds-analytical:   #2E6B5C;   /* БІЛО-ЗЕЛЕНИЙ */
-  --color-ds-border:       #C9B591;
-  --color-ds-text:         #123C3A;   /* canvas B1 petrol text */
-  --color-ds-muted:        #5A7268;
-  --color-ds-navy:         #0f2a2a;
+  --color-ds-red:          #B8463C;   /* collision role */
+  --color-ds-royal:        #0F2B46;   /* brand royal */
+  --color-ds-analytical:   #2E6B5C;
+  --color-ds-border:       rgba(6, 41, 58, 0.28);
+  --color-ds-muted:        #45636F;
+  --color-ds-navy:         #0F2B46;
 
-  --color-cyber-bg:      #E9DEC9;
-  --color-cyber-surface: rgba(255,255,255,0.75);
-  --color-cyber-border:  #C9B591;
-  --color-cyber-cyan:    #123C3A;
+  --color-cyber-bg:      #D8E2E6;
+  --color-cyber-surface: rgba(255,255,255,0.78);
+  --color-cyber-border:  rgba(6, 41, 58, 0.28);
+  --color-cyber-cyan:    #0E4D63;
   --color-cyber-amber:   #8A6830;
   --color-cyber-success: #2E6B5C;
-  --color-cyber-purple:  #6850A0;
+  --color-cyber-purple:  #2E6B5C;
 }
 
 /* ── Mobile-first responsive utilities ── */
@@ -327,7 +327,7 @@ html, body {
     border-right: 1px solid var(--color-ds-border);
   }
   :root[data-theme="light"] .ds-sidebar {
-    background: #E2D5BC;
+    background: #C0D6D8;
     border-right: 1px solid var(--color-ds-border);
   }
 
@@ -620,12 +620,12 @@ html, body {
 .text-slate-600 { color: rgba(237,244,244,0.28) !important; }
 .text-slate-700 { color: rgba(237,244,244,0.18) !important; }
 
-:root[data-theme="light"] .text-slate-300 { color: #123C3A !important; opacity: 0.85; }
-:root[data-theme="light"] .text-slate-400 { color: #123C3A !important; opacity: 0.7; }
-:root[data-theme="light"] .text-slate-500 { color: #123C3A !important; opacity: 0.55; }
-:root[data-theme="light"] .text-slate-600 { color: #123C3A !important; opacity: 0.45; }
-:root[data-theme="light"] .text-slate-700 { color: #123C3A !important; opacity: 0.3; }
-:root[data-theme="light"] .text-white      { color: #123C3A !important; }
+:root[data-theme="light"] .text-slate-300 { color: #06293A !important; opacity: 0.85; }
+:root[data-theme="light"] .text-slate-400 { color: #06293A !important; opacity: 0.7; }
+:root[data-theme="light"] .text-slate-500 { color: #06293A !important; opacity: 0.55; }
+:root[data-theme="light"] .text-slate-600 { color: #06293A !important; opacity: 0.45; }
+:root[data-theme="light"] .text-slate-700 { color: #06293A !important; opacity: 0.3; }
+:root[data-theme="light"] .text-white      { color: #06293A !important; }
 
 /* Light mode overrides for background utilities */
 :root[data-theme="light"] .bg-slate-900\/40,
@@ -646,7 +646,7 @@ html, body {
   /* base dark */
 }
 :root[data-theme="light"] .ds-screen {
-  background: linear-gradient(150deg, #E9DEC9 0%, #e8f0f0 100%) !important;
+  background: linear-gradient(150deg, #D8E2E6 0%, #eef4f4 100%) !important;
 }
 :root[data-theme="light"] .ds-screen > .h-\[2px\] {
   opacity: 0.4;
@@ -659,10 +659,10 @@ html, body {
 
 /* ── Surface/border light overrides ─────────────────────────────────────── */
 :root[data-theme="light"] .bg-cyber-surface { background: rgba(0,0,0,0.04) !important; }
-:root[data-theme="light"] .border-cyber-border { border-color: #C9B591 !important; }
-:root[data-theme="light"] .bg-cyber-bg { background: #E9DEC9 !important; }
+:root[data-theme="light"] .border-cyber-border { border-color: #8FA9AF !important; }
+:root[data-theme="light"] .bg-cyber-bg { background: #D8E2E6 !important; }
 :root[data-theme="light"] .bg-black\/50 { background: rgba(0,0,0,0.2) !important; }
-:root[data-theme="light"] header { border-color: #C9B591 !important; }
+:root[data-theme="light"] header { border-color: #8FA9AF !important; }
 :root[data-theme="light"] select {
   background-color: rgba(0,0,0,0.04);
   color: #062428;
@@ -671,7 +671,7 @@ html, body {
 /* ── Cards light ─────────────────────────────────────────────────────────── */
 :root[data-theme="light"] .cyber-card {
   background: rgba(255,255,255,0.82) !important;
-  border: 1px solid #C9B591 !important;
+  border: 1px solid #8FA9AF !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
 }
 :root[data-theme="light"] .cyber-card:hover {
@@ -684,12 +684,12 @@ html, body {
 :root[data-theme="light"] [class*="navbar"],
 :root[data-theme="light"] .ds-navbar {
   background: rgba(233,222,201,0.94) !important;
-  border-bottom-color: #C9B591 !important;
+  border-bottom-color: #8FA9AF !important;
 }
 
 /* ── Dividers light ──────────────────────────────────────────────────────── */
-:root[data-theme="light"] .divide-slate-700\/60 > * + * { border-color: #C9B591 !important; }
-:root[data-theme="light"] .border-slate-700\/60 { border-color: #C9B591 !important; }
+:root[data-theme="light"] .divide-slate-700\/60 > * + * { border-color: #8FA9AF !important; }
+:root[data-theme="light"] .border-slate-700\/60 { border-color: #8FA9AF !important; }
 
 /* ── Sticky filter bar light ─────────────────────────────────────────────── */
 :root[data-theme="light"] .bg-cyber-bg\/80 {

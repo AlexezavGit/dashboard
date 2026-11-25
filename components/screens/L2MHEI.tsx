@@ -29,17 +29,17 @@ const GAP_COMPONENTS: GapComponent[] = [
     source: { uk: 'НСЗУ, HEAL/THRIVE DLI', en: 'NHSU, HEAL/THRIVE DLI' },
   },
   {
-    id: 'clinical', weight: 25, current: 82, target: 90, color: '#ff7b6e',
+    id: 'clinical', weight: 25, current: 82, target: 90, color: '#B8463C',
     label: { uk: 'Позитивна динаміка (1-й цикл)', en: 'Positive outcomes (1st cycle)' },
     source: { uk: 'МОЗ Центри досконалості 2025', en: 'MoH Centres of Excellence 2025' },
   },
   {
-    id: 'data', weight: 20, current: 5, target: 60, color: '#00d4aa',
+    id: 'data', weight: 20, current: 5, target: 60, color: '#2C6E64',
     label: { uk: 'Інтероперабельність систем', en: 'System interoperability' },
     source: { uk: 'CommCare/ActivityInfo/ЄСОЗ аналіз', en: 'CommCare/ActivityInfo/ESOZ analysis' },
   },
   {
-    id: 'sustain', weight: 15, current: 35, target: 70, color: '#a78bfa',
+    id: 'sustain', weight: 15, current: 35, target: 70, color: '#2C6E64',
     label: { uk: 'Конверсія навчання → практика', en: 'Training → practice conversion' },
     source: { uk: 'НСЗУ реєстр 2026 / ВООЗ mhGAP', en: 'NHSU registry 2026 / WHO mhGAP' },
   },
@@ -49,7 +49,7 @@ const GAP_COMPONENTS: GapComponent[] = [
     source: { uk: 'FEEL Again польові дані 2024', en: 'FEEL Again field data 2024' },
   },
   {
-    id: 'regulatory', weight: 5, current: 1, target: 25, color: '#c084fc',
+    id: 'regulatory', weight: 5, current: 1, target: 25, color: '#1C6E86',
     label: { uk: 'Локалізація гуманітарних ресурсів', en: 'Humanitarian resource localization' },
     source: { uk: 'Grand Bargain 2025 звіт', en: 'Grand Bargain 2025 report' },
   },
@@ -110,7 +110,7 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
     setPractitioners(943);
   }, []);
 
-  const bandColor = mhei < 34 ? '#ff7b6e' : mhei < 67 ? '#e8c97a' : '#00d4aa';
+  const bandColor = mhei < 34 ? '#B8463C' : mhei < 67 ? '#e8c97a' : '#2C6E64';
 
   return (
     <div
@@ -118,7 +118,7 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
       style={{ background: 'linear-gradient(135deg, #080f1c 0%, #0d1a14 100%)' }}
     >
       <div className="h-[2px] w-full flex-shrink-0"
-        style={{ background: 'linear-gradient(90deg, transparent, #e8c97a, #c8a45c, rgba(0,210,170,0.4))', boxShadow: '0 0 18px rgba(232,201,122,0.4)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent, #e8c97a, #c8a45c, rgba(44,110,100,0.4))', boxShadow: '0 0 18px rgba(232,201,122,0.4)' }} />
 
       <NavBar
         lang={lang}
@@ -162,7 +162,7 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
               </div>
               <div className="ds-display font-black leading-none" style={{
                 fontSize: '42px',
-                color: mheiDelta > 0 ? '#00d4aa' : mheiDelta < 0 ? '#ff7b6e' : 'var(--color-ds-muted)',
+                color: mheiDelta > 0 ? '#2C6E64' : mheiDelta < 0 ? '#B8463C' : 'var(--color-ds-muted)',
               }}>
                 {mheiDelta > 0 ? '+' : ''}{mheiDelta}
               </div>
@@ -181,8 +181,8 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
             </div>
             <button
               onClick={reset}
-              className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold ds-display transition-all hover:bg-[rgba(200,164,92,0.2)]"
-              style={{ background: 'rgba(200,164,92,0.12)', border: '1px solid rgba(200,164,92,0.3)', color: 'var(--color-ds-gold)' }}
+              className="flex-shrink-0 px-3 py-1.5 rounded-lg text-[10px] font-bold ds-display transition-all hover:bg-[rgba(201,179,106,0.2)]"
+              style={{ background: 'rgba(201,179,106,0.12)', border: '1px solid rgba(201,179,106,0.3)', color: 'var(--color-ds-gold)' }}
             >
               {t('Скинути', 'Reset', lang)}
             </button>
@@ -270,8 +270,8 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
 
           {/* Backlog interactive scale */}
           <div className="rounded-xl p-4 flex-shrink-0"
-            style={{ background: 'rgba(0,210,170,0.05)', border: '1px solid rgba(0,210,170,0.2)' }}>
-            <div className="text-[10px] font-mono uppercase tracking-wider mb-3" style={{ color: '#00d4aa' }}>
+            style={{ background: 'rgba(44,110,100,0.05)', border: '1px solid rgba(44,110,100,0.2)' }}>
+            <div className="text-[10px] font-mono uppercase tracking-wider mb-3" style={{ color: '#2C6E64' }}>
               {t('Інтерактивний беклог', 'Interactive Backlog Scale', lang)}
             </div>
 
@@ -292,22 +292,22 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
                 value={practitioners}
                 onChange={e => setPractitioners(Number(e.target.value))}
                 className="flex-1"
-                style={{ accentColor: '#00d4aa' }}
+                style={{ accentColor: '#2C6E64' }}
               />
-              <span className="text-[15px] font-black ds-display w-16 text-right flex-shrink-0" style={{ color: '#00d4aa' }}>
+              <span className="text-[15px] font-black ds-display w-16 text-right flex-shrink-0" style={{ color: '#2C6E64' }}>
                 {practitioners.toLocaleString()}
               </span>
             </div>
 
             {/* Backlog result */}
             <div className="flex items-center justify-between p-3 rounded-xl"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(0,210,170,0.15)' }}>
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(44,110,100,0.15)' }}>
               <div>
                 <div className="text-[9px] font-mono uppercase" style={{ color: 'var(--color-ds-muted)' }}>
                   {t('Беклог для 3.9M потреби', 'Backlog for 3.9M need', lang)}
                 </div>
                 <div className="ds-display font-black leading-none mt-0.5"
-                  style={{ fontSize: '36px', color: backlogYears > 10 ? '#ff7b6e' : backlogYears > 5 ? '#e8c97a' : '#00d4aa' }}>
+                  style={{ fontSize: '36px', color: backlogYears > 10 ? '#B8463C' : backlogYears > 5 ? '#e8c97a' : '#2C6E64' }}>
                   {backlogYears}
                 </div>
                 <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
@@ -328,11 +328,11 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
             <div className="mt-3 flex gap-2">
               {[5, 10, 15].map(yr => (
                 <div key={yr} className="flex-1 p-2 rounded-lg text-center"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(0,210,170,0.12)' }}>
+                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(44,110,100,0.12)' }}>
                   <div className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
                     {t(`≤${yr} р.`, `≤${yr} yrs`, lang)}
                   </div>
-                  <div className="text-[13px] font-black ds-display" style={{ color: '#00d4aa' }}>
+                  <div className="text-[13px] font-black ds-display" style={{ color: '#2C6E64' }}>
                     {calcMinPractitioners(yr).toLocaleString()}
                   </div>
                   <div className="text-[8px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
@@ -345,8 +345,8 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
 
           {/* Workforce capacity scale */}
           <div className="rounded-xl p-4 flex-1 min-h-0"
-            style={{ background: 'rgba(167,139,250,0.05)', border: '1px solid rgba(167,139,250,0.2)' }}>
-            <div className="text-[10px] font-mono uppercase tracking-wider mb-3" style={{ color: '#a78bfa' }}>
+            style={{ background: 'rgba(44,110,100,0.05)', border: '1px solid rgba(44,110,100,0.2)' }}>
+            <div className="text-[10px] font-mono uppercase tracking-wider mb-3" style={{ color: '#2C6E64' }}>
               {t('Місткість кадрів — 3 рівні', 'Workforce Capacity — 3 Layers', lang)}
             </div>
 
@@ -362,14 +362,14 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
                 label: { uk: 'Б. НСЗУ-верифікована ємність', en: 'B. NHSU-verified capacity' },
                 value: '0.28%',
                 desc: { uk: '943 провайдери → 180K сесій/рік → 0.28% від клін. потреби · НСЗУ 10.04.2026', en: '943 providers → 180K sessions/yr → 0.28% of clinical need · NHSU 10.04.2026' },
-                color: '#ff7b6e',
+                color: '#B8463C',
                 badge: null,
               },
               {
                 label: { uk: 'В. Тіньовий ринок', en: 'C. Shadow market' },
                 value: '~6,500',
                 desc: { uk: 'практиків (оцінка) · лише 17 у НСЗУ (0.26% зареєстровано) · Штраф формалізації: 65% розриву в доходах', en: 'practitioners (est.) · only 17 in NHSU (0.26% registered) · Formalization penalty: 65% income gap' },
-                color: '#a78bfa',
+                color: '#2C6E64',
                 badge: { uk: '⚠️ оцінка', en: '⚠️ estimate' },
               },
             ].map((layer, i) => (
@@ -401,11 +401,11 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
                 {[
                   { val: '57K', label: { uk: 'awareness', en: 'awareness' }, color: '#e8c97a' },
                   { val: '→', label: null, color: 'var(--color-ds-muted)' },
-                  { val: '700', label: { uk: 'клін. серт.', en: 'clin. cert.' }, color: '#a78bfa' },
+                  { val: '700', label: { uk: 'клін. серт.', en: 'clin. cert.' }, color: '#2C6E64' },
                   { val: '→', label: null, color: 'var(--color-ds-muted)' },
-                  { val: '42', label: { uk: 'практика (docs)', en: 'practice (docs)' }, color: '#ff7b6e' },
+                  { val: '42', label: { uk: 'практика (docs)', en: 'practice (docs)' }, color: '#B8463C' },
                   { val: '→', label: null, color: 'var(--color-ds-muted)' },
-                  { val: '50', label: { uk: 'EMDR cert.', en: 'EMDR cert.' }, color: '#00d4aa' },
+                  { val: '50', label: { uk: 'EMDR cert.', en: 'EMDR cert.' }, color: '#2C6E64' },
                 ].map((item, i) => (
                   item.label ? (
                     <div key={i} className="text-center">

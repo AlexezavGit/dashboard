@@ -33,12 +33,12 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
       style={{ background: 'linear-gradient(135deg, #0a1628 0%, #120a1a 100%)' }}
     >
       <div className="h-[2px] w-full flex-shrink-0"
-        style={{ background: 'linear-gradient(90deg, transparent, #a78bfa, #8b5cf6, rgba(200,164,92,0.4))', boxShadow: '0 0 18px rgba(167,139,250,0.5)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent, #2C6E64, #8b5cf6, rgba(201,179,106,0.4))', boxShadow: '0 0 18px rgba(44,110,100,0.5)' }} />
 
       <NavBar
         lang={lang}
         nav={nav}
-        accentColor="#a78bfa"
+        accentColor="#2C6E64"
         title={{ uk: 'Місткість кадрів — рівень навчання', en: 'Workforce Capacity — Training Level' }}
         subtitle={{ uk: `Місткість · НСЗУ верифіковано ${NSZU_SNAPSHOT.asOf}`, en: `Capacity · NHSU verified ${NSZU_SNAPSHOT.asOf}` }}
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
@@ -70,7 +70,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                   label: { uk: 'НСЗУ верифіковано', en: 'NHSU verified' },
                   val: '943',
                   sub: { uk: '0.28% — активні контракти → видимі системі', en: '0.28% — active contracts → system-visible' },
-                  color: '#a78bfa',
+                  color: '#2C6E64',
                   barPct: 22,
                 },
                 {
@@ -108,7 +108,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
               {[
                 { color: '#60a5fa', label: t('Awareness', 'Awareness', lang) },
                 { color: '#f97316', label: t('Психосоц.', 'Psychosoc.', lang) },
-                { color: '#a78bfa', label: t('Клінічний', 'Clinical', lang) },
+                { color: '#2C6E64', label: t('Клінічний', 'Clinical', lang) },
               ].map((l) => (
                 <div key={l.label} className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-sm" style={{ background: l.color }} />
@@ -124,19 +124,19 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                     type="category"
                     dataKey="name"
                     width={115}
-                    tick={{ fill: 'var(--color-ds-muted)', fontSize: 9, fontFamily: 'DM Sans' }}
+                    tick={{ fill: 'var(--color-ds-muted)', fontSize: 9, fontFamily: 'Source Sans 3' }}
                     tickLine={false}
                     axisLine={false}
                   />
                   <Tooltip
-                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(167,139,250,0.3)', borderRadius: 8, fontSize: 11 }}
-                    labelStyle={{ color: '#a78bfa' }}
-                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
+                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(44,110,100,0.3)', borderRadius: 8, fontSize: 11 }}
+                    labelStyle={{ color: '#2C6E64' }}
+                    itemStyle={{ color: 'rgba(242,234,219,0.9)' }}
                     formatter={(v: number, name: string) => [v.toLocaleString(), name]}
                   />
                   <Bar dataKey="awareness" name={t('Awareness', 'Awareness', lang)} stackId="a" fill="#60a5fa" />
                   <Bar dataKey="psychosocial" name={t('Психосоціальний', 'Psychosocial', lang)} stackId="a" fill="#f97316" />
-                  <Bar dataKey="clinical" name={t('Клінічний', 'Clinical', lang)} stackId="a" fill="#a78bfa" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="clinical" name={t('Клінічний', 'Clinical', lang)} stackId="a" fill="#2C6E64" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -146,8 +146,8 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
           <div className="flex-shrink-0 p-3 rounded-xl"
             style={{ background: 'rgba(255,123,110,0.08)', border: '1px solid rgba(255,123,110,0.3)' }}>
             <div className="flex items-baseline gap-2">
-              <span className="text-[28px] font-black ds-display" style={{ color: '#ff7b6e' }}>{ratio}:1</span>
-              <span className="text-[12px] ds-body" style={{ color: 'rgba(200,208,220,0.8)' }}>
+              <span className="text-[28px] font-black ds-display" style={{ color: '#B8463C' }}>{ratio}:1</span>
+              <span className="text-[12px] ds-body" style={{ color: 'rgba(242,234,219,0.8)' }}>
                 {t(
                   `awareness / клінічний — середня амбулаторна ланка НЕ ПОБУДОВАНА (~${Math.round(totalAwareness / 1000)}K awareness-рівень, лише 700 клінічних)`,
                   `awareness / clinical — intermediate ambulatory clinical layer NOT BUILT (~${Math.round(totalAwareness / 1000)}K awareness-level, only 700 clinical)`,
@@ -172,27 +172,27 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                 <BarChart data={workforceData} margin={{ left: 0, right: 8, top: 4, bottom: 4 }}>
                   <XAxis
                     dataKey="name"
-                    tick={{ fill: 'var(--color-ds-muted)', fontSize: 10, fontFamily: 'DM Sans' }}
+                    tick={{ fill: 'var(--color-ds-muted)', fontSize: 10, fontFamily: 'Source Sans 3' }}
                     tickLine={false}
                     axisLine={false}
                   />
                   <YAxis hide />
                   <Tooltip
-                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(167,139,250,0.3)', borderRadius: 8, fontSize: 11 }}
-                    labelStyle={{ color: '#a78bfa' }}
-                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
+                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(44,110,100,0.3)', borderRadius: 8, fontSize: 11 }}
+                    labelStyle={{ color: '#2C6E64' }}
+                    itemStyle={{ color: 'rgba(242,234,219,0.9)' }}
                   />
-                  <Bar dataKey="Ukraine" name="Ukraine" fill="#a78bfa" radius={[3, 3, 0, 0]} />
-                  <Bar dataKey="EU" name="EU" fill="rgba(167,139,250,0.35)" radius={[3, 3, 0, 0]} />
-                  <Bar dataKey="WHO" name={t('ВООЗ норма', 'WHO norm', lang)} fill="rgba(200,164,92,0.5)" radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="Ukraine" name="Ukraine" fill="#2C6E64" radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="EU" name="EU" fill="rgba(44,110,100,0.35)" radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="WHO" name={t('ВООЗ норма', 'WHO norm', lang)} fill="rgba(201,179,106,0.5)" radius={[3, 3, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
             <div className="flex gap-4 mt-1">
               {[
-                { color: '#a78bfa', label: 'Ukraine' },
-                { color: 'rgba(167,139,250,0.5)', label: 'EU' },
-                { color: 'rgba(200,164,92,0.7)', label: t('ВООЗ норма', 'WHO norm', lang) },
+                { color: '#2C6E64', label: 'Ukraine' },
+                { color: 'rgba(44,110,100,0.5)', label: 'EU' },
+                { color: 'rgba(201,179,106,0.7)', label: t('ВООЗ норма', 'WHO norm', lang) },
               ].map((l) => (
                 <div key={l.label} className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-sm" style={{ background: l.color }} />
@@ -213,31 +213,31 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                 <AreaChart data={warData} margin={{ left: 0, right: 8, top: 4, bottom: 4 }}>
                   <defs>
                     <linearGradient id="gradPsych2" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#a78bfa" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#a78bfa" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#2C6E64" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#2C6E64" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                   <XAxis dataKey="name" tick={{ fill: 'var(--color-ds-muted)', fontSize: 9 }} tickLine={false} axisLine={false} />
                   <YAxis hide domain={[25, 45]} />
                   <Tooltip
-                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(167,139,250,0.3)', borderRadius: 8, fontSize: 11 }}
-                    labelStyle={{ color: '#a78bfa' }}
-                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
+                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(44,110,100,0.3)', borderRadius: 8, fontSize: 11 }}
+                    labelStyle={{ color: '#2C6E64' }}
+                    itemStyle={{ color: 'rgba(242,234,219,0.9)' }}
                   />
                   <Area type="monotone" dataKey="psych" name={t('Психіатри', 'Psychiatrists', lang)}
-                    stroke="#a78bfa" strokeWidth={2} fill="url(#gradPsych2)" dot={{ fill: '#a78bfa', r: 3 }} />
+                    stroke="#2C6E64" strokeWidth={2} fill="url(#gradPsych2)" dot={{ fill: '#2C6E64', r: 3 }} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
-            <div className="text-[10px] font-mono mt-1" style={{ color: '#ff7b6e' }}>
+            <div className="text-[10px] font-mono mt-1" style={{ color: '#B8463C' }}>
               {t('↓ 40.0K → 30.9K psychiatrists (−23% with 01.2022)', '↓ 40.0K → 30.9K psychiatrists (−23% since 01.2022)', lang)}
             </div>
           </div>
 
           {/* FEEL Again — build the missing middle */}
           <div className="flex-1 rounded-2xl p-4 min-h-0"
-            style={{ background: 'rgba(200,164,92,0.06)', border: '1px solid rgba(200,164,92,0.3)' }}>
+            style={{ background: 'rgba(201,179,106,0.06)', border: '1px solid rgba(201,179,106,0.3)' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-3" style={{ color: 'var(--color-ds-gold)' }}>
               {t('FEEL Again · Train for Care · Побудувати середню ланку', 'FEEL Again · Train for Care · Build the missing middle', lang)}
             </div>
@@ -250,7 +250,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
               ].map((item, i) => (
                 <div key={i} className="flex gap-2 items-start">
                   <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold mt-0.5"
-                    style={{ background: 'rgba(200,164,92,0.2)', color: 'var(--color-ds-gold)', border: '1px solid rgba(200,164,92,0.4)' }}>
+                    style={{ background: 'rgba(201,179,106,0.2)', color: 'var(--color-ds-gold)', border: '1px solid rgba(201,179,106,0.4)' }}>
                     {i + 1}
                   </div>
                   <div className="text-[11px] ds-body" style={{ color: 'var(--color-ds-text)' }}>{item[lang]}</div>

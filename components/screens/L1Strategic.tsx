@@ -22,11 +22,11 @@ interface LayerDef {
   indicator: { uk: string; en: string };
   display: { uk: string; en: string };
   unit: { uk: string; en: string };
-  color: string;
-  glow: string;
-  cardBg: string;
 }
 
+/* 08-COLOR-CODING §4: всередині станції колір кодує лише групу акторів,
+   оцінку руху, тривогу та зіткнення. Тип картки й окремі числа кольором
+   НЕ кодуються — чорнило одне (VAR_INK), шар розрізняється міткою та w%. */
 const LAYERS: LayerDef[] = [
   {
     id: 'fintech', screenId: 'l2-finance', weight: 25, current: 0, target: 30,
@@ -34,7 +34,6 @@ const LAYERS: LayerDef[] = [
     indicator: { uk: 'Виплати, прив\'язані до результатів', en: 'Outcome-linked payments' },
     display: { uk: '$0', en: '$0' },
     unit: { uk: 'верифікованих outcome-виплат', en: 'verified outcome payments' },
-    color: '#e8c97a', glow: 'rgba(200,164,92,0.22)', cardBg: 'rgba(200,164,92,0.07)',
   },
   {
     id: 'clinical', screenId: 'l2-clinical', weight: 25, current: 40, target: 80,
@@ -42,7 +41,6 @@ const LAYERS: LayerDef[] = [
     indicator: { uk: 'Завершуваність реабілітації', en: 'Rehabilitation completion' },
     display: { uk: '~40%', en: '~40%' },
     unit: { uk: 'епізодів завершено / розпочато', en: 'episodes completed / initiated' },
-    color: '#ff7b6e', glow: 'rgba(224,85,69,0.22)', cardBg: 'rgba(224,85,69,0.07)',
   },
   {
     id: 'data', screenId: 'l2-data', weight: 20, current: 5, target: 60,
@@ -50,7 +48,6 @@ const LAYERS: LayerDef[] = [
     indicator: { uk: 'Інтероперабельність', en: 'Interoperability' },
     display: { uk: '<5%', en: '<5%' },
     unit: { uk: 'сесій з крос-системним записом', en: 'sessions with cross-system record' },
-    color: '#00d4aa', glow: 'rgba(0,210,170,0.22)', cardBg: 'rgba(0,210,170,0.07)',
   },
   {
     id: 'sustain', screenId: 'l2-sustain', weight: 15, current: 35, target: 70,
@@ -58,7 +55,6 @@ const LAYERS: LayerDef[] = [
     indicator: { uk: 'Конверсія навчання → практика', en: 'Training → practice conversion' },
     display: { uk: '~35%', en: '~35%' },
     unit: { uk: '57K awareness → 700 клін · «зникла середина»', en: '57K awareness → 700 clinical · "missing middle"' },
-    color: '#a78bfa', glow: 'rgba(167,139,250,0.22)', cardBg: 'rgba(167,139,250,0.07)',
   },
   {
     id: 'digital', screenId: 'l2-digital', weight: 10, current: 70, target: 95,
@@ -66,7 +62,6 @@ const LAYERS: LayerDef[] = [
     indicator: { uk: 'Ерозія від дублювання', en: 'Duplication erosion' },
     display: { uk: '−30%', en: '−30%' },
     unit: { uk: 'клін. часу втрачено на дубль-звіти', en: 'clinical time lost to duplicate reports' },
-    color: '#ff9966', glow: 'rgba(255,153,102,0.22)', cardBg: 'rgba(255,153,102,0.07)',
   },
   {
     id: 'regulatory', screenId: 'l2-regulatory', weight: 5, current: 1, target: 25,
@@ -74,7 +69,6 @@ const LAYERS: LayerDef[] = [
     indicator: { uk: 'Локалізація гум. ресурсів', en: 'Humanitarian localization' },
     display: { uk: '~1%', en: '~1%' },
     unit: { uk: 'гум. фінансування через укр. організ.', en: 'humanitarian funding via Ukrainian orgs' },
-    color: '#c084fc', glow: 'rgba(192,132,252,0.22)', cardBg: 'rgba(192,132,252,0.07)',
   },
 ];
 
@@ -84,7 +78,10 @@ const INDEX_SCORE = Math.round(
 
 type Band = 'low' | 'medium' | 'high';
 const scoreToBand = (s: number): Band => s < 34 ? 'low' : s < 67 ? 'medium' : 'high';
-const BAND_COLOR: Record<Band, string> = { low: '#ff7b6e', medium: '#e8c97a', high: '#00d4aa' };
+/* Оцінка руху (08 §4.2): тіал — добре, червоний — погано (незалежно від
+   напрямку стрілки); проміжне — нейтральне чорнило-«стабільно» (F1).
+   Тони — тільки з H1-палітри: #B8463C (червоний), #2C6E64 (тіал). */
+const BAND_COLOR: Record<Band, string> = { low: '#B8463C', medium: 'var(--color-ds-muted)', high: '#2C6E64' };
 const BAND_LABEL: Record<Band, { uk: string; en: string }> = {
   low:    { uk: 'Стагнація / Криза', en: 'Stagnation / Crisis' },
   medium: { uk: 'Помірне відновлення', en: 'Moderate recovery' },
@@ -153,32 +150,33 @@ const LayerCard: React.FC<{ l: LayerDef; i: number; lang: Language; onNav: () =>
     animate={{ opacity: 1, x: 0 }}
     transition={{ delay: i * 0.05, duration: 0.28 }}
     className="flex-1 rounded-2xl px-4 py-3 cursor-pointer group relative overflow-hidden min-h-0"
-    style={{ background: l.cardBg, border: `1px solid ${l.color}40`, boxShadow: `0 0 20px ${l.glow}` }}
+    style={{ background: 'var(--color-ds-surface)', border: '1px solid var(--color-ds-border)' }}
     onClick={onNav}
   >
     <div className="flex items-center justify-between mb-1">
-      <span className="cyber-label" style={{ color: l.color, fontSize: '10px' }}>{l.layer[lang]}</span>
-      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '9px', color: 'var(--color-ds-muted)' }}>w{l.weight}%</span>
+      <span className="cyber-label" style={{ fontSize: '10px' }}>{l.layer[lang]}</span>
+      <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: '9px', color: 'var(--color-ds-muted)' }}>w{l.weight}%</span>
     </div>
-    <div style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.6rem)', fontWeight: 900, fontFamily: 'Space Grotesk, sans-serif', color: l.color, lineHeight: 1 }}>
+    {/* 08 §4: число — одним чорнилом; шар розрізняється міткою та w%, не тоном */}
+    <div style={{ fontSize: 'clamp(1.7rem, 2.8vw, 2.6rem)', fontWeight: 700, fontFamily: "'Archivo', sans-serif", color: 'var(--color-ds-text)', lineHeight: 1 }}>
       {l.display[lang]}
     </div>
-    <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '11px', color: 'rgba(200,208,220,0.85)', marginTop: 3 }}>
+    <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: '11px', color: 'var(--color-ds-text)', opacity: 0.85, marginTop: 3 }}>
       {l.indicator[lang]}
     </div>
-    <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '9px', color: 'var(--color-ds-muted)', marginTop: 2 }}>
+    <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: '9px', color: 'var(--color-ds-muted)', marginTop: 2 }}>
       {l.unit[lang]}
     </div>
     <motion.div
       whileHover={{ x: 3 }}
       className="flex items-center gap-1 mt-2"
-      style={{ color: l.color, fontFamily: 'Space Grotesk, sans-serif', fontSize: '9px', fontWeight: 700 }}
+      style={{ color: 'var(--color-ds-text)', opacity: 0.8, fontFamily: "'Archivo', sans-serif", fontSize: '9px', fontWeight: 700 }}
     >
       {lang === 'uk' ? 'Деталізація' : 'Drill down'}
       <ChevronRight className="w-3 h-3" />
     </motion.div>
     <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-      style={{ background: `radial-gradient(ellipse at center, ${l.glow} 0%, transparent 70%)` }} />
+      style={{ background: 'radial-gradient(ellipse at center, var(--color-ds-copper-dim) 0%, transparent 70%)' }} />
   </motion.div>
 );
 
@@ -204,7 +202,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
           <defs>
             <linearGradient id="mhei-brass" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%"   stopColor="#7a5218" />
-              <stop offset="30%"  stopColor="#e8c97a" />
+              <stop offset="30%"  stopColor="#C9B36A" />
               <stop offset="65%"  stopColor="#c8a44c" />
               <stop offset="100%" stopColor="#5a3a08" />
             </linearGradient>
@@ -212,9 +210,9 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
 
           <path d={`M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R} ${CY} Z`} fill="rgba(6,4,2,0.93)" />
 
-          <path d={eArc(R - 16, 0,  33)}  fill="none" stroke="#ff7b6e" strokeWidth="28" opacity="0.18" />
-          <path d={eArc(R - 16, 33, 67)}  fill="none" stroke="#e8c97a" strokeWidth="28" opacity="0.18" />
-          <path d={eArc(R - 16, 67, 100)} fill="none" stroke="#00d4aa" strokeWidth="28" opacity="0.18" />
+          <path d={eArc(R - 16, 0,  33)}  fill="none" stroke="#B8463C" strokeWidth="28" opacity="0.18" />
+          <path d={eArc(R - 16, 33, 67)}  fill="none" stroke="#A8945A" strokeWidth="28" opacity="0.18" />
+          <path d={eArc(R - 16, 67, 100)} fill="none" stroke="#2C6E64" strokeWidth="28" opacity="0.18" />
 
           {LAYER_ZONES.map(({ layer: l, start, end }) => {
             const count = Math.max(2, Math.round((end - start) / 4.5));
@@ -224,7 +222,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
               return (
                 <line key={`fan-${l.id}-${k}`}
                   x1={CX} y1={CY} x2={tip.x.toFixed(2)} y2={tip.y.toFixed(2)}
-                  stroke={l.color} strokeWidth="1.2" opacity="0.28"
+                  stroke="rgba(44,110,100,0.55)" strokeWidth="1.2" opacity="0.28"
                 />
               );
             });
@@ -233,7 +231,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
           <path d={eArc(R - 16, 0, INDEX_SCORE)} fill="none"
             stroke={bandColor} strokeWidth="28" opacity="0.88" strokeLinecap="round" />
 
-          <path d={eArc(R - 30, 0, 100)} fill="none" stroke="rgba(200,164,92,0.18)" strokeWidth="1" />
+          <path d={eArc(R - 30, 0, 100)} fill="none" stroke="rgba(201,179,106,0.18)" strokeWidth="1" />
           <path d={eArc(R + 5, 0, 100)}  fill="none" stroke="url(#mhei-brass)" strokeWidth="7" />
           <line x1={CX - R - 7} y1={CY} x2={CX + R + 7} y2={CY} stroke="url(#mhei-brass)" strokeWidth="3.5" />
 
@@ -246,11 +244,11 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
             return (
               <g key={label}>
                 <line x1={outer.x.toFixed(1)} y1={outer.y.toFixed(1)} x2={inner.x.toFixed(1)} y2={inner.y.toFixed(1)}
-                  stroke={lit ? '#e8c97a' : 'rgba(200,164,92,0.25)'} strokeWidth={isEnd ? 2.5 : 1.5} />
+                  stroke={lit ? '#C9B36A' : 'rgba(201,179,106,0.25)'} strokeWidth={isEnd ? 2.5 : 1.5} />
                 <text x={lp.x.toFixed(1)} y={(lp.y + 4).toFixed(1)}
                   textAnchor="middle" dominantBaseline="central"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif', fontSize: isEnd ? '10px' : '8px', fontWeight: '700',
-                    fill: lit ? '#e8c97a' : 'rgba(200,164,92,0.28)' }}>
+                  style={{ fontFamily: "'Archivo', sans-serif", fontSize: isEnd ? '10px' : '8px', fontWeight: '700',
+                    fill: lit ? '#C9B36A' : 'rgba(201,179,106,0.28)' }}>
                   {label}
                 </text>
               </g>
@@ -271,24 +269,24 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
       </div>
 
       <div style={{ textAlign: 'center', marginTop: 4 }}>
-        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 900, fontSize: 46,
+        <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 46,
           color: bandColor, lineHeight: 1, textShadow: `0 0 32px ${bandColor}77` }}>
           {INDEX_SCORE}
         </div>
-        <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 13, color: bandColor, marginTop: 4 }}>
+        <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 13, color: bandColor, marginTop: 4 }}>
           {BAND_LABEL[currentBand][lang]}
         </div>
-        <div style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, color: '#e8c97a', opacity: 0.75, marginTop: 3, letterSpacing: '0.06em' }}>
+        <div style={{ fontFamily: "'Spline Sans Mono', monospace", fontSize: 10, color: '#C9B36A', opacity: 0.75, marginTop: 3, letterSpacing: '0.06em' }}>
           {gdpImpact(INDEX_SCORE)} {lang === 'uk' ? 'ВВП' : 'GDP'}
         </div>
-        <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 9, color: 'var(--color-ds-muted)', marginTop: 2, lineHeight: 1.4 }}>
+        <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', marginTop: 2, lineHeight: 1.4 }}>
           {lang === 'uk' ? 'темп відновлення при завершенні бойових дій' : 'recovery pace when hostilities end'}
         </div>
       </div>
 
       <button
         onClick={onToggle}
-        style={{ marginTop: 8, fontFamily: 'DM Sans, sans-serif', fontSize: 9,
+        style={{ marginTop: 8, fontFamily: "'Source Sans 3', sans-serif", fontSize: 9,
           color: bandColor, background: 'none',
           border: `1px solid ${bandColor}44`, borderRadius: 6, padding: '3px 14px', cursor: 'pointer' }}
       >
@@ -309,15 +307,15 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
                 return (
                   <div key={l.id}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
-                      <span style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 10, color: l.color }}>{l.layer[lang]}</span>
-                      <span style={{ fontFamily: 'DM Mono, monospace', fontSize: 10, color: 'var(--color-ds-muted)' }}>{Math.round(pct)}% · w{l.weight}%</span>
+                      <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 10, color: 'var(--color-ds-text)' }}>{l.layer[lang]}</span>
+                      <span style={{ fontFamily: "'Spline Sans Mono', monospace", fontSize: 10, color: 'var(--color-ds-muted)' }}>{Math.round(pct)}% · w{l.weight}%</span>
                     </div>
                     <div style={{ height: 7, borderRadius: 4, background: 'rgba(255,255,255,0.06)' }}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
                         transition={{ delay: 0.05 + i * 0.07, duration: 0.55 }}
-                        style={{ height: '100%', borderRadius: 4, background: l.color, boxShadow: `0 0 8px ${l.color}55` }}
+                        style={{ height: '100%', borderRadius: 4, background: 'var(--color-ds-teal)' }}
                       />
                     </div>
                   </div>
@@ -340,13 +338,13 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
       className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
       style={{
         background:
-          'radial-gradient(ellipse 80% 60% at 20% 60%, rgba(0,210,170,0.10) 0%, transparent 55%), ' +
+          'radial-gradient(ellipse 80% 60% at 20% 60%, rgba(44,110,100,0.10) 0%, transparent 55%), ' +
           'radial-gradient(ellipse 60% 50% at 80% 40%, rgba(0,180,200,0.07) 0%, transparent 50%), ' +
           'linear-gradient(135deg, #0a1628 0%, #1a0a0a 100%)',
       }}
     >
       <div className="h-[2px] w-full flex-shrink-0"
-        style={{ background: 'linear-gradient(90deg, transparent 0%, #00d4aa 30%, #2ec4b6 60%, rgba(200,164,92,0.7) 100%)', boxShadow: '0 0 20px rgba(0,212,170,0.55)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent 0%, #2C6E64 30%, #1C5A52 60%, rgba(201,179,106,0.7) 100%)', boxShadow: '0 0 20px rgba(44,110,100,0.4)' }} />
 
       {/* Header */}
       <div className="flex items-center justify-between pl-6 pr-32 pt-3 pb-2 flex-shrink-0">
@@ -393,18 +391,17 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
       >
         {/* Center gauge — mobile: first, desktop: middle */}
         <div className="flex flex-col min-h-0 py-1 overflow-y-auto md:order-2 order-1" style={{ scrollbarWidth: 'none' }}>
-          <div style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 700, fontSize: 9,
+          <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 9,
             color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.12em',
             textAlign: 'center', marginBottom: 4 }}>
             Mental Health Economy Index
           </div>
           <GaugeDisplay lang={lang} expanded={expanded} onToggle={() => setExpanded(e => !e)} />
-          <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: '3px 6px', justifyContent: 'center' }}>
+          <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: '3px 8px', justifyContent: 'center' }}>
             {LAYERS.map(l => (
-              <div key={l.id} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                <div style={{ width: 8, height: 2.5, background: l.color, borderRadius: 1 }} />
-                <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 8, color: 'var(--color-ds-muted)' }}>{l.layer[lang]}</span>
-              </div>
+              <span key={l.id} style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 8, color: 'var(--color-ds-muted)' }}>
+                {l.layer[lang]} · w{l.weight}%
+              </span>
             ))}
           </div>
         </div>
@@ -443,7 +440,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
               onClick={clickable ? handleClick : undefined}
               className="flex items-baseline gap-1 px-2 py-1.5 rounded-lg transition-colors duration-150"
               style={{ cursor: clickable ? 'pointer' : 'default', background: 'transparent' }}
-              onMouseEnter={e => { if (clickable) (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.08)'; }}
+              onMouseEnter={e => { if (clickable) (e.currentTarget as HTMLElement).style.background = 'rgba(201,179,106,0.08)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
               title={m.sourceUrl && !m.screen ? (lang === 'uk' ? 'Відкрити джерело' : 'Open source') : undefined}
             >

@@ -46,9 +46,9 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
         <button
           onClick={onBack}
           className="flex items-center gap-2 px-3 py-2 rounded-xl font-bold ds-display transition-all flex-shrink-0"
-          style={{ background: 'rgba(200,164,92,0.18)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: 12 }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.32)'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.18)'; }}
+          style={{ background: 'rgba(201,179,106,0.18)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: 12 }}
+          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,179,106,0.32)'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,179,106,0.18)'; }}
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           {t('Назад', 'Back')}
@@ -76,8 +76,8 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
                 onClick={() => setChapter(c.id)}
                 className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all"
                 style={{
-                  background: active ? 'rgba(200,164,92,0.15)' : 'transparent',
-                  border: active ? '1px solid rgba(200,164,92,0.35)' : '1px solid transparent',
+                  background: active ? 'rgba(201,179,106,0.15)' : 'transparent',
+                  border: active ? '1px solid rgba(201,179,106,0.35)' : '1px solid transparent',
                 }}
               >
                 <span className="text-[9px] font-mono mt-0.5 flex-shrink-0"

@@ -35,25 +35,25 @@ export const CustomScatterPlot: React.FC<CustomScatterPlotProps> = ({
           dataKey="x" 
           name={xLabel} 
           unit="" 
-          tick={{fontSize: 10, fill: '#94a3b8', fontFamily: 'JetBrains Mono'}}
-          label={{ value: xLabel, position: 'insideBottom', offset: -10, fontSize: 10, fill: '#94a3b8', fontFamily: 'JetBrains Mono' }}
+          tick={{fontSize: 10, fill: '#94a3b8', fontFamily: 'Spline Sans Mono'}}
+          label={{ value: xLabel, position: 'insideBottom', offset: -10, fontSize: 10, fill: '#94a3b8', fontFamily: 'Spline Sans Mono' }}
         />
         <YAxis 
           type="number" 
           dataKey="y" 
           name={yLabel} 
           unit="" 
-          tick={{fontSize: 10, fill: '#94a3b8', fontFamily: 'JetBrains Mono'}}
-          label={{ value: yLabel, angle: -90, position: 'insideLeft', fontSize: 10, fill: '#94a3b8', fontFamily: 'JetBrains Mono' }}
+          tick={{fontSize: 10, fill: '#94a3b8', fontFamily: 'Spline Sans Mono'}}
+          label={{ value: yLabel, angle: -90, position: 'insideLeft', fontSize: 10, fill: '#94a3b8', fontFamily: 'Spline Sans Mono' }}
         />
         {isBubble && <ZAxis type="number" dataKey="z" range={[60, 400]} name={zLabel} />}
         <Tooltip 
           cursor={{ strokeDasharray: '3 3', stroke: 'rgba(0, 245, 255, 0.5)' }} 
           contentStyle={{ backgroundColor: '#050A15', borderRadius: '8px', border: '1px solid rgba(0, 245, 255, 0.2)', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)' }}
-          itemStyle={{ fontSize: '11px', fontWeight: 700, color: '#00F5FF', fontFamily: 'JetBrains Mono' }}
+          itemStyle={{ fontSize: '11px', fontWeight: 700, color: '#00F5FF', fontFamily: 'Spline Sans Mono' }}
           formatter={(value: any, name: string) => [value, name]}
         />
-        <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '10px', fontFamily: 'JetBrains Mono', color: '#94a3b8' }} />
+        <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '10px', fontFamily: 'Spline Sans Mono', color: '#94a3b8' }} />
         <Scatter name="Data" data={data} fill={COLORS.cyberCyan}>
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.fill || COLORS.blue} />

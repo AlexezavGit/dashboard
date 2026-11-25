@@ -117,14 +117,14 @@ export const NavBar = ({
       onClick={nav.back}
       className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold ds-display transition-all flex-shrink-0"
       style={{
-        background: 'rgba(200,164,92,0.18)',
+        background: 'rgba(201,179,106,0.18)',
         border: '2px solid var(--color-ds-gold)',
         color: 'var(--color-ds-gold)',
         fontSize: '13px',
         minWidth: '90px',
       }}
-      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.32)'; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(200,164,92,0.18)'; }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,179,106,0.32)'; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(201,179,106,0.18)'; }}
     >
       <ArrowLeft className="w-4 h-4" />
       {lang === 'uk' ? 'Назад' : 'Back'}

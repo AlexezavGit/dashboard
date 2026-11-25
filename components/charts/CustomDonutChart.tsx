@@ -26,9 +26,9 @@ export const CustomDonutChart: React.FC<CustomDonutChartProps> = ({ data, height
           </Pie>
           <Tooltip 
              contentStyle={{ backgroundColor: '#050A15', borderRadius: '8px', border: '1px solid rgba(0, 245, 255, 0.2)', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)' }}
-             itemStyle={{ fontSize: '11px', fontWeight: 700, color: '#00F5FF', fontFamily: 'JetBrains Mono' }}
+             itemStyle={{ fontSize: '11px', fontWeight: 700, color: '#00F5FF', fontFamily: 'Spline Sans Mono' }}
           />
-          <Legend wrapperStyle={{ fontSize: '10px', fontFamily: 'JetBrains Mono', color: '#94a3b8' }} />
+          <Legend wrapperStyle={{ fontSize: '10px', fontFamily: 'Spline Sans Mono', color: '#94a3b8' }} />
         </PieChart>
       </ResponsiveContainer>
     </div>

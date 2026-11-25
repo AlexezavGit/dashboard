@@ -22,7 +22,7 @@ const BARS = [
     label: { uk: 'Клінічна потреба', en: 'Clinical need' },
     value: 62_400_000,
     display: '62.4M',
-    color: '#ff7b6e',
+    color: '#B8463C',
     pct: 100,
     note: { uk: '3.9M осіб × 16 сес. (ВООЗ норма)', en: '3.9M people × 16 sessions (WHO norm)' },
   },
@@ -38,7 +38,7 @@ const BARS = [
     label: { uk: 'Гуманітарний сектор (видимий)', en: 'Humanitarian sector (visible)' },
     value: 4_700_000,
     display: '~4.7M',
-    color: '#00d4aa',
+    color: '#2C6E64',
     pct: 7.5,
     note: { uk: 'CommCare/ActivityInfo/Kobo звіти', en: 'CommCare/ActivityInfo/Kobo reports' },
   },
@@ -46,17 +46,17 @@ const BARS = [
     label: { uk: 'Тіньовий сектор (оцінка)', en: 'Shadow sector (estimate)' },
     value: 3_000_000,
     display: '~3M',
-    color: '#a78bfa',
+    color: '#2C6E64',
     pct: 4.8,
     note: { uk: '5–15K незареєстрованих практиків × ~200 сес./рік', en: '5–15K unregistered practitioners × ~200 sessions/year' },
   },
 ];
 
 const GAPS = [
-  { label: { uk: '0% цифрового обміну між гуман. системами та ЄСОЗ', en: '0% digital exchange between humanitarian systems and ESOZ' }, color: '#ff7b6e' },
+  { label: { uk: '0% цифрового обміну між гуман. системами та ЄСОЗ', en: '0% digital exchange between humanitarian systems and ESOZ' }, color: '#B8463C' },
   { label: { uk: '54% пацієнтів не завершують курс лікування', en: '54% of patients do not complete their treatment course' }, color: '#e8c97a' },
-  { label: { uk: '78% переходів — без офіційного направлення', en: '78% of care transitions — without formal referral' }, color: '#00d4aa' },
-  { label: { uk: 'Тіньовий сектор невидимий для будь-якого реєстру', en: 'Shadow sector invisible to any registry' }, color: '#a78bfa' },
+  { label: { uk: '78% переходів — без офіційного направлення', en: '78% of care transitions — without formal referral' }, color: '#2C6E64' },
+  { label: { uk: 'Тіньовий сектор невидимий для будь-якого реєстру', en: 'Shadow sector invisible to any registry' }, color: '#2C6E64' },
 ];
 
 export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
@@ -64,24 +64,24 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
     className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
     style={{
       background:
-        'radial-gradient(ellipse 60% 50% at 10% 50%, rgba(224,85,69,0.14) 0%, transparent 55%), ' +
+        'radial-gradient(ellipse 60% 50% at 10% 50%, rgba(184,70,60,0.14) 0%, transparent 55%), ' +
         'linear-gradient(135deg, #0a1628 0%, #180808 100%)',
     }}
   >
-    <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, #ff7b6e, #e8c97a 60%, transparent)', boxShadow: '0 0 14px rgba(255,123,110,0.4)' }} />
+    <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, #B8463C, #e8c97a 60%, transparent)', boxShadow: '0 0 14px rgba(255,123,110,0.4)' }} />
 
     <NavBar
       lang={lang}
       nav={nav}
       title={T.title}
       subtitle={T.subtitle}
-      accentColor="#ff7b6e"
+      accentColor="#B8463C"
     />
 
     {/* Intro context */}
     <div className="px-5 pb-2 flex-shrink-0">
       <div className="rounded-xl px-4 py-2.5" style={{ background: 'rgba(255,123,110,0.06)', border: '1px solid rgba(255,123,110,0.18)' }}>
-        <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.82)' }}>
+        <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'rgba(242,234,219,0.82)' }}>
           {lang === 'uk'
             ? '0.28% — це не округлення. Ця цифра виходить із співвідношення фактичних доступних сесій до клінічно обґрунтованої потреби. Нижче — декомпозиція за кожним сектором і структурні причини, чому розрив не закривається при збільшенні фінансування без реформи архітектури.'
             : '0.28% is not a rounding. This figure is derived from the ratio of actually available sessions to clinically justified need. Below is a decomposition by sector and the structural reasons why the gap does not close when funding increases without reforming the architecture.'}
@@ -93,7 +93,7 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 px-5 pb-3 min-h-0">
       {/* Left: capacity bars */}
       <div className="flex flex-col gap-3">
-        <div className="cyber-label mb-1" style={{ color: '#ff7b6e' }}>
+        <div className="cyber-label mb-1" style={{ color: '#B8463C' }}>
           {lang === 'uk' ? 'ПОТРЕБА ТА СПРОМОЖНІСТЬ (сесії/рік)' : 'NEED VS CAPACITY (sessions/year)'}
         </div>
         {BARS.map((b, i) => (
@@ -106,7 +106,7 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
             style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${b.color}33` }}
           >
             <div className="flex items-baseline justify-between mb-2">
-              <span className="text-[11px] ds-body" style={{ color: 'rgba(200,208,220,0.8)' }}>{b.label[lang]}</span>
+              <span className="text-[11px] ds-body" style={{ color: 'rgba(242,234,219,0.8)' }}>{b.label[lang]}</span>
               <span className="text-[20px] font-bold ds-display" style={{ color: b.color }}>{b.display}</span>
             </div>
             {/* Bar */}
@@ -139,7 +139,7 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
             style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${g.color}33` }}
           >
             <div className="w-1.5 h-1.5 rounded-full mt-1 flex-shrink-0" style={{ backgroundColor: g.color, boxShadow: `0 0 6px ${g.color}` }} />
-            <span className="text-[12px] ds-body" style={{ color: 'rgba(200,208,220,0.8)' }}>{g.label[lang]}</span>
+            <span className="text-[12px] ds-body" style={{ color: 'rgba(242,234,219,0.8)' }}>{g.label[lang]}</span>
           </motion.div>
         ))}
 
@@ -149,12 +149,12 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
           className="mt-auto rounded-xl p-4"
-          style={{ background: 'rgba(0,210,170,0.07)', border: '1px solid rgba(0,210,170,0.22)' }}
+          style={{ background: 'rgba(44,110,100,0.07)', border: '1px solid rgba(44,110,100,0.22)' }}
         >
-          <div className="cyber-label mb-1.5" style={{ color: '#00d4aa', fontSize: '10px' }}>
+          <div className="cyber-label mb-1.5" style={{ color: '#2C6E64', fontSize: '10px' }}>
             {lang === 'uk' ? 'ВИСНОВОК + FEEL AGAIN' : 'CONCLUSION + FEEL AGAIN'}
           </div>
-          <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'rgba(200,208,220,0.82)' }}>
+          <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'rgba(242,234,219,0.82)' }}>
             {lang === 'uk'
               ? 'Розрив — архітектурний, не фінансовий. 260K НСЗУ-пацієнтів 2025 — це лише ті, хто пройшов через офіційну систему. Ще ~4.7M гуманітарних та ~3M тіньових сесій невидимі для будь-якого зведеного реєстру. FEEL Again Digital Bus (HL7 FHIR R4) → одна інтеграція між кожною системою та ЄСОЗ = усі сесії стають аудитними. Ціль: 400K верифікованих записів для THRIVE disbursement.'
               : 'The gap is architectural, not financial. 260K NHSU patients 2025 are only those who passed through the official system. Another ~4.7M humanitarian and ~3M shadow sessions are invisible to any consolidated registry. FEEL Again Digital Bus (HL7 FHIR R4) → one integration between each system and ESOZ = all sessions become auditable. Target: 400K verified records for THRIVE disbursement.'}

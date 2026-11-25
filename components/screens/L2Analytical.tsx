@@ -15,7 +15,7 @@ const SYSTEMS = [
     visibility: 85,
     esoz: 0,
     open: true,
-    color: '#00d4aa',
+    color: '#2C6E64',
   },
   {
     name: 'KoBo Toolbox',
@@ -24,7 +24,7 @@ const SYSTEMS = [
     visibility: 70,
     esoz: 0,
     open: true,
-    color: '#00d4aa',
+    color: '#2C6E64',
   },
   {
     name: 'ActivityInfo',
@@ -33,7 +33,7 @@ const SYSTEMS = [
     visibility: 75,
     esoz: 0,
     open: true,
-    color: '#00d4aa',
+    color: '#2C6E64',
   },
   {
     name: 'ЄСОЗ / eHealth',
@@ -42,7 +42,7 @@ const SYSTEMS = [
     visibility: 5,
     esoz: 100,
     open: false,
-    color: '#ff7b6e',
+    color: '#B8463C',
   },
   {
     name: { uk: 'Невидимий у звітності', en: 'Invisible in reporting' },
@@ -51,7 +51,7 @@ const SYSTEMS = [
     visibility: 3,
     esoz: 0,
     open: false,
-    color: '#a78bfa',
+    color: '#2C6E64',
   },
   {
     name: 'Trembita / X-Road',
@@ -76,9 +76,9 @@ const SYSTEMS = [
 ];
 
 const LEGEND = [
-  { color: '#00d4aa', label: { uk: 'Відкрита / гуманітарна', en: 'Open / humanitarian' } },
-  { color: '#ff7b6e', label: { uk: 'Закрита / державна', en: 'Closed / government' } },
-  { color: '#a78bfa', label: { uk: 'Невидима у звітності', en: 'Invisible in reporting' } },
+  { color: '#2C6E64', label: { uk: 'Відкрита / гуманітарна', en: 'Open / humanitarian' } },
+  { color: '#B8463C', label: { uk: 'Закрита / державна', en: 'Closed / government' } },
+  { color: '#2C6E64', label: { uk: 'Невидима у звітності', en: 'Invisible in reporting' } },
   { color: '#e8c97a', label: { uk: 'FEEL Again (з\'єднує всіх)', en: 'FEEL Again (connects all)' } },
 ];
 
@@ -87,17 +87,17 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
     className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
     style={{
       background:
-        'radial-gradient(ellipse 60% 50% at 70% 30%, rgba(167,139,250,0.10) 0%, transparent 55%), ' +
+        'radial-gradient(ellipse 60% 50% at 70% 30%, rgba(44,110,100,0.10) 0%, transparent 55%), ' +
         'linear-gradient(135deg, #080f1c 0%, #0a1628 100%)',
     }}
   >
     <div className="h-[2px] w-full flex-shrink-0"
-      style={{ background: 'linear-gradient(90deg, transparent, #a78bfa, #8b5cf6, rgba(200,164,92,0.4))', boxShadow: '0 0 16px rgba(167,139,250,0.4)' }} />
+      style={{ background: 'linear-gradient(90deg, transparent, #2C6E64, #8b5cf6, rgba(201,179,106,0.4))', boxShadow: '0 0 16px rgba(44,110,100,0.4)' }} />
 
     <NavBar
       lang={lang}
       nav={nav}
-      accentColor="#a78bfa"
+      accentColor="#2C6E64"
       title={{ uk: 'Карта видимості даних', en: 'Data Visibility Map' }}
       subtitle={{ uk: 'Що видно кому — і де повна темрява', en: 'What is visible to whom — and where is complete darkness' }}
       crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
@@ -162,12 +162,12 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
               <span className="text-[11px] font-bold ds-display w-8 text-right" style={{ color: s.color }}>{s.visibility}%</span>
             </div>
             <div className="text-center">
-              <span className="text-[12px] font-bold ds-display" style={{ color: s.esoz > 0 ? '#00d4aa' : 'rgba(255,123,110,0.35)' }}>
+              <span className="text-[12px] font-bold ds-display" style={{ color: s.esoz > 0 ? '#2C6E64' : 'rgba(255,123,110,0.35)' }}>
                 {s.esoz > 0 ? `${s.esoz}%` : '✕'}
               </span>
             </div>
             <div className="text-center">
-              <span className="text-[13px]" style={{ color: s.open ? '#00d4aa' : '#ff7b6e' }}>
+              <span className="text-[13px]" style={{ color: s.open ? '#2C6E64' : '#B8463C' }}>
                 {s.open ? '✓' : '✕'}
               </span>
             </div>
@@ -183,7 +183,7 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
         className="p-3 rounded-xl flex-shrink-0"
         style={{ background: 'rgba(232,201,122,0.07)', border: '1px solid rgba(232,201,122,0.25)' }}
       >
-        <p className="text-[11px] ds-body leading-snug" style={{ color: 'rgba(200,208,220,0.85)' }}>
+        <p className="text-[11px] ds-body leading-snug" style={{ color: 'rgba(242,234,219,0.85)' }}>
           {lang === 'uk'
             ? '~4.7M гуманітарних сесій невидимі для ЄСОЗ → не рахуються для THRIVE DLI → не тригеряють disbursement. FEEL Again Digital Bus = один інтеграційний шар між кожною системою та ЄСОЗ через HL7 FHIR R4 · 10K req/sec · <200ms p95.'
             : '~4.7M humanitarian sessions invisible to ESOZ → not counted for THRIVE DLIs → do not trigger disbursement. FEEL Again Digital Bus = one integration layer between each system and ESOZ via HL7 FHIR R4 · 10K req/sec · <200ms p95.'}

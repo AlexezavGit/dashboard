@@ -67,24 +67,24 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => {
       className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
       style={{
         background:
-          'radial-gradient(ellipse 50% 60% at 30% 50%, rgba(0,210,170,0.15) 0%, transparent 55%), ' +
+          'radial-gradient(ellipse 50% 60% at 30% 50%, rgba(44,110,100,0.15) 0%, transparent 55%), ' +
           'linear-gradient(135deg, #080f1c 0%, #0a1628 100%)',
       }}
     >
-      <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #00d4aa, #2ec4b6 50%, transparent)', boxShadow: '0 0 14px rgba(0,212,170,0.5)' }} />
+      <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #2C6E64, #1C5A52 50%, transparent)', boxShadow: '0 0 14px rgba(44,110,100,0.5)' }} />
 
       {/* ── Header ── */}
       <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0">
         <button
           onClick={nav.back}
           className="flex items-center gap-2 px-4 py-2 rounded-xl ds-display font-bold flex-shrink-0 transition-all"
-          style={{ background: 'rgba(200,164,92,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '12px' }}
+          style={{ background: 'rgba(201,179,106,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '12px' }}
         >
           <ArrowLeft className="w-4 h-4" />
           {lang === 'uk' ? 'Назад' : 'Back'}
         </button>
         <div>
-          <div className="text-[17px] font-bold ds-display" style={{ color: 'var(--color-ds-text, #00d4aa)' }}>
+          <div className="text-[17px] font-bold ds-display" style={{ color: 'var(--color-ds-text, #2C6E64)' }}>
             {lang === 'uk' ? 'Беклог у роках: ще не розраховано' : 'Backlog in years: not yet calculated'}
           </div>
           <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
@@ -97,7 +97,7 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => {
 
       {/* ── Intro context ── */}
       <div className="px-5 pb-2 flex-shrink-0">
-        <div className="rounded-xl px-4 py-2" style={{ background: 'rgba(0,210,170,0.06)', border: '1px solid rgba(0,210,170,0.18)' }}>
+        <div className="rounded-xl px-4 py-2" style={{ background: 'rgba(44,110,100,0.06)', border: '1px solid rgba(44,110,100,0.18)' }}>
           <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'var(--color-ds-text, rgba(214,221,230,0.88))' }}>
             {lang === 'uk'
               ? 'Беклог у роках — це потреба в сесіях, поділена на річну місткість системи. Обидва входи в реєстрі мають статус припущення, а результат залежить ще від параметрів, які задає модель попиту і місткості: горизонту охоплення, чисельності надавачів і їхнього річного фонду. Доки кожен вхід формули не має коду реєстру, число років тут не показується.'
@@ -133,8 +133,8 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => {
           </div>
           <div className="text-[18px] font-bold ds-display" style={{ color: 'var(--color-ds-muted)' }}>=</div>
           <div className="text-center">
-            <div className="text-[10px] ds-body mb-1" style={{ color: 'var(--color-ds-text, #00d4aa)' }}>{lang === 'uk' ? 'Беклог' : 'Backlog'}</div>
-            <div className="text-[32px] font-bold ds-display" style={{ color: 'var(--color-ds-text, #00d4aa)' }}>—</div>
+            <div className="text-[10px] ds-body mb-1" style={{ color: 'var(--color-ds-text, #2C6E64)' }}>{lang === 'uk' ? 'Беклог' : 'Backlog'}</div>
+            <div className="text-[32px] font-bold ds-display" style={{ color: 'var(--color-ds-text, #2C6E64)' }}>—</div>
             <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
               {lang === 'uk' ? 'не розраховано' : 'not calculated'}
             </div>
@@ -188,7 +188,7 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
           className="flex-shrink-0 rounded-xl px-4 py-2.5"
-          style={{ background: 'rgba(0,210,170,0.06)', border: '1px solid rgba(0,210,170,0.18)' }}
+          style={{ background: 'rgba(44,110,100,0.06)', border: '1px solid rgba(44,110,100,0.18)' }}
         >
           <p className="text-[10px] ds-body leading-relaxed" style={{ color: 'var(--color-ds-text, rgba(214,221,230,0.88))' }}>
             {lang === 'uk'

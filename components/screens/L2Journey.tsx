@@ -23,7 +23,7 @@ export const L2Journey: React.FC<Props> = ({ lang, nav }) => (
       background: 'linear-gradient(135deg, #0a1628 0%, #180808 100%)',
     }}
   >
-    <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #4488ff, #00d4aa 60%, transparent)', boxShadow: '0 0 14px rgba(68,136,255,0.4)' }} />
+    <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #4488ff, #2C6E64 60%, transparent)', boxShadow: '0 0 14px rgba(68,136,255,0.4)' }} />
 
     {/* Header */}
     <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0 z-10">

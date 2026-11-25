@@ -29,18 +29,18 @@ export const CustomBarChart: React.FC<CustomBarChartProps> = ({
           <CartesianGrid strokeDasharray="3 3" vertical={layout === 'horizontal'} horizontal={layout === 'vertical'} stroke="rgba(0, 245, 255, 0.1)" />
           {layout === 'horizontal' ? (
             <>
-              <XAxis dataKey={xAxisKey} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'JetBrains Mono' }} interval={0} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'JetBrains Mono' }} unit={unit} />
+              <XAxis dataKey={xAxisKey} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'Spline Sans Mono' }} interval={0} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'Spline Sans Mono' }} unit={unit} />
             </>
           ) : (
             <>
-              <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'JetBrains Mono' }} unit={unit} />
-              <YAxis dataKey={xAxisKey} type="category" width={120} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'JetBrains Mono' }} />
+              <XAxis type="number" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'Spline Sans Mono' }} unit={unit} />
+              <YAxis dataKey={xAxisKey} type="category" width={120} axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontFamily: 'Spline Sans Mono' }} />
             </>
           )}
           <Tooltip 
             contentStyle={{ backgroundColor: '#050A15', borderRadius: '8px', border: '1px solid rgba(0, 245, 255, 0.2)', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)' }}
-            itemStyle={{ fontSize: '11px', fontWeight: 700, color: '#00F5FF', fontFamily: 'JetBrains Mono' }}
+            itemStyle={{ fontSize: '11px', fontWeight: 700, color: '#00F5FF', fontFamily: 'Spline Sans Mono' }}
             cursor={{ fill: 'rgba(0, 245, 255, 0.05)' }}
           />
           {bars.length > 1 && <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />}

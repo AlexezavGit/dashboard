@@ -9,10 +9,10 @@ interface Props { lang: Language; nav: ScreenNav; }
 const t = (uk: string, en: string, lang: Language) => lang === 'uk' ? uk : en;
 
 const FLOW = [
-  { actor: 'Bilateral donors', share: 78, color: '#c084fc', label: { uk: 'EC / USAID / FCDO / BMZ', en: 'EC / USAID / FCDO / BMZ' } },
-  { actor: 'UN Agencies', share: 15, color: '#a78bfa', label: { uk: 'UNICEF / WHO / UNHCR', en: 'UNICEF / WHO / UNHCR' } },
+  { actor: 'Bilateral donors', share: 78, color: '#1C6E86', label: { uk: 'EC / USAID / FCDO / BMZ', en: 'EC / USAID / FCDO / BMZ' } },
+  { actor: 'UN Agencies', share: 15, color: '#2C6E64', label: { uk: 'UNICEF / WHO / UNHCR', en: 'UNICEF / WHO / UNHCR' } },
   { actor: 'INGOs', share: 6, color: '#9061f9', label: { uk: 'IMC / ACF / MSF та ін.', en: 'IMC / ACF / MSF et al.' } },
-  { actor: { uk: 'Укр. організ.', en: 'Ukrainian orgs' }, share: 1, color: '#ff7b6e', label: { uk: 'Всі місцеві НГО', en: 'All local NGOs' } },
+  { actor: { uk: 'Укр. організ.', en: 'Ukrainian orgs' }, share: 1, color: '#B8463C', label: { uk: 'Всі місцеві НГО', en: 'All local NGOs' } },
 ];
 
 const MILESTONES = [
@@ -28,12 +28,12 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
     style={{ background: 'linear-gradient(135deg, #0a1628 0%, #0f0a1a 100%)' }}
   >
     <div className="h-[2px] w-full flex-shrink-0"
-      style={{ background: 'linear-gradient(90deg, transparent, #c084fc, #a855f7, rgba(200,164,92,0.4))', boxShadow: '0 0 18px rgba(192,132,252,0.5)' }} />
+      style={{ background: 'linear-gradient(90deg, transparent, #1C6E86, #0E4D63, rgba(201,179,106,0.4))', boxShadow: '0 0 18px rgba(28,110,134,0.5)' }} />
 
     <NavBar
       lang={lang}
       nav={nav}
-      accentColor="#c084fc"
+      accentColor="#1C6E86"
       title={{ uk: 'Локалізація гуманітарних ресурсів', en: 'Humanitarian localization' }}
       subtitle={{ uk: 'Regulatory · ціль ≥25%', en: 'Regulatory · target ≥25%' }}
       crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
@@ -42,11 +42,11 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 px-6 pb-0 pt-3 min-h-0 overflow-hidden">
       <div className="flex flex-col gap-4">
         <div className="rounded-2xl p-5 flex-shrink-0"
-          style={{ background: 'rgba(192,132,252,0.07)', border: '1px solid rgba(192,132,252,0.3)' }}>
-          <div className="ds-display font-black leading-none" style={{ fontSize: '72px', color: '#c084fc', textShadow: '0 0 40px rgba(192,132,252,0.5)' }}>
+          style={{ background: 'rgba(28,110,134,0.07)', border: '1px solid rgba(28,110,134,0.3)' }}>
+          <div className="ds-display font-black leading-none" style={{ fontSize: '72px', color: '#1C6E86', textShadow: '0 0 40px rgba(28,110,134,0.5)' }}>
             ~1%
           </div>
-          <div className="text-[15px] font-semibold ds-body mt-2" style={{ color: 'rgba(200,208,220,0.9)' }}>
+          <div className="text-[15px] font-semibold ds-body mt-2" style={{ color: 'rgba(242,234,219,0.9)' }}>
             {t('гуманітарного MH фінансування через укр. організації', 'humanitarian MH funding via Ukrainian organisations', lang)}
           </div>
           <div className="text-[11px] font-mono mt-1" style={{ color: 'var(--color-ds-muted)' }}>
@@ -79,7 +79,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
               </div>
             ))}
           </div>
-          <div className="mt-3 text-[10px] font-mono" style={{ color: '#ff7b6e' }}>
+          <div className="mt-3 text-[10px] font-mono" style={{ color: '#B8463C' }}>
             {t('⟶ 99% капіталу поза прямим укр. управлінням', '⟶ 99% capital outside direct Ukrainian management', lang)}
           </div>
         </div>
@@ -99,7 +99,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
                   {m.year}
                 </div>
                 <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 mt-1"
-                  style={{ background: m.achieved ? 'var(--color-ds-gold)' : '#ff7b6e', boxShadow: m.achieved ? '0 0 8px rgba(200,164,92,0.5)' : undefined }} />
+                  style={{ background: m.achieved ? 'var(--color-ds-gold)' : '#B8463C', boxShadow: m.achieved ? '0 0 8px rgba(201,179,106,0.5)' : undefined }} />
                 <div className="text-[12px] ds-body" style={{ color: m.achieved ? 'var(--color-ds-text)' : 'var(--color-ds-muted)' }}>
                   {m.event[lang]}
                 </div>
@@ -108,7 +108,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
           </div>
         </div>
 
-        <div className="flex-1 rounded-2xl p-5 overflow-y-auto" style={{ maxHeight: '320px', background: 'rgba(200,164,92,0.06)', border: '1px solid rgba(200,164,92,0.3)' }}>
+        <div className="flex-1 rounded-2xl p-5 overflow-y-auto" style={{ maxHeight: '320px', background: 'rgba(201,179,106,0.06)', border: '1px solid rgba(201,179,106,0.3)' }}>
           <div className="text-[11px] font-mono uppercase tracking-wider mb-3" style={{ color: 'var(--color-ds-gold)' }}>
             {t('Виконати humanitarian reset (Tom Fletcher)', 'Execute humanitarian reset (Tom Fletcher)', lang)}
           </div>
@@ -121,7 +121,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
             ].map((item, i) => (
               <div key={i} className="flex gap-2 items-start">
                 <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold mt-0.5"
-                  style={{ background: 'rgba(200,164,92,0.2)', color: 'var(--color-ds-gold)', border: '1px solid rgba(200,164,92,0.4)' }}>
+                  style={{ background: 'rgba(201,179,106,0.2)', color: 'var(--color-ds-gold)', border: '1px solid rgba(201,179,106,0.4)' }}>
                   {i + 1}
                 </div>
                 <div className="text-[12px] ds-body" style={{ color: 'var(--color-ds-text)' }}>{item[lang]}</div>

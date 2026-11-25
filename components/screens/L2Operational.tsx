@@ -25,9 +25,9 @@ interface Gap {
 }
 
 const CLUSTER_META: Record<Cluster, { uk: string; en: string; color: string }> = {
-  data:           { uk: 'КЛАСТЕР: ДАНІ',         en: 'CLUSTER: DATA',           color: '#a78bfa' },
+  data:           { uk: 'КЛАСТЕР: ДАНІ',         en: 'CLUSTER: DATA',           color: '#2C6E64' },
   capacity:       { uk: 'КЛАСТЕР: ПОТУЖНІСТЬ',   en: 'CLUSTER: CAPACITY',       color: '#e8c97a' },
-  accountability: { uk: 'КЛАСТЕР: ПІДЗВІТНІСТЬ', en: 'CLUSTER: ACCOUNTABILITY', color: '#ff7b6e' },
+  accountability: { uk: 'КЛАСТЕР: ПІДЗВІТНІСТЬ', en: 'CLUSTER: ACCOUNTABILITY', color: '#B8463C' },
 };
 
 const GAPS: Gap[] = [
@@ -42,7 +42,7 @@ const GAPS: Gap[] = [
     chainsTo: ['admin', 'interop'],
   },
   {
-    id: 'interop', cluster: 'data', color: '#a78bfa', icon: '🔌',
+    id: 'interop', cluster: 'data', color: '#2C6E64', icon: '🔌',
     label:    { uk: 'Інтероперабельність', en: 'Interoperability' },
     val: '5', valLabel: { uk: 'систем, 0 з\'єднань', en: 'systems, 0 connections' },
     oneliner: { uk: 'ЄСОЗ↔CommCare↔ActivityInfo↔Kobo↔Тіньовий: повна ізоляція', en: 'ESOZ↔CommCare↔ActivityInfo↔Kobo↔Shadow: complete isolation' },
@@ -51,7 +51,7 @@ const GAPS: Gap[] = [
     chainsTo: ['info', 'admin'],
   },
   {
-    id: 'admin', cluster: 'data', color: '#2ec4b6', icon: '📋',
+    id: 'admin', cluster: 'data', color: '#1C5A52', icon: '📋',
     label:    { uk: 'Адміністративний', en: 'Administrative' },
     val: '22%', valLabel: { uk: 'часу — подвійна робота', en: 'time on duplication' },
     oneliner: { uk: '3.5 год/тиж × 12K (4K НСЗУ + 8K UNICEF) = 2.18M годин/рік витрачено даремно', en: '3.5 hrs/wk × 12K (4K NHSU + 8K UNICEF) = 2.18M hrs/yr wasted' },
@@ -61,7 +61,7 @@ const GAPS: Gap[] = [
   },
   // ── CAPACITY cluster ──────────────────────────────────────────────────────
   {
-    id: 'cap', cluster: 'capacity', color: '#ff7b6e', icon: '🏥',
+    id: 'cap', cluster: 'capacity', color: '#B8463C', icon: '🏥',
     label:    { uk: 'Місткісний', en: 'Capacity' },
     val: '0.28%', valLabel: { uk: 'клінічної потреби покрито', en: 'of clinical need covered' },
     oneliner: { uk: '5M доступних сесій vs 62.4M необхідних/рік — розрив 57.4M', en: '5M available vs 62.4M needed sessions/yr — gap of 57.4M' },
@@ -70,7 +70,7 @@ const GAPS: Gap[] = [
     chainsTo: ['budget', 'path'],
   },
   {
-    id: 'budget', cluster: 'capacity', color: '#a78bfa', icon: '⚖️',
+    id: 'budget', cluster: 'capacity', color: '#2C6E64', icon: '⚖️',
     label:    { uk: 'Бюджетний', en: 'Budget' },
     val: '8.1:1', valLabel: { uk: 'стаціонар:амбулаторне', en: 'inpatient:outpatient' },
     oneliner: { uk: '55% бюджету — стаціонар; 71% попиту — амбулаторні послуги', en: '55% budget inpatient; 71% demand is outpatient services' },
@@ -89,7 +89,7 @@ const GAPS: Gap[] = [
   },
   // ── ACCOUNTABILITY cluster ────────────────────────────────────────────────
   {
-    id: 'fin', cluster: 'accountability', color: '#ff7b6e', icon: '💰',
+    id: 'fin', cluster: 'accountability', color: '#B8463C', icon: '💰',
     label:    { uk: 'Фінансовий', en: 'Financial' },
     val: '$0', valLabel: { uk: 'верифікованих outcome-виплат', en: 'verified outcome payments' },
     oneliner: { uk: '$1.87B в системі — 0% прив\'язано до верифікованих сесій', en: '$1.87B in system — 0% linked to verified sessions' },
@@ -107,7 +107,7 @@ const GAPS: Gap[] = [
     chainsTo: ['fin', 'admin'],
   },
   {
-    id: 'human', cluster: 'accountability', color: '#00d4aa', icon: '🌍',
+    id: 'human', cluster: 'accountability', color: '#2C6E64', icon: '🌍',
     label:    { uk: 'Гуманітарний', en: 'Humanitarian' },
     val: '1%', valLabel: { uk: 'локалізація (ціль Grand Bargain: 25%)', en: 'localisation (Grand Bargain target: 25%)' },
     oneliner: { uk: '1% гуманітарних коштів MHPSS до місцевих НУО при зобов\'язанні 25%', en: '1% of MHPSS humanitarian funds reach local NGOs against 25% commitment' },
@@ -171,7 +171,7 @@ const FlipCard: React.FC<{
           className="ds-body">
           {gap.valLabel[lang]}
         </div>
-        <p className="ds-body" style={{ fontSize: '10px', lineHeight: 1.4, color: 'rgba(200,208,220,0.72)', marginTop: 'auto' }}>
+        <p className="ds-body" style={{ fontSize: '10px', lineHeight: 1.4, color: 'rgba(242,234,219,0.72)', marginTop: 'auto' }}>
           {gap.oneliner[lang]}
         </p>
         <div style={{ fontSize: '10px', color: `${gap.color}40`, marginTop: '5px' }}>↻</div>
@@ -192,7 +192,7 @@ const FlipCard: React.FC<{
       }}>
         <div>
           <div className="cyber-label" style={{ color: gap.color, fontSize: '10px' }}>SOURCE</div>
-          <p className="ds-body" style={{ fontSize: '10px', marginTop: '2px', color: 'rgba(200,208,220,0.85)' }}>
+          <p className="ds-body" style={{ fontSize: '10px', marginTop: '2px', color: 'rgba(242,234,219,0.85)' }}>
             {gap.source[lang]}
           </p>
         </div>
@@ -200,7 +200,7 @@ const FlipCard: React.FC<{
           <div className="cyber-label" style={{ color: gap.color, fontSize: '10px' }}>
             {lang === 'uk' ? 'МЕТОДОЛОГІЯ' : 'METHODOLOGY'}
           </div>
-          <p className="ds-body" style={{ fontSize: '10px', marginTop: '2px', lineHeight: 1.4, color: 'rgba(200,208,220,0.85)' }}>
+          <p className="ds-body" style={{ fontSize: '10px', marginTop: '2px', lineHeight: 1.4, color: 'rgba(242,234,219,0.85)' }}>
             {gap.calc[lang]}
           </p>
         </div>
@@ -247,7 +247,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
       }}
     >
       <div className="h-px w-full flex-shrink-0" style={{
-        background: 'linear-gradient(90deg, transparent, #2ec4b6 50%, transparent)',
+        background: 'linear-gradient(90deg, transparent, #1C5A52 50%, transparent)',
         boxShadow: '0 0 14px rgba(46,196,182,0.4)',
       }} />
 
@@ -257,7 +257,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
           onClick={nav.back}
           className="flex items-center gap-2 px-4 py-2 rounded-xl ds-display font-bold flex-shrink-0 transition-all"
           style={{
-            background: 'rgba(200,164,92,0.16)',
+            background: 'rgba(201,179,106,0.16)',
             border: '2px solid var(--color-ds-gold)',
             color: 'var(--color-ds-gold)',
             fontSize: '12px',
@@ -267,7 +267,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
           {lang === 'uk' ? 'Назад' : 'Back'}
         </button>
         <div>
-          <div className="text-[17px] font-bold ds-display" style={{ color: '#2ec4b6' }}>
+          <div className="text-[17px] font-bold ds-display" style={{ color: '#1C5A52' }}>
             {lang === 'uk' ? '9 Операційних розривів' : '9 Operational Gaps'}
           </div>
           <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
@@ -319,7 +319,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
         style={{ borderTop: '1px solid var(--color-ds-border)', background: 'rgba(0,0,0,0.2)' }}
       >
         <div style={{ fontSize: '10px' }} className="ds-body">
-          <span style={{ color: '#a78bfa', fontWeight: 700 }}>
+          <span style={{ color: '#2C6E64', fontWeight: 700 }}>
             {lang === 'uk' ? '+ Розрив №10 (2025): ' : '+ Gap #10 (2025): '}
           </span>
           <span style={{ color: 'var(--color-ds-muted)' }}>

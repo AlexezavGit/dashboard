@@ -96,18 +96,18 @@ export const InactionFunnel: React.FC<Props> = ({ lang, nav }) => {
       className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
       style={{
         background:
-          'radial-gradient(ellipse 50% 60% at 30% 50%, rgba(0,210,170,0.12) 0%, transparent 55%), ' +
+          'radial-gradient(ellipse 50% 60% at 30% 50%, rgba(44,110,100,0.12) 0%, transparent 55%), ' +
           'linear-gradient(135deg, #080f1c 0%, #0a1628 100%)',
       }}
     >
-      <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #00d4aa, #2ec4b6 50%, transparent)' }} />
+      <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #2C6E64, #1C5A52 50%, transparent)' }} />
 
       {/* ── Header ── */}
       <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0">
         <button
           onClick={nav.back}
           className="flex items-center gap-2 px-4 py-2 rounded-xl ds-display font-bold flex-shrink-0"
-          style={{ background: 'rgba(200,164,92,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '12px' }}
+          style={{ background: 'rgba(201,179,106,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '12px' }}
         >
           <ArrowLeft className="w-4 h-4" />
           {t('Назад', 'Back', lang)}

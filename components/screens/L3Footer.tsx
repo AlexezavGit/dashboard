@@ -68,7 +68,7 @@ export const L3Footer: React.FC<Props> = ({ lang, nav }) => {
         <button
           onClick={() => setOpen(o => !o)}
           style={{
-            fontFamily: 'DM Sans, sans-serif',
+            fontFamily: "'Source Sans 3', sans-serif",
             fontSize: 10,
             color: 'var(--color-ds-muted)',
             background: 'none',
@@ -90,15 +90,15 @@ export const L3Footer: React.FC<Props> = ({ lang, nav }) => {
             display: 'flex',
             alignItems: 'center',
             gap: 4,
-            fontFamily: 'DM Mono, monospace',
+            fontFamily: "'Spline Sans Mono', monospace",
             fontSize: 9,
-            color: isAnalytical ? '#00d4aa' : 'rgba(0,210,170,0.55)',
+            color: isAnalytical ? '#2C6E64' : 'rgba(44,110,100,0.55)',
             background: isAnalytical
-              ? 'rgba(0,210,170,0.10)'
-              : 'rgba(0,210,170,0.04)',
+              ? 'rgba(44,110,100,0.10)'
+              : 'rgba(44,110,100,0.04)',
             border: isAnalytical
-              ? '1px solid rgba(0,210,170,0.35)'
-              : '1px solid rgba(0,210,170,0.12)',
+              ? '1px solid rgba(44,110,100,0.35)'
+              : '1px solid rgba(44,110,100,0.12)',
             borderRadius: 5,
             padding: '2px 8px',
             cursor: 'pointer',
@@ -107,8 +107,8 @@ export const L3Footer: React.FC<Props> = ({ lang, nav }) => {
         >
           <span style={{
             width: 5, height: 5, borderRadius: '50%', flexShrink: 0,
-            background: isAnalytical ? '#00d4aa' : 'rgba(0,210,170,0.35)',
-            boxShadow: isAnalytical ? '0 0 6px #00d4aa' : 'none',
+            background: isAnalytical ? '#2C6E64' : 'rgba(44,110,100,0.35)',
+            boxShadow: isAnalytical ? '0 0 6px #2C6E64' : 'none',
           }} />
           {uk ? 'API статус' : 'API status'}
         </button>
@@ -119,7 +119,7 @@ export const L3Footer: React.FC<Props> = ({ lang, nav }) => {
         <button
           onClick={() => nav.push('appendix')}
           style={{
-            fontFamily: 'Space Grotesk, sans-serif',
+            fontFamily: "'Archivo', sans-serif",
             fontWeight: 700,
             fontSize: 12,
             color: 'var(--color-ds-teal)',
@@ -151,7 +151,7 @@ export const L3Footer: React.FC<Props> = ({ lang, nav }) => {
                   key={topic.anchor}
                   onClick={() => goToSection(topic.anchor)}
                   style={{
-                    fontFamily: 'DM Sans, sans-serif',
+                    fontFamily: "'Source Sans 3', sans-serif",
                     fontSize: 10,
                     color: 'var(--color-ds-teal)',
                     background: 'color-mix(in srgb, var(--color-ds-teal) 6%, transparent)',

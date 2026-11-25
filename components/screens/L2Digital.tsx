@@ -33,7 +33,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
       style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1a1000 100%)' }}
     >
       <div className="h-[2px] w-full flex-shrink-0"
-        style={{ background: 'linear-gradient(90deg, transparent, #ff9966, #ff6633, rgba(200,164,92,0.4))', boxShadow: '0 0 18px rgba(255,153,102,0.5)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent, #ff9966, #ff6633, rgba(201,179,106,0.4))', boxShadow: '0 0 18px rgba(255,153,102,0.5)' }} />
 
       <NavBar
         lang={lang}
@@ -51,7 +51,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
             <div className="ds-display font-black leading-none" style={{ fontSize: '56px', color: '#ff9966', textShadow: '0 0 40px rgba(255,153,102,0.5)' }}>
               −{lostPct}%
             </div>
-            <div className="text-[15px] font-semibold ds-body mt-2" style={{ color: 'rgba(200,208,220,0.9)' }}>
+            <div className="text-[15px] font-semibold ds-body mt-2" style={{ color: 'rgba(242,234,219,0.9)' }}>
               {t('клінічного часу втрачено на дублювання', 'clinical time lost to duplicate reporting', lang)}
             </div>
             <div className="text-[11px] font-mono mt-1" style={{ color: 'var(--color-ds-muted)' }}>
@@ -71,14 +71,14 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
                     <span className="text-[12px] ds-display font-semibold" style={{ color: s.clinical ? 'var(--color-ds-text)' : 'var(--color-ds-muted)' }}>
                       {s.label[lang]}
                     </span>
-                    <span className="text-[14px] font-bold ds-display" style={{ color: s.clinical ? '#00d4aa' : '#ff9966' }}>
+                    <span className="text-[14px] font-bold ds-display" style={{ color: s.clinical ? '#2C6E64' : '#ff9966' }}>
                       {s.hrs}h
                     </span>
                   </div>
                   <div className="h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
                     <div className="h-2 rounded-full" style={{
                       width: `${(s.hrs / TOTAL) * 100}%`,
-                      background: s.clinical ? '#00d4aa' : '#ff9966',
+                      background: s.clinical ? '#2C6E64' : '#ff9966',
                       opacity: s.clinical ? 0.9 : 0.65,
                     }} />
                   </div>
@@ -101,7 +101,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
                 <BarChart data={structData} margin={{ left: 0, right: 8, top: 8, bottom: 4 }}>
                   <XAxis
                     dataKey="name"
-                    tick={{ fill: 'var(--color-ds-muted)', fontSize: 9, fontFamily: 'DM Sans' }}
+                    tick={{ fill: 'var(--color-ds-muted)', fontSize: 9, fontFamily: 'Source Sans 3' }}
                     tickLine={false}
                     axisLine={false}
                   />
@@ -110,11 +110,11 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
                     formatter={(_v: any, _n: any, item: any) => [item.payload.displayValue, item.payload.calc]}
                     contentStyle={{ background: '#1a2035', border: '1px solid rgba(255,153,102,0.3)', borderRadius: 8, fontSize: 10 }}
                     labelStyle={{ color: '#ff9966' }}
-                    itemStyle={{ color: 'rgba(200,208,220,0.9)' }}
+                    itemStyle={{ color: 'rgba(242,234,219,0.9)' }}
                   />
                   <ReferenceLine
                     y={1}
-                    stroke="rgba(200,164,92,0.5)"
+                    stroke="rgba(201,179,106,0.5)"
                     strokeDasharray="4 2"
                     label={{ value: t('×1 норма', '×1 norm', lang), position: 'right', fill: 'var(--color-ds-gold)', fontSize: 8 }}
                   />
@@ -159,7 +159,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
           </div>
 
           <div className="flex-1 rounded-2xl p-4 overflow-y-auto pb-4"
-            style={{ background: 'rgba(200,164,92,0.06)', border: '1px solid rgba(200,164,92,0.3)', scrollbarWidth: 'none' }}>
+            style={{ background: 'rgba(201,179,106,0.06)', border: '1px solid rgba(201,179,106,0.3)', scrollbarWidth: 'none' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-gold)' }}>
               {t('FEEL Again · Шлях до <5% overhead', 'FEEL Again · Pathway to <5% overhead', lang)}
             </div>
@@ -172,7 +172,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
               ].map((item, i) => (
                 <div key={i} className="flex gap-2 items-start">
                   <div className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold mt-0.5"
-                    style={{ background: 'rgba(200,164,92,0.2)', color: 'var(--color-ds-gold)', border: '1px solid rgba(200,164,92,0.4)' }}>
+                    style={{ background: 'rgba(201,179,106,0.2)', color: 'var(--color-ds-gold)', border: '1px solid rgba(201,179,106,0.4)' }}>
                     {i + 1}
                   </div>
                   <div className="text-[11px] ds-body" style={{ color: 'var(--color-ds-text)' }}>{item[lang]}</div>
