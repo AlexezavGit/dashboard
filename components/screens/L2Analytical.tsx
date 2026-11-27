@@ -150,7 +150,7 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
             </div>
             <div className="text-center text-[12px] font-bold ds-display" style={{ color: s.color }}>{typeof s.sessions === 'string' ? s.sessions : s.sessions[lang]}</div>
             <div className="flex items-center gap-1.5">
-              <div className="flex-1 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <div className="flex-1 h-1.5 rounded-full" style={{ background: 'var(--color-ds-track)' }}>
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${s.visibility}%` }}

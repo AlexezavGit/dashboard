@@ -11,7 +11,7 @@ const t = (uk: string, en: string, lang: Language) => lang === 'uk' ? uk : en;
 const FLOW = [
   { actor: 'Bilateral donors', share: 78, color: 'var(--color-ds-royal)', label: { uk: 'EC / USAID / FCDO / BMZ', en: 'EC / USAID / FCDO / BMZ' } },
   { actor: 'UN Agencies', share: 15, color: 'var(--color-ds-teal-light)', label: { uk: 'UNICEF / WHO / UNHCR', en: 'UNICEF / WHO / UNHCR' } },
-  { actor: 'INGOs', share: 6, color: '#9061f9', label: { uk: 'IMC / ACF / MSF та ін.', en: 'IMC / ACF / MSF et al.' } },
+  { actor: 'INGOs', share: 6, color: 'var(--color-cyber-purple)', label: { uk: 'IMC / ACF / MSF та ін.', en: 'IMC / ACF / MSF et al.' } },
   { actor: { uk: 'Укр. організ.', en: 'Ukrainian orgs' }, share: 1, color: 'var(--color-ds-red)', label: { uk: 'Всі місцеві НГО', en: 'All local NGOs' } },
 ];
 
@@ -55,7 +55,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
         </div>
 
         <div className="flex-1 rounded-2xl p-5 min-h-0"
-          style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+          style={{ background: 'var(--color-ds-well)', border: '1px solid var(--color-ds-border)' }}>
           <div className="text-[11px] font-mono uppercase tracking-wider mb-3" style={{ color: 'var(--color-ds-muted)' }}>
             {t('Розподіл гуманітарного фінансування', 'Humanitarian fund flow', lang)}
           </div>
@@ -68,7 +68,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
                   </span>
                   <span className="text-[14px] font-bold ds-display" style={{ color: f.color }}>{f.share}%</span>
                 </div>
-                <div className="h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                <div className="h-2 rounded-full" style={{ background: 'var(--color-ds-track)' }}>
                   <div className="h-2 rounded-full" style={{
                     width: `${f.share}%`,
                     background: f.color,
@@ -87,7 +87,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
 
       <div className="flex flex-col gap-4">
         <div className="rounded-2xl p-5"
-          style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+          style={{ background: 'var(--color-ds-well)', border: '1px solid var(--color-ds-border)' }}>
           <div className="text-[11px] font-mono uppercase tracking-wider mb-3" style={{ color: 'var(--color-ds-muted)' }}>
             {t('Хронологія зобов\'язань', 'Commitment timeline', lang)}
           </div>

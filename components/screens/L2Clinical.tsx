@@ -123,7 +123,7 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
 
           {/* Coverage funnel */}
           <div className="flex-1 rounded-xl p-4 min-h-0"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+            style={{ background: 'var(--color-ds-well)', border: '1px solid var(--color-ds-border)' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-3"
               style={{ color: 'var(--color-ds-muted)' }}>
               {t('Воронка охоплення: від потреби до системи (2025)', 'Coverage funnel: from need to system (2025)', lang)}
@@ -135,7 +135,7 @@ export const L2Clinical: React.FC<Props> = ({ lang, nav }) => {
                     {row.name}
                   </div>
                   <div className="flex-1 relative h-6 rounded-md overflow-hidden"
-                    style={{ background: 'rgba(255,255,255,0.04)' }}>
+                    style={{ background: 'var(--color-ds-track)' }}>
                     <div className="absolute inset-y-0 left-0 rounded-md flex items-center px-2"
                       style={{
                         width: `${Math.max(row.pct, 3)}%`,

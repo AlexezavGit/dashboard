@@ -497,7 +497,7 @@ export const STRUCTURAL_DISP_DATA = (l: Language) => [
     name: l === 'uk' ? 'Адмін. gap (ВООЗ рекомендація)' : 'Admin gap (WHO recommendation)',
     value: 3.1,
     displayValue: '3.1×',
-    fill: '#8B5CF6',
+    fill: '#2E6B5C',
     calc: l === 'uk'
       ? '~27% часу на адмін (ВООЗ SIMH 2024) ÷ ВООЗ норма ~8.7% = 3.1×'
       : '~27% time on admin (WHO SIMH 2024) ÷ WHO norm ~8.7% = 3.1×',
@@ -506,7 +506,7 @@ export const STRUCTURAL_DISP_DATA = (l: Language) => [
     name: l === 'uk' ? 'Стаціонар / реальна клінічна потреба' : 'Inpatient share / clinical need',
     value: 5.0,
     displayValue: '5.0×',
-    fill: '#06B6D4',
+    fill: '#3E91A2',
     calc: l === 'uk'
       ? 'Стаціонар 80.2B з 144.6B спеціалізованої = 55.5% ÷ 11% випадків, що дійсно потребують стаціонару = 5.0× (МОЗ 2025)'
       : 'Inpatient 80.2B of 144.6B specialized = 55.5% ÷ 11% of cases actually requiring inpatient = 5.0× (MOH 2025)',
@@ -1077,14 +1077,14 @@ export const ALL_CONCLUSIONS_GRID = (l: Language) => [
   },
   {
     section: 'SHADOW',
-    color: '#8B5CF6',
+    color: '#2E6B5C',
     text: l === 'uk'
       ? '€979/міс штраф за формалізацію = 65% доходу. Без зниження friction формалізація не відбудеться — система не отримає кадрів.'
       : '€979/mo penalty for formalisation = 65% of income. Without friction reduction, formalisation won\'t happen — system won\'t gain workforce.',
   },
   {
     section: 'INPUTS',
-    color: '#06B6D4',
+    color: '#3E91A2',
     text: l === 'uk'
       ? '150K сертифікатів → 42 практикуючих. 624K послуг → 0% в ЕСОЗ. Тренінг без інфраструктури = вода в пісок.'
       : '150K certificates → 42 practicing. 624K services → 0% in ESOZ. Training without infrastructure = water into sand.',
@@ -1124,7 +1124,7 @@ export const KILLER_QUOTES = (l: Language) => [
     uk: 'Навчання легко масштабується. Ефективність — ні.',
     en: 'Training scales easily, effectiveness does not.',
     source: 'FEEL Again War Room',
-    color: '#8B5CF6',
+    color: '#2E6B5C',
     section: 'inputs',
   },
   {
@@ -1221,7 +1221,7 @@ export const GRAND_BARGAIN_3 = (l: Language) => [
     target: 100,
     unit: '%',
     source: 'IASC AAP Framework 2024',
-    color: '#8B5CF6',
+    color: '#2E6B5C',
     note: l === 'uk' ? '~15% організацій мають реальні механізми AAP (vs ціль 100%)' : '~15% of organisations have genuine AAP mechanisms (vs 100% target)',
   },
   {
@@ -1230,7 +1230,7 @@ export const GRAND_BARGAIN_3 = (l: Language) => [
     target: 30,
     unit: '%',
     source: 'Grand Bargain Signatories 2025',
-    color: '#06B6D4',
+    color: '#3E91A2',
     note: l === 'uk' ? '~20% коштів — багаторічні (vs ціль 30%). Україна: критична залежність від річних циклів' : '~20% of funds are multi-year (vs 30% target). Ukraine: critical dependency on annual cycles',
   },
 ];

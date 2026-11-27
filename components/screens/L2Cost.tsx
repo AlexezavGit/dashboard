@@ -87,7 +87,7 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.1 + 0.3 }}
             className="flex items-start gap-3 p-4 rounded-xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid color-mix(in srgb, ${c.color} 20%, transparent)` }}
+            style={{ background: 'var(--color-ds-track)', border: `1px solid color-mix(in srgb, ${c.color} 20%, transparent)` }}
           >
             <div className="flex-shrink-0 w-10 text-center">
               <div className="text-[18px] font-bold ds-display" style={{ color: c.color }}>{c.pct}%</div>
@@ -133,7 +133,7 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.12 + 0.3 }}
             className="p-4 rounded-xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid color-mix(in srgb, ${item.color} 20%, transparent)` }}
+            style={{ background: 'var(--color-ds-track)', border: `1px solid color-mix(in srgb, ${item.color} 20%, transparent)` }}
           >
             <div className="flex items-baseline justify-between mb-1">
               <span className="text-[11px] ds-body" style={{ color: 'var(--color-ds-text)' }}>{item.label[lang]}</span>

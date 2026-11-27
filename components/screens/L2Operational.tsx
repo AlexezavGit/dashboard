@@ -149,7 +149,7 @@ const FlipCard: React.FC<{
         position: 'absolute', inset: 0,
         backfaceVisibility: 'hidden',
         WebkitBackfaceVisibility: 'hidden',
-        background: 'rgba(255,255,255,0.03)',
+        background: 'var(--color-ds-track)',
         border: `1px solid color-mix(in srgb, ${gap.color} 20%, transparent)`,
         borderRadius: '12px',
         padding: '10px',
@@ -316,7 +316,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
       {/* ── Bottom bar: 10th gap + chain legend ── */}
       <div
         className="flex-shrink-0 px-5 py-2 flex items-start gap-3 flex-wrap"
-        style={{ borderTop: '1px solid var(--color-ds-border)', background: 'rgba(0,0,0,0.2)' }}
+        style={{ borderTop: '1px solid var(--color-ds-border)', background: 'var(--color-ds-well)' }}
       >
         <div style={{ fontSize: '10px' }} className="ds-body">
           <span style={{ color: 'var(--color-ds-teal-light)', fontWeight: 700 }}>

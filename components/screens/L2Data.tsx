@@ -121,7 +121,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
           ) : (
             <div>
               {sources.map((src, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: i < sources.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: i < sources.length - 1 ? '1px solid var(--color-ds-border)' : 'none' }}>
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: STATUS_COLORS[src.status] ?? '#a0a0b0', flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: '12px', fontWeight: 600, fontFamily: "'Archivo', sans-serif", color: 'var(--color-ds-text)' }}>{src.name[lang]}</div>
@@ -139,11 +139,11 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
         {/* DATA INTELLIGENCE */}
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(59,130,246,0.4), transparent)' }} />
-            <span style={{ fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", color: '#60a5fa', textTransform: 'uppercase', letterSpacing: '0.2em', padding: '0 8px' }}>
+            <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, color-mix(in srgb, var(--color-ds-royal) 40%, transparent), transparent)' }} />
+            <span style={{ fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", color: 'var(--color-cyber-cyan)', textTransform: 'uppercase', letterSpacing: '0.2em', padding: '0 8px' }}>
               {di.sectionTitle}
             </span>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(270deg, rgba(59,130,246,0.4), transparent)' }} />
+            <div style={{ flex: 1, height: 1, background: 'linear-gradient(270deg, color-mix(in srgb, var(--color-ds-royal) 40%, transparent), transparent)' }} />
           </div>
           <p style={{ fontSize: '11px', fontFamily: "'Spline Sans Mono', monospace", color: 'var(--color-ds-muted)', textAlign: 'center', marginBottom: 16, lineHeight: 1.5 }}>
             {di.sectionSub}
@@ -151,15 +151,15 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* NOW */}
-            <div style={{ border: '1px solid rgba(59,130,246,0.2)', borderRadius: 12, overflow: 'hidden' }}>
-              <div style={{ background: 'rgba(59,130,246,0.05)', borderBottom: '1px solid rgba(59,130,246,0.2)', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#60a5fa' }} />
-                <span style={{ fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, color: '#93c5fd', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+            <div style={{ border: '1px solid color-mix(in srgb, var(--color-ds-royal) 20%, transparent)', borderRadius: 12, overflow: 'hidden' }}>
+              <div style={{ background: 'color-mix(in srgb, var(--color-ds-royal) 5%, transparent)', borderBottom: '1px solid color-mix(in srgb, var(--color-ds-royal) 20%, transparent)', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-cyber-cyan)' }} />
+                <span style={{ fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, color: 'var(--color-cyber-cyan)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                   {lang === 'uk' ? 'ЩО МАЄМО ЗАРАЗ' : 'WHAT WE HAVE NOW'}
                 </span>
               </div>
               {di.now.map((row, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '10px 16px', borderBottom: i < di.now.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '10px 16px', borderBottom: i < di.now.length - 1 ? '1px solid var(--color-ds-border)' : 'none' }}>
                   <span style={{ fontSize: '9px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, padding: '2px 6px', borderRadius: 4, flexShrink: 0, marginTop: 1,
                     background: row.status === 'live' ? 'rgba(16,185,129,0.15)' : 'rgba(100,100,120,0.3)',
                     color: row.status === 'live' ? '#34d399' : '#94a3b8' }}>
@@ -183,7 +183,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
                 </span>
               </div>
               {di.canonical.map((row, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '10px 16px', borderBottom: i < di.canonical.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '10px 16px', borderBottom: i < di.canonical.length - 1 ? '1px solid var(--color-ds-border)' : 'none' }}>
                   <span style={{ fontSize: '9px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, padding: '2px 6px', borderRadius: 4, flexShrink: 0, marginTop: 1,
                     background: row.status === 'locked' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
                     color: row.status === 'locked' ? 'var(--color-ds-red)' : 'var(--color-ds-gold)' }}>

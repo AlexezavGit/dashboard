@@ -103,14 +103,14 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.1 }}
             className="rounded-xl p-4"
-            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid color-mix(in srgb, ${b.color} 20%, transparent)` }}
+            style={{ background: 'var(--color-ds-track)', border: `1px solid color-mix(in srgb, ${b.color} 20%, transparent)` }}
           >
             <div className="flex items-baseline justify-between mb-2">
               <span className="text-[11px] ds-body" style={{ color: 'var(--color-ds-text)' }}>{b.label[lang]}</span>
               <span className="text-[20px] font-bold ds-display" style={{ color: b.color }}>{b.display}</span>
             </div>
             {/* Bar */}
-            <div className="h-2 rounded-full mb-2" style={{ background: 'rgba(255,255,255,0.06)' }}>
+            <div className="h-2 rounded-full mb-2" style={{ background: 'var(--color-ds-track)' }}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(b.pct, 0.5)}%` }}
@@ -136,7 +136,7 @@ export const L2Coverage: React.FC<Props> = ({ lang, nav }) => (
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.1 + 0.2 }}
             className="flex items-start gap-3 p-4 rounded-xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid color-mix(in srgb, ${g.color} 20%, transparent)` }}
+            style={{ background: 'var(--color-ds-track)', border: `1px solid color-mix(in srgb, ${g.color} 20%, transparent)` }}
           >
             <div className="w-1.5 h-1.5 rounded-full mt-1 flex-shrink-0" style={{ backgroundColor: g.color, boxShadow: `0 0 6px ${g.color}` }} />
             <span className="text-[12px] ds-body" style={{ color: 'var(--color-ds-text)' }}>{g.label[lang]}</span>

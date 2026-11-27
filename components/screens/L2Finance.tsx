@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowLeft, AlertTriangle, Zap } from 'lucide-react';
+import { AlertTriangle, Zap } from 'lucide-react';
 import { Language } from '../../types';
 import { ScreenId, ScreenNav } from './types';
+import { NavBar } from './NavBar';
 import { BUDGET_SPLIT_DATA, DONOR_DATA } from '../../constants';
 
 interface Props { lang: Language; nav: ScreenNav; }
@@ -14,7 +15,7 @@ const FlowPipe: React.FC<{ state: FlowState }> = ({ state }) => {
   const trackColor =
     state === 'flowing' ? 'rgba(44,110,100,0.18)' :
     state === 'blocked' ? 'rgba(255,123,110,0.2)' :
-    'rgba(255,255,255,0.05)';
+    'var(--color-ds-track)';
 
   return (
     <div style={{ width: 44, flexShrink: 0, display: 'flex', alignItems: 'center' }}>
@@ -57,7 +58,7 @@ const WBChart: React.FC<{ lang: Language; solved: boolean }> = ({ lang, solved }
     { name: 'THRIVE P505616', mech: 'PforR', total: '$454M', disbursed: '~$320M', pct: 70, color: 'var(--color-ds-teal-light)' },
   ];
   return (
-    <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(44,110,100,0.25)', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'var(--color-ds-track)', border: '1px solid rgba(44,110,100,0.25)', position: 'relative', overflow: 'hidden' }}>
       {solved && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -80,7 +81,7 @@ const WBChart: React.FC<{ lang: Language; solved: boolean }> = ({ lang, solved }
               <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 13, color: p.color }}>{p.pct}%</span>
             </div>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <div style={{ flex: 1, height: 9, borderRadius: 999, background: 'rgba(255,255,255,0.06)' }}>
+              <div style={{ flex: 1, height: 9, borderRadius: 999, background: 'var(--color-ds-track)' }}>
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${solved && p.name.includes('THRIVE') ? 100 : p.pct}%` }}
@@ -104,7 +105,7 @@ const WBChart: React.FC<{ lang: Language; solved: boolean }> = ({ lang, solved }
           </motion.div>
         )}
       </AnimatePresence>
-      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6 }}>
+      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid var(--color-ds-border)', paddingTop: 6 }}>
         {lang === 'uk' ? 'Джерело: WB HEAL P180245 / THRIVE P505616' : 'Source: WB HEAL P180245 / THRIVE P505616'}
       </div>
     </div>
@@ -116,7 +117,7 @@ const HumanitarianChart: React.FC<{ lang: Language }> = ({ lang }) => {
   const data = DONOR_DATA(lang).filter(d => !d.name.toLowerCase().includes('ветеран') && !d.name.toLowerCase().includes('veteran'));
   const max = Math.max(...data.map(d => d.value));
   return (
-    <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(201,179,106,0.2)' }}>
+    <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'var(--color-ds-track)', border: '1px solid rgba(201,179,106,0.2)' }}>
       <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 12, color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
         {lang === 'uk' ? 'Гуманітарне фінансування (млн USD)' : 'Humanitarian Financing (M USD)'}
       </div>
@@ -127,7 +128,7 @@ const HumanitarianChart: React.FC<{ lang: Language }> = ({ lang }) => {
               <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 12, color: 'var(--color-ds-muted)' }}>{d.name}</span>
               <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 13, color: d.fill }}>${d.value}M</span>
             </div>
-            <div style={{ height: 9, borderRadius: 999, background: 'rgba(255,255,255,0.06)' }}>
+            <div style={{ height: 9, borderRadius: 999, background: 'var(--color-ds-track)' }}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${(d.value / max) * 100}%` }}
@@ -138,7 +139,7 @@ const HumanitarianChart: React.FC<{ lang: Language }> = ({ lang }) => {
           </div>
         ))}
       </div>
-      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6 }}>
+      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid var(--color-ds-border)', paddingTop: 6 }}>
         {lang === 'uk' ? 'Джерело: OCHA FTS 2025' : 'Source: OCHA FTS 2025'}
       </div>
     </div>
@@ -152,7 +153,7 @@ const StateBudgetChart: React.FC<{ lang: Language }> = ({ lang }) => {
     d.name.toLowerCase().includes('ветеран') || d.name.toLowerCase().includes('veteran')
   );
   return (
-    <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,123,110,0.2)' }}>
+    <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'var(--color-ds-track)', border: '1px solid rgba(255,123,110,0.2)' }}>
       <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 12, color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
         {lang === 'uk' ? 'Держбюджет + Ветерани' : 'State Budget + Veterans'}
       </div>
@@ -163,7 +164,7 @@ const StateBudgetChart: React.FC<{ lang: Language }> = ({ lang }) => {
               <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 12, color: 'var(--color-ds-muted)' }}>{d.name}</span>
               <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 13, color: d.fill }}>{d.value}%</span>
             </div>
-            <div style={{ height: 9, borderRadius: 999, background: 'rgba(255,255,255,0.06)' }}>
+            <div style={{ height: 9, borderRadius: 999, background: 'var(--color-ds-track)' }}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${d.value}%` }}
@@ -174,12 +175,12 @@ const StateBudgetChart: React.FC<{ lang: Language }> = ({ lang }) => {
           </div>
         ))}
         {veteranData && (
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 8 }}>
+          <div style={{ borderTop: '1px solid var(--color-ds-border)', paddingTop: 8 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
               <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 12, color: 'var(--color-ds-muted)' }}>{veteranData.name}</span>
               <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 13, color: veteranData.fill }}>${veteranData.value}M</span>
             </div>
-            <div style={{ height: 9, borderRadius: 999, background: 'rgba(255,255,255,0.06)' }}>
+            <div style={{ height: 9, borderRadius: 999, background: 'var(--color-ds-track)' }}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: '30%' }}
@@ -193,7 +194,7 @@ const StateBudgetChart: React.FC<{ lang: Language }> = ({ lang }) => {
       <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-red)', marginBottom: 4 }}>
         {lang === 'uk' ? '↑ 5× стаціонар vs реальна потреба 11%' : '↑ 5× inpatient vs actual need 11%'}
       </div>
-      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6 }}>
+      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid var(--color-ds-border)', paddingTop: 6 }}>
         {lang === 'uk' ? 'Джерело: МОЗ бюджет 2024 · OCHA FTS' : 'Source: MoH budget 2024 · OCHA FTS'}
       </div>
     </div>
@@ -300,20 +301,15 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
         boxShadow: '0 0 14px rgba(201,179,106,0.45)',
       }} />
 
-      {/* Header */}
-      <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0">
-        <button
-          onClick={nav.back}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl ds-display font-bold flex-shrink-0"
-          style={{ background: 'rgba(201,179,106,0.16)', border: '2px solid var(--color-ds-gold)', color: 'var(--color-ds-gold)', fontSize: '12px' }}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {uk ? 'Назад' : 'Back'}
-        </button>
-        <div className="text-[17px] font-bold ds-display" style={{ color: 'var(--color-ds-gold)' }}>
-          {uk ? 'Куди ресурси ідуть і куди вони не доходять' : "Where resources go and where they don't reach"}
-        </div>
-      </div>
+      {/* Header — shared NavBar: screen is in L2_ORDER, prev/next cover the movement */}
+      <NavBar
+        lang={lang}
+        nav={nav}
+        accentColor="var(--color-ds-gold)"
+        title={{ uk: 'Куди ресурси ідуть і куди вони не доходять', en: "Where resources go and where they don't reach" }}
+        subtitle={{ uk: 'Фінансовий контур HEAL / THRIVE', en: 'HEAL / THRIVE financial flow' }}
+        crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
+      />
 
       <div className="flex-1 flex flex-col gap-3 px-5 pb-3 min-h-0">
 
@@ -389,7 +385,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                   ].map(p => (
                     <div key={p.name}>
                       <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 11, color: p.color, marginBottom: 6 }}>{p.name}</div>
-                      <div style={{ height: 12, borderRadius: 6, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                      <div style={{ height: 12, borderRadius: 6, background: 'var(--color-ds-track)', overflow: 'hidden' }}>
                         <motion.div initial={{ width: 0 }} animate={{ width: `${p.pct}%` }} transition={{ delay: 0.3, duration: 1 }}
                           style={{ height: '100%', background: p.color, borderRadius: 6 }} />
                       </div>
@@ -400,7 +396,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                     </div>
                   ))}
                 </div>
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6, marginTop: 6 }}>
+                <div style={{ borderTop: '1px solid var(--color-ds-border)', paddingTop: 6, marginTop: 6 }}>
                   <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 9, color: 'var(--color-ds-gold)' }}>
                     {uk ? 'Компонент 4 (HEAL): $41M незадіяно' : 'Component 4 (HEAL): $41M unallocated'}
                   </div>
@@ -408,7 +404,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                     {uk ? '→ вікно для FEEL Again middleware' : '→ window for FEEL Again middleware'}
                   </div>
                 </div>
-                <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6, marginTop: 6 }}>
+                <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid var(--color-ds-border)', paddingTop: 6, marginTop: 6 }}>
                   {uk ? 'Джерело: WB HEAL ISR#6 · THRIVE ISR' : 'Source: WB HEAL ISR#6 · THRIVE ISR'}
                 </div>
               </>
@@ -438,7 +434,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                         <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-muted)' }}>{r.label} {r.val}</span>
                         <span style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: 'var(--color-ds-teal-light)' }}>{r.pct}%</span>
                       </div>
-                      <div style={{ height: 5, borderRadius: 999, background: 'rgba(255,255,255,0.06)' }}>
+                      <div style={{ height: 5, borderRadius: 999, background: 'var(--color-ds-track)' }}>
                         <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ delay: 0.6, duration: 0.8 }}
                           style={{ height: '100%', borderRadius: 999, background: 'var(--color-ds-teal-light)' }} />
                       </div>
@@ -455,7 +451,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                   {uk ? 'команд розгорнуто · 157% від плану (75)' : 'teams deployed · 157% of plan (75)'}
                 </div>
                 <div style={{ flex: 1, marginTop: 14, display: 'flex', flexDirection: 'column', gap: 6, justifyContent: 'center' }}>
-                  <div style={{ height: 12, borderRadius: 6, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
+                  <div style={{ height: 12, borderRadius: 6, background: 'var(--color-ds-track)', overflow: 'hidden' }}>
                     <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ delay: 0.3, duration: 1 }}
                       style={{ height: '100%', background: 'linear-gradient(90deg, var(--color-ds-teal-light), var(--color-ds-teal-light))', borderRadius: 6 }} />
                   </div>
@@ -591,7 +587,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
           className="flex-shrink-0"
-          style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 8 }}
+          style={{ borderTop: '1px solid var(--color-ds-border)', paddingTop: 8 }}
         >
           <div className="flex items-center gap-3">
             <button

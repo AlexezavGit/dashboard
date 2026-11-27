@@ -174,11 +174,11 @@ export const NavBar = ({
       <header
         className="sticky top-0 z-40 backdrop-blur-xl"
         style={{
-          background: 'rgba(255,255,255,0.08)',
+          background: 'var(--color-ds-track)',
           borderBottom: '1px solid var(--color-ds-border)',
         }}
       >
-        <div className="flex items-center gap-2 px-3 py-2">
+        <div className="flex items-center gap-2 px-3 py-2" style={{ paddingRight: 148 }}>
           {!inL2 && renderBackButton()}
           <div className="flex-1 min-w-0">
             {renderBreadcrumbs()}
@@ -227,7 +227,7 @@ export const NavBar = ({
         borderBottom: '1px solid var(--color-ds-border)',
       }}
     >
-      <div className="flex items-center gap-3 px-4 py-3">
+      <div className="flex items-center gap-3 px-4 py-3" style={{ paddingRight: 160 }}>
         {/* У горизонтальному листанні (inL2) «Назад» зайва: prev/next покривають рух.
             На поза послідовними скрінами (легасі, journey) «Назад» лишається. */}
         {!inL2 && renderBackButton()}

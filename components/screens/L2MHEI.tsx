@@ -146,7 +146,7 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
 
           {/* Score readout */}
           <div className="flex items-center gap-4 p-3 rounded-xl flex-shrink-0 ds-blueprint"
-            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${bandColor}33` }}>
+            style={{ background: 'var(--color-ds-track)', border: `1px solid ${bandColor}33` }}>
             <div className="text-center">
               <div className="text-[9px] font-mono uppercase tracking-wider mb-0.5" style={{ color: 'var(--color-ds-muted)' }}>
                 {t('MHEI Зараз', 'MHEI Now', lang)}
@@ -254,7 +254,7 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
                   {c.source[lang]}
                 </div>
                 {/* Progress bar */}
-                <div className="mt-1.5 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                <div className="mt-1.5 h-1.5 rounded-full" style={{ background: 'var(--color-ds-track)' }}>
                   <div
                     className="h-full rounded-full transition-all duration-300"
                     style={{ width: `${pct}%`, background: c.color, boxShadow: `0 0 6px color-mix(in srgb, ${c.color} 40%, transparent)` }}
@@ -276,7 +276,7 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
             </div>
 
             {/* Formula */}
-            <div className="text-[9px] font-mono mb-3 p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.04)', color: 'var(--color-ds-muted)' }}>
+            <div className="text-[9px] font-mono mb-3 p-2 rounded-lg" style={{ background: 'var(--color-ds-track)', color: 'var(--color-ds-muted)' }}>
               {t('Беклог = 48M сесій ÷ (N спец. × 1,200 год/рік ÷ 0.67 год/сес.)', 'Backlog = 48M sessions ÷ (N spec. × 1,200 hrs/yr ÷ 0.67 hrs/session)', lang)}
             </div>
 
@@ -301,7 +301,7 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
 
             {/* Backlog result */}
             <div className="flex items-center justify-between p-3 rounded-xl"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(44,110,100,0.15)' }}>
+              style={{ background: 'var(--color-ds-track)', border: '1px solid rgba(44,110,100,0.15)' }}>
               <div>
                 <div className="text-[9px] font-mono uppercase" style={{ color: 'var(--color-ds-muted)' }}>
                   {t('Беклог для 3.9M потреби', 'Backlog for 3.9M need', lang)}
@@ -328,7 +328,7 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
             <div className="mt-3 flex gap-2">
               {[5, 10, 15].map(yr => (
                 <div key={yr} className="flex-1 p-2 rounded-lg text-center"
-                  style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(44,110,100,0.12)' }}>
+                  style={{ background: 'var(--color-ds-track)', border: '1px solid rgba(44,110,100,0.12)' }}>
                   <div className="text-[9px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
                     {t(`≤${yr} р.`, `≤${yr} yrs`, lang)}
                   </div>
@@ -374,7 +374,7 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
               },
             ].map((layer, i) => (
               <div key={i} className="mb-3 pb-3 ds-reveal-content"
-                style={{ borderBottom: i < 2 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
+                style={{ borderBottom: i < 2 ? '1px solid var(--color-ds-border)' : 'none' }}>
                 <div className="flex items-baseline justify-between mb-1">
                   <span className="text-[10px] font-mono uppercase tracking-wide" style={{ color: layer.color }}>
                     {layer.label[lang]}
@@ -393,7 +393,7 @@ export const L2MHEI: React.FC<Props> = ({ lang, nav }) => {
             ))}
 
             {/* Funnel: 57K → 700 → 42 → 50 */}
-            <div className="mt-3 p-2 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)' }}>
+            <div className="mt-3 p-2 rounded-lg" style={{ background: 'var(--color-ds-track)' }}>
               <div className="text-[9px] font-mono uppercase mb-2" style={{ color: 'var(--color-ds-muted)' }}>
                 {t('Воронка сертифікації', 'Certification funnel', lang)}
               </div>

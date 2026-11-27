@@ -67,7 +67,7 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
 
         {/* Sidebar */}
         <div className="flex-shrink-0 w-[190px] flex flex-col py-3 px-2 gap-1 overflow-y-auto hidden sm:flex"
-          style={{ borderRight: '1px solid var(--color-ds-border)', background: 'rgba(0,0,0,0.15)', scrollbarWidth: 'thin' }}>
+          style={{ borderRight: '1px solid var(--color-ds-border)', background: 'var(--color-ds-well)', scrollbarWidth: 'thin' }}>
           {CHAPTERS.map((c, i) => {
             const active = chapter === c.id;
             return (
@@ -96,7 +96,7 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
             <div className="text-[8px] font-mono mb-1.5" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Прогрес', 'Progress')}
             </div>
-            <div className="h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+            <div className="h-1.5 rounded-full" style={{ background: 'var(--color-ds-track)' }}>
               <div className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${((chapterIdx + 1) / CHAPTERS.length) * 100}%`, background: 'var(--color-ds-gold)' }} />
             </div>
@@ -201,13 +201,13 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
                 <Callout color="var(--color-ds-red)">{thrive.critical}</Callout>
                 <p className="text-[12px] mt-3 leading-relaxed" style={{ color: 'var(--color-ds-muted)' }}>{thrive.advance}</p>
               </Section>
-              <Section title={`HEAL C4 — ${c4.budget} ${t('Діджиталізація', 'Digitalization')}`} color="#8B5CF6">
+              <Section title={`HEAL C4 — ${c4.budget} ${t('Діджиталізація', 'Digitalization')}`} color="var(--color-cyber-purple)">
                 <div className="grid grid-cols-3 gap-3 mb-4">
                   <Metric label={t('Бюджет', 'Budget')} value={c4.budget} />
                   <Metric label={t('Закуплено', 'Procured')} value={c4.procured} />
                   <Metric label={t('Незакуплено', 'Unallocated')} value={c4.unallocated} />
                 </div>
-                <Callout color="#8B5CF6">{c4.note}</Callout>
+                <Callout color="var(--color-cyber-purple)">{c4.note}</Callout>
                 <p className="text-[12px] mt-3 leading-relaxed" style={{ color: 'var(--color-ds-muted)' }}>{c4.accessMechanism}</p>
               </Section>
             </>

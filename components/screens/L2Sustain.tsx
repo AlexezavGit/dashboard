@@ -51,7 +51,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
 
           {/* 3-layer workforce model */}
           <div className="flex-shrink-0 rounded-2xl p-3"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+            style={{ background: 'var(--color-ds-well)', border: '1px solid var(--color-ds-border)' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
               {t('3 шари кадрового ландшафту', '3-layer workforce landscape', lang)}
             </div>
@@ -62,7 +62,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                   label: { uk: 'WHO Atlas (1.3/100K)', en: 'WHO Atlas (1.3/100K)' },
                   val: '~4,300',
                   sub: { uk: 'реєстровані психіатри + психологи', en: 'registered psychiatrists + psychologists' },
-                  color: '#60a5fa',
+                  color: 'var(--color-cyber-cyan)',
                   barPct: 66,
                 },
                 {
@@ -78,7 +78,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                   label: { uk: 'Тіньовий сектор', en: 'Shadow sector' },
                   val: '~6,500',
                   sub: { uk: 'практикують поза НСЗУ (НГО / приватно)', en: 'practising outside NHSU (NGO / private)' },
-                  color: '#f97316',
+                  color: 'var(--color-ds-orange)',
                   barPct: 100,
                 },
               ] as const).map((row) => (
@@ -88,7 +88,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                     <span className="text-[10px] font-mono" style={{ color: row.color }}>{row.label[lang]}</span>
                     <span className="ml-auto text-[14px] font-black ds-display leading-none" style={{ color: row.color }}>{row.val}</span>
                   </div>
-                  <div className="h-1.5 rounded-full mb-0.5" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <div className="h-1.5 rounded-full mb-0.5" style={{ background: 'var(--color-ds-track)' }}>
                     <div className="h-full rounded-full" style={{ width: `${row.barPct}%`, background: row.color, opacity: 0.75 }} />
                   </div>
                   <div className="text-[9px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{row.sub[lang]}</div>
@@ -99,15 +99,15 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
 
           {/* TRAINED_REALITY stacked bar */}
           <div className="flex-1 rounded-2xl p-4 min-h-0 overflow-hidden"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)', maxHeight: '200px' }}>
+            style={{ background: 'var(--color-ds-well)', border: '1px solid var(--color-ds-border)', maxHeight: '200px' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-1" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Рівень навчання за програмою', 'Training level by program', lang)}
             </div>
             {/* Legend */}
             <div className="flex gap-3 mb-2">
               {[
-                { color: '#60a5fa', label: t('Awareness', 'Awareness', lang) },
-                { color: '#f97316', label: t('Психосоц.', 'Psychosoc.', lang) },
+                { color: 'var(--color-cyber-cyan)', label: t('Awareness', 'Awareness', lang) },
+                { color: 'var(--color-ds-orange)', label: t('Психосоц.', 'Psychosoc.', lang) },
                 { color: 'var(--color-ds-teal-light)', label: t('Клінічний', 'Clinical', lang) },
               ].map((l) => (
                 <div key={l.label} className="flex items-center gap-1">
@@ -129,13 +129,13 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                     axisLine={false}
                   />
                   <Tooltip
-                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(44,110,100,0.3)', borderRadius: 8, fontSize: 11 }}
+                    contentStyle={{ background: 'var(--color-ds-surface)', border: '1px solid var(--color-ds-border)', borderRadius: 8, fontSize: 11 }}
                     labelStyle={{ color: 'var(--color-ds-teal-light)' }}
                     itemStyle={{ color: 'var(--color-ds-text)' }}
                     formatter={(v: number, name: string) => [v.toLocaleString(), name]}
                   />
-                  <Bar dataKey="awareness" name={t('Awareness', 'Awareness', lang)} stackId="a" fill="#60a5fa" />
-                  <Bar dataKey="psychosocial" name={t('Психосоціальний', 'Psychosocial', lang)} stackId="a" fill="#f97316" />
+                  <Bar dataKey="awareness" name={t('Awareness', 'Awareness', lang)} stackId="a" fill="#3E91A2" />
+                  <Bar dataKey="psychosocial" name={t('Психосоціальний', 'Psychosocial', lang)} stackId="a" fill="#D35F1E" />
                   <Bar dataKey="clinical" name={t('Клінічний', 'Clinical', lang)} stackId="a" fill="#2C6E64" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -163,7 +163,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
 
           {/* Workforce chart: UA vs EU vs WHO */}
           <div className="rounded-2xl p-4 flex-shrink-0"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+            style={{ background: 'var(--color-ds-well)', border: '1px solid var(--color-ds-border)' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Фахівці на 100K населення', 'Specialists per 100K population', lang)}
             </div>
@@ -178,7 +178,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                   />
                   <YAxis hide />
                   <Tooltip
-                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(44,110,100,0.3)', borderRadius: 8, fontSize: 11 }}
+                    contentStyle={{ background: 'var(--color-ds-surface)', border: '1px solid var(--color-ds-border)', borderRadius: 8, fontSize: 11 }}
                     labelStyle={{ color: 'var(--color-ds-teal-light)' }}
                     itemStyle={{ color: 'var(--color-ds-text)' }}
                   />
@@ -204,7 +204,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
 
           {/* WAR IMPACT: workforce declining */}
           <div className="rounded-2xl p-4 flex-shrink-0"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+            style={{ background: 'var(--color-ds-well)', border: '1px solid var(--color-ds-border)' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-2" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Вплив війни на кадри (тис. фахівців)', 'War impact on workforce (thousands)', lang)}
             </div>
@@ -221,7 +221,7 @@ export const L2Sustain: React.FC<Props> = ({ lang, nav }) => {
                   <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 9 }} tickLine={false} axisLine={false} />
                   <YAxis hide domain={[25, 45]} />
                   <Tooltip
-                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(44,110,100,0.3)', borderRadius: 8, fontSize: 11 }}
+                    contentStyle={{ background: 'var(--color-ds-surface)', border: '1px solid var(--color-ds-border)', borderRadius: 8, fontSize: 11 }}
                     labelStyle={{ color: 'var(--color-ds-teal-light)' }}
                     itemStyle={{ color: 'var(--color-ds-text)' }}
                   />

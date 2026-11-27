@@ -73,7 +73,7 @@ const Gap: React.FC<{ label: string; why: string }> = ({ label, why }) => (
 );
 
 const Lane: React.FC<{ title: string; unit: string; children: React.ReactNode }> = ({ title, unit, children }) => (
-  <div className="flex flex-col gap-2.5 p-4 rounded-xl min-h-0" style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${BORDER}` }}>
+  <div className="flex flex-col gap-2.5 p-4 rounded-xl min-h-0" style={{ background: 'var(--color-ds-track)', border: `1px solid ${BORDER}` }}>
     <div>
       <div className="cyber-label" style={{ color: 'var(--color-ds-gold)' }}>{title}</div>
       <div className="text-[9px] font-mono" style={{ color: MUTED }}>{unit}</div>

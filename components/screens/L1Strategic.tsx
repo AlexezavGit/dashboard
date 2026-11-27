@@ -310,7 +310,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
                       <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 10, color: 'var(--color-ds-text)' }}>{l.layer[lang]}</span>
                       <span style={{ fontFamily: "'Spline Sans Mono', monospace", fontSize: 10, color: 'var(--color-ds-muted)' }}>{Math.round(pct)}% · w{l.weight}%</span>
                     </div>
-                    <div style={{ height: 7, borderRadius: 4, background: 'rgba(255,255,255,0.06)' }}>
+                    <div style={{ height: 7, borderRadius: 4, background: 'var(--color-ds-track)' }}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
@@ -423,7 +423,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
 
       {/* Footer — 8 clickable metrics + nav buttons */}
       <div className="flex-shrink-0 px-4 py-2 flex items-center gap-0 flex-wrap"
-        style={{ borderTop: '1px solid var(--color-ds-border)', background: 'rgba(0,0,0,0.25)' }}
+        style={{ borderTop: '1px solid var(--color-ds-border)', background: 'var(--color-ds-well)' }}
       >
         {[
           ...METRICS,

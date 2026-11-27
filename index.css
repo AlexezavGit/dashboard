@@ -54,6 +54,8 @@
   --color-ds-border:      rgba(28, 90, 82, 0.25);
   --color-ds-muted:       #8CBEB4;
   --color-ds-bg-card:     rgba(13, 42, 38, 0.8);
+  --color-ds-well:        rgba(0, 0, 0, 0.3);      /* inset panel on gradient */
+  --color-ds-track:       rgba(255, 255, 255, 0.06); /* progress-bar track */
   --color-ds-navy:        #0f2a2a;
   --color-ds-teal-dim:    rgba(44, 110, 100, 0.15);
   --color-ds-royal-dim:   rgba(14, 77, 99, 0.28);
@@ -98,6 +100,8 @@
   --color-ds-border:       rgba(6, 41, 58, 0.28);
   --color-ds-muted:        #45636F;
   --color-ds-bg-card:      rgba(255, 255, 255, 0.82);
+  --color-ds-well:         rgba(6, 41, 58, 0.05);
+  --color-ds-track:        rgba(6, 41, 58, 0.12);
   --color-ds-navy:         #0F2B46;
   --color-ds-teal-dim:     rgba(44, 110, 100, 0.08);
   --color-ds-royal-dim:    rgba(15, 43, 70, 0.10);

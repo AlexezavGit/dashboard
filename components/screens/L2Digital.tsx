@@ -60,7 +60,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
           </div>
 
           <div className="flex-1 rounded-2xl p-5 min-h-0 overflow-hidden"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+            style={{ background: 'var(--color-ds-well)', border: '1px solid var(--color-ds-border)' }}>
             <div className="text-[11px] font-mono uppercase tracking-wider mb-3" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Тижневий час (20 год/тиж)', 'Weekly time (20 h/wk)', lang)}
             </div>
@@ -75,7 +75,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
                       {s.hrs}h
                     </span>
                   </div>
-                  <div className="h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <div className="h-2 rounded-full" style={{ background: 'var(--color-ds-track)' }}>
                     <div className="h-2 rounded-full" style={{
                       width: `${(s.hrs / TOTAL) * 100}%`,
                       background: s.clinical ? 'var(--color-ds-teal-light)' : 'var(--color-ds-orange)',
@@ -92,7 +92,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
 
           {/* Structural disproportions: admin burden + inpatient mismatch */}
           <div className="rounded-2xl p-3 flex-shrink-0"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+            style={{ background: 'var(--color-ds-well)', border: '1px solid var(--color-ds-border)' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-1" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Структурні диспропорції (× WHO норма = 1.0)', 'Structural disproportions (× WHO norm = 1.0)', lang)}
             </div>
@@ -108,7 +108,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
                   <YAxis hide domain={[0, 6]} />
                   <Tooltip
                     formatter={(_v: any, _n: any, item: any) => [item.payload.displayValue, item.payload.calc]}
-                    contentStyle={{ background: '#1a2035', border: '1px solid rgba(255,153,102,0.3)', borderRadius: 8, fontSize: 10 }}
+                    contentStyle={{ background: 'var(--color-ds-surface)', border: '1px solid var(--color-ds-border)', borderRadius: 8, fontSize: 10 }}
                     labelStyle={{ color: 'var(--color-ds-orange)' }}
                     itemStyle={{ color: 'var(--color-ds-text)' }}
                   />
@@ -138,7 +138,7 @@ export const L2Digital: React.FC<Props> = ({ lang, nav }) => {
           </div>
 
           <div className="rounded-2xl p-3"
-            style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid var(--color-ds-border)' }}>
+            style={{ background: 'var(--color-ds-well)', border: '1px solid var(--color-ds-border)' }}>
             <div className="text-[10px] font-mono uppercase tracking-wider mb-1.5" style={{ color: 'var(--color-ds-muted)' }}>
               {t('Відновлюваний потенціал', 'Recoverable potential', lang)}
             </div>

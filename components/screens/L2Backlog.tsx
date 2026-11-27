@@ -112,7 +112,7 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           className="p-4 rounded-xl flex items-center gap-6 flex-shrink-0"
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--color-ds-border)' }}
+          style={{ background: 'var(--color-ds-track)', border: '1px solid var(--color-ds-border)' }}
         >
           <div className="text-center" title={`${needMin.code} · ${needMin.origin}`}>
             <div className="text-[10px] ds-body mb-1" style={{ color: 'var(--color-ds-muted)' }}>{lang === 'uk' ? 'Потреба на весь курс' : 'Need for the full course'}</div>
@@ -167,7 +167,7 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.12 + 0.2 }}
               className="flex items-center gap-4 p-3 rounded-xl flex-1"
-              style={{ background: 'rgba(255,255,255,0.025)', border: '1px solid var(--color-ds-border)' }}
+              style={{ background: 'var(--color-ds-track)', border: '1px solid var(--color-ds-border)' }}
             >
               <div className="w-44 flex-shrink-0">
                 <div className="text-[10px] ds-body leading-snug" style={{ color: 'var(--color-ds-text, rgba(214,221,230,0.88))' }}>{m.label[lang]}</div>
