@@ -16,6 +16,7 @@ import { InactionFunnel } from './InactionFunnel';
 import { L2Operational } from './L2Operational';
 import { L2Analytical } from './L2Analytical';
 import { L2Journey } from './L2Journey';
+import { L2CabinetEntry } from './L2CabinetEntry';
 import { LangThemeBar } from './LangThemeBar';
 import { AnimatePresence, motion } from 'motion/react';
 
@@ -36,6 +37,7 @@ const SLIDE_DIRECTION: Partial<Record<ScreenId, 'left' | 'right' | 'bottom'>> = 
   'l2-backlog':     'right',
   'l2-inaction':    'right',
   'l2-journey':     'right',
+  'l2-cabinet-entry': 'right',
 };
 
 const slideVariants = {
@@ -58,7 +60,7 @@ interface Props {
 const VALID_SCREEN_IDS: ScreenId[] = [
   'l1','l2-mhei','l2-fintech','l2-clinical','l2-data','l2-sustain',
   'l2-digital','l2-regulatory','l2-finance','l2-coverage','l2-backlog','l2-inaction',
-  'l2-operational','l2-analytical','l2-journey',
+  'l2-operational','l2-analytical','l2-journey','l2-cabinet-entry',
 ];
 
 function readHash(): ScreenId {
@@ -136,6 +138,7 @@ export const ScreenRouter: React.FC<Props> = ({
     'l2-operational': <L2Operational lang={lang} nav={nav} />,
     'l2-analytical':  <L2Analytical lang={lang} nav={nav} />,
     'l2-journey':     <L2Journey lang={lang} nav={nav} />,
+    'l2-cabinet-entry': <L2CabinetEntry lang={lang} nav={nav} />,
   };
 
   if (current === 'appendix') return null;

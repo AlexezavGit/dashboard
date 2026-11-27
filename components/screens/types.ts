@@ -16,6 +16,7 @@ export type ScreenId =
   | 'l2-operational'    // 9 systemic gaps — flip cards
   | 'l2-analytical'     // Data visibility map
   | 'l2-journey'        // Stakeholder Journeys integration map
+  | 'l2-cabinet-entry'  // Cabinet entry fork: recipient / provider / patron / auditor
   | 'appendix'          // Full scrolling brief (operational/architectural content)
   | 'l4';              // Full analytical report (L4Report)
 

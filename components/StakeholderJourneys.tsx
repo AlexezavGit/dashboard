@@ -10,18 +10,31 @@ interface JourneyItem {
 interface Phase {
   id: string;
   title: { uk: string; en: string };
-  lanes: Record<'beneficiary' | 'provider' | 'donor', JourneyItem | null>;
+  lanes: Record<'beneficiary' | 'provider' | 'donor' | 'auditor', JourneyItem | null>;
 }
+
+export type JourneyRole = 'beneficiary' | 'provider' | 'donor' | 'auditor';
 
 interface StakeholderJourneysProps {
   lang: 'uk' | 'en';
+  onRoleSelect?: (role: JourneyRole) => void;
 }
 
 const ROLE_LABELS = {
   beneficiary: { uk: 'Бенефіціар', en: 'Beneficiary' },
   provider: { uk: 'Провайдер', en: 'Provider' },
   donor: { uk: 'Донор', en: 'Donor' },
+  auditor: { uk: 'Аудитор', en: 'Auditor' },
 } as const;
+
+/* Role accent per 08-COLOR-CODING §67: donor blue everywhere, provider/beneficiary
+   sand, auditor analytical pale-green (03-CABINET-ENTRY §2). */
+const ROLE_ACCENT: Record<keyof typeof ROLE_LABELS, string> = {
+  beneficiary: 'var(--color-ds-sand)',
+  provider: 'var(--color-ds-sand-dark)',
+  donor: 'var(--color-cyber-cyan)',
+  auditor: 'var(--color-cyber-success)',
+};
 
 const MODES = {
   with: {
@@ -62,6 +75,7 @@ const getPhases = (mode: 'with' | 'without'): Phase[] => [
       },
       provider: null,
       donor: null,
+      auditor: null,
     },
   },
   {
@@ -95,6 +109,7 @@ const getPhases = (mode: 'with' | 'without'): Phase[] => [
         },
       },
       donor: null,
+      auditor: null,
     },
   },
   {
@@ -128,6 +143,7 @@ const getPhases = (mode: 'with' | 'without'): Phase[] => [
         },
       },
       donor: null,
+      auditor: null,
     },
   },
   {
@@ -173,6 +189,19 @@ const getPhases = (mode: 'with' | 'without'): Phase[] => [
             : 'Donor receives reports on request without online transparency.',
         },
       },
+      auditor: {
+        id: 'A1',
+        title: { uk: 'Незалежна верифікація', en: 'Independent Verification' },
+        tool: mode === 'with' ? 'ESG / audit channel' : 'manual audit',
+        desc: {
+          uk: mode === 'with'
+            ? 'Аудитор перевіряє верифіковані дані про надані послуги в цифровому сліді платформи.'
+            : 'Аудит ведеться вибірково за паперовими актами, без доступу до сліду.',
+            en: mode === 'with'
+            ? 'The auditor reviews verified service data in the platform digital trail.'
+            : 'Audit is sampled from paper forms without access to the trail.',
+        },
+      },
     },
   },
   {
@@ -206,6 +235,7 @@ const getPhases = (mode: 'with' | 'without'): Phase[] => [
             : 'Budget allocation occurs through slow tender cycles.',
         },
       },
+      auditor: null,
     },
   },
   {
@@ -227,11 +257,24 @@ const getPhases = (mode: 'with' | 'without'): Phase[] => [
             : 'Reporting is created traditionally with manual validation.',
         },
       },
+      auditor: {
+        id: 'A2',
+        title: { uk: 'Аудит ESG-звітності', en: 'ESG Report Audit' },
+        tool: mode === 'with' ? 'public ESG channel' : 'annual audit',
+        desc: {
+          uk: mode === 'with'
+            ? 'Аудитор підтверджує цільове використання коштів у публічному ESG-каналі.'
+            : 'Підтвердження дається раз на рік, після закриття періоду.',
+            en: mode === 'with'
+            ? 'The auditor confirms targeted spending in the public ESG channel.'
+            : 'Confirmation is given once a year, after the period closes.',
+        },
+      },
     },
   },
 ];
 
-export function StakeholderJourneys({ lang }: StakeholderJourneysProps) {
+export function StakeholderJourneys({ lang, onRoleSelect }: StakeholderJourneysProps) {
   const [mode, setMode] = useState<'with' | 'without'>('with');
   const [isPlaying, setIsPlaying] = useState(false);
   const [phaseIndex, setPhaseIndex] = useState(0);
@@ -301,11 +344,28 @@ export function StakeholderJourneys({ lang }: StakeholderJourneysProps) {
 
       <div className="mb-6 grid grid-cols-1 md:grid-cols-[120px_1fr] gap-4">
         <div className="space-y-2">
-          {(['beneficiary', 'provider', 'donor'] as const).map((role) => (
-            <div key={role} className="rounded-xl border border-[var(--color-ds-border)] bg-[var(--color-ds-bg-card)] p-3 text-[11px] uppercase tracking-wide text-[var(--color-ds-muted)]">
+          {(['beneficiary', 'provider', 'donor', 'auditor'] as const).map((role) => (
+            <button
+              key={role}
+              type="button"
+              data-role={role}
+              onClick={() => onRoleSelect?.(role)}
+              className="w-full text-left rounded-xl border p-3 text-[11px] uppercase tracking-wide transition-all cursor-pointer hover:translate-x-0.5"
+              style={{
+                borderColor: 'var(--color-ds-border)',
+                background: 'var(--color-ds-bg-card)',
+                color: ROLE_ACCENT[role],
+                borderLeft: `3px solid ${ROLE_ACCENT[role]}`,
+              }}
+            >
               {ROLE_LABELS[role][lang]}
-            </div>
+            </button>
           ))}
+          {onRoleSelect && (
+            <div className="text-[9px] font-mono pt-1" style={{ color: 'var(--color-ds-muted)' }}>
+              {lang === 'uk' ? 'клік по доріжці → вхід до кабінетів' : 'click a lane → cabinet entry'}
+            </div>
+          )}
         </div>
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -322,9 +382,15 @@ export function StakeholderJourneys({ lang }: StakeholderJourneysProps) {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-            {(['beneficiary', 'provider', 'donor'] as const).map((role) => (
-              <div key={role} className="space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+            {(['beneficiary', 'provider', 'donor', 'auditor'] as const).map((role) => (
+              <div
+                key={role}
+                data-role={role}
+                onClick={() => onRoleSelect?.(role)}
+                className={`space-y-3 ${onRoleSelect ? 'cursor-pointer' : ''}`}
+                style={{ borderRadius: '1rem' }}
+              >
                 {phases.map((phase, phaseIdx) => {
                   const item = phase.lanes[role];
                   const isActive = phaseIdx === phaseIndex;

@@ -57,6 +57,8 @@
   --color-ds-navy:        #0f2a2a;
   --color-ds-teal-dim:    rgba(44, 110, 100, 0.15);
   --color-ds-royal-dim:   rgba(14, 77, 99, 0.28);
+  --color-ds-sand:        #C9B591;   /* ПІСОК light tone — beneficiary */
+  --color-ds-sand-dark:   #8A6A4A;   /* ПІСОК mid — provider */
 
   /* Footer — canvas E3 */
   --color-ds-footer-bg:   #FAB007;
@@ -100,6 +102,8 @@
   --color-ds-teal-dim:     rgba(44, 110, 100, 0.08);
   --color-ds-royal-dim:    rgba(15, 43, 70, 0.10);
   --color-ds-gold-a-dark:  #8A6830;
+  --color-ds-sand:         #6E3A1E;   /* ПІСОК dark tone — AA on light */
+  --color-ds-sand-dark:    #3C2B24;
 
   --color-cyber-bg:      #D8E2E6;
   --color-cyber-surface: rgba(255,255,255,0.78);

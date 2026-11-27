@@ -16,7 +16,13 @@ const T = {
   },
 };
 
-export const L2Journey: React.FC<Props> = ({ lang, nav }) => (
+export const L2Journey: React.FC<Props> = ({ lang, nav }) => {
+  const handleRoleSelect = (role: string) => {
+    try { sessionStorage.setItem('feel-cabinet-role', role); } catch { /* ignore */ }
+    nav.push('l2-cabinet-entry');
+  };
+
+  return (
   <div
     className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
     style={{
@@ -42,9 +48,10 @@ export const L2Journey: React.FC<Props> = ({ lang, nav }) => (
 
     {/* Main content */}
     <div className="flex-1 overflow-y-auto px-5 pb-8 min-h-0 z-10 relative">
-      <StakeholderJourneys lang={lang} />
+      <StakeholderJourneys lang={lang} onRoleSelect={handleRoleSelect} />
     </div>
 
     <L3Footer lang={lang} nav={nav} />
   </div>
-);
+  );
+};
