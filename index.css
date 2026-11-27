@@ -209,9 +209,20 @@ html, body {
 /* ── Technological Backgrounds ───────────────────────────────────────────── */
 .ds-blueprint-bg {
   background-image:
-    linear-gradient(rgba(0,210,255,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,210,255,0.05) 1px, transparent 1px);
+    linear-gradient(rgba(44,110,100,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(44,110,100,.04) 1px, transparent 1px);
   background-size: 50px 50px;
+}
+:root[data-theme="light"] .ds-blueprint-bg {
+  background-image:
+    linear-gradient(rgba(139,105,20,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,105,20,.05) 1px, transparent 1px);
+}
+:root[data-theme="light"] body {
+  background-color: #D8E2E6;
+  background-image:
+    linear-gradient(rgba(139,105,20,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,105,20,.05) 1px, transparent 1px);
 }
 
 .ds-circuit-bg {
@@ -656,11 +667,33 @@ html, body {
 :root[data-theme="light"] .bg-orange-500\/20 { background: rgba(181, 72, 26, 0.15) !important; }
 
 /* ── Screen containers ───────────────────────────────────────────────────── */
+/* Канон Dashboard.html: темний канвас — petrol-градієнт, сітка blueprint у обох
+   темах під контентом (rgba(44,110,100,.04) темна / rgba(139,105,20,.05) світла). */
 .ds-screen {
-  /* base dark */
+  isolation: isolate;
+}
+:root[data-theme="dark"] .ds-screen,
+:root:not([data-theme]) .ds-screen {
+  background: linear-gradient(180deg, #0B2422 0%, #0E302E 40%, #0E302E 72%, #0e2a28 100%) !important;
+}
+.ds-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(44,110,100,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(44,110,100,.04) 1px, transparent 1px);
+  background-size: 50px 50px;
 }
 :root[data-theme="light"] .ds-screen {
   background: linear-gradient(150deg, #D8E2E6 0%, #eef4f4 100%) !important;
+}
+:root[data-theme="light"] .ds-screen::before {
+  background-image:
+    linear-gradient(rgba(139,105,20,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,105,20,.05) 1px, transparent 1px);
 }
 :root[data-theme="light"] .ds-screen > .h-\[2px\] {
   opacity: 0.4;

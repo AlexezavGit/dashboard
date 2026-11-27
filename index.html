@@ -12,8 +12,13 @@
       (function(){window.FEEL_THEME_KEY='feel-theme';var t=localStorage.getItem(window.FEEL_THEME_KEY)||'dark';document.documentElement.setAttribute('data-theme',t);})();
     </script>
     <style>
+      /* Канон Dashboard.html: petrol + сітка — щоб перший кадр збігався з темою */
       body {
-        background-color: #0B2422;
+        background-color: #0E302E;
+        background-image:
+          linear-gradient(rgba(44,110,100,.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(44,110,100,.04) 1px, transparent 1px);
+        background-size: 50px 50px;
         color: #F2EADB;
         margin: 0;
         overflow-x: hidden;

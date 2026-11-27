@@ -427,7 +427,9 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
       >
         {[
           ...METRICS,
-          ...(liveHciValue ? [{ val: `HCI ${liveHciValue}`, label: { uk: 'WB live', en: 'WB live' }, sourceUrl: 'https://data.worldbank.org/indicator/HD.HCI.OVRL?locations=UA' } as Metric] : []),
+          // Індикатор HD.HCI.OVRL знятий WB зі публічної сторінки; API ще віддає
+          // останнє значення. Ціль — сторінка Data Updates, яку пропонує сам WB.
+          ...(liveHciValue ? [{ val: `HCI ${liveHciValue}`, label: { uk: 'WB архів', en: 'WB archive' }, sourceUrl: 'https://data.worldbank.org/data-updates' } as Metric] : []),
         ].map((m) => {
           const clickable = m.screen || m.sourceUrl;
           const handleClick = () => {
