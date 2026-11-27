@@ -149,14 +149,14 @@ const getPhases = (mode: 'with' | 'without'): Phase[] => [
       },
       provider: {
         id: 'P4',
-        title: { uk: 'Результативна оплата', en: 'Outcome-Based Payment' },
+        title: { uk: 'Оплата прийнятої послуги', en: 'Payment for Accepted Services' },
         tool: mode === 'with' ? 'FEEL Escrow Bus' : 'manual claim',
         desc: {
           uk: mode === 'with'
-            ? 'Провайдер отримує оплату за підтверджений результат через шину FEEL.'
+            ? 'Провайдер отримує оплату за прийняту послугу за погодженими умовами, незалежно від поліпшення симптомів.'
             : 'Оплата формується вручну на підставі звітів і актів.',
             en: mode === 'with'
-            ? 'Provider is paid through FEEL bus for verified outcomes.'
+            ? 'The provider is paid for an accepted service under agreed terms, regardless of symptom improvement.'
             : 'Payment is manually posted based on reports and forms.',
         },
       },
@@ -312,7 +312,7 @@ export function StakeholderJourneys({ lang }: StakeholderJourneysProps) {
             {phases.map((phase, index) => (
               <div
                 key={phase.id}
-                className={`rounded-xl border p-3 text-[11px] ${index === phaseIndex ? 'border-[var(--color-ds-teal)] bg-[rgba(0,212,170,0.05)]' : 'border-[var(--color-ds-border)] bg-[var(--color-ds-bg)]'}`}
+                className={`rounded-xl border p-3 text-[11px] ${index === phaseIndex ? 'border-[var(--color-ds-teal)] bg-[rgba(44,110,100,0.05)]' : 'border-[var(--color-ds-border)] bg-[var(--color-ds-bg)]'}`}
               >
                 <div className="font-bold uppercase tracking-wide text-[var(--color-ds-gold)] mb-2">
                   {lang === 'uk' ? phase.title.uk : phase.title.en}
@@ -331,7 +331,7 @@ export function StakeholderJourneys({ lang }: StakeholderJourneysProps) {
                   return (
                     <div
                       key={`${role}-${phase.id}`}
-                      className={`rounded-2xl border p-4 transition-all duration-200 ${item ? 'bg-[var(--color-ds-bg-card)] border-[var(--color-ds-border)]' : 'bg-transparent border border-transparent opacity-25'} ${isActive && item ? 'shadow-[0_0_20px_rgba(0,212,170,0.12)] border-[var(--color-ds-teal)]' : ''}`}
+                      className={`rounded-2xl border p-4 transition-all duration-200 ${item ? 'bg-[var(--color-ds-bg-card)] border-[var(--color-ds-border)]' : 'bg-transparent border border-transparent opacity-25'} ${isActive && item ? 'shadow-[0_0_20px_rgba(44,110,100,0.12)] border-[var(--color-ds-teal)]' : ''}`}
                     >
                       {item ? (
                         <>
