@@ -133,7 +133,7 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
                   { label: t('МЗ-послуги HEAL', 'HEAL MH services'), val: '624,464', sub: t('осіб', 'people'), color: 'var(--color-ds-teal)' },
                   { label: t('Покриття ЕСОЗ', 'ESOZ coverage'), val: '0%', sub: t('гуманітарних сесій', 'humanitarian sessions'), color: 'var(--color-ds-red)' },
                 ].map(m => (
-                  <div key={m.label} className="rounded-xl p-5 text-center" style={{ border: `1px solid ${m.color}33`, background: `${m.color}08` }}>
+                  <div key={m.label} className="rounded-xl p-5 text-center" style={{ border: `1px solid color-mix(in srgb, ${m.color} 20%, transparent)`, background: `color-mix(in srgb, ${m.color} 3%, transparent)` }}>
                     <div className="text-[32px] font-bold ds-display" style={{ color: m.color }}>{m.val}</div>
                     <div className="text-[10px] font-mono uppercase tracking-wider mt-1" style={{ color: 'var(--color-ds-muted)' }}>{m.label}</div>
                     <div className="text-[9px] font-mono mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{m.sub}</div>
@@ -143,7 +143,7 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
               <Section title={t('ROI — обґрунтування інвестицій', 'ROI — investment rationale')} color="var(--color-ds-teal)">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {roi.map((r: any) => (
-                    <div key={r.source} className="rounded-lg p-4 space-y-2" style={{ border: `1px solid ${r.color}33`, background: `${r.color}08` }}>
+                    <div key={r.source} className="rounded-lg p-4 space-y-2" style={{ border: `1px solid color-mix(in srgb, ${r.color} 20%, transparent)`, background: `color-mix(in srgb, ${r.color} 3%, transparent)` }}>
                       <div className="text-[10px] font-mono font-bold uppercase" style={{ color: r.color }}>{r.source}</div>
                       <div className="text-[22px] font-bold ds-display" style={{ color: r.color }}>{r.roi}</div>
                       <p className="text-[11px] leading-relaxed" style={{ color: 'var(--color-ds-muted)' }}>{r.desc}</p>
@@ -236,12 +236,12 @@ export const L4Report: React.FC<Props> = ({ lang, onBack }) => {
           {chapter === 'arch' && (
             <Section title={t('Потік даних: гуманітарна → державна зона', 'Data flow: humanitarian → state zone')} color="var(--color-ds-teal)">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center text-[12px]">
-                <div className="rounded-xl p-5 space-y-3" style={{ border: '1px solid var(--color-ds-teal)33', background: 'var(--color-ds-teal)08' }}>
+                <div className="rounded-xl p-5 space-y-3" style={{ border: '1px solid color-mix(in srgb, var(--color-ds-teal) 20%, transparent)', background: 'color-mix(in srgb, var(--color-ds-teal) 3%, transparent)' }}>
                   <div className="text-[10px] font-mono font-bold uppercase" style={{ color: 'var(--color-ds-teal)' }}>{arch.humanitarian.label}</div>
                   {arch.humanitarian.sources.map((s: string) => (<div key={s} className="text-[11px]" style={{ color: 'var(--color-ds-muted)' }}>· {s}</div>))}
                   {arch.humanitarian.highlights.map((h: string) => (<div key={h} className="text-[11px] font-bold" style={{ color: 'var(--color-ds-teal)' }}>{h}</div>))}
                 </div>
-                <div className="rounded-xl p-5 space-y-2" style={{ border: '1px solid var(--color-ds-gold)33', background: 'var(--color-ds-gold)08' }}>
+                <div className="rounded-xl p-5 space-y-2" style={{ border: '1px solid color-mix(in srgb, var(--color-ds-gold) 20%, transparent)', background: 'color-mix(in srgb, var(--color-ds-gold) 3%, transparent)' }}>
                   <div className="text-[10px] font-mono font-bold uppercase whitespace-pre-line" style={{ color: 'var(--color-ds-gold)' }}>{arch.middleware.label}</div>
                   {arch.middleware.components.map((c: string) => (<div key={c} className="text-[11px]" style={{ color: 'var(--color-ds-muted)' }}>· {c}</div>))}
                 </div>

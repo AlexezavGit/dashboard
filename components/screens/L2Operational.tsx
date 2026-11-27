@@ -25,15 +25,15 @@ interface Gap {
 }
 
 const CLUSTER_META: Record<Cluster, { uk: string; en: string; color: string }> = {
-  data:           { uk: 'КЛАСТЕР: ДАНІ',         en: 'CLUSTER: DATA',           color: '#2C6E64' },
-  capacity:       { uk: 'КЛАСТЕР: ПОТУЖНІСТЬ',   en: 'CLUSTER: CAPACITY',       color: '#e8c97a' },
-  accountability: { uk: 'КЛАСТЕР: ПІДЗВІТНІСТЬ', en: 'CLUSTER: ACCOUNTABILITY', color: '#B8463C' },
+  data:           { uk: 'КЛАСТЕР: ДАНІ',         en: 'CLUSTER: DATA',           color: 'var(--color-ds-teal-light)' },
+  capacity:       { uk: 'КЛАСТЕР: ПОТУЖНІСТЬ',   en: 'CLUSTER: CAPACITY',       color: 'var(--color-ds-gold)' },
+  accountability: { uk: 'КЛАСТЕР: ПІДЗВІТНІСТЬ', en: 'CLUSTER: ACCOUNTABILITY', color: 'var(--color-ds-red)' },
 };
 
 const GAPS: Gap[] = [
   // ── DATA cluster ──────────────────────────────────────────────────────────
   {
-    id: 'info', cluster: 'data', color: '#e8c97a', icon: '📊',
+    id: 'info', cluster: 'data', color: 'var(--color-ds-gold)', icon: '📊',
     label:    { uk: 'Інформаційний',    en: 'Informational' },
     val: '0', valLabel: { uk: 'авт. передач між системами', en: 'automated data transfers' },
     oneliner: { uk: 'CommCare/Kobo/ActivityInfo → ЄСОЗ: нульова синхронізація', en: 'CommCare/Kobo/ActivityInfo → ESOZ: zero synchronisation' },
@@ -42,7 +42,7 @@ const GAPS: Gap[] = [
     chainsTo: ['admin', 'interop'],
   },
   {
-    id: 'interop', cluster: 'data', color: '#2C6E64', icon: '🔌',
+    id: 'interop', cluster: 'data', color: 'var(--color-ds-teal-light)', icon: '🔌',
     label:    { uk: 'Інтероперабельність', en: 'Interoperability' },
     val: '5', valLabel: { uk: 'систем, 0 з\'єднань', en: 'systems, 0 connections' },
     oneliner: { uk: 'ЄСОЗ↔CommCare↔ActivityInfo↔Kobo↔Тіньовий: повна ізоляція', en: 'ESOZ↔CommCare↔ActivityInfo↔Kobo↔Shadow: complete isolation' },
@@ -51,7 +51,7 @@ const GAPS: Gap[] = [
     chainsTo: ['info', 'admin'],
   },
   {
-    id: 'admin', cluster: 'data', color: '#1C5A52', icon: '📋',
+    id: 'admin', cluster: 'data', color: 'var(--color-ds-teal)', icon: '📋',
     label:    { uk: 'Адміністративний', en: 'Administrative' },
     val: '22%', valLabel: { uk: 'часу — подвійна робота', en: 'time on duplication' },
     oneliner: { uk: '3.5 год/тиж × 12K (4K НСЗУ + 8K UNICEF) = 2.18M годин/рік витрачено даремно', en: '3.5 hrs/wk × 12K (4K NHSU + 8K UNICEF) = 2.18M hrs/yr wasted' },
@@ -61,7 +61,7 @@ const GAPS: Gap[] = [
   },
   // ── CAPACITY cluster ──────────────────────────────────────────────────────
   {
-    id: 'cap', cluster: 'capacity', color: '#B8463C', icon: '🏥',
+    id: 'cap', cluster: 'capacity', color: 'var(--color-ds-red)', icon: '🏥',
     label:    { uk: 'Місткісний', en: 'Capacity' },
     val: '0.28%', valLabel: { uk: 'клінічної потреби покрито', en: 'of clinical need covered' },
     oneliner: { uk: '5M доступних сесій vs 62.4M необхідних/рік — розрив 57.4M', en: '5M available vs 62.4M needed sessions/yr — gap of 57.4M' },
@@ -70,7 +70,7 @@ const GAPS: Gap[] = [
     chainsTo: ['budget', 'path'],
   },
   {
-    id: 'budget', cluster: 'capacity', color: '#2C6E64', icon: '⚖️',
+    id: 'budget', cluster: 'capacity', color: 'var(--color-ds-teal-light)', icon: '⚖️',
     label:    { uk: 'Бюджетний', en: 'Budget' },
     val: '8.1:1', valLabel: { uk: 'стаціонар:амбулаторне', en: 'inpatient:outpatient' },
     oneliner: { uk: '55% бюджету — стаціонар; 71% попиту — амбулаторні послуги', en: '55% budget inpatient; 71% demand is outpatient services' },
@@ -79,7 +79,7 @@ const GAPS: Gap[] = [
     chainsTo: ['cap', 'path'],
   },
   {
-    id: 'path', cluster: 'capacity', color: '#e8c97a', icon: '🛤️',
+    id: 'path', cluster: 'capacity', color: 'var(--color-ds-gold)', icon: '🛤️',
     label:    { uk: 'Шлях клієнта', en: 'Client Pathway' },
     val: '54%', valLabel: { uk: 'не завершують курс', en: 'do not complete treatment' },
     oneliner: { uk: '78% переходів між рівнями — без направлення; маршрутизація вгадкою', en: '78% transitions between levels — without referral; navigation by guesswork' },
@@ -89,7 +89,7 @@ const GAPS: Gap[] = [
   },
   // ── ACCOUNTABILITY cluster ────────────────────────────────────────────────
   {
-    id: 'fin', cluster: 'accountability', color: '#B8463C', icon: '💰',
+    id: 'fin', cluster: 'accountability', color: 'var(--color-ds-red)', icon: '💰',
     label:    { uk: 'Фінансовий', en: 'Financial' },
     val: '$0', valLabel: { uk: 'верифікованих outcome-виплат', en: 'verified outcome payments' },
     oneliner: { uk: '$1.87B в системі — 0% прив\'язано до верифікованих сесій', en: '$1.87B in system — 0% linked to verified sessions' },
@@ -98,7 +98,7 @@ const GAPS: Gap[] = [
     chainsTo: ['human', 'ops'],
   },
   {
-    id: 'ops', cluster: 'accountability', color: '#ff9966', icon: '⚙️',
+    id: 'ops', cluster: 'accountability', color: 'var(--color-ds-orange)', icon: '⚙️',
     label:    { uk: 'Операційний', en: 'Operational' },
     val: '2×/тиж', valLabel: { uk: 'ручна координація кластеру', en: 'manual cluster coordination' },
     oneliner: { uk: 'Неможливо масштабувати при навантаженні 50-60M сесій/рік вручну', en: 'Cannot scale to 50-60M sessions/yr with manual coordination' },
@@ -107,7 +107,7 @@ const GAPS: Gap[] = [
     chainsTo: ['fin', 'admin'],
   },
   {
-    id: 'human', cluster: 'accountability', color: '#2C6E64', icon: '🌍',
+    id: 'human', cluster: 'accountability', color: 'var(--color-ds-teal-light)', icon: '🌍',
     label:    { uk: 'Гуманітарний', en: 'Humanitarian' },
     val: '1%', valLabel: { uk: 'локалізація (ціль Grand Bargain: 25%)', en: 'localisation (Grand Bargain target: 25%)' },
     oneliner: { uk: '1% гуманітарних коштів MHPSS до місцевих НУО при зобов\'язанні 25%', en: '1% of MHPSS humanitarian funds reach local NGOs against 25% commitment' },
@@ -150,7 +150,7 @@ const FlipCard: React.FC<{
         backfaceVisibility: 'hidden',
         WebkitBackfaceVisibility: 'hidden',
         background: 'rgba(255,255,255,0.03)',
-        border: `1px solid ${gap.color}33`,
+        border: `1px solid color-mix(in srgb, ${gap.color} 20%, transparent)`,
         borderRadius: '12px',
         padding: '10px',
         display: 'flex', flexDirection: 'column',
@@ -162,7 +162,7 @@ const FlipCard: React.FC<{
         <div className="ds-display font-bold" style={{
           fontSize: 'clamp(16px, 2.2vw, 26px)',
           color: gap.color,
-          textShadow: `0 0 18px ${gap.color}55`,
+          textShadow: `0 0 18px color-mix(in srgb, ${gap.color} 33%, transparent)`,
           lineHeight: 1,
         }}>
           {gap.val}
@@ -171,10 +171,10 @@ const FlipCard: React.FC<{
           className="ds-body">
           {gap.valLabel[lang]}
         </div>
-        <p className="ds-body" style={{ fontSize: '10px', lineHeight: 1.4, color: 'rgba(242,234,219,0.72)', marginTop: 'auto' }}>
+        <p className="ds-body" style={{ fontSize: '10px', lineHeight: 1.4, color: 'var(--color-ds-text)', marginTop: 'auto' }}>
           {gap.oneliner[lang]}
         </p>
-        <div style={{ fontSize: '10px', color: `${gap.color}40`, marginTop: '5px' }}>↻</div>
+        <div style={{ fontSize: '10px', color: `color-mix(in srgb, ${gap.color} 25%, transparent)`, marginTop: '5px' }}>↻</div>
       </div>
 
       {/* ── BACK ── */}
@@ -183,8 +183,8 @@ const FlipCard: React.FC<{
         backfaceVisibility: 'hidden',
         WebkitBackfaceVisibility: 'hidden',
         transform: 'rotateY(180deg)',
-        background: `${gap.color}0d`,
-        border: `1px solid ${gap.color}55`,
+        background: `color-mix(in srgb, ${gap.color} 5%, transparent)`,
+        border: `1px solid color-mix(in srgb, ${gap.color} 33%, transparent)`,
         borderRadius: '12px',
         padding: '10px',
         display: 'flex', flexDirection: 'column', gap: '5px',
@@ -192,7 +192,7 @@ const FlipCard: React.FC<{
       }}>
         <div>
           <div className="cyber-label" style={{ color: gap.color, fontSize: '10px' }}>SOURCE</div>
-          <p className="ds-body" style={{ fontSize: '10px', marginTop: '2px', color: 'rgba(242,234,219,0.85)' }}>
+          <p className="ds-body" style={{ fontSize: '10px', marginTop: '2px', color: 'var(--color-ds-text)' }}>
             {gap.source[lang]}
           </p>
         </div>
@@ -200,7 +200,7 @@ const FlipCard: React.FC<{
           <div className="cyber-label" style={{ color: gap.color, fontSize: '10px' }}>
             {lang === 'uk' ? 'МЕТОДОЛОГІЯ' : 'METHODOLOGY'}
           </div>
-          <p className="ds-body" style={{ fontSize: '10px', marginTop: '2px', lineHeight: 1.4, color: 'rgba(242,234,219,0.85)' }}>
+          <p className="ds-body" style={{ fontSize: '10px', marginTop: '2px', lineHeight: 1.4, color: 'var(--color-ds-text)' }}>
             {gap.calc[lang]}
           </p>
         </div>
@@ -212,14 +212,14 @@ const FlipCard: React.FC<{
             {gap.chainsTo.map(id => (
               <span key={id} className="ds-display font-semibold" style={{
                 fontSize: '10px', padding: '1px 5px', borderRadius: '4px',
-                background: `${gap.color}18`, color: gap.color, border: `1px solid ${gap.color}30`,
+                background: `color-mix(in srgb, ${gap.color} 9%, transparent)`, color: gap.color, border: `1px solid color-mix(in srgb, ${gap.color} 19%, transparent)`,
               }}>
                 → {labelOf(id)}
               </span>
             ))}
           </div>
         </div>
-        <div style={{ fontSize: '10px', color: `${gap.color}40`, marginTop: 'auto' }}>↻</div>
+        <div style={{ fontSize: '10px', color: `color-mix(in srgb, ${gap.color} 25%, transparent)`, marginTop: 'auto' }}>↻</div>
       </div>
     </div>
   </div>
@@ -247,7 +247,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
       }}
     >
       <div className="h-px w-full flex-shrink-0" style={{
-        background: 'linear-gradient(90deg, transparent, #1C5A52 50%, transparent)',
+        background: 'linear-gradient(90deg, transparent, var(--color-ds-teal) 50%, transparent)',
         boxShadow: '0 0 14px rgba(46,196,182,0.4)',
       }} />
 
@@ -267,7 +267,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
           {lang === 'uk' ? 'Назад' : 'Back'}
         </button>
         <div>
-          <div className="text-[17px] font-bold ds-display" style={{ color: '#1C5A52' }}>
+          <div className="text-[17px] font-bold ds-display" style={{ color: 'var(--color-ds-teal)' }}>
             {lang === 'uk' ? '9 Операційних розривів' : '9 Operational Gaps'}
           </div>
           <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
@@ -293,7 +293,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
               <span className="cyber-label" style={{ color: CLUSTER_META[cluster].color, fontSize: '10px' }}>
                 {CLUSTER_META[cluster][lang]}
               </span>
-              <div className="flex-1 h-px" style={{ background: `${CLUSTER_META[cluster].color}28` }} />
+              <div className="flex-1 h-px" style={{ background: `color-mix(in srgb, ${CLUSTER_META[cluster].color} 16%, transparent)` }} />
             </div>
 
             {/* 3-card row */}
@@ -319,7 +319,7 @@ export const L2Operational: React.FC<Props> = ({ lang, nav }) => {
         style={{ borderTop: '1px solid var(--color-ds-border)', background: 'rgba(0,0,0,0.2)' }}
       >
         <div style={{ fontSize: '10px' }} className="ds-body">
-          <span style={{ color: '#2C6E64', fontWeight: 700 }}>
+          <span style={{ color: 'var(--color-ds-teal-light)', fontWeight: 700 }}>
             {lang === 'uk' ? '+ Розрив №10 (2025): ' : '+ Gap #10 (2025): '}
           </span>
           <span style={{ color: 'var(--color-ds-muted)' }}>

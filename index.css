@@ -55,6 +55,8 @@
   --color-ds-muted:       #8CBEB4;
   --color-ds-bg-card:     rgba(13, 42, 38, 0.8);
   --color-ds-navy:        #0f2a2a;
+  --color-ds-teal-dim:    rgba(44, 110, 100, 0.15);
+  --color-ds-royal-dim:   rgba(14, 77, 99, 0.28);
 
   /* Footer — canvas E3 */
   --color-ds-footer-bg:   #FAB007;
@@ -93,7 +95,11 @@
   --color-ds-analytical:   #2E6B5C;
   --color-ds-border:       rgba(6, 41, 58, 0.28);
   --color-ds-muted:        #45636F;
+  --color-ds-bg-card:      rgba(255, 255, 255, 0.82);
   --color-ds-navy:         #0F2B46;
+  --color-ds-teal-dim:     rgba(44, 110, 100, 0.08);
+  --color-ds-royal-dim:    rgba(15, 43, 70, 0.10);
+  --color-ds-gold-a-dark:  #8A6830;
 
   --color-cyber-bg:      #D8E2E6;
   --color-cyber-surface: rgba(255,255,255,0.78);
@@ -653,8 +659,10 @@ html, body {
   box-shadow: none !important;
 }
 :root[data-theme="light"] .ds-screen [style*="background: rgba(0,0,0,0.3)"],
-:root[data-theme="light"] .ds-screen [style*="background: rgba(255,255,255,0.03)"] {
-  background: rgba(0,0,0,0.05) !important;
+:root[data-theme="light"] .ds-screen [style*="background: rgba(255,255,255,0.03)"],
+:root[data-theme="light"] .ds-screen [style*="rgba(255,255,255,0.05)"],
+:root[data-theme="light"] .ds-screen [style*="rgba(255,255,255,0.06)"] {
+  background: rgba(6, 41, 58, 0.08) !important;
 }
 
 /* ── Surface/border light overrides ─────────────────────────────────────── */

@@ -34,7 +34,7 @@ const FlowPipe: React.FC<{ state: FlowState }> = ({ state }) => {
             transition={{ repeat: Infinity, duration: 1.8, delay, ease: 'linear' }}
             style={{
               position: 'absolute', top: 0, bottom: 0, width: '55%',
-              background: 'linear-gradient(90deg, transparent, rgba(44,110,100,0.7), #00ffcc, rgba(44,110,100,0.7), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(44,110,100,0.7), var(--color-ds-teal-light), rgba(44,110,100,0.7), transparent)',
             }}
           />
         ))}
@@ -53,8 +53,8 @@ const FlowPipe: React.FC<{ state: FlowState }> = ({ state }) => {
 // ─── Chart: World Bank Financing ───────────────────────────────────────────────
 const WBChart: React.FC<{ lang: Language; solved: boolean }> = ({ lang, solved }) => {
   const programs = [
-    { name: 'HEAL P180245', mech: 'IPF+PBC', total: '$500M', disbursed: '$171M', pct: 34, color: '#e8c97a' },
-    { name: 'THRIVE P505616', mech: 'PforR', total: '$454M', disbursed: '~$320M', pct: 70, color: '#2C6E64' },
+    { name: 'HEAL P180245', mech: 'IPF+PBC', total: '$500M', disbursed: '$171M', pct: 34, color: 'var(--color-ds-gold)' },
+    { name: 'THRIVE P505616', mech: 'PforR', total: '$454M', disbursed: '~$320M', pct: 70, color: 'var(--color-ds-teal-light)' },
   ];
   return (
     <div style={{ flex: 1, borderRadius: 12, padding: 16, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(44,110,100,0.25)', position: 'relative', overflow: 'hidden' }}>
@@ -98,7 +98,7 @@ const WBChart: React.FC<{ lang: Language; solved: boolean }> = ({ lang, solved }
           <motion.div
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
-            style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: '#2C6E64', marginBottom: 6 }}
+            style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: 'var(--color-ds-teal-light)', marginBottom: 6 }}
           >
             ✓ {lang === 'uk' ? '$463M розблоковано → HEAL + THRIVE' : '$463M unlocked → HEAL + THRIVE'}
           </motion.div>
@@ -190,7 +190,7 @@ const StateBudgetChart: React.FC<{ lang: Language }> = ({ lang }) => {
           </div>
         )}
       </div>
-      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: '#B8463C', marginBottom: 4 }}>
+      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-red)', marginBottom: 4 }}>
         {lang === 'uk' ? '↑ 5× стаціонар vs реальна потреба 11%' : '↑ 5× inpatient vs actual need 11%'}
       </div>
       <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6 }}>
@@ -251,7 +251,7 @@ const AMOUNT = (color: string, big = false) => ({
   fontSize: big ? 'clamp(26px, 2.8vw, 38px)' : 'clamp(18px, 2vw, 26px)',
   color, lineHeight: 1,
 });
-const BODY = { fontFamily: "'Source Sans 3', sans-serif", fontSize: 11, lineHeight: 1.5, color: 'rgba(242,234,219,0.8)' };
+const BODY = { fontFamily: "'Source Sans 3', sans-serif", fontSize: 11, lineHeight: 1.5, color: 'var(--color-ds-text)' };
 
 // ─── Main component ─────────────────────────────────────────────────────────
 export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
@@ -343,15 +343,15 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
             bgColor={solved ? 'rgba(44,110,100,0.06)' : 'rgba(255,123,110,0.06)'}
             front={
               <>
-                <div style={TAG('#B8463C')}>{uk ? 'Нерозподілені ресурси СБ' : 'WB Undisbursed Resources'}</div>
+                <div style={TAG('var(--color-ds-red)')}>{uk ? 'Нерозподілені ресурси СБ' : 'WB Undisbursed Resources'}</div>
                 <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-muted)', marginBottom: 10, marginTop: 2 }}>
                   {uk ? 'на MHPSS для українців · заблоковано' : 'for MHPSS for Ukrainians · blocked'}
                 </div>
                 <AnimatePresence mode="wait">
                   {solved ? (
                     <motion.div key="solved" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                      <div style={{ ...AMOUNT('#2C6E64', true) }}>$463M</div>
-                      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: '#2C6E64', marginTop: 4 }}>
+                      <div style={{ ...AMOUNT('var(--color-ds-teal-light)', true) }}>$463M</div>
+                      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-teal-light)', marginTop: 4 }}>
                         {uk ? '→ розблоковано · HEAL + THRIVE ✓' : '→ unlocked · HEAL + THRIVE ✓'}
                       </div>
                     </motion.div>
@@ -360,15 +360,15 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                         <div>
                           <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-muted)', marginBottom: 3 }}>HEAL P180245</div>
-                          <div style={{ ...AMOUNT('#B8463C') }}>$329M</div>
-                          <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'rgba(255,123,110,0.6)', marginTop: 2 }}>
+                          <div style={{ ...AMOUNT('var(--color-ds-red)') }}>$329M</div>
+                          <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-red)', marginTop: 2 }}>
                             {uk ? 'не виплачено (з $500M)' : 'undisbursed (of $500M)'}
                           </div>
                         </div>
                         <div>
                           <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-muted)', marginBottom: 3 }}>THRIVE P505616</div>
-                          <div style={{ ...AMOUNT('#B8463C') }}>$134M</div>
-                          <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'rgba(255,123,110,0.6)', marginTop: 2 }}>
+                          <div style={{ ...AMOUNT('var(--color-ds-red)') }}>$134M</div>
+                          <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-red)', marginTop: 2 }}>
                             {uk ? 'DLI-транш заблоковано' : 'DLI tranche locked'}
                           </div>
                         </div>
@@ -381,11 +381,11 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
             }
             back={
               <>
-                <div style={TAG('#e8c97a')}>{uk ? 'План / Факт' : 'Plan / Actual'}</div>
+                <div style={TAG('var(--color-ds-gold)')}>{uk ? 'План / Факт' : 'Plan / Actual'}</div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14, marginTop: 14, justifyContent: 'center' }}>
                   {[
-                    { name: 'HEAL P180245', plan: '$500M', fact: '$171M', pct: 34, color: '#e8c97a' },
-                    { name: 'THRIVE P505616', plan: '$454M', fact: '~$320M', pct: 70, color: '#2C6E64' },
+                    { name: 'HEAL P180245', plan: '$500M', fact: '$171M', pct: 34, color: 'var(--color-ds-gold)' },
+                    { name: 'THRIVE P505616', plan: '$454M', fact: '~$320M', pct: 70, color: 'var(--color-ds-teal-light)' },
                   ].map(p => (
                     <div key={p.name}>
                       <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 11, color: p.color, marginBottom: 6 }}>{p.name}</div>
@@ -401,7 +401,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                   ))}
                 </div>
                 <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 6, marginTop: 6 }}>
-                  <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 9, color: '#e8c97a' }}>
+                  <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 9, color: 'var(--color-ds-gold)' }}>
                     {uk ? 'Компонент 4 (HEAL): $41M незадіяно' : 'Component 4 (HEAL): $41M unallocated'}
                   </div>
                   <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'rgba(201,179,106,0.55)', marginTop: 2 }}>
@@ -425,9 +425,9 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
             bgColor="rgba(44,110,100,0.05)"
             front={
               <>
-                <div style={TAG('#2C6E64')}>{uk ? 'Надано послуг · план перевиконано' : 'Services provided · plan exceeded'}</div>
-                <div style={{ ...AMOUNT('#2C6E64', true), marginTop: 8 }}>624K+</div>
-                <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: '#2C6E64', marginTop: 4 }}>MH {uk ? 'послуг' : 'services'} · 125%</div>
+                <div style={TAG('var(--color-ds-teal-light)')}>{uk ? 'Надано послуг · план перевиконано' : 'Services provided · plan exceeded'}</div>
+                <div style={{ ...AMOUNT('var(--color-ds-teal-light)', true), marginTop: 8 }}>624K+</div>
+                <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-teal-light)', marginTop: 4 }}>MH {uk ? 'послуг' : 'services'} · 125%</div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, marginTop: 12, justifyContent: 'flex-end' }}>
                   {[
                     { label: uk ? 'Реабілітація' : 'Rehabilitation', val: '670K', pct: 214 },
@@ -436,11 +436,11 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                     <div key={r.label}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
                         <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-muted)' }}>{r.label} {r.val}</span>
-                        <span style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: '#2C6E64' }}>{r.pct}%</span>
+                        <span style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: 'var(--color-ds-teal-light)' }}>{r.pct}%</span>
                       </div>
                       <div style={{ height: 5, borderRadius: 999, background: 'rgba(255,255,255,0.06)' }}>
                         <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ delay: 0.6, duration: 0.8 }}
-                          style={{ height: '100%', borderRadius: 999, background: '#2C6E64' }} />
+                          style={{ height: '100%', borderRadius: 999, background: 'var(--color-ds-teal-light)' }} />
                       </div>
                     </div>
                   ))}
@@ -449,19 +449,19 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
             }
             back={
               <>
-                <div style={TAG('#2C6E64')}>{uk ? 'Мобільні MH бригади' : 'Mobile MH Brigades'}</div>
-                <div style={{ ...AMOUNT('#2C6E64', true), marginTop: 8 }}>118</div>
-                <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 12, color: '#2C6E64', marginTop: 4 }}>
+                <div style={TAG('var(--color-ds-teal-light)')}>{uk ? 'Мобільні MH бригади' : 'Mobile MH Brigades'}</div>
+                <div style={{ ...AMOUNT('var(--color-ds-teal-light)', true), marginTop: 8 }}>118</div>
+                <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 12, color: 'var(--color-ds-teal-light)', marginTop: 4 }}>
                   {uk ? 'команд розгорнуто · 157% від плану (75)' : 'teams deployed · 157% of plan (75)'}
                 </div>
                 <div style={{ flex: 1, marginTop: 14, display: 'flex', flexDirection: 'column', gap: 6, justifyContent: 'center' }}>
                   <div style={{ height: 12, borderRadius: 6, background: 'rgba(255,255,255,0.06)', overflow: 'hidden' }}>
                     <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ delay: 0.3, duration: 1 }}
-                      style={{ height: '100%', background: 'linear-gradient(90deg, #2C6E64, #00ffcc)', borderRadius: 6 }} />
+                      style={{ height: '100%', background: 'linear-gradient(90deg, var(--color-ds-teal-light), var(--color-ds-teal-light))', borderRadius: 6 }} />
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-muted)' }}>{uk ? 'План' : 'Plan'}: 75</span>
-                    <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 10, color: '#2C6E64' }}>{uk ? 'Факт' : 'Actual'}: 118</span>
+                    <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 10, color: 'var(--color-ds-teal-light)' }}>{uk ? 'Факт' : 'Actual'}: 118</span>
                   </div>
                 </div>
                 <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', marginTop: 10 }}>
@@ -481,7 +481,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
             bgColor={b3Flipped ? 'rgba(44,110,100,0.06)' : 'rgba(255,123,110,0.06)'}
             front={
               <>
-                <div style={TAG('#B8463C')}>{uk ? 'Звітність KoboToolbox' : 'KoboToolbox Reporting'}</div>
+                <div style={TAG('var(--color-ds-red)')}>{uk ? 'Звітність KoboToolbox' : 'KoboToolbox Reporting'}</div>
                 <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-muted)', marginTop: 2, marginBottom: 10 }}>
                   {uk ? 'без доступу до e-health · шлях до ЄСОЗ заблоковано' : 'no e-health access · path to ESOZ blocked'}
                 </div>
@@ -493,33 +493,33 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                   <div key={s.name} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
                     <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 11, color: 'var(--color-ds-muted)' }}>{s.name}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 11, color: '#B8463C' }}>{s.val}</span>
-                      <AlertTriangle style={{ width: 10, height: 10, color: '#B8463C' }} />
+                      <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 11, color: 'var(--color-ds-red)' }}>{s.val}</span>
+                      <AlertTriangle style={{ width: 10, height: 10, color: 'var(--color-ds-red)' }} />
                     </div>
                   </div>
                 ))}
                 <div style={{ flex: 1 }} />
-                <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: '#B8463C', textAlign: 'center', padding: '6px 0', borderRadius: 6, background: 'rgba(255,123,110,0.1)', border: '1px solid rgba(255,123,110,0.2)' }}>
+                <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: 'var(--color-ds-red)', textAlign: 'center', padding: '6px 0', borderRadius: 6, background: 'rgba(255,123,110,0.1)', border: '1px solid rgba(255,123,110,0.2)' }}>
                   {uk ? '4.7M сесій поза ЄСОЗ' : '4.7M sessions outside ESOZ'}
                 </div>
               </>
             }
             back={
               <>
-                <div style={TAG('#2C6E64')}>FEEL Again Digital Bus</div>
+                <div style={TAG('var(--color-ds-teal-light)')}>FEEL Again Digital Bus</div>
                 <div style={{ flex: 1, overflowY: 'auto', marginTop: 10 }}>
                   <p style={{ ...BODY, marginBottom: 10 }}>
                     {uk
                       ? 'Один інтеграційний шар між кожною гуманітарною системою та ЄСОЗ через Trembita X-Road. Shadow Record Tagging + Provenance Resource для кожної сесії.'
                       : 'One integration layer between each humanitarian system and ESOZ via Trembita X-Road. Shadow Record Tagging + Provenance Resource for every session.'}
                   </p>
-                  <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: '#2C6E64', marginBottom: 6 }}>
+                  <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: 'var(--color-ds-teal-light)', marginBottom: 6 }}>
                     {uk ? 'Технічні характеристики' : 'Technical specs'}
                   </div>
                   {[['HL7 FHIR R4', 'Protocol'], ['10K req/sec', 'Throughput'], ['<200ms p95', 'Latency'], ['Zero CAPEX', 'Model']].map(([k, v]) => (
                     <div key={k} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                       <span style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-muted)' }}>{v}</span>
-                      <span style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: '#2C6E64' }}>{k}</span>
+                      <span style={{ fontFamily: "'Archivo', sans-serif", fontSize: 10, fontWeight: 700, color: 'var(--color-ds-teal-light)' }}>{k}</span>
                     </div>
                   ))}
                 </div>
@@ -532,29 +532,29 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
           {/* ── Block 4: НСЗУ Payments ───────────────────────────────────────── */}
           <FlipShell
             flipped={b4Phase === 'revealing'}
-            borderColor={solved ? 'rgba(44,110,100,0.45)' : b4Phase === 'revealing' ? 'rgba(44,110,100,0.35)' : 'rgba(255,123,110,0.35)'}
+            borderColor={solved ? 'rgba(44,110,100,0.45)' : b4Phase === 'revealing' ? 'rgba(44,110,100,0.35)' : 'var(--color-ds-red)'}
             bgColor={solved ? 'rgba(44,110,100,0.08)' : b4Phase === 'revealing' ? 'rgba(44,110,100,0.06)' : 'rgba(255,123,110,0.06)'}
             front={
               <>
-                <div style={TAG(solved ? '#2C6E64' : '#B8463C')}>{uk ? 'Рахунки НСЗУ' : 'NHSU Payments'}</div>
+                <div style={TAG(solved ? 'var(--color-ds-teal-light)' : 'var(--color-ds-red)')}>{uk ? 'Рахунки НСЗУ' : 'NHSU Payments'}</div>
                 <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-muted)', marginTop: 2, marginBottom: 10 }}>
                   {uk ? 'верифіковані outcome-платежі' : 'verified outcome-based payments'}
                 </div>
                 <AnimatePresence mode="wait">
                   {solved ? (
                     <motion.div key="solved" initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6, type: 'spring' }}>
-                      <div style={{ ...AMOUNT('#2C6E64', true) }}>$463M</div>
-                      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: '#2C6E64', marginTop: 6 }}>
+                      <div style={{ ...AMOUNT('var(--color-ds-teal-light)', true) }}>$463M</div>
+                      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-teal-light)', marginTop: 6 }}>
                         {uk ? 'HEAL $329M + THRIVE $134M ✓' : 'HEAL $329M + THRIVE $134M ✓'}
                       </div>
                     </motion.div>
                   ) : (
                     <motion.div key="locked" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                      <div style={{ ...AMOUNT('#B8463C', true) }}>$0</div>
-                      <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 12, color: '#B8463C', marginTop: 10, padding: '6px 10px', borderRadius: 6, background: 'rgba(255,123,110,0.12)', border: '1px solid rgba(255,123,110,0.25)', textAlign: 'center' }}>
+                      <div style={{ ...AMOUNT('var(--color-ds-red)', true) }}>$0</div>
+                      <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 12, color: 'var(--color-ds-red)', marginTop: 10, padding: '6px 10px', borderRadius: 6, background: 'rgba(255,123,110,0.12)', border: '1px solid rgba(255,123,110,0.25)', textAlign: 'center' }}>
                         FEEL AGAIN
                       </div>
-                      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'rgba(255,123,110,0.6)', textAlign: 'center', marginTop: 4 }}>
+                      <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-red)', textAlign: 'center', marginTop: 4 }}>
                         {uk ? '(необхідне з\'єднання)' : '(connection required)'}
                       </div>
                     </motion.div>
@@ -569,9 +569,9 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                   animate={{ scale: [1, 1.08, 1], opacity: [0.8, 1, 0.8] }}
                   transition={{ repeat: Infinity, duration: 1.4 }}
                 >
-                  <Zap style={{ width: 32, height: 32, color: '#2C6E64' }} />
+                  <Zap style={{ width: 32, height: 32, color: 'var(--color-ds-teal-light)' }} />
                 </motion.div>
-                <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 16, color: '#2C6E64', textAlign: 'center' }}>
+                <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 16, color: 'var(--color-ds-teal-light)', textAlign: 'center' }}>
                   FEEL AGAIN
                 </div>
                 <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 11, color: 'rgba(44,110,100,0.8)', textAlign: 'center', lineHeight: 1.5 }}>
@@ -580,7 +580,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                 <motion.div
                   animate={{ width: ['0%', '100%'] }}
                   transition={{ duration: 2.2, ease: 'easeInOut' }}
-                  style={{ height: 4, borderRadius: 2, background: '#2C6E64', alignSelf: 'stretch' }}
+                  style={{ height: 4, borderRadius: 2, background: 'var(--color-ds-teal-light)', alignSelf: 'stretch' }}
                 />
               </div>
             }
@@ -596,14 +596,14 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setTopicsOpen(o => !o)}
-              style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'rgba(242,234,219,0.45)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: 4 }}
+              style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: 4 }}
             >
               {uk ? 'розділи звіту' : 'report sections'} {topicsOpen ? '↑' : '↓'}
             </button>
             <div style={{ flex: 1 }} />
             <button
               onClick={() => nav.push('appendix')}
-              style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 12, color: '#2C6E64', background: 'rgba(44,110,100,0.1)', border: '1px solid rgba(44,110,100,0.3)', borderRadius: 10, padding: '8px 16px', cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
+              style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 12, color: 'var(--color-ds-teal-light)', background: 'rgba(44,110,100,0.1)', border: '1px solid rgba(44,110,100,0.3)', borderRadius: 10, padding: '8px 16px', cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
             >
               {uk ? '→ Аналітичний звіт' : '→ Analytical Report'}
             </button>
@@ -628,7 +628,7 @@ export const L2Finance: React.FC<Props> = ({ lang, nav }) => {
                     <button
                       key={t.en}
                       onClick={() => nav.push(t.screen)}
-                      style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: '#2C6E64', background: 'rgba(44,110,100,0.06)', border: '1px solid rgba(44,110,100,0.2)', borderRadius: 5, padding: '2px 8px', cursor: 'pointer' }}
+                      style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 10, color: 'var(--color-ds-teal-light)', background: 'rgba(44,110,100,0.06)', border: '1px solid rgba(44,110,100,0.2)', borderRadius: 5, padding: '2px 8px', cursor: 'pointer' }}
                     >
                       {t[lang]}
                     </button>

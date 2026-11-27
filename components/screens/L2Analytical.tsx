@@ -15,7 +15,7 @@ const SYSTEMS = [
     visibility: 85,
     esoz: 0,
     open: true,
-    color: '#2C6E64',
+    color: 'var(--color-ds-teal-light)',
   },
   {
     name: 'KoBo Toolbox',
@@ -24,7 +24,7 @@ const SYSTEMS = [
     visibility: 70,
     esoz: 0,
     open: true,
-    color: '#2C6E64',
+    color: 'var(--color-ds-teal-light)',
   },
   {
     name: 'ActivityInfo',
@@ -33,7 +33,7 @@ const SYSTEMS = [
     visibility: 75,
     esoz: 0,
     open: true,
-    color: '#2C6E64',
+    color: 'var(--color-ds-teal-light)',
   },
   {
     name: 'ЄСОЗ / eHealth',
@@ -42,7 +42,7 @@ const SYSTEMS = [
     visibility: 5,
     esoz: 100,
     open: false,
-    color: '#B8463C',
+    color: 'var(--color-ds-red)',
   },
   {
     name: { uk: 'Невидимий у звітності', en: 'Invisible in reporting' },
@@ -51,7 +51,7 @@ const SYSTEMS = [
     visibility: 3,
     esoz: 0,
     open: false,
-    color: '#2C6E64',
+    color: 'var(--color-ds-teal-light)',
   },
   {
     name: 'Trembita / X-Road',
@@ -70,16 +70,16 @@ const SYSTEMS = [
     visibility: 100,
     esoz: 100,
     open: true,
-    color: '#e8c97a',
+    color: 'var(--color-ds-gold)',
     isBus: true,
   },
 ];
 
 const LEGEND = [
-  { color: '#2C6E64', label: { uk: 'Відкрита / гуманітарна', en: 'Open / humanitarian' } },
-  { color: '#B8463C', label: { uk: 'Закрита / державна', en: 'Closed / government' } },
-  { color: '#2C6E64', label: { uk: 'Невидима у звітності', en: 'Invisible in reporting' } },
-  { color: '#e8c97a', label: { uk: 'FEEL Again (з\'єднує всіх)', en: 'FEEL Again (connects all)' } },
+  { color: 'var(--color-ds-teal-light)', label: { uk: 'Відкрита / гуманітарна', en: 'Open / humanitarian' } },
+  { color: 'var(--color-ds-red)', label: { uk: 'Закрита / державна', en: 'Closed / government' } },
+  { color: 'var(--color-ds-teal-light)', label: { uk: 'Невидима у звітності', en: 'Invisible in reporting' } },
+  { color: 'var(--color-ds-gold)', label: { uk: 'FEEL Again (з\'єднує всіх)', en: 'FEEL Again (connects all)' } },
 ];
 
 export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
@@ -92,12 +92,12 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
     }}
   >
     <div className="h-[2px] w-full flex-shrink-0"
-      style={{ background: 'linear-gradient(90deg, transparent, #2C6E64, #8b5cf6, rgba(201,179,106,0.4))', boxShadow: '0 0 16px rgba(44,110,100,0.4)' }} />
+      style={{ background: 'linear-gradient(90deg, transparent, var(--color-ds-teal-light), #8b5cf6, rgba(201,179,106,0.4))', boxShadow: '0 0 16px rgba(44,110,100,0.4)' }} />
 
     <NavBar
       lang={lang}
       nav={nav}
-      accentColor="#2C6E64"
+      accentColor="var(--color-ds-teal-light)"
       title={{ uk: 'Карта видимості даних', en: 'Data Visibility Map' }}
       subtitle={{ uk: 'Що видно кому — і де повна темрява', en: 'What is visible to whom — and where is complete darkness' }}
       crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
@@ -138,7 +138,7 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
             className="grid gap-2 items-center px-2 py-1.5 rounded-lg"
             style={{
               gridTemplateColumns: '1fr 80px 100px 70px 80px',
-              background: s.isBus ? `${s.color}12` : 'rgba(255,255,255,0.03)',
+              background: s.isBus ? `color-mix(in srgb, ${s.color} 7%, transparent)` : 'rgba(255,255,255,0.03)',
               border: `1px solid ${s.color}${s.isBus ? '66' : '33'}`,
             }}
           >
@@ -162,12 +162,12 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
               <span className="text-[11px] font-bold ds-display w-8 text-right" style={{ color: s.color }}>{s.visibility}%</span>
             </div>
             <div className="text-center">
-              <span className="text-[12px] font-bold ds-display" style={{ color: s.esoz > 0 ? '#2C6E64' : 'rgba(255,123,110,0.35)' }}>
+              <span className="text-[12px] font-bold ds-display" style={{ color: s.esoz > 0 ? 'var(--color-ds-teal-light)' : 'var(--color-ds-red)' }}>
                 {s.esoz > 0 ? `${s.esoz}%` : '✕'}
               </span>
             </div>
             <div className="text-center">
-              <span className="text-[13px]" style={{ color: s.open ? '#2C6E64' : '#B8463C' }}>
+              <span className="text-[13px]" style={{ color: s.open ? 'var(--color-ds-teal-light)' : 'var(--color-ds-red)' }}>
                 {s.open ? '✓' : '✕'}
               </span>
             </div>
@@ -183,7 +183,7 @@ export const L2Analytical: React.FC<Props> = ({ lang, nav }) => (
         className="p-3 rounded-xl flex-shrink-0"
         style={{ background: 'rgba(232,201,122,0.07)', border: '1px solid rgba(232,201,122,0.25)' }}
       >
-        <p className="text-[11px] ds-body leading-snug" style={{ color: 'rgba(242,234,219,0.85)' }}>
+        <p className="text-[11px] ds-body leading-snug" style={{ color: 'var(--color-ds-text)' }}>
           {lang === 'uk'
             ? '~4.7M гуманітарних сесій невидимі для ЄСОЗ → не рахуються для THRIVE DLI → не тригеряють disbursement. FEEL Again Digital Bus = один інтеграційний шар між кожною системою та ЄСОЗ через HL7 FHIR R4 · 10K req/sec · <200ms p95.'
             : '~4.7M humanitarian sessions invisible to ESOZ → not counted for THRIVE DLIs → do not trigger disbursement. FEEL Again Digital Bus = one integration layer between each system and ESOZ via HL7 FHIR R4 · 10K req/sec · <200ms p95.'}

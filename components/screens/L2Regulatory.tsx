@@ -9,10 +9,10 @@ interface Props { lang: Language; nav: ScreenNav; }
 const t = (uk: string, en: string, lang: Language) => lang === 'uk' ? uk : en;
 
 const FLOW = [
-  { actor: 'Bilateral donors', share: 78, color: '#1C6E86', label: { uk: 'EC / USAID / FCDO / BMZ', en: 'EC / USAID / FCDO / BMZ' } },
-  { actor: 'UN Agencies', share: 15, color: '#2C6E64', label: { uk: 'UNICEF / WHO / UNHCR', en: 'UNICEF / WHO / UNHCR' } },
+  { actor: 'Bilateral donors', share: 78, color: 'var(--color-ds-royal)', label: { uk: 'EC / USAID / FCDO / BMZ', en: 'EC / USAID / FCDO / BMZ' } },
+  { actor: 'UN Agencies', share: 15, color: 'var(--color-ds-teal-light)', label: { uk: 'UNICEF / WHO / UNHCR', en: 'UNICEF / WHO / UNHCR' } },
   { actor: 'INGOs', share: 6, color: '#9061f9', label: { uk: 'IMC / ACF / MSF та ін.', en: 'IMC / ACF / MSF et al.' } },
-  { actor: { uk: 'Укр. організ.', en: 'Ukrainian orgs' }, share: 1, color: '#B8463C', label: { uk: 'Всі місцеві НГО', en: 'All local NGOs' } },
+  { actor: { uk: 'Укр. організ.', en: 'Ukrainian orgs' }, share: 1, color: 'var(--color-ds-red)', label: { uk: 'Всі місцеві НГО', en: 'All local NGOs' } },
 ];
 
 const MILESTONES = [
@@ -28,12 +28,12 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
     style={{ background: 'linear-gradient(135deg, #0a1628 0%, #0f0a1a 100%)' }}
   >
     <div className="h-[2px] w-full flex-shrink-0"
-      style={{ background: 'linear-gradient(90deg, transparent, #1C6E86, #0E4D63, rgba(201,179,106,0.4))', boxShadow: '0 0 18px rgba(28,110,134,0.5)' }} />
+      style={{ background: 'linear-gradient(90deg, transparent, var(--color-ds-royal), #0E4D63, rgba(201,179,106,0.4))', boxShadow: '0 0 18px rgba(28,110,134,0.5)' }} />
 
     <NavBar
       lang={lang}
       nav={nav}
-      accentColor="#1C6E86"
+      accentColor="var(--color-ds-royal)"
       title={{ uk: 'Локалізація гуманітарних ресурсів', en: 'Humanitarian localization' }}
       subtitle={{ uk: 'Regulatory · ціль ≥25%', en: 'Regulatory · target ≥25%' }}
       crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
@@ -43,10 +43,10 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
       <div className="flex flex-col gap-4">
         <div className="rounded-2xl p-5 flex-shrink-0"
           style={{ background: 'rgba(28,110,134,0.07)', border: '1px solid rgba(28,110,134,0.3)' }}>
-          <div className="ds-display font-black leading-none" style={{ fontSize: '72px', color: '#1C6E86', textShadow: '0 0 40px rgba(28,110,134,0.5)' }}>
+          <div className="ds-display font-black leading-none" style={{ fontSize: '72px', color: 'var(--color-ds-royal)', textShadow: '0 0 40px rgba(28,110,134,0.5)' }}>
             ~1%
           </div>
-          <div className="text-[15px] font-semibold ds-body mt-2" style={{ color: 'rgba(242,234,219,0.9)' }}>
+          <div className="text-[15px] font-semibold ds-body mt-2" style={{ color: 'var(--color-ds-text)' }}>
             {t('гуманітарного MH фінансування через укр. організації', 'humanitarian MH funding via Ukrainian organisations', lang)}
           </div>
           <div className="text-[11px] font-mono mt-1" style={{ color: 'var(--color-ds-muted)' }}>
@@ -72,14 +72,14 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
                   <div className="h-2 rounded-full" style={{
                     width: `${f.share}%`,
                     background: f.color,
-                    boxShadow: f.share === 1 ? `0 0 8px ${f.color}88` : undefined,
+                    boxShadow: f.share === 1 ? `0 0 8px color-mix(in srgb, ${f.color} 53%, transparent)` : undefined,
                   }} />
                 </div>
                 <div className="text-[10px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{f.label[lang]}</div>
               </div>
             ))}
           </div>
-          <div className="mt-3 text-[10px] font-mono" style={{ color: '#B8463C' }}>
+          <div className="mt-3 text-[10px] font-mono" style={{ color: 'var(--color-ds-red)' }}>
             {t('⟶ 99% капіталу поза прямим укр. управлінням', '⟶ 99% capital outside direct Ukrainian management', lang)}
           </div>
         </div>
@@ -99,7 +99,7 @@ export const L2Regulatory: React.FC<Props> = ({ lang, nav }) => (
                   {m.year}
                 </div>
                 <div className="w-2.5 h-2.5 rounded-full flex-shrink-0 mt-1"
-                  style={{ background: m.achieved ? 'var(--color-ds-gold)' : '#B8463C', boxShadow: m.achieved ? '0 0 8px rgba(201,179,106,0.5)' : undefined }} />
+                  style={{ background: m.achieved ? 'var(--color-ds-gold)' : 'var(--color-ds-red)', boxShadow: m.achieved ? '0 0 8px rgba(201,179,106,0.5)' : undefined }} />
                 <div className="text-[12px] ds-body" style={{ color: m.achieved ? 'var(--color-ds-text)' : 'var(--color-ds-muted)' }}>
                   {m.event[lang]}
                 </div>

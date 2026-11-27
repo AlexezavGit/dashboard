@@ -16,11 +16,11 @@ export const Logo: React.FC<LogoProps> = ({ className, darkMode = false, size = 
   const logoSize = sizeMap[size];
   
   // Colors for light theme (from Design System)
-  const colorF = darkMode ? '#F2EADB' : '#123C3A';
-  const colorE1 = darkMode ? '#C9B36A' : '#8A6830';
-  const colorE2 = darkMode ? 'rgba(242,234,219,0.55)' : 'rgba(18,60,58,0.55)';
-  const colorL = darkMode ? 'rgba(242,234,219,0.3)' : 'rgba(18,60,58,0.3)';
-  const colorAgain = darkMode ? '#C9B36A' : '#8A6830';
+  const colorF = darkMode ? 'var(--color-ds-text)' : '#123C3A';
+  const colorE1 = darkMode ? 'var(--color-ds-gold-a)' : '#8A6830';
+  const colorE2 = darkMode ? 'var(--color-ds-muted)' : 'rgba(18,60,58,0.55)';
+  const colorL = darkMode ? 'var(--color-ds-muted)' : 'rgba(18,60,58,0.3)';
+  const colorAgain = darkMode ? 'var(--color-ds-gold-a)' : '#8A6830';
 
   // Scale for the original 1024x1024 SVG
   const scale = logoSize / 1024 * 0.8;

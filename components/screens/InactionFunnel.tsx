@@ -100,7 +100,7 @@ export const InactionFunnel: React.FC<Props> = ({ lang, nav }) => {
           'linear-gradient(135deg, #080f1c 0%, #0a1628 100%)',
       }}
     >
-      <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #2C6E64, #1C5A52 50%, transparent)' }} />
+      <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, var(--color-ds-teal-light), var(--color-ds-teal) 50%, transparent)' }} />
 
       {/* ── Header ── */}
       <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0">

@@ -71,7 +71,7 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => {
           'linear-gradient(135deg, #080f1c 0%, #0a1628 100%)',
       }}
     >
-      <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #2C6E64, #1C5A52 50%, transparent)', boxShadow: '0 0 14px rgba(44,110,100,0.5)' }} />
+      <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, var(--color-ds-teal-light), var(--color-ds-teal) 50%, transparent)', boxShadow: '0 0 14px rgba(44,110,100,0.5)' }} />
 
       {/* ── Header ── */}
       <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0">
@@ -84,7 +84,7 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => {
           {lang === 'uk' ? 'Назад' : 'Back'}
         </button>
         <div>
-          <div className="text-[17px] font-bold ds-display" style={{ color: 'var(--color-ds-text, #2C6E64)' }}>
+          <div className="text-[17px] font-bold ds-display" style={{ color: 'var(--color-ds-text, var(--color-ds-teal-light))' }}>
             {lang === 'uk' ? 'Беклог у роках: ще не розраховано' : 'Backlog in years: not yet calculated'}
           </div>
           <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>
@@ -133,8 +133,8 @@ export const L2Backlog: React.FC<Props> = ({ lang, nav }) => {
           </div>
           <div className="text-[18px] font-bold ds-display" style={{ color: 'var(--color-ds-muted)' }}>=</div>
           <div className="text-center">
-            <div className="text-[10px] ds-body mb-1" style={{ color: 'var(--color-ds-text, #2C6E64)' }}>{lang === 'uk' ? 'Беклог' : 'Backlog'}</div>
-            <div className="text-[32px] font-bold ds-display" style={{ color: 'var(--color-ds-text, #2C6E64)' }}>—</div>
+            <div className="text-[10px] ds-body mb-1" style={{ color: 'var(--color-ds-text, var(--color-ds-teal-light))' }}>{lang === 'uk' ? 'Беклог' : 'Backlog'}</div>
+            <div className="text-[32px] font-bold ds-display" style={{ color: 'var(--color-ds-text, var(--color-ds-teal-light))' }}>—</div>
             <div className="text-[10px] font-mono" style={{ color: 'var(--color-ds-muted)' }}>
               {lang === 'uk' ? 'не розраховано' : 'not calculated'}
             </div>

@@ -10,9 +10,9 @@ import { fetchAllLiveData, DataSourceInfo } from '../../services/liveData';
 interface Props { lang: Language; nav: ScreenNav; }
 
 const STATUS_COLORS: Record<string, string> = {
-  live:    '#2C6E64',
-  static:  '#e8c97a',
-  error:   '#B8463C',
+  live:    'var(--color-ds-teal-light)',
+  static:  'var(--color-ds-gold)',
+  error:   'var(--color-ds-red)',
   loading: '#a0a0b0',
 };
 
@@ -44,48 +44,48 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
 
   return (
     <div
-      className="fixed inset-0 flex flex-col overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #0a1628 0%, #001a14 100%)', color: '#c8d0dc' }}
+      className="fixed inset-0 flex flex-col overflow-hidden ds-screen"
+      style={{ background: 'linear-gradient(135deg, #0a1628 0%, #001a14 100%)', color: 'var(--color-ds-text)' }}
     >
       <div className="h-[2px] w-full flex-shrink-0"
-        style={{ background: 'linear-gradient(90deg, transparent, #2C6E64, #1C5A52, rgba(201,179,106,0.4))', boxShadow: '0 0 18px rgba(44,110,100,0.5)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent, var(--color-ds-teal-light), var(--color-ds-teal), rgba(201,179,106,0.4))', boxShadow: '0 0 18px rgba(44,110,100,0.5)' }} />
 
       <NavBar
         lang={lang}
         nav={nav}
-        accentColor="#2C6E64"
+        accentColor="var(--color-ds-teal-light)"
         title={{ uk: 'Дані та інтероперабельність', en: 'Data & Interoperability' }}
         subtitle={{ uk: 'Data & Coord · ціль ≥60% · зараз <5%', en: 'Data & Coord · target ≥60% · now <5%' }}
         crumbs={[{ label: { uk: 'Ландшафт', en: 'Landscape' }, screen: 'l1' }]}
       />
 
-      <div className="flex-1 overflow-y-auto px-6 pt-4 pb-4 space-y-6" style={{ scrollbarWidth: 'thin', scrollbarColor: '#2C6E6422 transparent' }}>
+      <div className="flex-1 overflow-y-auto px-6 pt-4 pb-4 space-y-6" style={{ scrollbarWidth: 'thin', scrollbarColor: 'color-mix(in srgb, var(--color-ds-teal-light) 13%, transparent)' }}>
 
         {/* INTEROP HEADLINE */}
         <div className="rounded-2xl p-5 flex items-center gap-6"
           style={{ background: 'rgba(44,110,100,0.07)', border: '1px solid rgba(44,110,100,0.3)' }}>
           <div>
-            <div style={{ fontSize: '64px', fontWeight: 900, fontFamily: "'Archivo', sans-serif", color: '#2C6E64', lineHeight: 1, textShadow: '0 0 40px rgba(44,110,100,0.5)' }}>
+            <div style={{ fontSize: '64px', fontWeight: 900, fontFamily: "'Archivo', sans-serif", color: 'var(--color-ds-teal-light)', lineHeight: 1, textShadow: '0 0 40px rgba(44,110,100,0.5)' }}>
               &lt;5%
             </div>
-            <div style={{ fontSize: '14px', fontWeight: 600, fontFamily: "'Source Sans 3', sans-serif", color: 'rgba(242,234,219,0.9)', marginTop: 6 }}>
+            <div style={{ fontSize: '14px', fontWeight: 600, fontFamily: "'Source Sans 3', sans-serif", color: 'var(--color-ds-text)', marginTop: 6 }}>
               {lang === 'uk' ? 'сесій з крос-системним цифровим записом' : 'sessions with cross-system digital record'}
             </div>
-            <div style={{ fontSize: '11px', fontFamily: "'Spline Sans Mono', monospace", color: 'rgba(242,234,219,0.45)', marginTop: 3 }}>
+            <div style={{ fontSize: '11px', fontFamily: "'Spline Sans Mono', monospace", color: 'var(--color-ds-muted)', marginTop: 3 }}>
               NHSU ↔ ESOZ (HL7 FHIR R4) — pilot only
             </div>
           </div>
           <div style={{ flex: 1, borderLeft: '1px solid rgba(44,110,100,0.2)', paddingLeft: 24 }}>
-            <div style={{ fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", color: 'rgba(242,234,219,0.4)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 10 }}>
+            <div style={{ fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", color: 'var(--color-ds-muted)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 10 }}>
               {lang === 'uk' ? '5 систем · 0 з\'єднань' : '5 systems · 0 connections'}
             </div>
             {['NHSU / НСЗУ', 'ESOZ', 'HELSI', 'Reint. Portal', 'Private EHRs'].map(s => (
               <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
-                <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#B8463C', boxShadow: '0 0 6px rgba(255,123,110,0.6)', flexShrink: 0 }} />
-                <span style={{ fontSize: '12px', fontFamily: "'Archivo', sans-serif", fontWeight: 600, color: '#c8d0dc' }}>{s}</span>
+                <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--color-ds-red)', boxShadow: '0 0 6px var(--color-ds-red)', flexShrink: 0 }} />
+                <span style={{ fontSize: '12px', fontFamily: "'Archivo', sans-serif", fontWeight: 600, color: 'var(--color-ds-text)' }}>{s}</span>
               </div>
             ))}
-            <div style={{ marginTop: 8, fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", color: '#B8463C' }}>
+            <div style={{ marginTop: 8, fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", color: 'var(--color-ds-red)' }}>
               ⊘ {lang === 'uk' ? 'Жодного FHIR R4 API між системами' : 'No FHIR R4 API between any systems'}
             </div>
           </div>
@@ -95,15 +95,15 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
         <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(44,110,100,0.2)' }}>
           <div style={{ background: 'rgba(44,110,100,0.08)', borderBottom: '1px solid rgba(44,110,100,0.2)', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#2C6E64', animation: 'pulse 2s infinite' }} />
-              <span style={{ fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, color: '#2C6E64', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+              <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--color-ds-teal-light)', animation: 'pulse 2s infinite' }} />
+              <span style={{ fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, color: 'var(--color-ds-teal-light)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                 {lang === 'uk' ? 'СТАТУС ДЖЕРЕЛ ДАНИХ' : 'DATA SOURCE STATUS'}
               </span>
             </div>
             <button
               onClick={refresh}
               disabled={loading}
-              style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", color: 'rgba(242,234,219,0.5)', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 6px' }}
+              style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", color: 'var(--color-ds-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 6px' }}
             >
               <RefreshCw style={{ width: 12, height: 12, animation: loading ? 'spin 1s linear infinite' : 'none' }} />
               {lang === 'uk' ? 'оновити' : 'refresh'}
@@ -111,11 +111,11 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
           </div>
 
           {loading ? (
-            <div style={{ padding: '24px', textAlign: 'center', fontFamily: "'Spline Sans Mono', monospace", fontSize: '11px', color: 'rgba(242,234,219,0.4)' }}>
+            <div style={{ padding: '24px', textAlign: 'center', fontFamily: "'Spline Sans Mono', monospace", fontSize: '11px', color: 'var(--color-ds-muted)' }}>
               {lang === 'uk' ? 'Перевірка API…' : 'Checking APIs…'}
             </div>
           ) : sources.length === 0 ? (
-            <div style={{ padding: '24px', textAlign: 'center', fontFamily: "'Spline Sans Mono', monospace", fontSize: '11px', color: 'rgba(242,234,219,0.4)' }}>
+            <div style={{ padding: '24px', textAlign: 'center', fontFamily: "'Spline Sans Mono', monospace", fontSize: '11px', color: 'var(--color-ds-muted)' }}>
               {lang === 'uk' ? 'Дані недоступні' : 'No data available'}
             </div>
           ) : (
@@ -124,10 +124,10 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 16px', borderBottom: i < sources.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: STATUS_COLORS[src.status] ?? '#a0a0b0', flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: '12px', fontWeight: 600, fontFamily: "'Archivo', sans-serif", color: '#c8d0dc' }}>{src.name[lang]}</div>
-                    <div style={{ fontSize: '10px', fontFamily: "'Source Sans 3', sans-serif", color: 'rgba(242,234,219,0.45)', marginTop: 1 }}>{src.dataType[lang]}</div>
+                    <div style={{ fontSize: '12px', fontWeight: 600, fontFamily: "'Archivo', sans-serif", color: 'var(--color-ds-text)' }}>{src.name[lang]}</div>
+                    <div style={{ fontSize: '10px', fontFamily: "'Source Sans 3', sans-serif", color: 'var(--color-ds-muted)', marginTop: 1 }}>{src.dataType[lang]}</div>
                   </div>
-                  <span style={{ fontSize: '9px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, color: STATUS_COLORS[src.status] ?? '#a0a0b0', border: `1px solid ${STATUS_COLORS[src.status] ?? '#a0a0b0'}44`, borderRadius: 4, padding: '1px 6px', flexShrink: 0 }}>
+                  <span style={{ fontSize: '9px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, color: STATUS_COLORS[src.status] ?? '#a0a0b0', border: `1px solid color-mix(in srgb, ${STATUS_COLORS[src.status] ?? '#a0a0b0'} 27%, transparent)`, borderRadius: 4, padding: '1px 6px', flexShrink: 0 }}>
                     {STATUS_LABELS[src.status]?.[lang] ?? src.status.toUpperCase()}
                   </span>
                 </div>
@@ -145,7 +145,7 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
             </span>
             <div style={{ flex: 1, height: 1, background: 'linear-gradient(270deg, rgba(59,130,246,0.4), transparent)' }} />
           </div>
-          <p style={{ fontSize: '11px', fontFamily: "'Spline Sans Mono', monospace", color: 'rgba(242,234,219,0.4)', textAlign: 'center', marginBottom: 16, lineHeight: 1.5 }}>
+          <p style={{ fontSize: '11px', fontFamily: "'Spline Sans Mono', monospace", color: 'var(--color-ds-muted)', textAlign: 'center', marginBottom: 16, lineHeight: 1.5 }}>
             {di.sectionSub}
           </p>
 
@@ -166,9 +166,9 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
                     {row.status === 'live' ? 'LIVE' : 'STATIC'}
                   </span>
                   <div>
-                    <div style={{ fontSize: '11px', fontWeight: 500, color: '#e2e8f0' }}>{row.name}</div>
-                    <div style={{ fontSize: '10px', color: 'rgba(242,234,219,0.45)', marginTop: 2 }}>{row.what}</div>
-                    <div style={{ fontSize: '9px', fontFamily: "'Spline Sans Mono', monospace", color: 'rgba(242,234,219,0.25)', marginTop: 2 }}>{row.tech}</div>
+                    <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--color-ds-text)' }}>{row.name}</div>
+                    <div style={{ fontSize: '10px', color: 'var(--color-ds-muted)', marginTop: 2 }}>{row.what}</div>
+                    <div style={{ fontSize: '9px', fontFamily: "'Spline Sans Mono', monospace", color: 'var(--color-ds-muted)', marginTop: 2 }}>{row.tech}</div>
                   </div>
                 </div>
               ))}
@@ -177,8 +177,8 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
             {/* CANONICAL */}
             <div style={{ border: '1px solid rgba(245,158,11,0.2)', borderRadius: 12, overflow: 'hidden' }}>
               <div style={{ background: 'rgba(245,158,11,0.05)', borderBottom: '1px solid rgba(245,158,11,0.2)', padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <AlertTriangle style={{ width: 12, height: 12, color: '#fbbf24', flexShrink: 0 }} />
-                <span style={{ fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, color: '#fcd34d', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                <AlertTriangle style={{ width: 12, height: 12, color: 'var(--color-ds-gold)', flexShrink: 0 }} />
+                <span style={{ fontSize: '10px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, color: 'var(--color-ds-gold)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
                   {lang === 'uk' ? 'КАНОНІЧНИЙ НАБІР WB / WHO' : 'CANONICAL WB / WHO DATASET'}
                 </span>
               </div>
@@ -186,16 +186,16 @@ export const L2Data: React.FC<Props> = ({ lang, nav }) => {
                 <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '10px 16px', borderBottom: i < di.canonical.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
                   <span style={{ fontSize: '9px', fontFamily: "'Spline Sans Mono', monospace", fontWeight: 700, padding: '2px 6px', borderRadius: 4, flexShrink: 0, marginTop: 1,
                     background: row.status === 'locked' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)',
-                    color: row.status === 'locked' ? '#f87171' : '#fbbf24' }}>
+                    color: row.status === 'locked' ? 'var(--color-ds-red)' : 'var(--color-ds-gold)' }}>
                     {row.status === 'locked' ? 'LOCKED' : 'AUTH'}
                   </span>
                   <div>
-                    <div style={{ fontSize: '11px', fontWeight: 500, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--color-ds-text)', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                       {row.name}
                       {row.feelbridges && <span style={{ fontSize: '8px', background: 'rgba(16,185,129,0.15)', color: '#34d399', padding: '1px 5px', borderRadius: 3, fontFamily: "'Spline Sans Mono', monospace" }}>FEEL bridges</span>}
                     </div>
-                    <div style={{ fontSize: '10px', color: 'rgba(242,234,219,0.45)', marginTop: 2 }}>{row.what}</div>
-                    <div style={{ fontSize: '9px', fontFamily: "'Spline Sans Mono', monospace", color: '#92400e', marginTop: 2 }}>
+                    <div style={{ fontSize: '10px', color: 'var(--color-ds-muted)', marginTop: 2 }}>{row.what}</div>
+                    <div style={{ fontSize: '9px', fontFamily: "'Spline Sans Mono', monospace", color: 'var(--color-ds-gold)', marginTop: 2 }}>
                       {lang === 'uk' ? 'Бар\'єр:' : 'Barrier:'} {row.barrier}
                     </div>
                   </div>

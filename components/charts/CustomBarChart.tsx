@@ -40,7 +40,7 @@ export const CustomBarChart: React.FC<CustomBarChartProps> = ({
           )}
           <Tooltip 
             contentStyle={{ backgroundColor: '#050A15', borderRadius: '8px', border: '1px solid rgba(0, 245, 255, 0.2)', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5)' }}
-            itemStyle={{ fontSize: '11px', fontWeight: 700, color: '#00F5FF', fontFamily: 'Spline Sans Mono' }}
+            itemStyle={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-ds-text)', fontFamily: 'Spline Sans Mono' }}
             cursor={{ fill: 'rgba(0, 245, 255, 0.05)' }}
           />
           {bars.length > 1 && <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />}

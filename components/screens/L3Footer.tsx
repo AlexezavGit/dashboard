@@ -92,7 +92,7 @@ export const L3Footer: React.FC<Props> = ({ lang, nav }) => {
             gap: 4,
             fontFamily: "'Spline Sans Mono', monospace",
             fontSize: 9,
-            color: isAnalytical ? '#2C6E64' : 'rgba(44,110,100,0.55)',
+            color: isAnalytical ? 'var(--color-ds-teal-light)' : 'rgba(44,110,100,0.55)',
             background: isAnalytical
               ? 'rgba(44,110,100,0.10)'
               : 'rgba(44,110,100,0.04)',
@@ -107,8 +107,8 @@ export const L3Footer: React.FC<Props> = ({ lang, nav }) => {
         >
           <span style={{
             width: 5, height: 5, borderRadius: '50%', flexShrink: 0,
-            background: isAnalytical ? '#2C6E64' : 'rgba(44,110,100,0.35)',
-            boxShadow: isAnalytical ? '0 0 6px #2C6E64' : 'none',
+            background: isAnalytical ? 'var(--color-ds-teal-light)' : 'rgba(44,110,100,0.35)',
+            boxShadow: isAnalytical ? '0 0 6px var(--color-ds-teal-light)' : 'none',
           }} />
           {uk ? 'API статус' : 'API status'}
         </button>

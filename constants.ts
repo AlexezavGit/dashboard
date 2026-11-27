@@ -1,23 +1,25 @@
 import { LocalizedString, KpiData, SectionData, Language } from './types';
 
 // Palette mapping from original design
+/* 08-COLOR-CODING: no neon. Mid-tones of the canonical H1 palette that stay
+   readable as SVG fills on both the dark petrol and the light royal surface. */
 export const COLORS = {
-  cyberCyan: '#00F5FF',
+  cyberCyan: '#3E91A2',
   cyberAmber: '#F59E0B',
-  cyberSuccess: '#00FF66',
-  cyberPurple: '#A855F7',
+  cyberSuccess: '#2C6E64',
+  cyberPurple: '#2E6B5C',
   cyberBg: '#050A15',
-  blue: '#00F5FF', // Map old blue to cyberCyan
-  blueLight: 'rgba(0, 245, 255, 0.6)',
-  red: '#FF4444', 
-  redLight: 'rgba(255, 68, 68, 0.6)',
-  orange: '#F59E0B', // Map old orange to cyberAmber
-  orangeLight: 'rgba(245, 158, 11, 0.6)',
-  green: '#00FF66', // Map old green to cyberSuccess
-  greenLight: 'rgba(0, 255, 102, 0.6)',
-  purple: '#A855F7', // Map old purple to cyberPurple
-  purpleLight: 'rgba(168, 85, 247, 0.6)',
-  teal: '#00E5FF',
+  blue: '#3E91A2', // Map old blue to cyberCyan
+  blueLight: 'rgba(62, 145, 162, 0.6)',
+  red: '#B8463C',
+  redLight: 'rgba(184, 70, 60, 0.6)',
+  orange: '#D35F1E', // ОРАНЖЕВИЙ — canonical
+  orangeLight: 'rgba(211, 95, 30, 0.6)',
+  green: '#2C6E64', // Map old green to ТІАЛ/ANALYTICAL tone
+  greenLight: 'rgba(44, 110, 100, 0.6)',
+  purple: '#2E6B5C', // analytical tone (violet not in DS palette)
+  purpleLight: 'rgba(46, 107, 92, 0.6)',
+  teal: '#2C6E64',
   gray: '#475569',
   navy: '#0A1A2F'
 };
@@ -362,13 +364,13 @@ export const PERFECT_STORM_SCALE = (l: Language) => [
     val: '62.4M',
     label: l === 'uk' ? 'СЕСІЙ / РІК' : 'SESSIONS / YEAR',
     sub: l === 'uk' ? '3.9M × 16 сес. (ВООЗ норма)' : '3.9M × 16 sess. (WHO standard)',
-    color: '#00F5FF',
+    color: '#3E91A2',
   },
   {
     val: '€2.5–4.1B',
     label: l === 'uk' ? 'РИНКОВИЙ ПОТЕНЦІАЛ' : 'MARKET POTENTIAL',
     sub: l === 'uk' ? '62.4M год × €40–65/год' : '62.4M hr × €40–65/hr',
-    color: '#00FF66',
+    color: '#2C6E64',
   },
   {
     val: '$140M',
@@ -550,7 +552,7 @@ export const INFRA_LEVELS = (l: Language) => [
   {
     label: l === 'uk' ? 'РІВЕНЬ 2: ГУМАНІТАРНИЙ API' : 'LEVEL 2: HUMANITARIAN API',
     status: l === 'uk' ? 'АКТИВНИЙ (5W)' : 'ACTIVE (5W)',
-    color: '#00FF66',
+    color: '#2C6E64',
     desc: l === 'uk'
       ? 'Дані НГО/кластерів готові, але ізольовані. Неможливо верифікувати проти держреєстрів без Digital Bus.'
       : 'NGO/Cluster data is ready, but isolated. Cannot be verified against state registries without Digital Bus.',
@@ -827,7 +829,7 @@ export const ARCH_FLOW = (l: Language) => ({
     label: l === 'uk' ? '\u0414\u0415\u0420\u0416\u0410\u0412\u041d\u0410 ЗОНА' : 'STATE ZONE',
     systems: [
       { name: 'Trembita', sub: 'X-Road | 230+ inst.', color: '#3B82F6' },
-      { name: 'ESOZ', sub: '36.5M users', color: '#00FF66' },
+      { name: 'ESOZ', sub: '36.5M users', color: '#2C6E64' },
       { name: 'NHSU (\u041d\u0421\u0417\u0423)', sub: '', color: '#F59E0B' },
       { name: 'THRIVE', sub: '$454M PforR', color: '#F59E0B' },
       { name: 'EHDS', sub: 'EU Integration', color: '#3B82F6' },
@@ -1020,7 +1022,7 @@ export const KEY_CONCLUSIONS = (l: Language) => [
   },
   {
     icon: 'Database',
-    color: '#00F5FF',
+    color: '#3E91A2',
     num: '4',
     title: l === 'uk' ? 'Дані як зброя' : 'Data as a weapon',
     body: l === 'uk'
@@ -1114,7 +1116,7 @@ export const KILLER_QUOTES = (l: Language) => [
     uk: 'Програма — це Visa/Mastercard для послуг ментального здоров\'я. Не локомотив — рейки.',
     en: 'Program is Visa/Mastercard for MHPSS Services. Not the locomotive — the rails.',
     source: 'FEEL Again War Room',
-    color: '#00F5FF',
+    color: '#3E91A2',
     section: 'positioning',
   },
   {
@@ -1130,7 +1132,7 @@ export const KILLER_QUOTES = (l: Language) => [
     uk: 'Донори фінансують транзакції, а не прогнози. Держава купує послуги, а не сервери.',
     en: 'Donors fund transactions, not forecasts. State buys service, not servers.',
     source: 'FEEL Again War Room',
-    color: '#00FF66',
+    color: '#2C6E64',
     section: 'positioning',
   },
   {
@@ -1178,7 +1180,7 @@ export const KILLER_QUOTES = (l: Language) => [
     uk: 'Два береги однієї системи: постачальники послуг (фахівці) та глобальні організації (ресурси). FEEL Again — міст.',
     en: 'Two Banks of a Single Aid System: clinician-vendors (one shore); global organizations with resources (other shore). FEEL Again = the bridge.',
     source: 'FEEL Again War Room',
-    color: '#00F5FF',
+    color: '#3E91A2',
     section: 'positioning',
   },
   {

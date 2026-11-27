@@ -23,19 +23,19 @@ export const L2Journey: React.FC<Props> = ({ lang, nav }) => (
       background: 'linear-gradient(135deg, #0a1628 0%, #180808 100%)',
     }}
   >
-    <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, #4488ff, #2C6E64 60%, transparent)', boxShadow: '0 0 14px rgba(68,136,255,0.4)' }} />
+    <div className="h-px w-full flex-shrink-0" style={{ background: 'linear-gradient(90deg, var(--color-ds-royal), var(--color-ds-teal-light) 60%, transparent)', boxShadow: '0 0 14px rgba(14,77,99,0.35)' }} />
 
     {/* Header */}
     <div className="flex items-center gap-3 px-5 pt-4 pb-2 flex-shrink-0 z-10">
       <button
         onClick={nav.back}
         className="flex items-center gap-2 px-4 py-2 rounded-xl ds-display font-bold flex-shrink-0 transition-all"
-        style={{ background: 'rgba(68,136,255,0.16)', border: '2px solid #4488ff', color: '#4488ff', fontSize: '12px' }}
+        style={{ background: 'var(--color-ds-royal-dim)', border: '2px solid var(--color-ds-royal)', color: 'var(--color-ds-royal)', fontSize: '12px' }}
       >
         <ArrowLeft className="w-4 h-4" /> {T.back[lang]}
       </button>
       <div>
-        <div className="text-[17px] font-bold ds-display" style={{ color: 'var(--color-ds-text, #4488ff)' }}>{T.title[lang]}</div>
+        <div className="text-[17px] font-bold ds-display" style={{ color: 'var(--color-ds-text, var(--color-ds-royal))' }}>{T.title[lang]}</div>
         <div className="text-[10px] ds-body mt-0.5" style={{ color: 'var(--color-ds-muted)' }}>{T.subtitle[lang]}</div>
       </div>
     </div>

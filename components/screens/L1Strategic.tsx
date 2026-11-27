@@ -80,8 +80,8 @@ type Band = 'low' | 'medium' | 'high';
 const scoreToBand = (s: number): Band => s < 34 ? 'low' : s < 67 ? 'medium' : 'high';
 /* Оцінка руху (08 §4.2): тіал — добре, червоний — погано (незалежно від
    напрямку стрілки); проміжне — нейтральне чорнило-«стабільно» (F1).
-   Тони — тільки з H1-палітри: #B8463C (червоний), #2C6E64 (тіал). */
-const BAND_COLOR: Record<Band, string> = { low: '#B8463C', medium: 'var(--color-ds-muted)', high: '#2C6E64' };
+   Тони — тільки з H1-палітри: var(--color-ds-red) (червоний), var(--color-ds-teal-light) (тіал). */
+const BAND_COLOR: Record<Band, string> = { low: 'var(--color-ds-red)', medium: 'var(--color-ds-muted)', high: 'var(--color-ds-teal-light)' };
 const BAND_LABEL: Record<Band, { uk: string; en: string }> = {
   low:    { uk: 'Стагнація / Криза', en: 'Stagnation / Crisis' },
   medium: { uk: 'Помірне відновлення', en: 'Moderate recovery' },
@@ -202,8 +202,8 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
           <defs>
             <linearGradient id="mhei-brass" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%"   stopColor="#7a5218" />
-              <stop offset="30%"  stopColor="#C9B36A" />
-              <stop offset="65%"  stopColor="#c8a44c" />
+              <stop offset="30%"  stopColor="var(--color-ds-gold-a)" />
+              <stop offset="65%"  stopColor="var(--color-ds-gold-a)" />
               <stop offset="100%" stopColor="#5a3a08" />
             </linearGradient>
           </defs>
@@ -244,11 +244,11 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
             return (
               <g key={label}>
                 <line x1={outer.x.toFixed(1)} y1={outer.y.toFixed(1)} x2={inner.x.toFixed(1)} y2={inner.y.toFixed(1)}
-                  stroke={lit ? '#C9B36A' : 'rgba(201,179,106,0.25)'} strokeWidth={isEnd ? 2.5 : 1.5} />
+                  stroke={lit ? 'var(--color-ds-gold-a)' : 'rgba(201,179,106,0.25)'} strokeWidth={isEnd ? 2.5 : 1.5} />
                 <text x={lp.x.toFixed(1)} y={(lp.y + 4).toFixed(1)}
                   textAnchor="middle" dominantBaseline="central"
                   style={{ fontFamily: "'Archivo', sans-serif", fontSize: isEnd ? '10px' : '8px', fontWeight: '700',
-                    fill: lit ? '#C9B36A' : 'rgba(201,179,106,0.28)' }}>
+                    fill: lit ? 'var(--color-ds-gold-a)' : 'rgba(201,179,106,0.28)' }}>
                   {label}
                 </text>
               </g>
@@ -276,7 +276,7 @@ const GaugeDisplay: React.FC<{ lang: Language; expanded: boolean; onToggle: () =
         <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 700, fontSize: 13, color: bandColor, marginTop: 4 }}>
           {BAND_LABEL[currentBand][lang]}
         </div>
-        <div style={{ fontFamily: "'Spline Sans Mono', monospace", fontSize: 10, color: '#C9B36A', opacity: 0.75, marginTop: 3, letterSpacing: '0.06em' }}>
+        <div style={{ fontFamily: "'Spline Sans Mono', monospace", fontSize: 10, color: 'var(--color-ds-gold-a)', opacity: 0.75, marginTop: 3, letterSpacing: '0.06em' }}>
           {gdpImpact(INDEX_SCORE)} {lang === 'uk' ? 'ВВП' : 'GDP'}
         </div>
         <div style={{ fontFamily: "'Source Sans 3', sans-serif", fontSize: 9, color: 'var(--color-ds-muted)', marginTop: 2, lineHeight: 1.4 }}>
@@ -344,7 +344,7 @@ export const L1Strategic: React.FC<Props> = ({ lang, nav, liveHciValue }) => {
       }}
     >
       <div className="h-[2px] w-full flex-shrink-0"
-        style={{ background: 'linear-gradient(90deg, transparent 0%, #2C6E64 30%, #1C5A52 60%, rgba(201,179,106,0.7) 100%)', boxShadow: '0 0 20px rgba(44,110,100,0.4)' }} />
+        style={{ background: 'linear-gradient(90deg, transparent 0%, var(--color-ds-teal-light) 30%, var(--color-ds-teal) 60%, rgba(201,179,106,0.7) 100%)', boxShadow: '0 0 20px rgba(44,110,100,0.4)' }} />
 
       {/* Header */}
       <div className="flex items-center justify-between pl-6 pr-32 pt-3 pb-2 flex-shrink-0">

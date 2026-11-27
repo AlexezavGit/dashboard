@@ -12,28 +12,28 @@ const COMPONENTS = [
     pct: 45,
     label: { uk: 'Втрата продуктивності праці', en: 'Lost labour productivity' },
     value: '$2.7–3.6B',
-    color: '#B8463C',
+    color: 'var(--color-ds-red)',
     note: { uk: '3.9M осіб × 22% зниження продуктивності × mid-range зарплата', en: '3.9M people × 22% productivity decline × mid-range wage' },
   },
   {
     pct: 30,
     label: { uk: 'Cost-of-illness (медична система)', en: 'Cost-of-illness (health system)' },
     value: '$1.8–2.4B',
-    color: '#e8c97a',
+    color: 'var(--color-ds-gold)',
     note: { uk: 'Психіатрична госпіталізація, ліки, Crisis intervention (ЄБРР)', en: 'Psychiatric hospitalisation, medication, crisis intervention (EBRD)' },
   },
   {
     pct: 15,
     label: { uk: 'Довгострокова економічна ерозія (DALY)', en: 'Long-term economic erosion (DALYs)' },
     value: '$0.9–1.2B',
-    color: '#2C6E64',
+    color: 'var(--color-ds-teal-light)',
     note: { uk: '~320K DALY/рік × $3,000 WHO threshold — хронізація без лікування', en: '~320K DALYs/year × $3,000 WHO threshold — chronification without treatment' },
   },
   {
     pct: 10,
     label: { uk: 'Адміністративна ерозія та дублювання', en: 'Administrative erosion & duplication' },
     value: '$0.6B',
-    color: '#2C6E64',
+    color: 'var(--color-ds-teal-light)',
     note: { uk: '35K фахівців × 22% адмін. час × blended rate — пряма операційна втрата', en: '35K specialists × 22% admin time × blended rate — direct operational loss' },
   },
 ];
@@ -47,21 +47,21 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
         'linear-gradient(135deg, #0a1628 0%, #1a0a08 100%)',
     }}
   >
-    <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, #e8c97a 50%, transparent)', boxShadow: '0 0 14px rgba(232,201,122,0.4)' }} />
+    <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, var(--color-ds-gold) 50%, transparent)', boxShadow: '0 0 14px rgba(232,201,122,0.4)' }} />
 
     <NavBar
       lang={lang}
       nav={nav}
       title={{ uk: 'Анатомія $6–8B втрат ВВП', en: 'Anatomy of $6–8B GDP Loss' }}
       subtitle={{ uk: 'Чотири компоненти системних втрат — верифікований розрахунок', en: 'Four components of systemic losses — verified calculation' }}
-      accentColor="#e8c97a"
+      accentColor="var(--color-ds-gold)"
     />
 
     {/* Pie-like decomposition */}
     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 px-6 pb-5 min-h-0">
       {/* Left: horizontal stacked bar + legend */}
       <div className="flex flex-col gap-4">
-        <div className="cyber-label" style={{ color: '#e8c97a' }}>
+        <div className="cyber-label" style={{ color: 'var(--color-ds-gold)' }}>
           {lang === 'uk' ? 'СТРУКТУРА ВТРАТ' : 'LOSS BREAKDOWN'}
         </div>
 
@@ -87,7 +87,7 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.1 + 0.3 }}
             className="flex items-start gap-3 p-4 rounded-xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${c.color}33` }}
+            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid color-mix(in srgb, ${c.color} 20%, transparent)` }}
           >
             <div className="flex-shrink-0 w-10 text-center">
               <div className="text-[18px] font-bold ds-display" style={{ color: c.color }}>{c.pct}%</div>
@@ -112,19 +112,19 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
             label: { uk: 'Вартість закриття розриву', en: 'Cost to close the gap' },
             value: '$1.87B/рік',
             sub: { uk: '62.2M сесій × $30 (blended rate)', en: '62.2M sessions × $30 (blended rate)' },
-            color: '#2C6E64',
+            color: 'var(--color-ds-teal-light)',
           },
           {
             label: { uk: 'ROI інвестиції в MHPSS', en: 'ROI of MHPSS investment' },
             value: '4–6×',
             sub: { uk: 'WHO: кожен $1 в mental health = $4–6 економічного повернення', en: 'WHO: every $1 in mental health = $4–6 economic return' },
-            color: '#e8c97a',
+            color: 'var(--color-ds-gold)',
           },
           {
             label: { uk: 'WB THRIVE + HEAL (вже активні)', en: 'WB THRIVE + HEAL (already active)' },
             value: '$954M',
             sub: { uk: 'Кошти виділено, але невидимі послуги не рахуються для DLI', en: 'Funds allocated, but invisible services don\'t count for DLIs' },
-            color: '#2C6E64',
+            color: 'var(--color-ds-teal-light)',
           },
         ].map((item, i) => (
           <motion.div
@@ -133,10 +133,10 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.12 + 0.3 }}
             className="p-4 rounded-xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${item.color}33` }}
+            style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid color-mix(in srgb, ${item.color} 20%, transparent)` }}
           >
             <div className="flex items-baseline justify-between mb-1">
-              <span className="text-[11px] ds-body" style={{ color: 'rgba(242,234,219,0.75)' }}>{item.label[lang]}</span>
+              <span className="text-[11px] ds-body" style={{ color: 'var(--color-ds-text)' }}>{item.label[lang]}</span>
               <span className="text-[22px] font-bold ds-display" style={{ color: item.color }}>{item.value}</span>
             </div>
             <div className="text-[10px] ds-body" style={{ color: 'var(--color-ds-muted)' }}>{item.sub[lang]}</div>
@@ -151,7 +151,7 @@ export const L2Cost: React.FC<Props> = ({ lang, nav }) => (
           className="mt-auto p-4 rounded-xl"
           style={{ background: 'rgba(44,110,100,0.07)', border: '1px solid rgba(44,110,100,0.2)' }}
         >
-          <p className="text-[12px] ds-body leading-relaxed" style={{ color: 'rgba(242,234,219,0.8)' }}>
+          <p className="text-[12px] ds-body leading-relaxed" style={{ color: 'var(--color-ds-text)' }}>
             {lang === 'uk'
               ? 'Інвестиція $1.87B/рік поверне $7.5–11.2B через відновлення продуктивності. FEEL Again знижує транзакційні витрати до 3.5–7% — робить кожен долар ефективнішим.'
               : 'A $1.87B/yr investment returns $7.5–11.2B through restored productivity. FEEL Again reduces transaction costs to 3.5–7% — making every dollar more effective.'}
