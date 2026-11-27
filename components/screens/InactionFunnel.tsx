@@ -82,6 +82,105 @@ const Lane: React.FC<{ title: string; unit: string; children: React.ReactNode }>
   </div>
 );
 
+// ── Воронка-графік: доріжка «люди», горизонтальна ──────────────────────────────
+// Смуга кожного щабля пропорційна числу реєстру в межах спільного максимуму R-004.
+// Щаблі без відкритих даних малюються штриховкою на ширині попереднього відомого
+// щабля: спадання зупинено, бо величина невідома — ширину-значення вони не несуть.
+const FunnelChart: React.FC<{ lang: Language }> = ({ lang }) => {
+  const peopleMax = Number(reg('R-004').value);
+  const r001 = Number(reg('R-001').value);
+  const wKnown = Math.max(2, (r001 / peopleMax) * 100);
+
+  const stages: {
+    key: string; label: string; detail: string;
+    code?: RegCode; width: number; known: boolean;
+  }[] = [
+    {
+      key: 'risk', known: true, code: 'R-004', width: 100,
+      label: t('Особи в групі ризику', 'People at risk', lang),
+      detail: t('оцінка, не підрахунок', 'an estimate, not a count', lang),
+    },
+    {
+      key: 'need', known: true, code: 'R-001', width: wKnown,
+      label: t('Клінічна потреба в допомозі (проєкція)', 'Clinical need for care (projection)', lang),
+      detail: t('проєкція від R-004', 'projected from R-004', lang),
+    },
+    {
+      key: 'received', known: false, width: wKnown,
+      label: t('Отримали допомогу за пакетами НСЗУ', 'Received care under NHSU packages', lang),
+      detail: t('відкритих даних немає — потрібен запит', 'no open data — an information request is needed', lang),
+    },
+    {
+      key: 'completed', known: false, width: wKnown,
+      label: t('Завершили лікування', 'Completed treatment', lang),
+      detail: t('відкритих даних немає', 'no open data', lang),
+    },
+  ];
+
+  return (
+    <div className="rounded-xl p-4 flex flex-col gap-2.5" style={{ background: 'var(--color-ds-well)', border: `1px solid ${BORDER}` }}>
+      <div>
+        <div className="cyber-label" style={{ color: 'var(--color-ds-gold)' }}>
+          {t('ВОРОНКА ОСІБ — ВІД ГРУПИ РИЗИКУ ДО ЗАВЕРШЕНОГО ЛІКУВАННЯ', 'PEOPLE FUNNEL — FROM RISK GROUP TO COMPLETED CARE', lang)}
+        </div>
+        <div className="text-[9px] font-mono" style={{ color: MUTED }}>
+          {t('одиниця: осіб · ширина смуги пропорційна числу з реєстру', 'unit: persons · bar width proportional to the registry figure', lang)}
+        </div>
+      </div>
+
+      {stages.map((s, i) => (
+        <div key={s.key} className="flex items-center gap-3">
+          {/* Бейдж стадії */}
+          <div className="flex-shrink-0 rounded-lg px-2 py-1" style={{ width: 168, border: `1px solid ${s.known ? 'color-mix(in srgb, var(--color-ds-orange) 40%, transparent)' : BORDER}` }}>
+            <div className="text-[10px] font-bold ds-display leading-tight" style={{ color: s.known ? 'var(--color-ds-orange)' : TEXT }}>
+              {s.label}
+            </div>
+          </div>
+          {/* Смуга + число */}
+          <div className="flex-1 min-w-0 flex items-center gap-2">
+            <div className="flex-1 h-3 rounded-sm" style={{ background: 'color-mix(in srgb, var(--color-ds-muted) 14%, transparent)' }}>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${s.width}%` }}
+                transition={{ delay: 0.1 + i * 0.12, duration: 0.55 }}
+                className="h-3 rounded-sm"
+                style={s.known
+                  ? { background: 'var(--color-ds-orange)', opacity: i === 0 ? 0.9 : 0.6 }
+                  : {
+                      border: `1px dashed ${MUTED}`,
+                      background: 'repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-ds-muted) 20%, transparent) 0 4px, transparent 4px 8px)',
+                    }}
+              />
+            </div>
+            <div className="flex-shrink-0 text-[13px] font-bold ds-display whitespace-nowrap" style={{ color: s.known ? TEXT : MUTED }}>
+              {s.known && s.code
+                ? <RegValue code={s.code} lang={lang} unit={false} />
+                : <span title={s.detail}>—</span>}
+            </div>
+          </div>
+          {/* Пояснення праворуч */}
+          <div className="flex-shrink-0 rounded-md px-2 text-center" style={{ width: 200, border: `1px solid ${BORDER}`, minHeight: 34, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span className="text-[8px] ds-body leading-tight" style={{ color: MUTED }}>{s.detail}</span>
+          </div>
+        </div>
+      ))}
+
+      {/* Легенда графіка */}
+      <div className="flex flex-wrap items-center gap-4 mt-1">
+        <span className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded-sm inline-block" style={{ background: 'var(--color-ds-orange)', opacity: 0.75 }} />
+          <span className="text-[9px] ds-body" style={{ color: MUTED }}>{t('число з реєстру', 'registry figure', lang)}</span>
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-3 h-3 rounded-sm inline-block"
+            style={{ border: `1px dashed ${MUTED}`, background: 'repeating-linear-gradient(45deg, color-mix(in srgb, var(--color-ds-muted) 20%, transparent) 0 3px, transparent 3px 6px)' }} />
+          <span className="text-[9px] ds-body" style={{ color: MUTED }}>{t('відкритих даних немає — ширина не є числом', 'no open data — width carries no figure', lang)}</span>
+        </span>
+      </div>
+    </div>
+  );
+};
+
 export const InactionFunnel: React.FC<Props> = ({ lang, nav }) => {
   const peopleMax = Number(reg('R-004').value);
   const svcMax = Math.max(...(['R-160', 'R-161', 'R-162'] as RegCode[]).map(c => Number(reg(c).value)));
@@ -126,6 +225,16 @@ export const InactionFunnel: React.FC<Props> = ({ lang, nav }) => {
         </div>
       </div>
 
+      {/* ── Воронка-графік ── */}
+      <div className="px-5 pt-3 flex-shrink-0">
+        <FunnelChart lang={lang} />
+      </div>
+
+      <div className="px-5 pt-3 pb-1 flex-shrink-0">
+        <div className="text-[9px] font-mono uppercase tracking-wider" style={{ color: MUTED }}>
+          {t('Легенди до графіка: детальні числа, статуси і пояснення', 'Legends for the chart: detailed figures, statuses and notes', lang)}
+        </div>
+      </div>
       <div className="flex-1 min-h-0 overflow-y-auto px-5 pb-3 grid gap-3 md:grid-cols-2 content-start">
         {/* ── Доріжка 1: люди ── */}
         <Lane title={t('ДОРІЖКА «ЛЮДИ»', 'LANE “PEOPLE”', lang)} unit={t('одиниця: осіб', 'unit: persons', lang)}>
