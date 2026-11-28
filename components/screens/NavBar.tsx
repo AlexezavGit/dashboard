@@ -37,17 +37,20 @@ const L2_ORDER = [
   'l2-regulatory',
 ] as const;
 
+// Канон навігації = словник шарів MHEI з карток L1 (FinTech, Clinical, Data & Coord,
+// Місткість, Digitalization, Regulatory). H1 екранів лишаються змістовними і словнику
+// не підпорядковані; legacy-скріни поза листанням тримають власні назви.
 const L2_LABELS = {
   'l2-mhei':        { uk: 'MHEI', en: 'MHEI' },
-  'l2-finance':     { uk: 'Фінанси', en: 'Finance' },
-  'l2-clinical':    { uk: 'Клінічна', en: 'Clinical' },
-  'l2-data':        { uk: 'Дані', en: 'Data' },
+  'l2-finance':     { uk: 'FinTech', en: 'FinTech' },
+  'l2-clinical':    { uk: 'Clinical', en: 'Clinical' },
+  'l2-data':        { uk: 'Data & Coord', en: 'Data & Coord' },
   'l2-coverage':    { uk: 'Покриття', en: 'Coverage' },
   'l2-operational': { uk: '9 Розривів', en: '9 Gaps' },
   'l2-analytical':  { uk: 'Аналітика', en: 'Analytics' },
-  'l2-sustain':     { uk: 'Стійкість', en: 'Sustain' },
-  'l2-digital':     { uk: 'Диджитал', en: 'Digital' },
-  'l2-regulatory':  { uk: 'Регулятор', en: 'Regulatory' },
+  'l2-sustain':     { uk: 'Місткість', en: 'Capacity' },
+  'l2-digital':     { uk: 'Digitalization', en: 'Digitalization' },
+  'l2-regulatory':  { uk: 'Regulatory', en: 'Regulatory' },
   'l2-backlog':     { uk: 'Беклог', en: 'Backlog' },
   'l2-inaction':    { uk: 'Без дії', en: 'Inaction' },
   'l2-journey':     { uk: 'Стейкхолдери', en: 'Journeys' },
@@ -254,20 +257,26 @@ export const NavBar = ({
               </button>
             )}
 
-            <div className="flex items-center gap-1 px-2">
-              {L2_ORDER.map((id, i) => (
-                <button
-                  key={id}
-                  onClick={() => nav.push(id)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    i === idx ? 'w-6' : ''
-                  }`}
-                  style={{
-                    background: i === idx ? 'var(--color-ds-gold)' : 'var(--color-ds-muted)',
-                  }}
-                  aria-label={L2_LABELS[id]?.[lang] ?? id}
-                />
-              ))}
+            <div className="flex flex-col items-center gap-1 px-2">
+              <div className="flex items-center gap-1">
+                {L2_ORDER.map((id, i) => (
+                  <button
+                    key={id}
+                    onClick={() => nav.push(id)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      i === idx ? 'w-6' : ''
+                    }`}
+                    style={{
+                      background: i === idx ? 'var(--color-ds-gold)' : 'var(--color-ds-muted)',
+                    }}
+                    title={L2_LABELS[id]?.[lang] ?? id}
+                    aria-label={L2_LABELS[id]?.[lang] ?? id}
+                  />
+                ))}
+              </div>
+              <div className="text-[8px] font-mono uppercase tracking-wider" style={{ color: 'var(--color-ds-muted)' }}>
+                {L2_LABELS[currentScreen as keyof typeof L2_LABELS]?.[lang] ?? ''}
+              </div>
             </div>
 
             {nextId && (
